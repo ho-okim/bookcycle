@@ -23,7 +23,7 @@ input[type=checkbox] {
     transform: scale(2);
 }
 
-.reason-row{
+.reason_row{
     width: 80%; padding: 10px 5px;
 }
 
@@ -32,11 +32,7 @@ input[type=checkbox] {
     text-align: center;
 }
 
-.btn-row {
+.btn_row {
     padding: 30px 20px 20px;
     text-align: center;
-}
-
-.report-btn {
-    width: 100%;
 }
