@@ -1,0 +1,16 @@
+* { margin: 0; padding: 0; }
+ul, ol, li { list-style: none; }
+
+.inner { max-width: 1320px; }
+th, td { padding: 0 10px; }
+.left-nav, .content { border: 1px solid black; }
+.left-nav { padding: 10px 20px; width: 15%; }
+.content { padding: 20px 30px; width: 85%; }
+
+.rev-wrap { background-color: #eee; border-radius: 20px; }
+.more { border: 0; background-color: transparent; }
+
+
+.info-item { display: flex; }
+.info-item p { width: 30%; }
+.info-item input { width: 70%; }

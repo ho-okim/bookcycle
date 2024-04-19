@@ -1,0 +1,42 @@
+.box{
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+}
+
+.title .box{
+    width: 50%;
+    text-align: center;
+}
+
+table{
+    width: 100%;
+}
+
+.checkbox{
+    width: 15%;
+    text-align: center;
+}
+
+input[type=checkbox] {
+    transform: scale(2);
+}
+
+.reason-row{
+    width: 80%; padding: 10px 5px;
+}
+
+.reason{
+    margin:5px; padding: 5px 0;
+    text-align: center;
+}
+
+.btn-row {
+    padding: 30px 20px 20px;
+    text-align: center;
+}
+
+.report-btn {
+    width: 100%;
+}

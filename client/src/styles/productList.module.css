@@ -1,0 +1,15 @@
+
+.box{
+    width : 20%;
+    height : 5%;
+    margin : 20px;
+    background-color: lightblue;
+    border: 1px solid black;
+}
+
+.book{
+    width : 50%;
+    height: 5%;
+    background-color: blue;
+    border: 1px solid black;
+}

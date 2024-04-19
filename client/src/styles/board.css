@@ -1,0 +1,22 @@
+/* board (게시판) */
+.board .board-header {margin-bottom: 30px}
+.board .board-header .title{}
+.board .list-header {margin-bottom: 5px}
+.board .list {border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 20px 0;}
+.board .list .list-title, .list-content {margin-bottom: 10px}
+.board .list-info {font-size: 0.8rem;}
+.board .list .userid:after{
+  content:'|';
+  margin: 5px;
+}
+
+
+/* board-detail (게시글) */
+
+/* board-write (게시글 작성 폼) */
+.board-form .col {margin: 20px 0;}
+.board-form .title-input, .content-input {width: 90%}
+.board-form .content-input {}
+.board-form .reset {margin-right: 5px;}
+
+
