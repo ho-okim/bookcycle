@@ -6,12 +6,8 @@ import { Modal, Button } from 'react-bootstrap';
 
 function Report({show, handleClose}) {
 
-    const [reason, setReason] = useState([]);
     const product_report = report_reason.product;
-
-    useEffect(() => {
-        setReason(product_report);
-    }, [])
+    const [reason, setReason] = useState(product_report);
 
     return(
         <Modal show={show} onHide={handleClose}
@@ -38,7 +34,7 @@ function Report({show, handleClose}) {
                 <Button variant='secondary' style={{fontSize:"17px"}} 
                     onClick={handleClose}
                 >취소</Button>
-                <Button variant='primary' style={{fontSize:"17px"}}>신고하기</Button>
+                <Button variant='danger' style={{fontSize:"17px"}}>신고하기</Button>
             </Modal.Footer>
         </Modal>
     )

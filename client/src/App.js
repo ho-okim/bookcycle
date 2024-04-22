@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login.js';
 import Join from './pages/Join.js';
-import Report from './pages/Report.js';
 import MyBuyList from './pages/mypage/MyBuyList.js';
 import MyBuyReview from './pages/mypage/MyBuyReview.js';
 import MypageEdit from './pages/mypage/MypageEdit.js';
@@ -26,7 +25,6 @@ function App() {
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/join" element={<Join/>}/>
-          <Route path="/report" element={<Report/>}/>
           <Route path="/mypage">
             <Route path="" element={<MyBuyList/>}/>
             <Route path="buyReview" element={<MyBuyReview/>}/>
