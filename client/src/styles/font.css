@@ -32,3 +32,19 @@ body{font-family: 'Pretendard-SemiBold';}
 
 /* common setting */
 .inner{max-width: 1320px;}
+
+input[type="file"]{
+  /* 파일 업로드 기본 버튼 삭제 */
+  width: 0; height: 0; padding: 0; margin: 0; border: 0;
+  position: relative; z-index: 10;
+}
+
+textarea{
+  width: 100%;
+  resize: none;
+  overflow-y: hidden; /* prevents scroll bar flash */
+  padding: 1.1em; /* prevents text jump on Enter keypress */
+  padding-bottom: 0.2em;
+  line-height: 1.6;
+}
+textarea:focus{}
