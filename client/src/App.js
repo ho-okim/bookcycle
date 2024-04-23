@@ -14,6 +14,8 @@ import User from './pages/User.js';
 import './styles/font.css';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
+import UserProduct from './components/user/UserProduct.js';
+import UserReviewList from './components/user/UserReviewList.js';
 
 
 function App() {
@@ -35,7 +37,10 @@ function App() {
             <Route path="boardWrite" element={<BoardWrite/>}/>
             {/* <Route path="boardDetail" element={<BoardDetail/>}/> */}
           </Route>
-          <Route path="/user/:id" element={<User/>}/>
+          <Route path="/user/:id" element={<User/>}>
+            <Route path="product" element={<UserProduct/>}/>
+            <Route path="review" element={<UserReviewList/>}/>
+          </Route>
         </Routes>
         <Footer/>
     </>
