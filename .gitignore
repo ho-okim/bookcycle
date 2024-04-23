@@ -19,6 +19,9 @@ db_config.json
 reportWebVitals.js
 setupTests.js
 
+# server
+/server/test.js
+
 # testing
 /coverage
 
