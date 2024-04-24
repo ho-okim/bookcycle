@@ -14,7 +14,7 @@ import Board from './pages/board/Board.js';
 import BoardWrite from './pages/board/BoardWrite.js';
 import BoardDetail from './pages/board/BoardDetail.js';
 import User from './pages/User.js';
-import './styles/font.css';
+import './styles/common.css';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 
