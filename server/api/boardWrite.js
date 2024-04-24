@@ -15,7 +15,7 @@ const upload = multer({
       done(null, filename);
     },
     destination(req, file, done) {
-      done(null, path.join(__dirname, "../public/img"));
+      done(null, path.join(__dirname, "../../client/public/img"));
     },
   }),
   limits: { fileSize: 1024 * 1024 },
