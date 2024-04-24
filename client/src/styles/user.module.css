@@ -1,0 +1,170 @@
+a{
+    text-decoration: none; color:black;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.user_menu{
+    width: 15%;
+}
+
+.username {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.menu{
+    margin: 15px auto;
+}
+
+.menu_hr{
+    width: 100%; height: 1px;
+    margin: 10px 0;
+    background-color: #5c5c5c;
+}
+
+.menu li{
+    list-style: disc;
+}
+
+.other_user{
+    width: 85%;
+}
+
+.info_box {
+    width: 60%;
+}
+
+.section_sub_box {
+    margin-top: 40px;
+}
+
+.box{
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+}
+
+.image_box{
+    width: 100px; height: 100px;
+    background-color: #d6d6d6;
+    border-radius: 100%;
+}
+
+.title .box{
+    width: 30%;
+    text-align: center;
+}
+
+.review_title_box{
+    margin-bottom : 20px;
+}
+
+.user_info{
+    margin:10px; padding: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 2px solid #dddddd;
+    text-align: center;
+}
+
+.report_btn{
+    border: 2px solid red;
+    font-size: 16px;
+}
+
+.chat_btn{
+    border: 2px solid #07ffff;
+    color: black;
+    font-size: 16px;
+}
+
+.liked{
+    padding: 0 5px 0 0;
+    width: 15%;
+    text-align: center;
+}
+
+.tag{
+    padding: 0 0 0 5px;
+    width: 70%;
+    text-align: center;
+}
+
+.liked .box, .tag .box {
+    margin: 5px 0;
+}
+
+.more_btn{
+    width: 70px;
+    margin: 0 0 8px;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.arrow_more_btn{
+    width: 40px;
+    margin: 0 0 8px;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.review_box *{
+    margin: 3px 0;
+    text-align: center;
+}
+
+.score, .writer, .date{
+    width: 15%;
+}
+
+.review{
+    width: 50%;
+}
+
+.review_box .book_title{
+    margin-bottom: 5px;
+    padding: 0;
+    height: 25px;
+}
+
+.review-content {
+    overflow: hidden;
+}
+
+.book_card{
+    width: calc((100% - 15px * 4) / 5);
+    margin-top:10px;
+}
+
+.book_image_box{
+    height: 120px;
+    display: flex; justify-content: center;
+    align-items: center;
+}
+
+.no_book_image {
+    width: 80%;
+    display:block;
+}
+
+.book_info .book_title, .book_info .price{
+    padding:0; margin: 5px 0 0;
+    text-align: center;
+}
+
+.pagination_wrap {
+    margin-top : 10px;
+    position: relative;
+    display: flex; justify-content: center;
+}
+
+.back_btn{
+    width: 80px;
+    padding: 7px;
+    position:absolute; top: 0; right: 0;
+    border-radius: 5px;
+}
