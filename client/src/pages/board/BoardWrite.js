@@ -1,6 +1,6 @@
-import '../../styles/board.css'
-import { useState, useRef } from 'react';
-import {boardWrite, fileupload} from '../../api/boardWrite.js';
+import styles from '../../styles/board.css';
+import { useState } from 'react';
+import {boardWrite} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
@@ -9,7 +9,6 @@ import { Camera, XCircleFill } from 'react-bootstrap-icons'
 function BoardWrite() {
 
   const [form, setForm] = useState({title : '', content : ''});
-  const [errorMessage, setErrorMessage] = useState('');
 
   const fileRef = useRef()
 
@@ -67,12 +66,13 @@ function BoardWrite() {
     const title = form.title;
     const content = form.content;
 
+    // 제목이나 내용 비어있으면 alert
     if(!title || title === ''){
-      setErrorMessage('제목을 입력해주세요');
+      alert("제목을 입력해주세요");
       return;
     }
     if(!content || content === ''){
-      setErrorMessage('내용을 입력해주세요');
+      alert('내용을 입력해주세요');
       return;
     }
 
@@ -81,6 +81,8 @@ function BoardWrite() {
       formData.append('files', uploadImg[i])
     }
     
+    // 제목, 내용 다 있으면 데이터를 서버에 전송하기 위해
+    // boardWrite 함수 호출
     const res = await boardWrite(title, content);
     formData.append('boardId', res.insertId)
     const fileRes = await fileupload(formData)
