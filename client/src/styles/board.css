@@ -38,7 +38,7 @@
 }
 .fileBtn{
   width: 100%; height: 100%; position: absolute; z-index: 2;
-  background-color: rgba(0,0,0,0.1); border-radius: 5px; border: 1px solid #979797;
+  background-color: rgba(0,0,0,0.1); border-radius: 5px; border: 1px solid #979797; cursor: pointer;
 }
 .uploadedImgBox{
   display: flex; align-items: center; justify-content: center;

@@ -1,6 +1,6 @@
 import styles from '../../styles/board.css';
 import { useState } from 'react';
-import {boardWrite} from '../../api/board.js';
+import {boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
@@ -9,8 +9,7 @@ import { Camera, XCircleFill } from 'react-bootstrap-icons'
 function BoardWrite() {
 
   const [form, setForm] = useState({title : '', content : ''});
-
-  const fileRef = useRef()
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
   
@@ -106,7 +105,7 @@ function BoardWrite() {
                   {/* 이미지 업로드 버튼 */}
                   <Camera className='previewDefaultImg'/>
                   <label htmlFor="file" className="fileBtn"></label>
-                  <input type="file" multiple name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload} ref={fileRef}/>
+                  <input type="file" multiple name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
                 </div>
               </div>
               { // uploadImgUrl이 존재할 때 요소 생성

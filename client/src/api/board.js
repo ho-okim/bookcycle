@@ -11,13 +11,29 @@ export async function board(){
 }
 
 export async function boardWrite(title, content) {
-    const res = await axios.post('/boardWrite', { title, content });
+    const res = await axios.post('/boardwrite', { title, content });
     
     if (res.statusText != "OK") {
         throw new Error("post fails");
     } 
     const body = res.data;
+    body.message = 'success'
+    
     return body;
+}
+
+export async function fileupload(formData) {
+  const res = await axios.post('/fileupload', formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  })
+  
+  if (res.statusText != "OK") {
+      throw new Error("file upload fails");
+  } 
+  
+  return res.statusText;
 }
 
 export async function boardDetail(id){
