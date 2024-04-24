@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import { useHref, useParams, useSearchParams } from "react-router-dom";
+import { useHref, useNavigate } from "react-router-dom";
 
 function DataPagination({
     totalData,
@@ -9,15 +9,11 @@ function DataPagination({
     handlePagination
     }) {
     
-        /* 
-        const val = useParams();
-        let [searchParams, setSearchParams] = useSearchParams();
-        console.log(searchParams.get("page"))
-         */
-
     const [totalPage, setTotalPage] = useState(1); // 전체 페이지 수
     const [offset, setOffset] = useState(1); // pagination 시작점
-    const [activePage, setActivePage] = useState(1); // 활성화된 페이지
+    const [activePage, setActivePage] = useState(); // 활성화된 페이지
+    const url = useHref();
+    const navigate = useNavigate();
 
     useEffect(()=>{
         async function getTotalPage() { // 전체 페이지 수 계산 및 저장
@@ -33,8 +29,9 @@ function DataPagination({
     }, [totalData, limit, offset]);
 
     function handleClickNumber(pageNumber) { // pagination 숫자 활성화 설정
-        handlePagination(pageNumber);
-        setActivePage(pageNumber);
+            handlePagination(pageNumber);
+            setActivePage(pageNumber);
+            navigate(`${url}?page=${pageNumber}`)
     }
 
     function pageBlock() { // pagination 숫자 설정

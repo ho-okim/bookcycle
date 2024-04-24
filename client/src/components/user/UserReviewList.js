@@ -1,7 +1,7 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
@@ -16,6 +16,7 @@ function UserReviewList() {
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [currentUrl, setCurrentUrl] = useState(window.location.href); // 현재 url
     const [isReviewUrl, setIsReviewUrl] = useState(currentUrl.includes("review")); // 리뷰url 포함여부
+    const [searchParams, setSearchParams] = useSearchParams(); // page query
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
@@ -24,25 +25,31 @@ function UserReviewList() {
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
-    function handleMoreView() { // 리뷰 리스트로 이동
-        if (!isReviewUrl) {
-            navigate(`/user/${targetUserId}/review`);
-        }
-    }
-
-    function handleMoveBack() { // 이전 페이지 - 유저정보
-        if (isReviewUrl) {
-            navigate(`/user/${targetUserId}`);
-        }
-    }
-
-    function handlePagination(value) { // pagination에서 offset 변경
-        setOffset((value-1)*limit);
-    }
-
     useEffect(()=>{ // 요청 url 확인
         setIsReviewUrl(currentUrl.includes("review"));
     }, [currentUrl, isReviewUrl]);
+
+    useEffect(()=>{
+        // 전체 데이터 수
+        async function getTotal() {
+            const res = await getUserReviewAll(targetUserId);
+            setTotalData(res);
+        }
+
+        async function pageOffset() {
+            if (!searchParams.get("page") 
+            || searchParams.get("page") < 0 
+            || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
+            {   
+                setOffset(0);
+            } else {
+                setOffset((searchParams.get("page")-1)*limit);
+            }
+        }
+
+        getTotal();
+        pageOffset();
+    }, [targetUserId, totalData, searchParams])
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
@@ -59,15 +66,24 @@ function UserReviewList() {
             setLoading(false);
         }
 
-        // 전체 데이터 수
-        async function getTotal() {
-            const res = await getUserReviewAll(targetUserId);
-            setTotalData(res);
-        }
-
         getReviewList();
-        getTotal();
     }, [targetUserId, currentUrl, isReviewUrl, offset]);
+
+    function handleMoreView() { // 리뷰 리스트로 이동
+        if (!isReviewUrl) {
+            navigate(`/user/${targetUserId}/review`);
+        }
+    }
+
+    function handleMoveBack() { // 이전 페이지 - 유저정보
+        if (isReviewUrl) {
+            navigate(`/user/${targetUserId}`);
+        }
+    }
+
+    function handlePagination(value) { // pagination에서 offset 변경
+        setOffset((value-1)*limit);
+    }
 
     // 더보기 버튼 유무에 따른 타이틀 css
     const titlebox_css = (isReviewUrl || !reviewList || reviewList.length == 0) ?
