@@ -1,30 +1,26 @@
-import Container from 'react-bootstrap/Container';
+import Container from "react-bootstrap/Container";
 
-import '../../styles/mypage.css';
+import styles from "../../styles/mypage.module.css";
 
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import TableList from '../../components/mypage/TableList';
-import LeftNav from '../../components/mypage/LeftNav';
+import TableList from "../../components/mypage/TableList";
+import LeftNav from "../../components/mypage/LeftNav";
 
 function MyBuyList() {
-  return(
+  return (
     <>
-    <Container>
-      <div className="inner">
-        <div className="row">
-          <LeftNav/>
-          
-          <div className="col col-10 content">
+      <Container>
+        <div className={styles.inner}>
+          <LeftNav />
+
+          <div className={styles.content}>
             <p> &gt; 전체 구매 내역</p>
-            <TableList/>
+            <TableList />
             <span>1 2 3 4 5 &gt;</span>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
     </>
-  )
+  );
 }
 
 export default MyBuyList;

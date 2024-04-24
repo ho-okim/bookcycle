@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import { buyList } from '../../api/mypage';  // axios 인스턴스 import
 
+import styles from '../../styles/mypage.module.css';
+
 function TableList() {
 
+  const { id } = useParams();
+
   async function getItems(){
-    const data = await buyList()
+    const data = await buyList(id)
     return data
   }
 
   const [buyItems, setBuyItems] = useState([]);
-
 
   useEffect(() => {
     // Axios 인스턴스를 이용하여 서버로부터 데이터 가져오기
@@ -26,7 +30,7 @@ function TableList() {
 
   return (
     <Table responsive>
-      <thead>
+      <thead className={styles.buyList}>
         <tr>
           <th>거래일</th>
           <th>상품명</th>
@@ -45,7 +49,7 @@ function TableList() {
             <td>₩{parseInt(item.price).toLocaleString()}</td>
             <td>{item.buyer_id}</td>
             <td>{item.seller_id}</td>
-            <td><button>리뷰 작성</button></td>
+            <td><button className={styles.reviewBtn}>리뷰 작성</button></td>
             {/* MyBuyList에만 나타나게.. */}
           </tr>
         ))}

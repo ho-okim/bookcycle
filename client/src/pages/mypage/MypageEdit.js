@@ -1,74 +1,75 @@
 import { useEffect, useState } from 'react';
-import { mypage } from '../../api/mypage';  // axios 인스턴스 import
+import { useParams } from 'react-router-dom';
+import { mypage } from '../../api/mypage';
 
 import Container from 'react-bootstrap/Container';
-import '../../styles/mypage.css';
-
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import LeftNav from '../../components/mypage/LeftNav';
+import styles from '../../styles/mypage.module.css';
 
 
 function MypageEdit() {
 
-  async function getUser(){
-    const data = await mypage()
-    return data
+  const { id } = useParams();
+
+  async function getUser() {
+    const data = await mypage(id);
+    return data;
   }
-
   const [user, setUser] = useState([]);
-
 
   useEffect(() => {
     const fetchUser = async () => {
       const items = await getUser();
-      // 배열 데이터의 첫 번째 항목
-      setUser(items[0]);
+      setUser(items);
     };
     fetchUser();
-  }, []);
+  }, [id])
 
-  console.log("User : " , user)
+    // user 객체가 비어있는 경우 렌더링하지 않음
+    if (!user || Object.keys(user).length === 0) {
+      return <div>Loading...</div>;
+    }
+
+  console.log(user[0])
 
   return (
     <>
       <Container>
-        <div className="inner d-flex">
+        <div className={styles.inner}>
           <LeftNav/>
-          <div className="content">
+          <div className={styles.content}>
             <p> &gt; 회원 정보 관리</p>
-
             
-            <div className="userInfo">
-              <div className="info-item">
+            <div className={styles.userInfo}>
+              <div className={styles.infoItem}>
                 <p>이름</p>
-                <input value={user.username}/>
+                <input value={user[0].username}/>
               </div>
-              <div className="info-item">
+              <div className={styles.infoItem}>
                 <p>닉네임</p>
-                <input value={user.nickname}/>
+                <input value={user[0].nickname}/>
               </div>
-              <div className="info-item">
+              <div className={styles.infoItem}>
                 <p>비밀번호</p>
                 <input type="password" />
               </div>
-              <div className="info-item">
+              <div className={styles.infoItem}>
                 <p>비밀번호 확인</p>
                 <input type="password" />
               </div>
-              <div className="info-item">
+              <div className={styles.infoItem}>
                 <p>휴대폰 번호</p>
-                <input value={user.phone_number} />
+                <input value={user[0].phone_number} />
               </div>
-              <div className="info-item">
+              <div className={styles.infoItem}>
                 <p>이메일</p>
-                <input value={user.email} />
+                <input value={user[0].email} readOnly/>
               </div>
             </div>
 
-            <div className="btn-wrap">
-              <button type="reset" className="cancel">취소</button>
-              <button  className="edit">수정</button>
+            <div className={styles.btnWrap}>
+              <button type="reset" className={styles.cancel}>취소</button>
+              <button  className={styles.edit}>수정</button>
             </div>
           </div>
         </div>
