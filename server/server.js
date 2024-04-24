@@ -130,5 +130,4 @@ app.use("/", require('./api/join.js'));
 app.use("/", require('./api/mypage.js'));
 app.use("/", require('./api/user.js'));
 app.use("/", require('./api/board.js'));
-app.use("/", require('./api/boardWrite.js'));
 app.use("/", require('./api/report.js'));
