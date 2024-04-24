@@ -36,6 +36,10 @@ const sessionOption = {
     store : new MySQLStore( dbConfig )
 }
 
+// public 폴더 경로 설정
+const path = require('path')
+app.use(express.static(path.join(__dirname, 'public')))
+
 // app 설정
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
