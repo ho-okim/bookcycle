@@ -6,7 +6,6 @@ import "../../styles/font.css";
 import style from "../../styles/productList.module.css";
 import Header from '../../components/Header.js';
 import Footer from '../../components/Footer.js';
-import ProductDetail from "./ProductDetail.js";
 
 
 function ProductList() {
