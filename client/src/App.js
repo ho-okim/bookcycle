@@ -6,6 +6,8 @@ import Join from './pages/Join.js';
 import Report from './pages/Report.js';
 import MyBuyList from './pages/mypage/MyBuyList.js';
 import MyBuyReview from './pages/mypage/MyBuyReview.js';
+import MySellList from './pages/mypage/MySellList.js';
+import MySellReview from './pages/mypage/MySellReview.js';
 import MypageEdit from './pages/mypage/MypageEdit.js';
 import Main from './pages/Main.js'
 import Board from './pages/board/Board.js';
@@ -28,9 +30,11 @@ function App() {
           <Route path="/join" element={<Join/>}/>
           <Route path="/report" element={<Report/>}/>
           <Route path="/mypage">
-            <Route path="" element={<MyBuyList/>}/>
-            <Route path="buyReview" element={<MyBuyReview/>}/>
-            <Route path="edit" element={<MypageEdit/>}/>
+            <Route path=":id/buyList" element={<MyBuyList/>}/>
+            <Route path=":id/buyReviewList" element={<MyBuyReview/>}/>
+            <Route path=":id/sellList" element={<MySellList/>}/>
+            <Route path=":id/sellReviewList" element={<MySellReview/>}/>
+            <Route path=":id" element={<MypageEdit/>}/>
           </Route>
           <Route path="/board">
             <Route path="" element={<Board/>}/>
@@ -39,7 +43,7 @@ function App() {
           </Route>
           <Route path="/user/:id" element={<User/>}/>
         </Routes>
-        <Footer/>
+      <Footer/>
     </>
   );
   

@@ -1,10 +1,11 @@
 import Container from "react-bootstrap/Container";
-import LeftNav from "../../components/mypage/LeftNav";
-import RevList from "../../components/mypage/RevList";
 
 import styles from "../../styles/mypage.module.css";
 
-function MyBuyReview() {
+import TableList from "../../components/mypage/TableList";
+import LeftNav from "../../components/mypage/LeftNav";
+
+function MyBuyList() {
   return (
     <>
       <Container>
@@ -12,8 +13,8 @@ function MyBuyReview() {
           <LeftNav />
 
           <div className={styles.content}>
-            <p>총 _개의 구매후기</p>
-            <RevList />
+            <p> &gt; 전체 판매 내역</p>
+            <TableList />
             <span>1 2 3 4 5 &gt;</span>
           </div>
         </div>
@@ -22,4 +23,4 @@ function MyBuyReview() {
   );
 }
 
-export default MyBuyReview;
+export default MyBuyList;
