@@ -1,0 +1,111 @@
+.inner{
+    margin-top: 70px;
+
+}
+
+.optioninfo{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    width: 40%;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.innerbox{
+    background-color: lightblue;
+    height: 200px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+    margin: 0 auto;
+}
+
+.infopic{
+    background-color: #ddd;
+    flex: 1;
+    margin: 0px 40%;
+    width: 30%;
+    border: 1px solid black;
+
+}
+
+.infocate{
+    background-color: #ddd;
+    width: 30%;
+    flex: 1;
+    text-align: center;
+    border: 1px solid black;
+    line-height: 200%;
+
+}
+
+.boxinfo{
+    height: 250px;
+    align-content: space-around;
+}
+
+.info01{
+    text-align: center;
+    width: 25%;
+    line-height : 100px;
+    border: 1px solid black;
+}
+
+.info02{
+    text-align: center;
+    width: 70%;
+    line-height : 100px;
+    border: 1px solid black;
+}
+
+.info04{
+    text-align: center;
+    border: 1px solid black;
+}
+
+.info0102{
+    display: flex;
+    height: 100px;
+    margin-bottom: 1%;
+    justify-content: space-between;
+}
+
+.info0405{
+    width: 70%;
+    display: flex;
+    justify-content : center;
+    align-items : center;
+    text-indent: 10px;
+    border: 1px solid black;
+}
+
+.anotherinfo{
+    background-color: lightblue;
+    height: 300px;
+    width: 70%;
+    float: right;
+    border: 1px solid black;
+    border-radius: 5px;   
+}
+
+.anotherbookcon{
+    height: 300px;
+    width: 100%;
+}
+
+.anotherbook{
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+    margin: 0 auto;
+    padding: 30px;
+    line-height: 250%;
+}
+
+.another{
+    margin-top: 40px;
+}
