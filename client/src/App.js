@@ -17,6 +17,8 @@ import User from './pages/User.js';
 import './styles/common.css';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
+import ProductList from './pages/product/productList.js';
+import ProductDetail from './pages/product/ProductDetail.js';
 
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
             <Route path=":id" element={<BoardDetail/>}/>
           </Route>
           <Route path="/user/:id" element={<User/>}/>
+          <Route path="/productList" element={<ProductList/>}/>
+          <Route path="/productDetail" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
     </>

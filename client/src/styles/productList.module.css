@@ -1,15 +1,54 @@
 
+
+.inner{
+    margin-top: 70px;
+}
+
+
 .box{
-    width : 20%;
-    height : 5%;
-    margin : 20px;
+    width: 180px;
     background-color: lightblue;
     border: 1px solid black;
+    border-radius: 5px;
+    line-height: 200%;
 }
 
 .book{
-    width : 50%;
-    height: 5%;
-    background-color: blue;
+    width : 400px;
+    height: 100px;
+    border-radius: 5px;
+    margin-bottom: 4%;
+    background-color: #ddd;
     border: 1px solid black;
+    display: flex;
+    justify-content: space-around;
+    
 }
+
+.productLists{
+    border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 20px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.productDetailList{
+    display: flex;
+    flex-direction: column;
+}
+
+.bookpicbox{
+    float: left;
+    width: 30%;
+}
+
+.bookinfoabout{
+    width : 40%;
+    
+}
+
+.booknicname{
+    float: right;
+    width:30%;
+}
+
+.buttonList{display: flex; justify-content: flex-end;}

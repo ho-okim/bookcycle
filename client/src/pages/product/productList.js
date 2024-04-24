@@ -3,41 +3,11 @@ import { useState, useEffect, Component } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../styles/font.css";
-import style from "../styles/productList.module.css";
+import style from "../../styles/productList.module.css";
 import Header from '../../components/Header.js';
 import Footer from '../../components/Footer.js';
 import ProductDetail from "./ProductDetail.js";
 
-
-function List(){
-    return(
-        <Container>
-            <div className='inner'>
-                <Link to='/productDetail'>
-                    <div className='${style.book}'>
-                        <div clasName='book-pic-box'>
-                            <img className='book-pic-box' src='' alt='사진'/>
-                        </div>
-                        <div className='book'>
-                            <div clasName='booktitle'>
-                                제목
-                            </div>
-                            <div clasName='bookauthor'>
-                                저자/출판사/출간일
-                            </div>
-                            <div clasName='bookprice'>
-                                가격
-                            </div>
-                        </div>
-                        <div clasName='booknicname'>
-                            닉네임
-                        </div>
-                    </div>
-                </Link>
-            </div>
-        </Container>
-    )
-}
 
 function ProductList() {
 
@@ -55,30 +25,76 @@ function ProductList() {
         }
     }
     */
+    function onSelected(){};
 
-    return(
-        <Container>
-            <div className='inner'>
-                <div className='column'>
-                    <div className='category'>
+    return (
+      <Container>
+        <div className={`${style.inner}`}>
+          <div className={`${style.buttonList}`}>
+            <span>1 2 3 4 5 &gt; </span>
+            <div className={`${style.productcondition}`}>
+              {<select id="sort" className=" outline-none" onChange={onSelected}>
+                  <option value="condition">상품상태</option>
+                  <option value="conditiontop">상</option>
+                  <option value="conditionmid">중</option>
+                  <option value="conditionbo">하</option>
+                </select>
+              }
+            </div>
+            <div className={`${style.order}`}>
+              {<select id="sort" className=" outline-none" onChange={onSelected}>
+                  <option value="createdAt">최신순</option>
+                  <option value="likeOrder">좋아요 순</option>
+                </select>
+              }
+            </div>
+          </div>
+          <div className={`${style.productLists}`}>
+          <div className='column'>
+                    <div className={`${style.category}`}>
                         <div className={`${style.box}`}>
                             <ul className='nav-bar'>
-                                <li><Link to=''>전체보기</Link></li>
-                                <li><Link to='novel'>소설</Link></li>
-                                <li><Link to='literature'>문학/인문</Link></li>
-                                <li><Link to='history'>역사/철학/심리/교육</Link></li>
-                                <li><Link to='development'>자기계발</Link></li>
+                                <Link to={''} style={{ textDecoration: "none", color: "black"}}>전체보기<br></br></Link>
+                                <Link to={'/novel'} style={{ textDecoration: "none", color: "black"}}>소설<br></br></Link>
+                                <Link to={'/literature'} style={{ textDecoration: "none", color: "black"}}>문학/인문<br></br></Link>
+                                <Link to={'/history'} style={{ textDecoration: "none", color: "black"}}>역사/철학/심리/교육<br></br></Link>
+                                <Link to={'/develop'} style={{ textDecoration: "none", color: "black"}}>자기계발</Link>
                             </ul>
                         </div>
                     </div>
                 </div>
+            <div className={`${style.productDetailList}`}>
+            <Link to={"/productDetail"} style={{ textDecoration: "none", color: "black" }}>
+              <div className={`${style.book}`}>
+                <div clasName={`${style.bookpicbox}`}>
+                  <img className="book-pic-box" src="" alt="사진" />
+                </div>
+                <div className={`${style.bookinfoabout}`}>
+                  <div clasName="booktitle">제목</div>
+                  <div clasName="bookauthor">저자/출판사/출간일</div>
+                  <div clasName="bookprice">가격</div>
+                </div>
+                <div clasName={`${style.booknicname}`}>닉네임</div>
+              </div>
+            </Link>
+            <Link to={"/productDetail"} style={{ textDecoration: "none", color: "black" }}>
+              <div className={`${style.book}`}>
+                <div clasName={`${style.bookpicbox}`}>
+                  <img className="book-pic-box" src="" alt="사진" />
+                </div>
+                <div className={`${style.bookinfoabout}`}>
+                  <div clasName="booktitle">제목</div>
+                  <div clasName="bookauthor">저자/출판사/출간일</div>
+                  <div clasName="bookprice">가격</div>
+                </div>
+                <div clasName={`${style.booknicname}`}>닉네임</div>
+              </div>
+            </Link>
             </div>
-    <div>
-        <List/>
-    </div>
-    </Container>
-
-    )
+          </div>
+        </div>
+      </Container>
+    );
 }
 
 export default ProductList;
