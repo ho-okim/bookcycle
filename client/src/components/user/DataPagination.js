@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import TargetUserContext from "../../contexts/TargetUserContext";
+import { useHref, useParams, useSearchParams } from "react-router-dom";
 
 function DataPagination({
     totalData,
@@ -9,7 +9,11 @@ function DataPagination({
     handlePagination
     }) {
     
-    const targetUserId = useContext(TargetUserContext);
+        /* 
+        const val = useParams();
+        let [searchParams, setSearchParams] = useSearchParams();
+        console.log(searchParams.get("page"))
+         */
 
     const [totalPage, setTotalPage] = useState(1); // 전체 페이지 수
     const [offset, setOffset] = useState(1); // pagination 시작점
@@ -50,7 +54,7 @@ function DataPagination({
         return blockComponent;
     }
 
-    function handlePrev() {
+    function handlePrev() { // 이전 버튼 눌렀을 때 번호 처리
         if (offset > blockPerPage) {
             setOffset(offset - blockPerPage);
         } else {
@@ -58,25 +62,23 @@ function DataPagination({
         }
     }
 
-    function handleNext() {
+    function handleNext() { // 다음 버튼 눌렀을 때 번호 처리
         if (offset + blockPerPage < totalPage) {
             setOffset(offset + blockPerPage);
         } else {
             if (totalPage > blockPerPage) {
                 setOffset(totalPage - blockPerPage);
             } else {
-                setOffset(totalPage);
+                setOffset(1);
             }
         }
     }
 
-    function handleLast() {
-        const totalPage = Math.max(Math.ceil(totalData/limit), 1);
-
+    function handleLast() { // 마지막으로 가기 버튼 눌렀을 때 번호 처리
         if (totalPage > blockPerPage) {
             setOffset(totalPage - blockPerPage);
         } else {
-            setOffset(totalPage);
+            setOffset(1);
         }
     }
 

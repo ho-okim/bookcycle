@@ -142,6 +142,13 @@ a:hover{
 
 .book_image_box{
     height: 120px;
+    display: flex; justify-content: center;
+    align-items: center;
+}
+
+.no_book_image {
+    width: 80%;
+    display:block;
 }
 
 .book_info .book_title, .book_info .price{

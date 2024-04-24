@@ -38,39 +38,12 @@ router.get('/user/:userId/product', async (req, res) => {
     const {offset, limit} = req.query;
     
     // query문
-    let sql = `SELECT * FROM product WHERE seller_id = ? ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
-    let sql_file = 'SELECT * FROM product_image_file WHERE product_id = ?';
+    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ? ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
 
-    try {
-        // 상품 목록 먼저 조회
-        const product_result = await pool.query(sql, [userId]);
+    // 상품 목록 조회
+    const body = await pool.query(sql, [userId]);
 
-        // client로 보낼 데이터 (상품 목록 + 이미지 리스트)
-        const body = await Promise.all(
-            product_result.map(async (el) => {
-    
-                let product_id = el.id;
-                let product_name = el.product_name;
-                let price = el.price;
-    
-                const image_result = await pool.query(sql_file, [product_id]);
-    
-                return({
-                    "product_id" : product_id, 
-                    "product_name" : product_name, 
-                    "price" : price, 
-                    "image_list" : image_result
-                });
-    
-            })
-        )
-    
-        res.send(body);
-    } catch (error) {
-        console.error("상품 목록 조회 실패");
-        res.status(500).send("internal server error");
-    }
-
+    res.send(body);
 });
 
 // 특정 판매자의 상품에 대한 review 전체 수 조회

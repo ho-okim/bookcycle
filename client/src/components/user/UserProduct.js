@@ -144,7 +144,13 @@ function SoldBook({product}) {
     return(
         <div className={`${styles.book_card} d-flex flex-column`}>
             <div className={`${styles.book_image_box} ${styles.box}`}>
-                <img className={styles.book_image} src='' alt='책사진'/>
+                {
+                    product.filename ? 
+                    <img className={styles.book_image} src={product.filename} alt='책사진'/>
+                    :
+                    <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/no_book_image.png'} alt='책사진'/>
+                }
+
             </div>
             <div className={styles.book_info}>
                 <p className={`${styles.book_title} ${styles.box}`}>{product.product_name}</p>
