@@ -79,7 +79,7 @@ router.get('/user/:userId/reviewtag', async (req, res) => {
     const {limit, offset} = req.query;
 
     // query문 설정
-    let sql = `SELECT *, count(*) AS size FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id LIMIT ${limit} OFFSET ${offset}`;
+    let sql = `SELECT *, count(*) AS size FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id ORDER BY size DESC LIMIT ${limit} OFFSET ${offset}`;
 
     // db connection pool을 가져오고, query문 수행
     const result = await pool.query(sql, [userId]); // query문의 결과는 배열로 들어오기 때문에 주의해야 함

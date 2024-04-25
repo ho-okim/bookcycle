@@ -11,24 +11,33 @@ function UserReviewTag() {
 
     const targetUserId = useContext(TargetUserContext); // 대상 id
     const [reviewTagList, setReviewTagList] = useState([]); // 리뷰태그 목록
+    const [tagListLength, setTagListLength] = useState(0);
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     let limit = 5;
-
-    function handleMoreView() {
-        setOffset(offset+limit);
-    }
 
     useEffect(()=>{ // 요청 id가 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
         async function getReviewTagList() {
             const res = await getUserReviewTag(targetUserId, limit, offset);
-            setReviewTagList([...reviewTagList, ...res]);
+            
+            let newData = [...reviewTagList, ...res];
+            if (newData.length !== tagListLength) { // 길이가 다를때만 추가 데이터 합치기
+                setReviewTagList(newData);
+                setTagListLength(newData.length);
+            }
             setLoading(false);
         }
         getReviewTagList();
-
     }, [targetUserId, offset]);
+
+    async function handleMoreView() { // 더보기 버튼 처리
+        if ((offset+limit) < tagListLength) {
+            setOffset(offset+limit);
+        } else {
+            setOffset(tagListLength);
+        }
+    }
 
     if (loading) {
         return(
@@ -56,8 +65,11 @@ function UserReviewTag() {
                     <div className={`${styles.box} d-flex justify-content-center`}>
                         <p>아직 등록된 평가가 없어요!</p>
                     </div>
-                    : <ReviewTable reviewTagList={reviewTagList}
-                    handleMoreView={handleMoreView}
+                    : <ReviewTable 
+                        reviewTagList={reviewTagList}
+                        handleMoreView={handleMoreView}
+                        tagListLength={tagListLength}
+                        limit={limit}
                     />
                 }
             </div>
@@ -65,7 +77,13 @@ function UserReviewTag() {
     )
 }
 
-function ReviewTable({reviewTagList, handleMoreView}) {
+function ReviewTable({
+    reviewTagList, 
+    handleMoreView, 
+    tagListLength, 
+    limit
+    }) 
+    {
     return(
         <table>
             <tbody>
@@ -79,11 +97,16 @@ function ReviewTable({reviewTagList, handleMoreView}) {
                 <tr>
                     <td className={styles.liked}></td>
                     <td className={styles.tag}>
-                        <Button 
-                        variant='outline-primary' 
-                        className={styles.arrow_more_btn}
-                        onClick={handleMoreView}
-                        >▼</Button>
+                        {
+                            tagListLength < limit ?
+                            null
+                            :
+                            <Button 
+                            variant='outline-primary' 
+                            className={styles.arrow_more_btn}
+                            onClick={handleMoreView}
+                            >▼</Button>
+                        }
                     </td>
                 </tr>
             </tbody>

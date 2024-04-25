@@ -8,6 +8,8 @@ import TargetUserContext from '../../contexts/TargetUserContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
+import starRating from '../../lib/starRating.js';
+import StarSelect from '../StarSelect.js';
 
 function UserReviewList() {
 
@@ -33,7 +35,7 @@ function UserReviewList() {
         // 전체 데이터 수
         async function getTotal() {
             const res = await getUserReviewAll(targetUserId);
-            setTotalData(res);
+            setTotalData(res);    
         }
 
         async function pageOffset() {
@@ -71,7 +73,7 @@ function UserReviewList() {
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
-            navigate(`/user/${targetUserId}/review`);
+            navigate(`/user/${targetUserId}/review?page=1`);
         }
     }
 
@@ -162,7 +164,11 @@ function Review({review}) {
         <div className={
             `${styles.review_box} d-flex justify-content-around align-items-center`
         }>
-            <p className={`${styles.score} ${styles.box}`}>{review.score}</p>
+            <div className={`${styles.score} ${styles.box}`}>
+                {
+                    starRating(`${review.score}`)
+                }
+            </div>
             <div className={`${styles.review} d-flex flex-column`}>
                 <p className={`${styles.review_content} ${styles.box}`}>{review.content}</p>
             </div>

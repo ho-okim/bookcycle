@@ -2,7 +2,6 @@ import { Button, Navbar, Container, Nav, useNavigate } from "react-bootstrap";
 import { useState, useEffect, Component } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../../styles/font.css";
 import style from "../../styles/productList.module.css";
 import Header from '../../components/Header.js';
 import Footer from '../../components/Footer.js';

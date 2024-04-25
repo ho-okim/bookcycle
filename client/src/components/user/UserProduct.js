@@ -70,7 +70,7 @@ function UserProduct() {
 
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
-            navigate(`/user/${targetUserId}/product`);
+            navigate(`/user/${targetUserId}/product?page=1`);
         }
     }
 
@@ -165,12 +165,14 @@ function SoldBook({product}) {
                     product.filename ? 
                     <img className={styles.book_image} src={product.filename} alt='책사진'/>
                     :
-                    <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/no_book_image.png'} alt='책사진'/>
+                    <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
                 }
 
             </div>
             <div className={styles.book_info}>
-                <p className={`${styles.book_title} ${styles.box}`}>{product.product_name}</p>
+                <div className={`${styles.book_title} ${styles.box} d-flex justify-content-center align-items-center`}>
+                <span className={`${styles.text_hidden}`}>{product.product_name}</span>
+                </div>
                 <p className={`${styles.price} ${styles.box}`}>&#8361; {product.price.toLocaleString()}</p>
             </div>
         </div>
