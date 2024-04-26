@@ -21,6 +21,7 @@ setupTests.js
 
 # server
 /server/test.js
+/server/socket.js
 
 # testing
 /coverage

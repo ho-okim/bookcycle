@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import login from '../api/login.js';
+import { login } from '../api/login.js';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -34,6 +34,12 @@ function Login() {
 
     if (res.message == 'success') {
       navigate("/");
+      return;
+    } else if (res.message == 'expired'){
+      setErrorMessage('인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.')
+      return;
+    } else if (res.message == 'sent'){
+      setErrorMessage('인증 링크가 발송되었습니다. 메일을 확인해주세요.')
       return;
     } else {
       setErrorMessage('이메일이나 비밀번호를 다시 확인해주세요');

@@ -1,4 +1,4 @@
-import styles from '../../styles/board.css';
+import styles from '../../styles/boardWrite.module.css';
 import { useState } from 'react';
 import {boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
@@ -95,42 +95,42 @@ function BoardWrite() {
 
   return (
     <>
-      <Container className="board-write sec">
+      <Container className={`board-write ${styles.sec} ${styles.container}`}>
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
-          <div className="inner board-form">
+          <div className={`inner ${styles.boardForm}`}>
             <h3 className="title">게시글 작성</h3>
-            <div className='img-box row p-0 g-3 gy-3'>
-              <div className='col-6 col-sm-4 col-lg-2'>
-                <div className='imageUploadBtn'>
+            <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
+              <div className={`col-6 col-sm-4 col-lg-2`}>
+                <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
-                  <Camera className='previewDefaultImg'/>
-                  <label htmlFor="file" className="fileBtn"></label>
+                  <Camera className={`${styles.previewDefaultImg}`}/>
+                  <label htmlFor="file" className={`${styles.fileBtn}`}></label>
                   <input type="file" multiple name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
                 </div>
               </div>
               { // uploadImgUrl이 존재할 때 요소 생성
                 uploadImgUrl && uploadImgUrl.map((img, id)=>{
                   return(
-                    <div className='col-6 col-sm-4 col-lg-2' key={id}>
-                      <div className='uploadedImgBox'>
-                        <img className='previewImg' alt='preview' src={img}/>
-                        <button className='previewImgDelBtn' type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
+                    <div className={`col-6 col-sm-4 col-lg-2`} key={id}>
+                      <div className={`${styles.uploadedImgBox}`}>
+                        <img className={`${styles.previewImg}`} alt='preview' src={img}/>
+                        <button className={`${styles.previewImgDelBtn}`} type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
                       </div>
                     </div>
                   )
                 })
               }
             </div>
-            <div className="col title-box d-flex justify-content-between">
+            <div className={`col ${styles.col} ${styles.titleBox} d-flex justify-content-between`}>
               <label htmlFor="title">제목</label>
-              <input className="title-input" id="title" placeholder="제목을 입력하세요" value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
+              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
             </div>
-            <div className="col content-box d-flex justify-content-between">
+            <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
               <label htmlFor="content">내용</label>
-              <textarea className="content-input" id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+              <textarea className={`${styles.contentInput}`} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
             </div>
-            <div className="col btn-wrap d-flex justify-content-end">
-              <Button variant="outline-secondary" className="reset" as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
+            <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
+              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
             </div>
           </div>

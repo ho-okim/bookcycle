@@ -1,5 +1,5 @@
 /* board (게시판) */
-.board .board-header {margin-bottom: 30px}
+/* .board .board-header {margin-bottom: 30px}
 .board .board-header .title{}
 .board .list-header {margin-bottom: 5px}
 .board .list {border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 20px 0;}
@@ -8,24 +8,23 @@
 .board .list .userid:after{
   content:'|';
   margin: 5px;
-}
+} */
 
 
 /* board-detail (게시글) */
 
 /* board-write (게시글 작성 폼) */
-.board-form .col {margin: 20px 0;}
-.board-form .title-input, .content-input {width: 90%; padding: 5px 10px;}
+.boardForm .col{margin: 20px 0;}
+.boardForm .titleInput, .contentInput {width: 90%; padding: 5px 10px;}
 
-.title-box{display: flex; align-items: center;}
-.title-box, .content-box, .btn-wrap{padding: 0 10px;}
-.title-box label{text-align: center;}
-.content-box label{padding-top: 5px; text-align: center;}
+.titleBox{display: flex; align-items: center;}
+.titleBox, .contentBox, .btnWrap{padding: 0 10px;}
+.titleBox label{text-align: center;}
+.contentBox label{padding-top: 5px; text-align: center;}
 
-.board-form .content-input {}
-.board-form .reset {margin-right: 5px;}
+.boardForm .reset{margin-right: 10px;}
 
-.img-box{
+.imgBox{
   display: flex;
   width: 100%;
   justify-content: start; align-items: center;
