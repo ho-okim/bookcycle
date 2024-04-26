@@ -23,21 +23,37 @@ import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
-import ProductList from './pages/product/ProductList.js';
-import ProductDetail from './pages/product/ProductDetail.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
-
+import { getLoginUser } from './api/login.js';
+import { useEffect } from 'react';
+import { useUser } from './contexts/LoginUserContext.js';
 
 function App() {
+  
+  const {user, setUser} = useUser();
+
+  useEffect(()=>{
+    async function getUser() {
+      const res = await getLoginUser();
+      if (res != 'no_user') {
+        setUser(res);
+      } else {
+        setUser();
+      }
+    }
+    getUser();
+  }, []);
 
   return (
     <>
       <Header/>
+      {
+        user ? <p>{user.nickname}</p> : <p>사용자없음</p>
+      }
         <Routes>
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/join" element={<Join/>}/>
-          <Route path="/report" element={<Report/>}/>
           <Route path="/mypage/:id">
             <Route path="buyList" element={<MyBuyList/>}/>
             <Route path="buyReviewList" element={<MyBuyReview/>}/>

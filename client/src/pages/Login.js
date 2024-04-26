@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { login } from '../api/login.js';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useUser } from '../contexts/LoginUserContext.js';
 
 function Login() {
+
+  const {user, setUser} = useUser();
 
   const [form, setForm] = useState({email: '' , passoword: ''});
   const [errorMessage, setErrorMessage] = useState('');
@@ -33,6 +36,7 @@ function Login() {
     const res = await login(email, password);
 
     if (res.message == 'success') {
+      setUser(res.user);
       navigate("/");
       return;
     } else if (res.message == 'expired'){
@@ -45,17 +49,16 @@ function Login() {
       setErrorMessage('이메일이나 비밀번호를 다시 확인해주세요');
       return;
     }
-
   }
 
   return (
       <section className="sec">
           <h2>로그인</h2>
           <form className="form-box" onSubmit={(e)=>{e.preventDefault()}}>
-            <input name="email" placeholder="email" 
-            value={form.email} onChange={(e)=>{handleEmail(e.target.value)}}/>
-            <input name="password" placeholder="password" 
-            value={form.password} type="password" onChange={(e)=>{handlePassword(e.target.value)}}/>
+            <input name="email" placeholder="email"
+            onChange={(e)=>{handleEmail(e.target.value)}}/>
+            <input name="password" placeholder="password"
+            type="password" onChange={(e)=>{handlePassword(e.target.value)}}/>
             <button className="confirm" type="submit" onClick={()=>{check()}}>확인</button>
             <div className="error-box">{errorMessage}</div>
           </form>

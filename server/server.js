@@ -124,16 +124,11 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
 // DB 연결 시 서버 열림-------------------------------------------
 if (pool) {
     server.listen(PORT, () => {
-        console.log(`http://localhost:${PORT}/test`);
-        console.log(`http://localhost:${PORT}/login`);
+        console.log(`server on : http://localhost:${PORT}/`);
     });
 }
 
 // router --------------------------------------------------------
-app.get("/test", (req, res) => {
-    res.send("<h1>React server test</h1>");
-});
-
 app.use("/", require('./api/main.js'));
 app.use("/", require('./api/login.js'));
 app.use("/", require('./api/join.js'));

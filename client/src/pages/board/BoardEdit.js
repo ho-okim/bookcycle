@@ -1,4 +1,4 @@
-import styles from '../../styles/board.css';
+import styles from '../../styles/board.module.css';
 import { useState, useEffect } from 'react';
 import {boardEdit, boardDetail, boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';

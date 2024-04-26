@@ -18,6 +18,11 @@ export async function getLoginUser() {
   }
   
   const body = res.data;
-  console.log(body)
   return body;
+}
+
+export async function logout() {
+    const res = await axios.get("/logout");
+    const body = res.data;
+    return body;
 }

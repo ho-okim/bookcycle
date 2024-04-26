@@ -5,7 +5,6 @@ const passport = require("passport");
 router.post('/login', async (req, res, next) => {
 
     passport.authenticate(("local"), (error, user, info) => {
-      console.log("user verification: ", user.verification)
         // 인증 오류 처리
         if (error) return res.json({ message : error });
         // 로그인 실패 처리
@@ -13,8 +12,7 @@ router.post('/login', async (req, res, next) => {
         // verification 검증
         if (user.verification == 1){
           return res.json({ message : "expired" })
-        }
-        else if (user.verification != 0){
+        } else if (user.verification != 0){
           return res.json({ message : "sent" })
         }
         // 에러 발생 시 next 미들웨어로 오류 처리 넘김
@@ -25,10 +23,8 @@ router.post('/login', async (req, res, next) => {
             if (err) return next(err);
 
             delete user.password;
-            console.log("login post: ", user)
 
-            return res.json({message : "success" });
-            // res.redirect("/list");
+            return res.json({user, message : "success" });
         });
     })(req, res, next);
 });
@@ -48,6 +44,8 @@ router.get("/logout", (req, res) => {
 router.get("/getLoginUser", (req, res)=>{
   if(req.user){
     res.send(req.user)
+  } else {
+    res.send("no_user");
   }
 })
 
