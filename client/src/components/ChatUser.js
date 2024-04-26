@@ -13,15 +13,15 @@ function ChatUser(props){
         </div>
         <div className={`${styles.chatInfo} col-6 ${styles.col}`}>
           <div>
-            <p className={`${styles.userName}`}>ddd</p>
+            <p className={`${styles.userName}`}>{el.user_nickname}</p>
           </div>
           <div>
-            <p className={`${styles.latestMsg}`}>zzzzzzzzzzz</p>
+            <p className={`${styles.latestMsg}`}>{el.latest_msg}</p>
           </div>
         </div>
         <div className={`${styles.latestWrap} col-3 ${styles.col} regular`}>
           <div className={`${styles.date} text-center`}>
-            <p>24.04.25</p>
+            <p>{el.updateAt}</p>
           </div>
           <div className={`d-flex justify-content-center`}>
             <div className={`${styles.unreadCount} text-center`}>10</div>

@@ -3,14 +3,21 @@ const pool = require("../db.js"); // db connection pool
 
 router.get('/chatlist', async (req, res) => {
   const loginUser = req.user ? req.user : null
-  console.log(loginUser)
 
   if(loginUser){
     // query문 설정
-    let sql = "SELECT * FROM chatroom_list WHERE id = ?";
+    let sql = 
+    `SELECT * FROM chatroom_list 
+      WHERE chatroom_id 
+      IN ((SELECT chatroom_id FROM chatroom_list WHERE user_id = ?))
+      AND user_id != ?`;
+
+      // 읽지 않은 메세지 개수를 가져오기 위한 쿼리문
+      let sql2 = `SELECT *, COUNT(*) FROM bookcycle_database.chat_message 
+      WHERE user_id != 1 GROUP BY room_id, read_or_not`
   
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql, [loginUser.id]);
+    let result = await pool.query(sql, [loginUser.id, loginUser.id]);
   
     res.send(result);
   } else {
