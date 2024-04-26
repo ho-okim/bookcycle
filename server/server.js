@@ -110,7 +110,6 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
         let [data] = await pool.query(sql, [user.email])
     
         delete data.password;
-        delete data.verification;
 
         process.nextTick(() => {
             return done(null, data); // req.user에 user 저장
