@@ -29,6 +29,8 @@ function BoardDetail(){
 
   console.log(content)
 
+  function update(){}
+  
 
   // 날짜 yyyy-mm-dd 시:분
   function DateProcessing(date){
@@ -54,8 +56,13 @@ function BoardDetail(){
           <div className={`col ${styles.detailWrapper}`}>
             {content.map((contentOne) => {
               return(
-                <div className={styles.detailHeader}>
-                  <h2 className={styles.detailTitle}>{contentOne.title}</h2>
+                <div className={styles.detailMain}>
+                  <div className={`${styles.detailHeader} d-flex`}>
+                    <h2 className={styles.detailTitle}>{contentOne.title}</h2>
+                    <div className='btnWrap'>
+                      <Button variant="outline-secondary" className="update-btn" as="input" value="글 수정"/>
+                    </div>
+                  </div>
                   <div className={`${styles.detailInfo} regular`}>
                     <span className={styles.userid}>{contentOne.id}</span>
                     <span className={styles.date}>{DateProcessing(contentOne.createdAt)}</span>
@@ -86,7 +93,6 @@ function BoardDetail(){
             </form>
           </div>
 
-          
         </div>
       </Container>
     </>
