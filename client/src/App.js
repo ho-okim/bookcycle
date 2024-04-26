@@ -20,7 +20,7 @@ import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
-import Chat from './pages/Chat.js'
+import Chat from './pages/Chat.js';
 import ProductList from './pages/product/ProductList.js';
 import ProductDetail from './pages/product/ProductDetail.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
@@ -61,6 +61,7 @@ function App() {
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id/reviewWrite" element={<ReviewWrite/>}/>
+          <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
     </>

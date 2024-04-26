@@ -1,10 +1,11 @@
 import {BrowserRouter, useParams, Link} from "react-router-dom";
 import { Container } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
-
+import React, {useEffect, useState} from 'react';
 
 
 function ProductDetail() {
+  const {id} = useParams();
     return(
       <Container>
         <div className={`${style.inner}`}>
@@ -62,7 +63,7 @@ function ProductDetail() {
             판매자 닉네임
           </div>
           <div className= 'info05'>
-          <Link to={''} style={{ textDecoration: "none", color: "black"}}> 채팅하기</Link>
+          <Link to={'/'} style={{ textDecoration: "none", color: "black"}}> 채팅하기</Link>
           </div>          
         </div>
         </Container>
