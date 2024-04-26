@@ -31,6 +31,10 @@
   border-radius: 8px;
   padding: 40px;
 }
+.detailWrapper .detailTitle { width: 80%;}
+.detailWrapper .btnWrap .updateBtn, .deleteBtn {
+  border: 1px solid #d2d2d2;
+}
 .detailWrapper .detailInfo{
   padding: 0 0 20px;
   margin: 0 0 20px;
@@ -44,6 +48,8 @@
   padding: 0 0 80px;
   border-bottom: 1px solid #e8e8e8;
 }
+
+.detailWrapper .btnWrap .updateBtn {margin-right: 5px;}
 
 .commentList {padding: 20px 0; border-bottom: 1px solid #eee;}
 .commentList .commentInfo .userid:after{

@@ -12,6 +12,7 @@ import Main from './pages/Main.js'
 import Board from './pages/board/Board.js';
 import BoardWrite from './pages/board/BoardWrite.js';
 import BoardDetail from './pages/board/BoardDetail.js';
+import BoardEdit from './pages/board/BoardEdit.js';
 import User from './pages/User.js';
 import './styles/common.css';
 import Header from './components/Header.js';
@@ -40,6 +41,7 @@ function App() {
             <Route path="" element={<Board/>}/>
             <Route path="write" element={<BoardWrite/>}/>
             <Route path=":id" element={<BoardDetail/>}/>
+            <Route path="edit/:id" element={<BoardEdit/>}/>
           </Route>
           <Route path="/user/:id" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>

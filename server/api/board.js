@@ -40,9 +40,56 @@ router.get('/board/:id', async (req, res) => {
   // db connection pool을 가져오고, query문 수행
   let result = await pool.query(sql, [id]);
 
-  console.log(result)
+  console.log("특정 사용자글 조회: ", result)
 
   res.send(result);
+});
+
+
+// 게시글 삭제
+router.post('/delete/:id', async (req, res) => {
+  let { id } = req.params;
+
+  // board와 board_image의 제약조건 관계로
+  // board_image 열 먼저 삭제 후 -> board 삭제 가능
+  try {
+      let sql1 = "DELETE FROM board_image WHERE board_id = ?";
+      let sql1_result = await pool.query(sql1, [id]);
+
+      let sql2 = "DELETE FROM board_liked WHERE board_id = ?";
+      let sql2_result = await pool.query(sql2, [id]);
+
+      let sql3 = "DELETE FROM board WHERE id = ?";
+      let sql3_result = await pool.query(sql3, [id]);
+
+      console.log("Deleted image:", sql1_result);
+      console.log("Deleted board:", sql2_result);
+      console.log("Deleted board:", sql3_result);
+
+      res.status(200).json({ message: "Board and related images deleted successfully", deletedId: id });
+  } catch (error) {
+      console.error("Error occurred during deletion:", error);
+
+      res.status(500).json({ error: "An error occurred while processing the request" });
+  }
+});
+
+
+// 게시글 수정
+router.post('/edit/:id', async(req, res) => {
+  let { id } = req.params;
+
+  let title = req.body.title;
+  let content = req.body.content;
+
+  let sql = "UPDATE board SET title = ?, content = ? WHERE id = ?";
+
+  let result = await pool.query(sql, [title, content, id]);
+
+  console.log("게시글 수정 내용: ", result)
+
+  res.send(result);
+
 });
 
 
@@ -66,21 +113,6 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 },
 });
 
-router.post('/boardwrite', async(req, res) => {
-  // client에서 보낸 request body
-  const {title, content} = req.body;
-
-  let sql = 'INSERT INTO board (user_id, title, content) VALUES (1, ?, ?)';
-
-  console.log(req.body)
-
-  let result = await pool.query(sql, [
-    title,
-    content
-  ]); 
-
-  res.send(result);
-});
 
 router.post('/fileupload', upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
@@ -103,12 +135,8 @@ router.post('/fileupload', upload.array('files', 5), async(req, res)=>{
 })
 
 
-router.put('/', (req, res) => {
 
-});
 
-router.delete('/', (req, res) => {
 
-});
 
 module.exports = router;
