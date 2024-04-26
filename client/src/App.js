@@ -21,8 +21,8 @@ import Footer from './components/Footer.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js'
-import ProductList from './pages/product/productList.js';
-import ProductDetail from './pages/product/productDetail.js';
+import ProductList from './pages/product/ProductList.js';
+import ProductDetail from './pages/product/ProductDetail.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
 
 
