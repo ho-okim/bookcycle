@@ -31,6 +31,9 @@ body{font-family: 'Pretendard-SemiBold';}
 } /* 헤더 토글 버튼 md보다 큰 화면에서 아예 보이지 않도록 설정 */
 
 /* common setting */
+*{margin: 0; padding: 0; box-sizing: border-box;}
+ul, ol, li{list-style: none;}
+a{text-decoration: none;}
 .inner{max-width: 1320px;}
 
 input[type="file"]{
