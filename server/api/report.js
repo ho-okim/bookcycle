@@ -1,28 +1,28 @@
 const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
 
-// 신고내역 조회
-router.get('/report/:id', async (req, res) => {
-    let { id } = req.params;
+// 내가 신고한 내역 조회
+router.get('/report/myreport/:userId', async (req, res) => {
+    let { userId } = req.params;
     
     // query문 설정
-    let sql = 'SELECT * FROM report WHERE id = ?';
+    let sql = 'SELECT * FROM report WHERE user_id = ?';
 
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql, [id]);
+    let result = await pool.query(sql, [userId]);
     res.send(result);
 });
 
 // 신고내역 추가
 router.post('/report', async (req, res) => {
 
-    const {category_id, user_id, target_id, content} = req.body;
+    const {category, user_id, target_id, content} = req.body;
 
     // query문 설정
-    let sql = 'INSERT INTO report (category_id, user_id, target_id, content) VALUES (?, ?, ?, ?)';
+    let sql = 'INSERT INTO report (category, user_id, target_id, content) VALUES (?, ?, ?, ?)';
 
     // db에 query문 실행
-    let result = await pool.query(sql, [category_id, user_id, target_id, content]);
+    let result = await pool.query(sql, [category, user_id, target_id, content]);
     res.send(result);
 });
 
