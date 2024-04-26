@@ -5,7 +5,7 @@
 /client/node_modules
 /client/public
 /client/src/App.test.js
-/client/src/index.*
+/client/src/index.css
 
 
 /.pnp
