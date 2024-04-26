@@ -12,7 +12,11 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const exp = require("constants");
 const server = createServer(app); // express를 사용한 http 서버 생성
-const io = new Server(server); // socket 서버 생성
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+}); // socket 서버 생성
 
 // session 및 로그인 설정
 const session = require("express-session"); // session
@@ -32,7 +36,10 @@ const sessionOption = {
     secret : "secret-express-session", // secret 키
     resave : false,
     saveUninitialized : false,
-    cookie : { maxAge : 60 * 60 * 1000 }, // 1시간
+    cookie : {
+      maxAge : 60 * 60 * 1000, // 1시간
+      secure : false
+    }, 
     store : new MySQLStore( dbConfig )
 }
 
@@ -117,7 +124,7 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
 
 // DB 연결 시 서버 열림-------------------------------------------
 if (pool) {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`http://localhost:${PORT}/test`);
         console.log(`http://localhost:${PORT}/login`);
     });
@@ -134,5 +141,17 @@ app.use("/", require('./api/join.js'));
 app.use("/", require('./api/mypage.js'));
 app.use("/", require('./api/user.js'));
 app.use("/", require('./api/board.js'));
-app.use("/", require('./api/boardWrite.js'));
 app.use("/", require('./api/report.js'));
+app.use("/", require('./api/chat.js'));
+
+
+// 소켓 통신
+io.on('connection', (socket)=>{
+  console.log('websocket connected')
+
+  socket.on('good', async (data)=>{
+    console.log('server socket:', data)
+  })
+
+  socket.emit('hi', 'server to client, hello client')
+})
