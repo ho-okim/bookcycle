@@ -5,10 +5,13 @@ import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
+import Report from '../../components/Report.js';
+import { MegaphoneFill } from 'react-bootstrap-icons';
 
 function BoardDetail(){
   const {id} = useParams();
   console.log("게시글 id :", id)
+
 
 	const navigate = useNavigate();
 
@@ -21,6 +24,8 @@ function BoardDetail(){
 
   // api에서 받아온 특정 사용자의 글 useState에 삽입
   let [content, setContent] = useState([])
+
+  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
   useEffect(()=>{
     let boardDetail
@@ -60,6 +65,13 @@ function BoardDetail(){
     return formattedDate;
   }
 
+  const handleClose = () => { // modal 닫기/숨기기 처리
+    if (modalShow) setModalShow(false);
+  };
+
+  const handleOpen = () => { // modal 열기 처리
+    if (!modalShow) setModalShow(true);
+  };
 
   return(
     <>
@@ -77,7 +89,8 @@ function BoardDetail(){
 							</div>
 							<div className={`${styles.detailInfo} regular`}>
 								<span className={styles.userid}>{content.user_id}</span>
-								<span className={styles.date}>{DateProcessing(content.createdAt)}</span>
+								<span className={styles.date}>{DateProcessing(content.createdAt)}</span><Button variant='danger' size="sm" onClick={handleOpen}
+                    ><MegaphoneFill/> 신고</Button>
 							</div>
 							<div className={`${styles.detailContent} regular`}>{content.content}</div>
 						</div>

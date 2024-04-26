@@ -18,6 +18,8 @@ import User from './pages/User.js';
 import './styles/common.css';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
+import ProductList from './pages/product/ProductList.js';
+import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';

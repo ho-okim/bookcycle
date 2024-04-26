@@ -7,7 +7,7 @@ a:hover{
 }
 
 .user_menu{
-    width: 15%;
+    width: 20%;
 }
 
 .username {
@@ -30,7 +30,7 @@ a:hover{
 }
 
 .other_user{
-    width: 85%;
+    width: 78%;
 }
 
 .info_box {
@@ -50,8 +50,12 @@ a:hover{
 
 .image_box{
     width: 100px; height: 100px;
-    background-color: #d6d6d6;
     border-radius: 100%;
+}
+
+.profile_default {
+    width: 100px; height: 100px;
+    color: #cacaca;
 }
 
 .title .box{
@@ -71,14 +75,33 @@ a:hover{
     text-align: center;
 }
 
+.score_box {
+    margin:10px;
+    position:relative;
+    text-align: center;
+}
+
+.manner_score{
+    position: absolute; top: 50%; left:50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    z-index: 1;
+}
+
+.manner_score_star{
+    position: absolute; top: 50%; left:50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    color: #FFC100;
+}
+
 .report_btn{
     border: 2px solid red;
     font-size: 16px;
 }
 
 .chat_btn{
-    border: 2px solid #07ffff;
-    color: black;
+    border: 2px solid #0dcaf0;
     font-size: 16px;
 }
 
@@ -110,6 +133,10 @@ a:hover{
     margin: 0 0 8px;
     padding: 7px;
     border-radius: 5px;
+}
+
+.review_tag_table {
+    width: 100%;
 }
 
 .review_box *{
@@ -151,9 +178,16 @@ a:hover{
     display:block;
 }
 
-.book_info .book_title, .book_info .price{
+.book_info .price{
     padding:0; margin: 5px 0 0;
     text-align: center;
+}
+
+.book_title {
+    height: 55px;
+    padding: 3px; margin: 5px 0 0;
+    text-align: center;
+    vertical-align: bottom;
 }
 
 .pagination_wrap {
@@ -167,4 +201,11 @@ a:hover{
     padding: 7px;
     position:absolute; top: 0; right: 0;
     border-radius: 5px;
+}
+
+.text_hidden{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }

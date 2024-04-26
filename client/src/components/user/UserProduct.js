@@ -11,11 +11,12 @@ import DataPagination from './DataPagination.js';
 
 function UserProduct() {
 
+    const currentUrl = window.location.href; // 현재 url
+    const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
+
     const targetUserId = useContext(TargetUserContext); // 대상 id
     
     const [productList, setProductList] = useState([]); // 상품목록
-    const [currentUrl, setCurrentUrl] = useState(window.location.href); // 현재 url
-    const [isProductUrl, setIsProductUrl] = useState(currentUrl.includes("product")); // 상품url 포함여부
     const [searchParams, setSearchParams] = useSearchParams(); // page query
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] =  useState(0); // 데이터 가져오는 시작점
@@ -24,10 +25,6 @@ function UserProduct() {
 
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
-
-    useEffect(()=>{ // 요청 url 확인
-        setIsProductUrl(currentUrl.includes("product"));
-    }, [currentUrl, isProductUrl]);
 
     useEffect(()=>{
         async function getTotal() {
@@ -48,9 +45,9 @@ function UserProduct() {
 
         getTotal();
         pageOffset();
-    }, [targetUserId, totalData, searchParams])
+    }, [totalData, searchParams])
 
-    useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
+    useEffect(()=>{ // 요청 url이 바뀔때마다 상품 정보를 다시 가져옴
         setLoading(true);
 
         // 기본 페이지 - 5개만 출력
@@ -66,11 +63,11 @@ function UserProduct() {
         }
         getProductList();
 
-    }, [targetUserId, currentUrl, isProductUrl, offset]);
+    }, [offset]);
 
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
-            navigate(`/user/${targetUserId}/product`);
+            navigate(`/user/${targetUserId}/product?page=1`);
         }
     }
 
@@ -165,12 +162,14 @@ function SoldBook({product}) {
                     product.filename ? 
                     <img className={styles.book_image} src={product.filename} alt='책사진'/>
                     :
-                    <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/no_book_image.png'} alt='책사진'/>
+                    <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
                 }
 
             </div>
             <div className={styles.book_info}>
-                <p className={`${styles.book_title} ${styles.box}`}>{product.product_name}</p>
+                <div className={`${styles.book_title} ${styles.box} d-flex justify-content-center align-items-center`}>
+                <span className={`${styles.text_hidden}`}>{product.product_name}</span>
+                </div>
                 <p className={`${styles.price} ${styles.box}`}>&#8361; {product.price.toLocaleString()}</p>
             </div>
         </div>

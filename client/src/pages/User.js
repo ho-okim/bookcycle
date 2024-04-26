@@ -12,10 +12,10 @@ import UserInfo from '../components/user/UserInfo.js';
 
 function User() {
 
-    let currentUrl = window.location.href; // 현재 url
+    const currentUrl = window.location.href; // 현재 url
 
     // url에서 가져온 params
-    let {id} = useParams();
+    const { id } = useParams();
 
     const [targetUserId, setTargetUserId] = useState(id); // 대상 id
 
@@ -41,7 +41,7 @@ function User() {
 
     return(
         <TargetUserContext.Provider value={targetUserId}>
-            <Container className='d-flex justify-content-center'>
+            <Container className='d-flex justify-content-between'>
                 <section className={styles.user_menu}>
                     {/* 사용자 메뉴 */}
                     <UserMenu/>

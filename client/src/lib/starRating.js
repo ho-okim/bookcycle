@@ -8,10 +8,10 @@ function starRating(rate) {
 
     const yellowStars = Array.from({length:yellowStar}, (_, index) => (
         <StarFill key={index} style={{color: '#FFC100'}}></StarFill>
-    ))
+    ));
     const grayStars = Array.from({length:grayStar}, (_, index) => (
         <StarFill key={index} style={{color: '#bebdbd'}}></StarFill>
-    ))
+    ));
 
     return (
         <div>
