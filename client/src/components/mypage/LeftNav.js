@@ -16,7 +16,7 @@ function LeftNav() {
             <ul className="ps-3">
               <li><Link to={`/mypage/${id}/buyList`}>구매내역</Link></li>
               <li><Link to={`/mypage/${id}/buyReviewList`}>구매후기</Link></li>
-              <li><Link to="#">찜한책</Link></li>
+              <li><Link to={`/mypage/${id}/heartList`}>찜한책</Link></li>
             </ul>
           </li>
           <li className="border-bottom">
@@ -26,7 +26,7 @@ function LeftNav() {
               <li><Link to={`/mypage/${id}/sellReviewList`}>판매후기</Link></li>
             </ul>
           </li>
-          <li><Link to={`/mypage/${id}`}>회원 정보 관리</Link></li>
+          <li><Link to={`/mypage/${id}/edit`}>회원 정보 관리</Link></li>
         </ul>
       </div>
     </>

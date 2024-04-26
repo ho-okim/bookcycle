@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const pool = require("../db.js"); // db connection pool
 
-
-router.get("/mypage/:id", async (req, res) => {
+// 회원정보관리 페이지
+router.get("/mypage/:id/edit", async (req, res) => {
   let { id } = req.params;
 
   // query문 설정
@@ -19,11 +19,11 @@ router.get("/mypage/:id", async (req, res) => {
   res.send(result); 
 });
 
-
+// 구매내역 페이지
 router.get("/mypage/:id/buyList", async (req, res) => {
   let { id } = req.params;
 
-  // product 테이블에서 createdAt 내림차순 정렬
+  // product 테이블에서 createdAt 정렬
   let sql = "SELECT * FROM product WHERE buyer_id = ?";
 
   let result = await pool.query(sql, [id]);
@@ -31,6 +31,7 @@ router.get("/mypage/:id/buyList", async (req, res) => {
   // 해당 result는 client > src > api > mypage.js에서 받아서 사용함
 });
 
+// 구매후기 페이지
 router.get("/mypage/:id/buyReviewList", async (req, res) => {
   let { id } = req.params;
 
@@ -40,10 +41,45 @@ router.get("/mypage/:id/buyReviewList", async (req, res) => {
   res.send(result);
 });
 
+// 판매내역 페이지
+router.get("/mypage/:id/sellList", async (req, res) => {
+  let { id } = req.params;
 
+  let sql = "SELECT * FROM product WHERE seller_id = ?";
 
+  let result = await pool.query(sql, [id]);
+  res.send(result);
+});
 
+// 판매후기 페이지
+router.get("/mypage/:id/sellReviewList", async (req, res) => {
+  let { id } = req.params;
 
+  let sql = "SELECT * FROM review WHERE seller_id = ?";
+
+  let result = await pool.query(sql, [id]);
+  res.send(result);
+});
+
+// 찜한책 페이지
+router.get("/mypage/:id/heartList", async (req, res) => {
+  let { id } = req.params;
+
+  let sql = "SELECT product.*, users.*, seller.* FROM liked JOIN product ON liked.product_id = product.id JOIN users ON liked.user_id = users.id JOIN users AS seller ON product.seller_id = seller.id WHERE liked.user_id = ?";
+  
+  let result = await pool.query(sql, [id]);
+  res.send(result);
+});
+
+// 리뷰작성 페이지
+router.get("/productDetail/:id/reviewWrite", async(req, res) => {
+  let { id } = req.params;
+
+  let sql = "SELECT * FROM tag";
+
+  let result = await pool.query(sql, [id]);
+  res.send(result);
+})
 
 
 

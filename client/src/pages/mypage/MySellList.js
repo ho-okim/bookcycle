@@ -1,20 +1,18 @@
 import Container from "react-bootstrap/Container";
+import LeftNav from "../../components/mypage/LeftNav";
+import SellList from "../../components/mypage/SellList";
 
 import styles from "../../styles/mypage.module.css";
 
-import TableList from "../../components/mypage/TableList";
-import LeftNav from "../../components/mypage/LeftNav";
-
-function MyBuyList() {
+function MySellList() {
   return (
     <>
       <Container>
         <div className={styles.inner}>
           <LeftNav />
-
           <div className={styles.content}>
             <p> &gt; 전체 판매 내역</p>
-            <TableList />
+            <SellList />
             <span>1 2 3 4 5 &gt;</span>
           </div>
         </div>
@@ -23,4 +21,4 @@ function MyBuyList() {
   );
 }
 
-export default MyBuyList;
+export default MySellList;

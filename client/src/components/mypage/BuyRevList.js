@@ -1,13 +1,12 @@
-import Dropdown from 'react-bootstrap/Dropdown';
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { buyReviewList } from '../../api/mypage';
 
+import Dropdown from 'react-bootstrap/Dropdown';
 import styles from '../../styles/mypage.module.css';
 
 
-function RevList() {
+function BuyRevList() {
 
   const { id } = useParams();
 
@@ -27,6 +26,7 @@ function RevList() {
     }
     test()
   }, []);
+  
   console.log("reviewList: ", reviews)
 
   function DateProcessing(date) {
@@ -60,4 +60,4 @@ function RevList() {
   );
 }
 
-export default RevList;
+export default BuyRevList;
