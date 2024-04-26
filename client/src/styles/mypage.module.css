@@ -1,7 +1,7 @@
 * { margin: 0; padding: 0; }
 ul, ol, li { list-style: none; }
 
-.inner { max-width: 1320px; display: flex; }
+.inner { display: flex; }
 
 .leftNav, .content { border: 1px solid black; }
 .leftNav { padding: 10px 20px; width: 15%; }
@@ -10,7 +10,7 @@ ul, ol, li { list-style: none; }
 
 /* BUY LIST */
 .buyList { border-top: 2px solid black; }
-.reviewBtn { padding: 0 5px; background-color: #427D9D; border: none; border-radius: 10px; color: white; }
+.reviewBtn { padding: 3px 5px; background-color: #427D9D; border: none; border-radius: 10px; color: white; }
 
 /* REVIEW LIST*/
 .revWrap { 
@@ -21,7 +21,9 @@ ul, ol, li { list-style: none; }
 .revWrap:first-of-type { border-top: 2px solid black; }
 .more { border: 0; background-color: transparent; }
 
-.toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus { background-color: transparent; border: 0; color: black }
+.toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus { 
+  background-color: transparent; border: 0; color: black; box-shadow: none; outline: none;
+}
 .toggleBtn::after { content: none; }
 
 
@@ -32,3 +34,32 @@ ul, ol, li { list-style: none; }
 
 .btnWrap .cancel {}
 .btnWrap .edit {}
+
+/* HEART LIST */ 
+.heartList { padding: 10px 0; border-top: 1px solid grey; }
+.heartWrap { padding: 10px 0; display: flex; justify-content: space-between; }
+.heartWrap .heartImg { width: 100px; height: 150px; background-color: #ddd; }
+
+.heartWrap .heartInfo { padding: 0 20px; margin-right: auto; }
+.heartWrap .heartInfo .heartTitle { font-size: 18px; }
+.heartWrap .heartInfo .heartContent { font-size: 14px; }
+.heartWrap .heartInfo .heartContent span { color: #777; }
+.heartWrap .heartInfo .heartContent span::after { content: '|'; padding: 0 10px; }
+.heartWrap .heartInfo .heartContent span:last-of-type::after { content: ''; }
+.heartWrap .heartInfo .heartPrice { font-size: 16px; }
+
+.heartWrap .heartSeller { display: flex; font-size: 18px; align-items: center; margin-bottom: auto }
+.heartWrap .heartSeller .person { font-size: 20px;  }
+
+
+/* REVIEW WRITE */
+.rating { margin: 50px auto; text-align: center;}
+.selectTag { padding: 30px 0; }
+.selectTag .tagWrap { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+.selectTag .tagWrap .tagBtn { 
+  width: calc(50% - 10px); padding: 5px 0; border: 0; border-radius: 10px; 
+}
+
+.reviewWrite { }
+
+.review p span { padding: 3px 8px; background-color: #427D9D; border-radius: 7px; color: white; font-size: 10px; font-weight: 100; }

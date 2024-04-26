@@ -4,8 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../styles/common.css";
 import style from "../../styles/productList.module.css";
-import Header from '../../components/Header.js';
-import Footer from '../../components/Footer.js';
+import ProductDetail from "./ProductDetail.js";
 
 
 function ProductList() {
