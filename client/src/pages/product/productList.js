@@ -1,12 +1,10 @@
 import { Button, Navbar, Container, Nav, useNavigate } from "react-bootstrap";
-import { useState, useEffect, Component } from "react";
+import React, { useState, useEffect, Component } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../../styles/font.css";
 import style from "../../styles/productList.module.css";
-import Header from '../../components/Header.js';
-import Footer from '../../components/Footer.js';
 import ProductDetail from "./ProductDetail.js";
+import List from "../../components/product/List.js";
 
 
 function ProductList() {
@@ -26,6 +24,10 @@ function ProductList() {
     }
     */
     function onSelected(){};
+
+    
+
+
 
     return (
       <Container>
@@ -49,6 +51,14 @@ function ProductList() {
               }
             </div>
           </div>
+
+
+
+
+
+
+
+
           <div className={`${style.productLists}`}>
           <div className='column'>
                     <div className={`${style.category}`}>
@@ -64,32 +74,7 @@ function ProductList() {
                     </div>
                 </div>
             <div className={`${style.productDetailList}`}>
-            <Link to={"/productDetail"} style={{ textDecoration: "none", color: "black" }}>
-              <div className={`${style.book}`}>
-                <div clasName={`${style.bookpicbox}`}>
-                  <img className="book-pic-box" src="" alt="사진" />
-                </div>
-                <div className={`${style.bookinfoabout}`}>
-                  <div clasName="booktitle">제목</div>
-                  <div clasName="bookauthor">저자/출판사/출간일</div>
-                  <div clasName="bookprice">가격</div>
-                </div>
-                <div clasName={`${style.booknicname}`}>닉네임</div>
-              </div>
-            </Link>
-            <Link to={"/productDetail"} style={{ textDecoration: "none", color: "black" }}>
-              <div className={`${style.book}`}>
-                <div clasName={`${style.bookpicbox}`}>
-                  <img className="book-pic-box" src="" alt="사진" />
-                </div>
-                <div className={`${style.bookinfoabout}`}>
-                  <div clasName="booktitle">제목</div>
-                  <div clasName="bookauthor">저자/출판사/출간일</div>
-                  <div clasName="bookprice">가격</div>
-                </div>
-                <div clasName={`${style.booknicname}`}>닉네임</div>
-              </div>
-            </Link>
+            <List/>
             </div>
           </div>
         </div>
