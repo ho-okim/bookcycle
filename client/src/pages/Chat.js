@@ -1,63 +1,78 @@
-import React, {useState, useEffect} from 'react';
-import queryString from 'query-string';
+import { useState, useEffect } from 'react';
+import Container from 'react-bootstrap/Container';
 import io from 'socket.io-client';
-
-
-const ENDPOINT = '';
-let socket;
+import styles from '../styles/chat.module.css'
+import ChatUser from '../components/ChatUser';
 
 function Chat() {
-  const [name, setName] = useState('');
-  const [room, setRoom] = useState('');
-  const [users, setUsers] = useState('');
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  // const onSocket = () => {
+  //   const socket = io('http://localhost:10000')
 
-  useEffect(() => {
-    const {name, room} = queryString.parse(window.location.search);
-    socket = io(ENDPOINT);
-    setName(name);
-    setRoom(room);
-    socket.emit('join', {name, room}, (err) => {
-      if (err) {
-        alert(err);
-      }
-    });
-    return () => {
-      socket.emit('disconnect');
-      socket.off();
-    }
-  }, [ENDPOINT, window.location.search]);
+  //   socket.emit('good', 'client to server, hello server')
+  //   socket.on('hi', (data) => console.log(data))
+  //   console.log('client socket transporting complete')
+  // }
 
-  useEffect(() => {
-    socket.on('message', (message) => {
-      setMessages([...messages, message]);
-    });
-    socket.on('roomData', ({users}) => {
-      setUsers(users);
-    });
-  }, []);
+  // useEffect(()=>{
+  //   onSocket()
+  // }, [])
 
-  const sendMessage = (event) => {
-    event.preventDefault();
-    if (message) {
-      socket.emit('sendMessage', message, () => setMessage(''));
-    }
-  }
+  // 현재 채팅 중인 user 객체의 배열(채팅 목록 보여주기 위함)
+  const [users, setUsers] = useState([])
+  // 현재 로그인 한 계정이 갖고 있는 chatRoom 객체의 배열
+  const [chatRoom, setChatRoom] = useState([])
+  // 소켓 통신을 통해 전송되는 메세지 한 개
+  const [msg, setMsg] = useState('')
+  // 현재 채팅룸의 chatMessage 객체의 배열
+  const [msgs, setMsgs] = useState([])
+
+  // useEffect(() => {
+  //   const {name, room} = queryString.parse(window.location.search);
+  //   socket = io(ENDPOINT);
+  //   setName(name);
+  //   setRoom(room);
+  //   socket.emit('join', {name, room}, (err) => {
+  //     if (err) {
+  //       alert(err);
+  //     }
+  //   });
+  //   return () => {
+  //     socket.emit('disconnect');
+  //     socket.off();
+  //   }
+  // }, [ENDPOINT, window.location.search]);
+
+  // useEffect(() => {
+  //   socket.on('message', (message) => {
+  //     setMessages([...messages, message]);
+  //   });
+  //   socket.on('roomData', ({users}) => {
+  //     setUsers(users);
+  //   });
+  // }, []);
+
+  // const sendMessage = (event) => {
+  //   event.preventDefault();
+  //   if (message) {
+  //     socket.emit('sendMessage', message, () => setMessage(''));
+  //   }
+  // }
 
   return (
-    <div className='outerContainer'>
-      <div className='container'>
-        <InfoBar room={room} />
-        <Messages messages={messages} name={name} />
-        <Input
-          message={message}
-          setMessage={setMessage}
-          sendMessage={sendMessage}
-        />
+    <Container className={`chattingSec sec`}>
+      <h3 className={`${styles.title}`}>대화 목록</h3>
+      <div className={`inner d-flex row`}>
+        <div className={`${styles.chattingList} col-6`}>
+          <ChatUser/>
+          <ChatUser/>
+          <ChatUser/>
+          <ChatUser/>
+        </div>
+        <div className={`${styles.chattingRoom} col-6`}>
+
+        </div>
       </div>
-      <TextContainer users={users} />
-    </div>
+    </Container>
   );
 }
 

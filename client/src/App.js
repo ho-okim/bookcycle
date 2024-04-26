@@ -18,6 +18,7 @@ import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
+import Chat from './pages/Chat.js'
 
 
 function App() {
@@ -44,6 +45,9 @@ function App() {
           <Route path="/user/:id" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
+          </Route>
+          <Route path="/chat" element={<Chat/>}>
+
           </Route>
         </Routes>
       <Footer/>
