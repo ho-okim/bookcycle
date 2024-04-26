@@ -7,7 +7,7 @@ a:hover{
 }
 
 .user_menu{
-    width: 15%;
+    width: 20%;
 }
 
 .username {
@@ -30,7 +30,7 @@ a:hover{
 }
 
 .other_user{
-    width: 85%;
+    width: 78%;
 }
 
 .info_box {
@@ -133,6 +133,10 @@ a:hover{
     margin: 0 0 8px;
     padding: 7px;
     border-radius: 5px;
+}
+
+.review_tag_table {
+    width: 100%;
 }
 
 .review_box *{

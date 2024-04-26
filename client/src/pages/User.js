@@ -41,7 +41,7 @@ function User() {
 
     return(
         <TargetUserContext.Provider value={targetUserId}>
-            <Container className='d-flex justify-content-center'>
+            <Container className='d-flex justify-content-between'>
                 <section className={styles.user_menu}>
                     {/* 사용자 메뉴 */}
                     <UserMenu/>
