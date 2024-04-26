@@ -14,10 +14,10 @@ import StarSelect from '../StarSelect.js';
 function UserReviewList() {
 
     const targetUserId = useContext(TargetUserContext); // 대상 id
+    const currentUrl = window.location.href; // 현재 url
+    const isReviewUrl = currentUrl.includes("review"); // 리뷰 목록 페이지 여부
 
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
-    const [currentUrl, setCurrentUrl] = useState(window.location.href); // 현재 url
-    const [isReviewUrl, setIsReviewUrl] = useState(currentUrl.includes("review")); // 리뷰url 포함여부
     const [searchParams, setSearchParams] = useSearchParams(); // page query
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
@@ -26,10 +26,6 @@ function UserReviewList() {
 
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
-
-    useEffect(()=>{ // 요청 url 확인
-        setIsReviewUrl(currentUrl.includes("review"));
-    }, [currentUrl, isReviewUrl]);
 
     useEffect(()=>{
         // 전체 데이터 수
@@ -51,7 +47,7 @@ function UserReviewList() {
 
         getTotal();
         pageOffset();
-    }, [targetUserId, totalData, searchParams])
+    }, [totalData, searchParams])
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
@@ -69,7 +65,7 @@ function UserReviewList() {
         }
 
         getReviewList();
-    }, [targetUserId, currentUrl, isReviewUrl, offset]);
+    }, [offset]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {

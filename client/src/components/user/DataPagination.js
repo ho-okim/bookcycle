@@ -9,13 +9,15 @@ function DataPagination({
     handlePagination,
     }) {
     
+    const url = useHref(); // 현재 경로 가져오기
+
     const [totalPage, setTotalPage] = useState(1); // 전체 페이지 수
     const [offset, setOffset] = useState(1); // pagination 시작점
     const [searchParams, setSearchParams] = useSearchParams(); // 현재 page
     const [activePage, setActivePage] = useState( // 활성화된 페이지
         !searchParams.get("page") ? 1 : searchParams.get("page")
     ); 
-    const url = useHref(); // 현재 경로 가져오기
+
     const navigate = useNavigate(); // 이동 처리용
 
     useEffect(()=>{ // 최초 렌더링 때 offset을 query string으로 전달된 page 값을 사용해서 결정

@@ -29,7 +29,7 @@ function UserReviewTag() {
             setLoading(false);
         }
         getReviewTagList();
-    }, [targetUserId, offset]);
+    }, [offset]);
 
     async function handleMoreView() { // 더보기 버튼 처리
         if ((offset+limit) < tagListLength) {

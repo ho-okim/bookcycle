@@ -1,46 +1,45 @@
 import styles from '../styles/report.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import report_reason from '../lib/report_reason.js';
 import { Modal, Button } from 'react-bootstrap';
 
 function Report({show, handleClose}) {
 
+    const currentUrl = window.location.href; // 현재 url
     const { id } = useParams(); // url에서 가져온 id param
-    const [reason, setReason] = useState([]); // 신고 사유 설정
-    const [currentUrl, setCurrentUrl] = useState(window.location.href); // 현재 url
-    const [categoryId, setCategoryId] = useState(1); // 신고 카테고리 설정
-    const [targetId, setTargetId] = useState(id); // 신고 대상 id 설정
+    let reasonList = [];
+    if (currentUrl.includes("user")) {
+        reasonList = report_reason.user;
+    } else if (currentUrl.includes("board")) {
+        reasonList = report_reason.board;
+    } else if (currentUrl.includes("product")) {
+        reasonList = report_reason.product;
+    }
+    
+    let category = '';
+    if (currentUrl.includes("user")) {
+        category = "user"
+    } else if (currentUrl.includes("board")) {
+        category = "board"
+    } else if (currentUrl.includes("product")) {
+        category = "product"
+    }
+
     const [reportForm, setReportForm] = useState({ // 신고 데이터
-        category_id : categoryId,
+        category : category,
         user_id : 1, // 현재 접속한 사용자 아이디 - 수정필요--------
-        target_id : targetId, 
-        reason,
+        target_id : id, 
+        reason : '',
     });
-
-    useEffect(()=>{ // 현재 url 변경 시 신고 사유와 신고 카테고리 설정
-        if (currentUrl.includes("user")) {
-            setReason(report_reason.product);
-            setCategoryId(1);
-        } else if (currentUrl.includes("board")) {
-            setReason(report_reason.board);
-            setCategoryId(2);
-        }
-
-        setReportForm({
-            ...reportForm, 
-            category_id : categoryId, 
-            target_id : targetId
-        });
-    }, [currentUrl]);
 
     function handleClick() {
         console.log('modal click')
     }
 
-    function handleSelect(key) {
-        setReportForm({...reportForm, reason : reason[key]})
+    function handleSelect(index) {
+        setReportForm((reportForm) => ({...reportForm, reason : reasonList[index]}));
     }
 
     return(
@@ -55,10 +54,10 @@ function Report({show, handleClose}) {
                 <table>
                     <tbody>
                         {
-                            reason.map((el, i) => {
+                            reasonList.map((el, i) => {
                                 return(
                                     <ReportReason 
-                                    key={i} content={el} 
+                                    key={i} index={i} content={el} 
                                     handleSelect={handleSelect}
                                     />
                                 )
@@ -81,12 +80,12 @@ function Report({show, handleClose}) {
     )
 }
 
-function ReportReason({ key, content, handleSelect }) {
+function ReportReason({ index, content, handleSelect }) {
 
     return(
         <tr>
             <td className={styles.checkbox}>
-                <input type="radio" onSelect={handleSelect(key)}></input>
+                <input type="checkbox" onClick={()=>{handleSelect(index)}}></input>
             </td>
             <td className={styles.reason_row}>
                 <p className={`${styles.reason} ${styles.box}`}>{ content }</p>

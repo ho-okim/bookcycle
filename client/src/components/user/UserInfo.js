@@ -71,7 +71,7 @@ function UserInfo() {
                             <StarFill className={styles.manner_score_star}/>
                         </div>
                         <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                            variant='outline-danger' onClick={handleOpen}
+                            variant='outline-danger' onClick={()=>{handleOpen()}}
                         ><MegaphoneFill/> 신고하기</Button>
                         <p className={`${styles.user_info} col-4`}>{userInfo.nickname}</p>
                         <Button className={`${styles.user_info} ${styles.chat_btn} col-4`} 
