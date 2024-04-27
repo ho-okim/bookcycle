@@ -24,32 +24,23 @@ import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
-import { getLoginUser } from './api/login.js';
 import { useEffect } from 'react';
-import { useUser } from './contexts/LoginUserContext.js';
+import { LoginUserContext, useUser } from './contexts/LoginUserContext.js';
 
 function App() {
   
-  const {user, setUser} = useUser();
+  const { user, setUser, handleLogin, handleLogout, handleGetCurrentUser } = useUser();
 
   useEffect(()=>{
-    async function getUser() {
-      const res = await getLoginUser();
-      if (res != 'no_user') {
-        setUser(res);
-      } else {
-        setUser();
-      }
+    async function getCurrentUser() { // 로그인 한 유저 정보 가져옴
+      await handleGetCurrentUser();
     }
-    getUser();
+    getCurrentUser();
   }, []);
 
   return (
-    <>
+    <LoginUserContext.Provider value={{user, setUser, handleLogin, handleLogout, handleGetCurrentUser}}>
       <Header/>
-      {
-        user ? <p>{user.nickname}</p> : <p>사용자없음</p>
-      }
         <Routes>
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>
@@ -82,7 +73,7 @@ function App() {
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
-    </>
+    </LoginUserContext.Provider>
   );
   
 }
