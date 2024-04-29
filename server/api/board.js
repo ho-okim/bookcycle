@@ -20,7 +20,7 @@ router.post('/boardwrite', async(req, res) => {
 
   let sql = 'INSERT INTO board (user_id, title, content) VALUES (1, ?, ?)';
 
-  console.log(req.body)
+  console.log("게시글 내용 추가: ", req.body)
 
   let result = await pool.query(sql, [
     title,
@@ -50,8 +50,8 @@ router.get('/board/:id', async (req, res) => {
 router.post('/delete/:id', async (req, res) => {
   let { id } = req.params;
 
-  // board와 board_image의 제약조건 관계로
-  // board_image 열 먼저 삭제 후 -> board 삭제 가능
+  // board와 board_image/board_liked 제약조건 관계로
+  // board_image/board_liked 열 먼저 삭제 후 -> board 열 삭제
   try {
       let sql1 = "DELETE FROM board_image WHERE board_id = ?";
       let sql1_result = await pool.query(sql1, [id]);
@@ -86,7 +86,7 @@ router.post('/edit/:id', async(req, res) => {
 
   let result = await pool.query(sql, [title, content, id]);
 
-  console.log("게시글 수정 내용: ", result)
+  console.log("게시글 수정 결과: ", result)
 
   res.send(result);
 

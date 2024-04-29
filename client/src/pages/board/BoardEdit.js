@@ -1,4 +1,4 @@
-import styles from '../../styles/board.module.css';
+import styles from '../../styles/boardWrite.module.css';
 import { useState, useEffect } from 'react';
 import {boardEdit, boardDetail, boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,9 @@ import { useParams } from 'react-router-dom';
 function BoardEdit() {
   const {id} = useParams();
   console.log("게시글 id :", id)
+
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   // 수정 전 default 데이터 가져오기
   // api > board.js에서 특정 사용자 글 받아오기
@@ -32,31 +35,47 @@ function BoardEdit() {
     test()
   }, [])
 
-  console.log("수정 전 default 내용: ", defaultData)
+  console.log("수정 전 default 내용: ", defaultData.content)
 
 
-  // title, content 각각 useState로 defaultData.title / defaultData.content로 받고 -> handleTitle / handleContent 콜백 실행해 e.target.value(수정값) 꽂아주기 
+  // title, content 각각 useState로 defaultData.title / defaultData.content로 받고 
+  // -> handleTitle / handleContent 콜백 실행해 e.target.value(수정값) 꽂아주기 
 
-  // const [title, setTitle] = useState([defaultData.title])
-  // function handleTitle(e){
-  //   setTitle(e.target.value)
-  // }
+  const [title, setTitle] = useState(defaultData.title)
+  const [content, setContent] = useState(defaultData.content)
+
+  function handleTitle(e) {
+    if (e.target.value === '') {
+      setTitle(defaultData.title);
+    } else {
+      setTitle(e.target.value);
+    }
+  }
+
+  function handleContent(e) {
+    if (e.target.value === '') {
+      setContent(defaultData.content);
+    } else {
+      setContent(e.target.value);
+    }
+  }
+
 
   // 아래방식으로 form에 ''를 넣어 수정을 하게 되면
   // defaultValue를 변경하지 않았을 때(수정사항 없을 때)
   // 공백이 왔다고 봐서 제목 및 내용을 입력하라고 뜸
-  const [form, setForm] = useState({title : '', content : ''});
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [form, setForm] = useState({title : '', content : ''});
+  // const [errorMessage, setErrorMessage] = useState('');
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   
-  function handleTitle(value){
-    setForm({...form, title : value});
-  }
+  // function handleTitle(value){
+  //   setForm({...form, title : value});
+  // }
 
-  function handleContent(value){
-    setForm({...form, content : value});
-  }
+  // function handleContent(value){
+  //   setForm({...form, content : value});
+  // }
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
@@ -99,17 +118,21 @@ function BoardEdit() {
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
-    const title = form.title;
-    const content = form.content;
+    // const title = form.title;
+    // const content = form.content;
 
-    console.log("수정 후 title:", title, "/수정 후 content:", content)
+    const finalTitle = title !== defaultData.title ? title : defaultData.title;
 
+    const finalContent = content !== defaultData.content ? content : defaultData.content;
+  
+    console.log("수정 후 title:", finalTitle, "/수정 후 content:", finalContent);
+  
     // 제목이나 내용 비어있으면 alert
-    if(!title || title === ''){
+    if (!finalTitle || finalTitle === '') {
       alert("제목을 입력해주세요");
       return;
     }
-    if(!content || content === ''){
+    if (!finalContent || finalContent === '') {
       alert('내용을 입력해주세요');
       return;
     }
@@ -137,14 +160,14 @@ function BoardEdit() {
     <>
       <Container className="board-write sec">
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
-          <div className="inner board-form">
-            <h3 className="title">게시글 작성</h3>
-            <div className='img-box row p-0 g-3 gy-3'>
+          <div className={`inner ${styles.boardForm}`}>
+            <h3 className="title">게시글 수정</h3>
+            <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
               <div className='col-6 col-sm-4 col-lg-2'>
-                <div className='imageUploadBtn'>
+                <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
-                  <Camera className='previewDefaultImg'/>
-                  <label htmlFor="file" className="fileBtn"></label>
+                  <Camera className={`${styles.previewDefaultImg}`}/>
+                  <label htmlFor="file" className={`${styles.fileBtn}`}></label>
                   <input type="file" multiple name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
                 </div>
               </div>
@@ -152,25 +175,25 @@ function BoardEdit() {
                 uploadImgUrl && uploadImgUrl.map((img, id)=>{
                   return(
                     <div className='col-6 col-sm-4 col-lg-2' key={id}>
-                      <div className='uploadedImgBox'>
-                        <img className='previewImg' alt='preview' src={img}/>
-                        <button className='previewImgDelBtn' type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
+                      <div className={`${styles.uploadedImgBox}`}>
+                        <img className={`${styles.previewImg}`} alt='preview' src={img}/>
+                        <button className={`${styles.previewImgDelBtn}`} type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
                       </div>
                     </div>
                   )
                 })
               }
             </div>
-            <div className="col title-box d-flex justify-content-between">
+            <div className={`col ${styles.col} ${styles.titleBox} d-flex justify-content-between`}>
               <label htmlFor="title">제목</label>
-              <input className="title-input" id="title" placeholder="제목을 입력하세요" defaultValue={defaultData.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
+              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" defaultValue={defaultData.title} onChange={(e)=>{handleTitle(e)}}></input>
             </div>
-            <div className="col content-box d-flex justify-content-between">
+            <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
               <label htmlFor="content">내용</label>
-              <textarea className="content-input" id="content" placeholder="내용을 입력하세요" defaultValue={defaultData.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+              <textarea className={`${styles.contentInput}`} id="content" placeholder="내용을 입력하세요" defaultValue={defaultData.content} onChange={(e)=>{handleContent(e)}}></textarea>
             </div>
-            <div className="col btn-wrap d-flex justify-content-end">
-              <Button variant="outline-secondary" className="reset" as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
+            <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
+              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
             </div>
           </div>

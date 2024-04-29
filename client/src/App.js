@@ -47,9 +47,6 @@ function App() {
   return (
     <>
       <Header/>
-      {
-        user ? <p>{user.nickname}</p> : <p>사용자없음</p>
-      }
         <Routes>
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>

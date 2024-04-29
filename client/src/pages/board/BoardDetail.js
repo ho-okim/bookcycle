@@ -87,10 +87,12 @@ function BoardDetail(){
 									<Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
 								</div>
 							</div>
-							<div className={`${styles.detailInfo} regular`}>
-								<span className={styles.userid}>{content.user_id}</span>
-								<span className={styles.date}>{DateProcessing(content.createdAt)}</span><Button variant='danger' size="sm" onClick={handleOpen}
-                    ><MegaphoneFill/> 신고</Button>
+							<div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
+                <div className='info'>
+                  <span className={styles.userid}>{content.user_id}</span>
+                  <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
+                </div>
+                <Button variant='danger' size="sm" onClick={handleOpen}><MegaphoneFill/> 신고</Button>
 							</div>
 							<div className={`${styles.detailContent} regular`}>{content.content}</div>
 						</div>
