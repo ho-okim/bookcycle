@@ -25,9 +25,11 @@ function Header() {
     <>
         <Navbar className="bg-body-tertiary mb-3" expand={'md'}>
           <Container className='p-0'>
-            <div className='inner d-flex' style={{ width: "100%"}}>
-              <Navbar.Brand href="/" style={{ fontSize: "25px"}}>BOOKCYCLE</Navbar.Brand>
-              <div className='d-flex justify-content-end toggleBtnWrap' style={{ width: "100%"}}>
+            <div className='inner d-flex' style={{ width: "100%" }}>
+              <Navbar.Brand href="/" style={{ fontSize: "25px" }}>
+                <img src="./img/bookcycle-logo.png" style={{ width:'250px' }} />
+              </Navbar.Brand>
+              <div className='d-flex justify-content-end toggleBtnWrap' style={{ width: "100%" }}>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className='toggleBtn'/>
               </div>
               <Navbar.Offcanvas

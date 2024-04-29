@@ -52,7 +52,9 @@ function ReviewWrite() {
             <p>리뷰작성 <span>선택</span></p>
             <textarea></textarea>
           </div>
-          <button>등록</button>
+          <div className={styles.btnWrap}>
+            <button className={styles.submitBtn}>등록</button>
+          </div>
         </div>
       </Container>
     </>
