@@ -103,7 +103,16 @@ router.get("/productDetail/:id/reviewWrite", async(req, res) => {
 // });
 
 
-router.post("/", (req, res) => {});
+router.post("/reviewWrite", async (req, res) => {
+  // 로그인 된 사용자의 id 가져오기
+  const userId = req.user.id;
+
+  const newReview = {
+    review: req.body.content
+  }
+
+
+});
 
 router.delete("/", (req, res) => {});
 

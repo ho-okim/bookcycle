@@ -53,13 +53,23 @@ ul, ol, li { list-style: none; }
 
 
 /* REVIEW WRITE */
-.rating { margin: 50px auto; text-align: center;}
+.rating { margin: 50px auto; text-align: center; }
 .selectTag { padding: 30px 0; }
 .selectTag .tagWrap { display: flex; flex-wrap: wrap; gap: 10px 20px; }
 .selectTag .tagWrap .tagBtn { 
   width: calc(50% - 10px); padding: 5px 0; border: 0; border-radius: 10px; 
 }
 
-.reviewWrite { }
+.reviewWrite {  }
 
-.review p span { padding: 3px 8px; background-color: #427D9D; border-radius: 7px; color: white; font-size: 10px; font-weight: 100; }
+.review p { margin: 15px 0; }
+.review p span { 
+  margin: 0 5px;
+  padding: 3px 8px; 
+  background-color: #427D9D; 
+  border-radius: 7px; 
+  font-size: 12px; color: white; 
+}
+
+.btnWrap { text-align: end; }
+.btnWrap .submitBtn { padding: 3px 10px; background-color: #427D9D; color: white; border: none; border-radius: 10px; }
