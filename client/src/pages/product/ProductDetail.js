@@ -6,6 +6,8 @@ import React, {useEffect, useState} from 'react';
 
 function ProductDetail() {
   const {id} = useParams();
+  const { none_like } = this.state;
+
     return(
       <Container>
         <div className={`${style.inner}`}>
@@ -29,6 +31,14 @@ function ProductDetail() {
 
       <Container>
         <div className='inner'>
+          <div className={`${style.other_div}`}>
+            <div> {/* left empty*/} </div>
+              <div className='Like'>
+                <img src={none_like} />
+                <h5> 좋아요 </h5>
+              </div>
+            <div> {/* right empty*/} </div>
+          </div>
           <div className={`${style.innerbox}`}>      
               <Container>
                 <div className={`${style.infopic}`}>
