@@ -38,15 +38,15 @@ router.get("/login", (req, res) => {
 router.get("/logout", (req, res) => {
     req.logOut(() => {
         console.log("로그아웃 완료됨");
+        res.send("logged out");
     });
 });
 
+// 로그인 한 사용자 조회
 router.get("/getLoginUser", (req, res)=>{
   if(req.user){
-    res.send(req.user)
-  } else {
-    res.send("no_user");
+    res.send(req.user);
   }
-})
+});
 
 module.exports = router;

@@ -7,20 +7,19 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../contexts/LoginUserContext.js';
-import { logout } from '../api/login.js';
+import { LoginUserContext } from '../contexts/LoginUserContext.js';
 
 function Header() {
 
-  const {user, setUser} = useUser();
+  const { user, handleLogout } = useContext(LoginUserContext);
 
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
-    setUser();
+  async function handleLogoutClick() {
+    const res = await handleLogout();
     navigate("/");
   }
+
 
   return (
     <>
@@ -52,8 +51,8 @@ function Header() {
                       </>
                       : 
                       <>
-                        <Nav.Link onClick={()=>{handleLogout()}}>로그아웃</Nav.Link>
-                        <Nav.Link href={`/mypage/1/buyList`}>마이페이지</Nav.Link>
+                        <Nav.Link onClick={handleLogoutClick}>로그아웃</Nav.Link>
+                        <Nav.Link href={`/mypage/${user.id}/buyList`}>마이페이지</Nav.Link>
                       </>
                     }
                   </Nav>
