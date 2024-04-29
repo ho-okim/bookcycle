@@ -7,7 +7,7 @@ import ProductDetail from '../../pages/product/ProductDetail';
 
 function List(props){
 
-  const { id } = useParams();
+  const { id } = useParams(); /* 데이터베이스 */
 
   function getBookList(){
     let reqOPtion={
@@ -16,8 +16,10 @@ function List(props){
         "content-type" : "application/json"
       }
     }
+    fetch("../../../../server/api/productList.js", reqOPtion).then((res)=> res.json()).then(data=>console.log(data));
 
   }
+
 
   return (
             <div className={`${style.productDetailList}`}>

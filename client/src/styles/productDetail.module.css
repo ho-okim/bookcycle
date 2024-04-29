@@ -109,3 +109,14 @@
 .another{
     margin-top: 40px;
 }
+
+.other_div { 
+    margin-top: 300px; 
+    border-top: solid 1px #ababab;
+    display: grid;
+    grid-template-columns: 25% 40% 25%;
+}
+
+.Like { margin : 50px 0px 0px 48%; }
+.Like img { width: 60px; cursor: pointer; }
+.Like h5 { margin-top: 10px;}
