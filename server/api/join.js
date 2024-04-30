@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer')
 const router = require('express').Router();
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
+const { isNotLoggedIn } = require('../lib/auth.js');
 
 // 이메일 인증 링크 전용 8자리 난수 생성 코드
 const emailVerifyToken = (min = 11111111, max = 99999999) => {
@@ -15,7 +16,7 @@ const emailVerifyToken = (min = 11111111, max = 99999999) => {
 }
 
 // 이메일 중복 체크
-router.get('/email', async (req, res) => {
+router.get('/email', isNotLoggedIn, async (req, res) => {
   // request query string
   const { email } = req.query;
   
@@ -26,7 +27,7 @@ router.get('/email', async (req, res) => {
 });
 
 // 회원가입
-router.post('/join', async (req, res) => {
+router.post('/join', isNotLoggedIn, async (req, res) => {
 
   const { email, password, username, nickname, phone_number, profile_image } = req.body;
   const token = emailVerifyToken()

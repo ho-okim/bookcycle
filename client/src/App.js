@@ -24,10 +24,7 @@ import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
-import { useEffect, useState } from 'react';
-import { LoginUserContext, useUser } from './contexts/LoginUserContext.js';
 import MyReport from './pages/mypage/MyReport.js';
-import LoginNavigate from './pages/LoginNavigate.js';
 import AuthProvider from './contexts/LoginUserContext.js'
 
 function App() {
@@ -66,7 +63,7 @@ function App() {
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
-      </AuthProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import styles from '../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Navigate, Outlet, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import UserMenu from '../components/user/UserMenu.js';
@@ -18,42 +18,48 @@ function User() {
     const { user } = useAuth(); // 현재 로그인 한 사용자
     const [targetUserId, setTargetUserId] = useState(id); // 대상 id
 
-    if (user && user.id == id) {
+    if (user && user.id == id) { // 로그인 한 사용자는 내 페이지로 이동시킴
         return(
             <Navigate to={`/mypage/${user.id}/buyList`}/>
         )
     }
 
+    // 하위 url인지 확인
     let subUrl = currentUrl.includes("product") || currentUrl.includes("review");
 
     let boxStyle = subUrl ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
 
-        return (
-            <TargetUserContext.Provider value={targetUserId}>
-                <Container className={boxStyle}>
+    // 로그인 한 유저 상태에 따른 박스 스타일
+    let otherUserStyle = user ? styles.user_menu : styles.other_user_nologin;
+
+    return (
+        <TargetUserContext.Provider value={targetUserId}>
+            <Container className={boxStyle}>
+                {
+                    !user ? null : 
                     <section className={styles.user_menu}>
-                        {/* 사용자 메뉴 */}
                         <UserMenu/>
                     </section>
-                    <section className={styles.other_user}>
-                        {
-                            (subUrl) ?
-                            <>
-                                <UserInfo/>
-                                <Outlet/>
-                            </>
-                            :
-                            <>
-                                <UserInfo/>
-                                <UserReviewTag/>
-                                <UserReviewList/>
-                                <UserProduct/>
-                            </>
-                        }
-                    </section>
-                </Container>
-            </TargetUserContext.Provider>
-        )
+                }
+                <section className={styles.otherUserStyle}>
+                    {
+                        (subUrl) ?
+                        <>
+                            <UserInfo/>
+                            <Outlet/>
+                        </>
+                        :
+                        <>
+                            <UserInfo/>
+                            <UserReviewTag/>
+                            <UserReviewList/>
+                            <UserProduct/>
+                        </>
+                    }
+                </section>
+            </Container>
+        </TargetUserContext.Provider>
+    )
 }
 
 export default User;

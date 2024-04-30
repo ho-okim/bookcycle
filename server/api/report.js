@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
+const { isLoggedIn } = require('../lib/auth.js');
 
 // 내가 신고한 내역 조회
 router.get('/report/myreport/:userId', async (req, res) => {

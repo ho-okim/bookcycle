@@ -4,7 +4,7 @@ const pool = require("../db.js"); // db connection pool
 // 특정 사용자 조회
 router.get('/user/:userId', async (req, res) => {
     const {userId} = req.params;
-    
+
     // query문 설정
     let sql = 'SELECT * FROM users WHERE id = ?';
 

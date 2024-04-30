@@ -1,0 +1,43 @@
+.title {
+    margin-top: 10px;
+}
+
+.form_box {
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+}
+
+.input_box {
+    width: 50%; max-width: 258px;
+    margin: 10px;
+}
+
+.input_form {
+    margin : 10px 0;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(204, 204, 204);
+}
+
+.login_btn {
+    margin: 5px;
+}
+
+.more_info {
+    margin: 10px 0;
+}
+
+.join_info {
+    margin-right : 10px;
+    color: #868686;
+}
+
+.find_info {
+    margin: 0 5px;
+    position: relative;
+}
+
+.error_box {
+    margin: 5px 0;
+    color : rgb(220, 53, 69);
+}

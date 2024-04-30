@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require("passport");
+const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 
 // 로그인
 router.post('/login', async (req, res, next) => {
@@ -29,13 +30,8 @@ router.post('/login', async (req, res, next) => {
     })(req, res, next);
 });
 
-// 서버 테스트용 - 로그인 페이지 이동
-router.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/test.html");
-});
-
 // 로그아웃 - DB에 저장된 세션에도 자동 처리됨
-router.get("/logout", (req, res) => {
+router.get("/logout", isLoggedIn, (req, res) => {
     req.logOut(() => {
         console.log("로그아웃 완료됨");
         res.send("logged out");
@@ -44,9 +40,7 @@ router.get("/logout", (req, res) => {
 
 // 로그인 한 사용자 조회
 router.get("/getLoginUser", (req, res)=>{
-  if(req.user){
-    res.send(req.user);
-  }
+  res.send(req.user);
 });
 
 module.exports = router;

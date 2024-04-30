@@ -56,9 +56,9 @@ function UserInfo() {
                         }
                     </div>
                     <div className={
-                        `${styles.info_box} row justify-content-end align-items-center flex-wrap`
+                        `${styles.info_box} row justify-content-center align-items-center flex-wrap`
                     }>
-                        <div className={`${styles.score_box} col-4`}>
+                        <div className={`${styles.score_box} col-2`}>
                             <p className={styles.manner_score}>
                             {
                                 (userInfo.manner_score) ?
@@ -68,13 +68,15 @@ function UserInfo() {
                             </p>
                             <StarFill className={styles.manner_score_star}/>
                         </div>
-                        <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                        variant='outline-danger' onClick={()=>{handleOpen()}}
-                        ><MegaphoneFill/> 신고하기</Button>
                         <p className={`${styles.user_info} col-4`}>{userInfo.nickname}</p>
                     </div>
+                    <div className={styles.report_box}>
+                            <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
+                            variant='outline-danger' onClick={()=>{handleOpen()}}
+                            ><MegaphoneFill/> 신고</Button>
+                            <Report show={modalShow} handleClose={handleClose} ownerId={targetUserId}/>
+                    </div>
                 </div>
-                <Report show={modalShow} handleClose={handleClose} ownerId={targetUserId}/>
             </div>
         </Container>
     )

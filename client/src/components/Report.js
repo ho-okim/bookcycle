@@ -1,6 +1,6 @@
 import styles from '../styles/report.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import report_reason from '../lib/report_reason.js';
 import { Modal, Button } from 'react-bootstrap';

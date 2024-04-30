@@ -33,6 +33,10 @@ a:hover{
     width: 78%;
 }
 
+.other_user_nologin{
+    width: 100%;
+}
+
 .info_box {
     width: 60%;
 }
@@ -46,6 +50,10 @@ a:hover{
     background-color: #fff;
     border-radius: 5px;
     border: 2px solid #dddddd;
+}
+
+.user_box {
+    position:relative;
 }
 
 .image_box{
@@ -95,8 +103,15 @@ a:hover{
     color: #FFC100;
 }
 
+.report_box{
+    width: 80px;
+    position:absolute; right:5px; top:5px;
+}
+
 .report_btn{
-    border: 2px solid red;
+    margin:0; padding:0;
+    width: 100%;
+    border: 2px solid rgb(220, 53, 69);
     font-size: 16px;
 }
 
