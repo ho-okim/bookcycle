@@ -36,9 +36,14 @@
 
 .imageUploadBtn{
     display: flex; position: relative;
-    width: 100%; height: 180px;
+    width: 80px; height: 80px;
     justify-content: center; align-items: center;
     border-radius: 5px;
+}
+
+.previewDefaultImg{
+    position: absolute; 
+    font-size: 60px; color: #979797;
 }
 
 .fileBtn{
@@ -46,10 +51,9 @@
     background-color: rgba(0,0,0,0.1); border-radius: 5px; border: 1px solid #979797; cursor: pointer;
 }
 
-.uploadedImgBox{
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; position: relative;
-    border: 1px solid #979797; border-radius: 5px;
+.previewImgBox{
+    position: relative;
+    display: flex; justify-content: center;
 }
 
 .previewImg{
@@ -58,14 +62,16 @@
 }
 
 .previewImgDelBtn{
-    position: absolute; top: 7px; right: 7px; margin: 0; padding: 0; font-size: 20px; color: #979797; line-height: 1;
-    z-index: 10; border: none; background-color: transparent;
+    margin: 0; padding: 0;
+    position: absolute; right: 0; top: 0;
+    z-index: 10; border: none;
+    font-size: 20px; color: #979797; 
+    line-height: 1;
+    background-color: transparent;
 }
 
 .previewImgDelBtn > svg{vertical-align: text-top;}
-.previewDefaultImg{
-    position: absolute; font-size: 100px; color: #979797;
-}
+
 
 .duple_btn {
     width: 80px;

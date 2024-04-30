@@ -47,7 +47,7 @@ function Join() {
         username : false,
         nickname : false,
         phone_number : false,
-        profile_image : false // 용량 제한
+        profile_image : false
     });
 
     // 파일의 실제 정보 담는 useState
@@ -58,11 +58,21 @@ function Join() {
 
     // 이미지 미리보기 함수
     function onchangeImageUpload(event) {
-        const newImage = event.target.files;
-        // 미리보기 이미지 url
-        setUploadImgUrl(URL.createObjectURL(newImage));
-        // 이미지 파일
-        setUploadImg(newImage);
+        const newImage = event.target.files[0];
+        const fileType = event.target.files[0]?.type;
+        
+        if (fileType.includes('image')) {
+            // 미리보기 이미지 url
+            setUploadImgUrl(URL.createObjectURL(newImage));
+            // 이미지 파일
+            setUploadImg(newImage);
+            setFormState((formState)=>({...formState, profile_image : true}));
+        } else {
+            alert("이미지 파일만 업로드할 수 있습니다!");
+            setFormState((formState)=>({...formState, profile_image : false}));
+            return;
+        }
+        
     }
 
     // X 버튼 클릭 시 이미지 파일 삭제
@@ -138,17 +148,16 @@ function Join() {
         } else if (value === 'profile_image') { // 이미지파일 input
             return(
             <>
-                <div className={`${styles.imageUploadBtn}`}>
-                    <Camera className={`${styles.previewDefaultImg}`}/>
-                    <label htmlFor="file" className={`${styles.fileBtn}`}/>
-                    <input type="file" multiple name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
+                <div className={styles.imageUploadBtn}>
+                    <Camera className={styles.previewDefaultImg}/>
+                    <label htmlFor="file" className={styles.fileBtn}/>
+                    <input type="file" name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
                 </div>
                 { // uploadImgUrl이 존재할 때 요소 생성
-                !uploadImgUrl ? null
-                :
-                <div>
-                    <img className={`${styles.previewImg}`} alt='preview' src={uploadImgUrl}/>
-                    <button className={`${styles.previewImgDelBtn}`} type='button' onClick={handleDeleteImage}><XCircleFill/></button>
+                uploadImgUrl &&
+                <div className={styles.previewImgBox}>
+                    <img className={styles.previewImg} alt='preview' src={uploadImgUrl}/>
+                    <button className={styles.previewImgDelBtn} type='button' onClick={handleDeleteImage}><XCircleFill/></button>
                 </div>
                 }
             </>
