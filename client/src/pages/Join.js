@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { email_check, join } from '../api/join.js';
 import { Button, Container } from 'react-bootstrap';
-import { LoginUserContext } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 
 function Join() {
 
-    const { user } = useContext(LoginUserContext);
+    const { user } = useAuth();
 
     const navigate = useNavigate();
 
@@ -115,14 +115,18 @@ function Join() {
                         Object.keys(formData).map((el, i) => {
                             return (
                                 <div key={i}>
-                                    <input name={el} 
-                                    placeholder={el === 'profile_image' ? '' : el} 
-                                    type={el === 'password' ? 'password' 
-                                        : el === 'phone_number' ? 'tel' 
-                                        : el === 'profile_image' ? 'image' : 'text'} 
-                                    onChange={handleInputChange}
-                                    onBlur={handleInputBlur}
-                                    />
+                                    {
+                                        el === 'verification' ? null 
+                                        :
+                                        <input name={el} 
+                                        placeholder={el === 'profile_image' ? '' : el} 
+                                        type={el === 'password' ? 'password' 
+                                            : el === 'phone_number' ? 'tel' 
+                                            : el === 'profile_image' ? 'image' : 'text'} 
+                                        onChange={handleInputChange}
+                                        onBlur={handleInputBlur}
+                                        />
+                                    }
                                     { el === 'email' &&
                                         <Button onClick={handleDuplication}>중복체크</Button>
                                     }

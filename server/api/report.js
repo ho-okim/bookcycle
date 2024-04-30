@@ -16,7 +16,12 @@ router.get('/report/myreport/:userId', async (req, res) => {
 // 신고내역 추가
 router.post('/report', async (req, res) => {
 
-    const {category, user_id, target_id, content} = req.body;
+    const {category, user_id, target_id, content, ownerId} = req.body;
+
+    if (user_id == ownerId) {
+        res.send('not allowed');
+        return;
+    }
 
     // query문 설정
     let sql = 'INSERT INTO report (category, user_id, target_id, content) VALUES (?, ?, ?, ?)';

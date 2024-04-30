@@ -1,12 +1,39 @@
-import {BrowserRouter, useParams, Link} from "react-router-dom";
-import { Container } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
+import { Button, Container } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
-import React, {useEffect, useState} from 'react';
-
+import { useContext, useEffect, useState } from 'react';
+import { useAuth } from "../../contexts/LoginUserContext";
+import { MegaphoneFill } from "react-bootstrap-icons";
+import Report from "../../components/Report";
 
 function ProductDetail() {
   const {id} = useParams();
-  const { none_like } = this.state;
+  const { user } = useAuth(); // 로그인한 사용자
+  const { none_like } = useState(0);
+  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+
+  const handleClose = () => { // modal 닫기/숨기기 처리
+    if (modalShow) setModalShow(false);
+  };
+
+  const handleOpen = () => { // modal 열기 처리
+    if (!modalShow) setModalShow(true);
+  };
+
+  function renderReportBtn() { // 신고 버튼 렌더링 처리
+    if (user) {
+      if (user.id == 1) { // user.id == 상품소유자id
+        // ownerId = 상품소유자id
+        return (
+          <>
+            <Button variant='danger' size="sm" onClick={handleOpen}><MegaphoneFill/> 신고</Button>
+            <Report show={modalShow} handleClose={handleClose} ownerId={1}/>
+          </>
+        )
+      }
+    }
+    return null;
+  }
 
     return(
       <Container>
@@ -50,6 +77,11 @@ function ProductDetail() {
               <div className='cate'>카테고리</div> 
               <div className='isbn'>ISBN</div> 
               <div className='waste'>가격</div> 
+            </div>
+            <div>
+              {
+                renderReportBtn()
+              }
             </div>
           </Container>
           </div>
