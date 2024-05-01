@@ -1,5 +1,5 @@
 .title {
-    margin-top: 10px;
+    margin-top: 70px;
 }
 
 .form_box {
@@ -20,7 +20,9 @@
 }
 
 .login_btn {
-    margin: 5px;
+    width: 60px;
+    margin: 0 10px;
+    border: none;
 }
 
 .more_info {
@@ -40,4 +42,11 @@
 .error_box {
     margin: 5px 0;
     color : rgb(220, 53, 69);
+}
+
+.back_btn {
+    width: 60px;
+    margin: 0 10px;
+    border: none;
+    background-color: #979797;
 }

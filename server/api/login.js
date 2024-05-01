@@ -40,7 +40,12 @@ router.get("/logout", isLoggedIn, (req, res) => {
 
 // 로그인 한 사용자 조회
 router.get("/getLoginUser", (req, res)=>{
-  res.send(req.user);
+  try {
+    res.send(req.user);
+  } catch (error) {
+    console.error(error);
+    res.send(null);
+  }
 });
 
 module.exports = router;

@@ -18,7 +18,7 @@ router.post('/boardwrite', async(req, res) => {
   // client에서 보낸 request body
   const {title, content} = req.body;
 
-  let sql = 'INSERT INTO board (user_id, title, content) VALUES (1, ?, ?)';
+  let sql = 'INSERT INTO board (user_id, title, content) VALUES (2, ?, ?)';
 
   console.log("게시글 내용 추가: ", req.body)
 

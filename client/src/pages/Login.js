@@ -80,6 +80,7 @@ function Login() {
           }
           <div>
             <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
+            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate(-1)}}>취소</Button>
           </div>
           <div className={styles.more_info}>
             <div>

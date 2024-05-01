@@ -2,7 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChatLeftDotsFill, MegaphoneFill, PersonCircle, Star, StarFill } from 'react-bootstrap-icons';
+import { MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';

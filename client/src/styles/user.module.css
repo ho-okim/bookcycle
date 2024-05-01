@@ -62,8 +62,12 @@ a:hover{
 }
 
 .profile_default {
-    width: 100px; height: 100px;
+    width: 100px; height: 10px;
     color: #cacaca;
+}
+
+.profile_image {
+    width: 100px; height: 100px;
 }
 
 .title .box{

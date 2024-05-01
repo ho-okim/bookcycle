@@ -13,26 +13,21 @@ export async function email_check(email) {
 }
 
 // 회원가입
-export async function join({
-        email, 
-        password, 
-        username, 
-        nickname, 
-        phone_number, 
-        profile_image, 
-        verification
-    }) 
-    {
+export async function join(formData) {
+
+    const { email, password, username, nickname, phone_number, profile_image } = formData;
 
     const res = await axios.post('/join', {
-        email, password, username, nickname, phone_number, profile_image, verification
-    });
-    
+        email, password, username, nickname, phone_number, profile_image
+    }, { headers: {
+            "Content-Type": "multipart/form-data"
+        }}
+    );
+
     if (res.statusText != "OK") {
         throw new Error("회원가입 실패");
     }
-    
+
     const body = res.data;
     return body;
 }
-
