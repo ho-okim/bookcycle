@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 10000;
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
 
 // http와 socket.io 설정
@@ -39,8 +40,10 @@ const sessionOption = {
     saveUninitialized : false,
     cookie : {
         maxAge : 60 * 60 * 1000, // 1시간
+        httpOnly : true,
         secure : false
     }, 
+    name : 'bookie',
     store : new MySQLStore( dbConfig )
 }
 
@@ -51,6 +54,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 // app 설정 : body-parser
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
+
+// app 설정 : cookie-parser
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // app 설정 : cors
 app.use(cors({

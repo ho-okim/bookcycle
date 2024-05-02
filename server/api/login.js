@@ -33,8 +33,14 @@ router.post('/login', async (req, res, next) => {
 // 로그아웃 - DB에 저장된 세션에도 자동 처리됨
 router.get("/logout", isLoggedIn, (req, res) => {
     req.logOut(() => {
+        // 세션 제거
         req.session.destroy((error) => {
           if (error) throw error;
+        });
+        // 쿠키 제거
+        res.clearCookie('bookie', req.signedCookies['bookie'], {
+          httpOnly : true,
+          secure : false
         });
         res.send("logged out");
     });
