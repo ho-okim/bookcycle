@@ -29,51 +29,6 @@
     border-bottom: 1px solid rgb(204, 204, 204);
 }
 
-.imgBox{
-    display: flex;
-    justify-content: center; align-items: center;
-}
-
-.imageUploadBtn{
-    display: flex; position: relative;
-    width: 80px; height: 80px;
-    justify-content: center; align-items: center;
-    border-radius: 5px;
-}
-
-.previewDefaultImg{
-    position: absolute; 
-    font-size: 60px; color: #979797;
-}
-
-.fileBtn{
-    width: 100%; height: 100%; position: absolute; z-index: 2;
-    background-color: rgba(0,0,0,0.1); border-radius: 5px; border: 1px solid #979797; cursor: pointer;
-}
-
-.previewImgBox{
-    position: relative;
-    display: flex; justify-content: center;
-    border-radius: 100%;
-}
-
-.previewImg{
-    display: block; width: 100px; height: 100px;
-    object-fit: cover; object-position: center;
-    border-radius: 100%;
-}
-
-.previewImgDelBtn{
-    margin: 0; padding: 0;
-    position: absolute; right: 0; top: 0;
-    z-index: 10; border: none;
-    font-size: 20px; color: #979797; 
-    line-height: 1;
-    background-color: transparent;
-}
-
-.previewImgDelBtn > svg{vertical-align: text-top;}
-
 .duple_btn {
     width: 80px;
     position:absolute;

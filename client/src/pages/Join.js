@@ -14,8 +14,6 @@ function Join() {
 
     const navigate = useNavigate();
 
-    
-
     useEffect(()=>{ // 로그인 한 유저가 접근 시도 시 메인으로 보냄
         if (user) {
             navigate("/");
@@ -28,7 +26,6 @@ function Join() {
         username: '',
         nickname: '',
         phone_number: '',
-        profile_image: ''
     });
 
     const defaultError = {
@@ -57,31 +54,6 @@ function Join() {
         nickname : false,
         phone_number : false,
     });
-
-    // 이미지 미리보기 URL 담는 useState
-    const [uploadImgUrl, setUploadImgUrl] = useState("");
-
-    // 이미지 미리보기 함수
-    function onchangeImageUpload(event) {
-        const newImage = event.target.files[0];
-        const fileType = event.target.files[0]?.type;
-        
-        if (fileType.includes('image')) {
-            // 미리보기 이미지 url
-            setUploadImgUrl(URL.createObjectURL(newImage));
-            // 이미지 파일
-            setFormData((formData)=>({...formData, profile_image : newImage}));
-        } else {
-            alert("이미지 파일만 업로드할 수 있습니다!");
-            return;
-        }
-    }
-
-    // X 버튼 클릭 시 이미지 파일 삭제
-    function handleDeleteImage () {
-        setUploadImgUrl('');
-        setFormData((formData)=>({...formData, profile_image : ''}));
-    }
 
     // 입력 input 필드 제어 및 에러 처리
     function handleInputChange(e) { 
@@ -199,34 +171,14 @@ function Join() {
     // input 렌더링
     function renderInput(value) { 
         // value는 formData에 들어있는 객체의 property(Object.keys(formData)로 배열화된 element)
-        if (value === 'profile_image') { // 이미지파일 input
-            return(
-            <>
-                <div className={styles.imageUploadBtn}>
-                    <Camera className={styles.previewDefaultImg}/>
-                    <label htmlFor="file" className={styles.fileBtn}/>
-                    <input type="file" name='postImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
-                </div>
-                { // uploadImgUrl이 존재할 때 요소 생성
-                uploadImgUrl &&
-                <div className={styles.previewImgBox}>
-                    <img className={styles.previewImg} alt='preview' src={uploadImgUrl}/>
-                    <button className={styles.previewImgDelBtn} type='button' onClick={handleDeleteImage}><XCircleFill/></button>
-                </div>
-                }
-            </>
-            )
-        }
-
         // 기타 input 요소 처리
         return( 
             <>
                 <input name={value} 
-                placeholder={value === 'profile_image' ? null : value} 
+                placeholder={value} 
                 className={styles.input_form}
                 type={value === 'password' ? 'password' 
-                    : value === 'phone_number' ? 'tel' 
-                    : value === 'profile_image' ? 'file' : 'text'} 
+                    : value === 'phone_number' ? 'tel' : 'text'} 
                 onChange={handleInputChange}
                 autoFocus={value === "email"}
                 />
@@ -238,13 +190,6 @@ function Join() {
         )
     }
 
-    // 프로필 이미지 박스 여부에 따른 input box 스타일 처리
-    const inputBoxStyle = (value) => {
-        return value === "profile_image"
-        ? `${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`
-        : styles.input_box;
-    }
-
     return (
         <Container className={styles.container_box}>
         <div className="inner text-center">
@@ -253,7 +198,7 @@ function Join() {
                 {
                     Object.keys(formData).map((el, i) => {
                         return (
-                            <div key={i} className={inputBoxStyle(el)}>
+                            <div key={i} className={styles.input_box}>
                                 {
                                     renderInput(el)
                                 }

@@ -6,39 +6,6 @@ const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn } = require('../lib/auth.js');
 
-// 사진 업로드 위한 패키지 require
-const path = require('path');
-const multer = require('multer');
-const uuid4 = require('uuid4');
-const fs = require('fs');
-
-// 프로필 저장 위치
-const profileImgPath = path.resolve(__dirname, '..', '..', 'client', 'public', 'img', 'profile');
-
-// 프로필 저장 위치가 없으면 새로 생성
-try {
-  fs.readdirSync(profileImgPath);
-} catch (error) {
-  console.error('client/public/img/profile 폴더가 없어 새로 만듭니다');
-  fs.mkdirSync(profileImgPath);
-}
-
-// 미들웨어 설정
-const upload = multer({
-  storage: multer.diskStorage({
-    filename(req, file, done) { // 파일이름
-      const randomID = uuid4();
-      const ext = path.extname(file.originalname);
-      const filename = randomID + ext;
-      done(null, filename);
-    },
-    destination(req, file, done) { // 프로필 이미지 저장 위치
-      done(null, profileImgPath);
-    },
-  }),
-  limits: { fileSize: 1024 * 1024 },
-});
-
 // 이메일 인증 링크 전용 8자리 난수 생성 코드
 const emailVerifyToken = (min = 11111111, max = 99999999) => {
   const token = Math.floor(Math.random() * (max - min + 1) + min)
@@ -65,10 +32,9 @@ router.get('/email', isNotLoggedIn, async (req, res) => {
 });
 
 // 회원가입
-router.post('/join', isNotLoggedIn, upload.single('profile_image'), async (req, res) => {
+router.post('/join', isNotLoggedIn, async (req, res) => {
 
   const { email, password, username, nickname, phone_number } = req.body;
-  const filename = req.file?.filename;
   
   const token = emailVerifyToken();
 
@@ -105,7 +71,7 @@ router.post('/join', isNotLoggedIn, upload.single('profile_image'), async (req, 
   
   sendMail(email);
 
-  let sql = 'INSERT INTO users (role_id, email, password, username, nickname, phone_number, profile_image, verification) VALUES (2, ?, ?, ?, ?, ?, ?, ?)';
+  let sql = 'INSERT INTO users (role_id, email, password, username, nickname, phone_number, verification) VALUES (2, ?, ?, ?, ?, ?, ?)';
 
   //console.log(req.body)
     try {
@@ -115,7 +81,6 @@ router.post('/join', isNotLoggedIn, upload.single('profile_image'), async (req, 
         username, 
         nickname, 
         phone_number, 
-        filename, 
         token // verification 칼럼에 생성된 난수 token 넣음
       ]);
       res.send(result);
