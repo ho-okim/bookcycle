@@ -143,9 +143,14 @@ app.use("/", require('./api/chat.js'));
 io.on('connection', (socket)=>{
   console.log('websocket connected')
 
-  socket.on('good', async (data)=>{
-    console.log('server socket:', data)
+  socket.on('join', async (data)=>{
+    socket.join(data)
   })
 
-  socket.emit('hi', 'server to client, hello client')
+  socket.on('send-message', async (data) => {
+    console.log(data.socketMsg)
+    // db에 메세지 저장
+  })
+
+  
 })

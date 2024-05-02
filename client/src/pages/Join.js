@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { email_check, join } from '../api/join.js';
 import { Button, Container } from 'react-bootstrap';
-import { LoginUserContext } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 
 function Join() {
 
-    const { user } = useContext(LoginUserContext);
+    const { user } = useAuth();
 
     const navigate = useNavigate();
 
