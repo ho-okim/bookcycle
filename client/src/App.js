@@ -1,6 +1,10 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/common.css';
+import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Header from './components/Header.js';
+import Footer from './components/Footer.js';
 import Login from './pages/Login.js';
 import Join from './pages/Join.js';
 import MyBuyList from './pages/mypage/MyBuyList.js';
@@ -15,31 +19,18 @@ import BoardWrite from './pages/board/BoardWrite.js';
 import BoardDetail from './pages/board/BoardDetail.js';
 import BoardEdit from './pages/board/BoardEdit.js';
 import User from './pages/User.js';
-import './styles/common.css';
-import Header from './components/Header.js';
-import Footer from './components/Footer.js';
 import ProductList from './pages/product/ProductList.js';
 import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
-import { useEffect } from 'react';
-import { LoginUserContext, useUser } from './contexts/LoginUserContext.js';
+import AuthProvider from './contexts/LoginUserContext.js';
 
 function App() {
-  
-  const { user, setUser, handleLogin, handleLogout, handleGetCurrentUser } = useUser();
-
-  useEffect(()=>{
-    async function getCurrentUser() { // 로그인 한 유저 정보 가져옴
-      await handleGetCurrentUser();
-    }
-    getCurrentUser();
-  }, []);
 
   return (
-    <LoginUserContext.Provider value={{user, setUser, handleLogin, handleLogout, handleGetCurrentUser}}>
+    <AuthProvider>
       <Header/>
         <Routes>
           <Route path="/" element={<Main/>}/>
@@ -63,8 +54,9 @@ function App() {
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
           </Route>
-          <Route path="/chat" element={<Chat/>}>
-
+          <Route path="/chat">
+            <Route path="" element={<Chat/>}/>
+            <Route path=":id" element={<Chat/>}/>
           </Route>
           <Route path="/user/:id" element={<User/>}/>
           <Route path="/productList" element={<ProductList/>}/>
@@ -73,7 +65,7 @@ function App() {
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
-    </LoginUserContext.Provider>
+    </AuthProvider>
   );
   
 }

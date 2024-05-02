@@ -1,10 +1,19 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useEffect } from "react";
 import { getLoginUser, login, logout } from "../api/login";
 
 const LoginUserContext = createContext();
 
-export function useUser() {
-    const [user, setUser] = useState(); // 로그인 한 사용자
+function AuthProvider({children}) {
+    
+    const [user, setUser] = useState(null); // 로그인 한 사용자
+
+    useEffect(()=>{
+        async function getUser() {
+            const res = await getLoginUser();
+            setUser(res);
+        }
+        getUser();
+    }, []);
 
     // 로그인 처리
     const handleLogin = useCallback(async (email, password)=> {
@@ -22,22 +31,23 @@ export function useUser() {
         setUser();
     }, []);
 
-    // 현재 로그인 한 사용자 정보 가져오기
-    const handleGetCurrentUser = useCallback(async () => {
-        const res = await getLoginUser();
-        setUser(res);
-    }, []);
-
     // 사용자와 함수를 memo로 처리해서 렌더링 최적화
     const userContextValue = useMemo(()=>({
         user,
         setUser,
         handleLogin,
-        handleLogout,
-        handleGetCurrentUser
-    }), [user, setUser, handleLogin, handleLogout, handleGetCurrentUser]);
+        handleLogout
+    }), [user, setUser, handleLogin, handleLogout]);
 
-    return userContextValue;
+    return (
+        <LoginUserContext.Provider value={userContextValue}>
+            {children}
+        </LoginUserContext.Provider>
+    );
 }
 
-export { LoginUserContext }
+export function useAuth() {
+    return useContext(LoginUserContext);
+}
+
+export default AuthProvider;
