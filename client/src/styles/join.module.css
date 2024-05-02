@@ -1,0 +1,57 @@
+.container_box{
+    margin: 70px auto;
+}
+
+.title {
+    margin-top: 10px;
+}
+
+.form_box {
+    margin: 30px auto;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+}
+
+.input_box:first-of-type{
+    position: relative;
+}
+
+.input_box {
+    width: 100%; max-width: 500px;
+    margin: 10px;
+}
+
+.input_form{
+    margin : 10px 0;
+    width: 80%;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(204, 204, 204);
+}
+
+.duple_btn {
+    width: 80px;
+    position:absolute;
+    transform : translate(-100%, -20%);
+}
+
+.confirm_btn {
+    width: 60px;
+    margin: 0 10px;
+    border: none;
+}
+
+.back_btn {
+    width: 60px;
+    margin: 0 10px;
+    border: none;
+    background-color: #979797;
+}
+
+.error_box{
+    color :  rgb(220, 53, 69);
+}
+
+.error_box.duple_ok {
+    color :  rgb(57, 168, 35);
+}

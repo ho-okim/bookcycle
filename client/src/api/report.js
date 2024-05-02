@@ -13,11 +13,10 @@ export async function getReport(id) {
 
 // 신고내역 추가
 export async function addReport(reportForm) {
-    const { category, user_id, target_id, content } = reportForm;
-    console.log(reportForm)
+    const { category, user_id, target_id, content, ownerId } = reportForm;
 
     const res = await axios.post('/report', {
-        category, user_id, target_id, content
+        category, user_id, target_id, content, ownerId
     });
 
     if (res.statusText !== "OK") {

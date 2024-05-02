@@ -1,7 +1,7 @@
 import styles from '../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Navigate, Outlet, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import UserMenu from '../components/user/UserMenu.js';
 import UserReviewTag from '../components/user/UserReviewTag.js';
@@ -9,53 +9,53 @@ import UserReviewList from '../components/user/UserReviewList.js';
 import UserProduct from '../components/user/UserProduct.js';
 import TargetUserContext from '../contexts/TargetUserContext.js';
 import UserInfo from '../components/user/UserInfo.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 
 function User() {
 
     const currentUrl = window.location.href; // 현재 url
-
-    // url에서 가져온 params
-    const { id } = useParams();
-
+    const { id } = useParams(); // url에서 가져온 params
+    const { user } = useAuth(); // 현재 로그인 한 사용자
     const [targetUserId, setTargetUserId] = useState(id); // 대상 id
 
-    if (currentUrl.includes("product") || currentUrl.includes("review")) {
-        return (
-            <TargetUserContext.Provider value={targetUserId}>
-                <Container className='d-flex justify-content-center'>
-                    <section className={styles.user_menu}>
-                        {/* 사용자 메뉴 */}
-                        <UserMenu/>
-                    </section>
-
-                    <section className={styles.other_user}>
-                        {/* 다른 사용자 정보 */}
-                        <UserInfo/>
-                        {/* 구매후기 혹은 판매목록 */}
-                        <Outlet/>
-                    </section>
-                </Container>
-            </TargetUserContext.Provider>
+    if (user && user.id == id) { // 로그인 한 사용자는 내 페이지로 이동시킴
+        return(
+            <Navigate to={`/mypage/${user.id}/buyList`}/>
         )
     }
 
-    return(
-        <TargetUserContext.Provider value={targetUserId}>
-            <Container className='d-flex justify-content-between'>
-                <section className={styles.user_menu}>
-                    {/* 사용자 메뉴 */}
-                    <UserMenu/>
-                </section>
+    // 하위 url인지 확인
+    let subUrl = currentUrl.includes("product") || currentUrl.includes("review");
 
-                <section className={styles.other_user}>
-                    {/* 다른 사용자 정보 */}
-                    <UserInfo/>
-                    {/* "이런 점이 좋았어요" 항목 */}
-                    <UserReviewTag/>
-                    {/* "구매후기" 항목 */}
-                    <UserReviewList/>
-                    {/* "판매목록" 항목 */}
-                    <UserProduct/>
+    let boxStyle = subUrl ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
+
+    // 로그인 한 유저 상태에 따른 박스 스타일
+    let otherUserStyle = user ? styles.user_menu : styles.other_user_nologin;
+
+    return (
+        <TargetUserContext.Provider value={targetUserId}>
+            <Container className={boxStyle}>
+                {
+                    !user ? null : 
+                    <section className={styles.user_menu}>
+                        <UserMenu/>
+                    </section>
+                }
+                <section className={styles.otherUserStyle}>
+                    {
+                        (subUrl) ?
+                        <>
+                            <UserInfo/>
+                            <Outlet/>
+                        </>
+                        :
+                        <>
+                            <UserInfo/>
+                            <UserReviewTag/>
+                            <UserReviewList/>
+                            <UserProduct/>
+                        </>
+                    }
                 </section>
             </Container>
         </TargetUserContext.Provider>

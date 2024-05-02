@@ -26,6 +26,7 @@ function LeftNav() {
               <li><Link to={`/mypage/${id}/sellReviewList`}>판매후기</Link></li>
             </ul>
           </li>
+          <li><Link to={`/mypage/${id}/reportList`}>신고 내역</Link></li>
           <li><Link to={`/mypage/${id}/edit`}>회원 정보 관리</Link></li>
         </ul>
       </div>

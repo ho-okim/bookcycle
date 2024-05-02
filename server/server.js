@@ -33,12 +33,12 @@ const PORT = process.env.PORT || 10000;
 
 // session 설정
 const sessionOption = {
-    secret : "secret-express-session", // secret 키
+    secret : process.env.COOKIE_SECRET, // secret 키
     resave : false,
     saveUninitialized : false,
     cookie : {
-      maxAge : 60 * 60 * 1000, // 1시간
-      secure : false
+        maxAge : 60 * 60 * 1000, // 1시간
+        secure : false
     }, 
     store : new MySQLStore( dbConfig )
 }
@@ -47,18 +47,17 @@ const sessionOption = {
 const path = require('path')
 app.use(express.static(path.join(__dirname, 'public')))
 
-// app 설정
+// app 설정 : body-parser
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
 
 const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
-
+// app 설정 : cors
 app.use(cors({
     origin: whiteList,
     credentials: true,
     optionsSuccessStatus: 200
 }));
-
 
 // passport 설정------------------------------------------------------------
 app.use(passport.initialize()); // 초기화, 사용자 인증 처리
@@ -107,7 +106,7 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
     let sql = `SELECT * FROM users WHERE email = ?`;
 
     try {
-        let [data] = await pool.query(sql, [user.email])
+        let [data] = await pool.query(sql, [user.email]);
     
         delete data.password;
 

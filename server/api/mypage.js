@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const { concurrently } = require("concurrently");
 const pool = require("../db.js"); // db connection pool
+const { isLoggedIn } = require("../lib/auth.js");
 
 // 회원정보관리 페이지
-router.get("/mypage/:id/edit", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/edit", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   // query문 설정
   let sql = "SELECT * FROM users WHERE id = ?";
@@ -40,8 +41,8 @@ router.put("/mypage/:id/edit", async(req, res) => {
 
 
 // 구매내역 페이지
-router.get("/mypage/:id/buyList", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/buyList", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   // product 테이블에서 createdAt 정렬
   let sql = "SELECT product.*, seller.nickname as seller_nickname, buyer.nickname as buyer_nickname FROM product JOIN users as seller ON product.seller_id = seller.id JOIN users as buyer ON product.buyer_id = buyer.id WHERE buyer_id = ?";
@@ -52,8 +53,8 @@ router.get("/mypage/:id/buyList", async (req, res) => {
 });
 
 // 구매후기 페이지
-router.get("/mypage/:id/buyReviewList", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/buyReviewList", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   let sql = "SELECT review.*, buyer.nickname as buyer_nickname FROM review JOIN users as buyer ON review.buyer_id = buyer.id WHERE buyer_id = ?";
 
@@ -62,8 +63,8 @@ router.get("/mypage/:id/buyReviewList", async (req, res) => {
 });
 
 // 판매내역 페이지
-router.get("/mypage/:id/sellList", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/sellList", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   let sql = "SELECT product.*, seller.nickname as seller_nickname, buyer.nickname as buyer_nickname FROM product JOIN users as seller ON product.seller_id = seller.id JOIN users as buyer ON product.buyer_id = buyer.id WHERE seller_id = ?";
 
@@ -72,8 +73,8 @@ router.get("/mypage/:id/sellList", async (req, res) => {
 });
 
 // 판매후기 페이지
-router.get("/mypage/:id/sellReviewList", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/sellReviewList", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   let sql = "SELECT review.*, buyer.nickname as buyer_nickname FROM review JOIN users AS buyer ON review.buyer_id = buyer.id WHERE seller_id = ?";
 
@@ -82,8 +83,8 @@ router.get("/mypage/:id/sellReviewList", async (req, res) => {
 });
 
 // 찜한책 페이지
-router.get("/mypage/:id/heartList", async (req, res) => {
-  const { id } = req.params;
+router.get("/mypage/:id/heartList", isLoggedIn, async (req, res) => {
+  let { id } = req.params;
 
   let sql = "SELECT * FROM user_liked_product WHERE user_id = ?"
   
@@ -92,8 +93,8 @@ router.get("/mypage/:id/heartList", async (req, res) => {
 });
 
 // 리뷰작성 페이지
-router.get("/user/:id/reviewWrite", async(req, res) => {
-  const { id } = req.params;
+router.get("/productDetail/:id/reviewWrite", isLoggedIn, async(req, res) => {
+  let { id } = req.params;
 
   // 상품 정보 조회
   let userSql = "SELECT * FROM users WHERE id = ?";

@@ -44,9 +44,9 @@ function DataPagination({
     }, [totalData, limit, offset]);
 
     function handleClickNumber(pageNumber) { // pagination 숫자 활성화 설정
-            handlePagination(pageNumber);
-            setActivePage(pageNumber);
-            navigate(`${url}?page=${pageNumber}`)
+        handlePagination(pageNumber);
+        setActivePage(pageNumber);
+        navigate(`${url}?page=${pageNumber}`)
     }
 
     function pageBlock() { // pagination 숫자 설정
