@@ -23,10 +23,9 @@ import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
-import ReviewWrite from './components/user/ReviewWrite.js';
-import { getLoginUser } from './api/login.js';
-import { useEffect } from 'react';
-import AuthProvider from './contexts/LoginUserContext.js';
+import ReviewWrite from './pages/mypage/ReviewWrite.js';
+import MyReport from './pages/mypage/MyReport.js';
+import AuthProvider from './contexts/LoginUserContext.js'
 
 function App() {
 
@@ -44,6 +43,7 @@ function App() {
             <Route path="sellList" element={<MySellList/>}/>
             <Route path="sellReviewList" element={<MySellReview/>}/>
             <Route path="edit" element={<MypageEdit/>}/>
+            <Route path="reportList" element={<MyReport/>}/>
           </Route>
           <Route path="/board">
             <Route path="" element={<Board/>}/>
@@ -51,23 +51,20 @@ function App() {
             <Route path=":id" element={<BoardDetail/>}/>
             <Route path="edit/:id" element={<BoardEdit/>}/>
           </Route>
-          <Route path="/user/:id" element={<User/>}>
+          <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
-            <Route path="reviewWrite" element={<ReviewWrite/>}/>
           </Route>
           <Route path="/chat" element={<Chat/>}>
-
           </Route>
-          <Route path="/user/:id" element={<User/>}/>
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
+          <Route path="/productDetail/:id/reviewWrite" element={<ReviewWrite/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
     </AuthProvider>
   );
-  
 }
 
 export default App;

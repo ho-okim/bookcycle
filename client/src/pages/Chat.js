@@ -3,8 +3,11 @@ import Container from 'react-bootstrap/Container';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css'
 import ChatUser from '../components/ChatUser';
+import { useUser } from '../contexts/LoginUserContext';
+import { chatList } from '../api/chat';
 
 function Chat() {
+  const {user, setUser} = useUser();
   // const onSocket = () => {
   //   const socket = io('http://localhost:10000')
 
@@ -25,6 +28,22 @@ function Chat() {
   const [msg, setMsg] = useState('')
   // 현재 채팅룸의 chatMessage 객체의 배열
   const [msgs, setMsgs] = useState([])
+  
+  // api > chat.js에서 받아온 채팅 목록
+  async function getChatList(){
+    const data = await chatList()
+    return data;
+  }
+
+  // 화면 최초로 rendering 될 때만 데이터 get 요청
+  useEffect(()=>{
+    let chatList
+    const test = async () => {
+      chatList = await getChatList()
+      setChatRoom(chatList)
+    }
+    test()
+  }, [])
 
   // useEffect(() => {
   //   const {name, room} = queryString.parse(window.location.search);
@@ -63,10 +82,13 @@ function Chat() {
       <h3 className={`${styles.title}`}>대화 목록</h3>
       <div className={`inner d-flex row`}>
         <div className={`${styles.chattingList} col-6`}>
-          <ChatUser/>
-          <ChatUser/>
-          <ChatUser/>
-          <ChatUser/>
+          {
+            chatRoom.map((el)=>{
+              return(
+              <ChatUser key={el.id} el={el}/>
+              )
+            })
+          }
         </div>
         <div className={`${styles.chattingRoom} col-6`}>
 

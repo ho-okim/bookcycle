@@ -1,4 +1,3 @@
-import { useContext, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -8,17 +7,15 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/LoginUserContext.js';
-import { logout } from '../api/login.js';
 
 function Header() {
 
-  const {user, setUser} = useAuth();
+  const { user, handleLogout } = useAuth(); // 로그인 한 사용자
 
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
-    setUser();
+  async function handleLogoutClick() { // 로그아웃 처리
+    const res = await handleLogout();
     navigate("/");
   }
 
@@ -54,7 +51,7 @@ function Header() {
                       </>
                       : 
                       <>
-                        <Nav.Link onClick={()=>{handleLogout()}}>로그아웃</Nav.Link>
+                        <Nav.Link onClick={handleLogoutClick}>로그아웃</Nav.Link>
                         <Nav.Link href={`/mypage/${user.id}/buyList`}>마이페이지</Nav.Link>
                       </>
                     }

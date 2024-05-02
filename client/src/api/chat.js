@@ -1,10 +1,10 @@
 import axios from '../lib/axios.js';
 
 export async function chatList(){
-    const res = await axios.get('/board')
+    const res = await axios.get('/chatlist')
 
     if (res.statusText != "OK") {
-        throw new Error("get fails");
+        throw new Error("chatList GET fails");
     } 
     const body = res.data;
     return body;
