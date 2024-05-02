@@ -123,7 +123,7 @@ function BoardWrite() {
             </div>
             <div className={`col ${styles.col} ${styles.titleBox} d-flex justify-content-between`}>
               <label htmlFor="title">제목</label>
-              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
+              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" maxLength={40} value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
             </div>
             <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
               <label htmlFor="content">내용</label>
