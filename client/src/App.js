@@ -24,7 +24,7 @@ import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
-import ReviewWrite from './pages/mypage/ReviewWrite.js';
+import ReviewWrite from './components/user/ReviewWrite.js';
 import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 
@@ -54,6 +54,7 @@ function App() {
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
+            <Route path="reviewWrite" element={<ReviewWrite/>}/>
           </Route>
           <Route path="/chat">
             <Route path="" element={<Chat/>}/>
@@ -61,7 +62,6 @@ function App() {
           </Route>
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
-          <Route path="/productDetail/:id/reviewWrite" element={<ReviewWrite/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
