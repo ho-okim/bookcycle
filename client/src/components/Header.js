@@ -7,12 +7,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 import { logout } from '../api/login.js';
 
 function Header() {
 
-  const {user, setUser} = useUser();
+  const {user, setUser} = useAuth();
 
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ function Header() {
           <Container className='p-0'>
             <div className='inner d-flex' style={{ width: "100%" }}>
               <Navbar.Brand href="/" style={{ fontSize: "25px" }}>
-                <img src="./img/bookcycle-logo.png" style={{ width:'250px' }} />
+                <img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'250px' }} alt='logo'/>
               </Navbar.Brand>
               <div className='d-flex justify-content-end toggleBtnWrap' style={{ width: "100%" }}>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className='toggleBtn'/>
@@ -55,7 +55,7 @@ function Header() {
                       : 
                       <>
                         <Nav.Link onClick={()=>{handleLogout()}}>로그아웃</Nav.Link>
-                        <Nav.Link href={`/mypage/1/buyList`}>마이페이지</Nav.Link>
+                        <Nav.Link href={`/mypage/${user.id}/buyList`}>마이페이지</Nav.Link>
                       </>
                     }
                   </Nav>

@@ -21,7 +21,7 @@ function StarSelect({size}) {
     // 클릭 처리
     setScore(index + 1);
     setHoverIndex(index);
-    // console.log(score)
+    console.log("score: ", score)
   }
 
   const star = Array.from({ length: totalStar }, (_, index) => (

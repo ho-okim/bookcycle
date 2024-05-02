@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { buyList } from '../../api/mypage';
+import dateProcessing from '../../lib/dateProcessing.js';
 
 import Table from 'react-bootstrap/Table';
 import styles from '../../styles/mypage.module.css';
@@ -8,6 +9,7 @@ import styles from '../../styles/mypage.module.css';
 function BuyList() {
 
   const { id } = useParams();
+
 
   async function getItems(){
     const data = await buyList(id)
@@ -26,7 +28,6 @@ function BuyList() {
     test()
   }, []);
 
-  console.log("TableList : " , buyItems)
 
   return (
     <Table responsive>
@@ -43,12 +44,22 @@ function BuyList() {
       <tbody>
         {buyItems.map((item, index) => (
           <tr key={index}>
-            <td>{item.soldDate}</td>
+            <td>{dateProcessing(item.soldDate)}</td>
             <td>{item.product_name}</td>
             <td>₩{parseInt(item.price).toLocaleString()}</td>
-            <td>{item.buyer_id}</td>
-            <td>{item.seller_id}</td>
-            <td><Link to={`/productDetail/${item.id}/reviewWrite`} className={styles.reviewBtn}>리뷰 작성</Link></td>
+            <td>{item.buyer_nickname}</td>
+            <td>{item.seller_nickname}</td>
+            <td>
+              <Link 
+                to={{ 
+                  pathname: `/user/${item.seller_id}/reviewWrite`,
+                  search: `?productId=${item.id}` 
+                }}
+                className={styles.reviewBtn}
+              >
+                리뷰 작성
+              </Link>
+            </td>
           </tr>
         ))}
       </tbody>

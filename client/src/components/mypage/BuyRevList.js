@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { buyReviewList } from '../../api/mypage';
+import dateProcessing from '../../lib/dateProcessing.js';
+import starRating from '../../lib/starRating.js';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 import styles from '../../styles/mypage.module.css';
@@ -27,23 +29,16 @@ function BuyRevList() {
     test()
   }, []);
   
-  console.log("reviewList: ", reviews)
-
-  function DateProcessing(date) {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(date).toLocaleDateString("ko-KR", options).replaceAll('.', '.');
-  }
 
   return (
     <>
       <div className="rev-list">
         {reviews.map((review, index) => (
           <div key={index} className={`row ${styles.revWrap}`}>
-          {/* <div key={index} className="revWrap d-flex row"> */}
-            <p className="rating col col-2">별점: {review.score}</p>
-            <p className="col col-5">{review.content}</p>
-            <p className="col col-2">구매자 id: {review.buyer_id}</p>
-            <p className="col-2">{DateProcessing(review.createdAt)}</p>
+            <div className="rating col col-2">{starRating(review.score)}</div>
+            <div className="col col-6">{review.content}</div>
+            <div className="col col-1">{review.buyer_nickname}</div>
+            <div className="col-2">{dateProcessing(review.createdAt)}</div>
             <Dropdown className="col col-1">
               <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
                 ⁝

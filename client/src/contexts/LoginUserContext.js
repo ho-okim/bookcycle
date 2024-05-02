@@ -1,24 +1,53 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useEffect } from "react";
+import { getLoginUser, login, logout } from "../api/login";
 
-export const LoginUserContext = createContext();
+const LoginUserContext = createContext();
 
-export function UserProvider({children}) {
-    const [user, setUser] = useState();
+function AuthProvider({children}) {
+    
+    const [user, setUser] = useState(null); // 로그인 한 사용자
 
-    return(
-        <LoginUserContext.Provider value={{user, setUser}}>
+    useEffect(()=>{
+        async function getUser() {
+            const res = await getLoginUser();
+            setUser(res);
+        }
+        getUser();
+    }, []);
+
+    // 로그인 처리
+    const handleLogin = useCallback(async (email, password)=> {
+        const res = await login(email, password);
+        
+        if (res.message == 'success') {
+            setUser(res.user);
+        } 
+        return res.message;
+    }, []);
+
+    // 로그아웃 처리
+    const handleLogout = useCallback(async () => {
+        const res = await logout();
+        setUser();
+    }, []);
+
+    // 사용자와 함수를 memo로 처리해서 렌더링 최적화
+    const userContextValue = useMemo(()=>({
+        user,
+        setUser,
+        handleLogin,
+        handleLogout
+    }), [user, setUser, handleLogin, handleLogout]);
+
+    return (
+        <LoginUserContext.Provider value={userContextValue}>
             {children}
         </LoginUserContext.Provider>
-    )
+    );
 }
 
-// 자식 요소가 사용할 theme context 불러오기 동작
-export function useUser() {
-    const loginUserContext = useContext(LoginUserContext);
-
-    if(!loginUserContext) {
-        throw new Error('LoginUserContext 안에서 사용해야 합니다');
-    }
-
-    return loginUserContext;
+export function useAuth() {
+    return useContext(LoginUserContext);
 }
+
+export default AuthProvider;

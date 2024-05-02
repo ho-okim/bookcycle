@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { login } from '../api/login.js';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useUser } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 
 function Login() {
 
-  const {user, setUser} = useUser();
+  const {user, setUser} = useAuth();
 
   const [form, setForm] = useState({email: '' , passoword: ''});
   const [errorMessage, setErrorMessage] = useState('');

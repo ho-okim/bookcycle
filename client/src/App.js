@@ -23,29 +23,15 @@ import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
-import ReviewWrite from './pages/mypage/ReviewWrite.js';
+import ReviewWrite from './components/user/ReviewWrite.js';
 import { getLoginUser } from './api/login.js';
 import { useEffect } from 'react';
-import { useUser } from './contexts/LoginUserContext.js';
+import AuthProvider from './contexts/LoginUserContext.js';
 
 function App() {
-  
-  const {user, setUser} = useUser();
-
-  useEffect(()=>{
-    async function getUser() {
-      const res = await getLoginUser();
-      if (res != 'no_user') {
-        setUser(res);
-      } else {
-        setUser();
-      }
-    }
-    getUser();
-  }, []);
 
   return (
-    <>
+    <AuthProvider>
       <Header/>
         <Routes>
           <Route path="/" element={<Main/>}/>
@@ -68,6 +54,7 @@ function App() {
           <Route path="/user/:id" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
+            <Route path="reviewWrite" element={<ReviewWrite/>}/>
           </Route>
           <Route path="/chat" element={<Chat/>}>
 
@@ -75,11 +62,10 @@ function App() {
           <Route path="/user/:id" element={<User/>}/>
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
-          <Route path="/productDetail/:id/reviewWrite" element={<ReviewWrite/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
-    </>
+    </AuthProvider>
   );
   
 }
