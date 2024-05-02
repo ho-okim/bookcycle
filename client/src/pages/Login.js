@@ -1,5 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import styles from '../styles/login.module.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../contexts/LoginUserContext.js';
@@ -9,11 +11,7 @@ function Login() {
   const { user, handleLogin } = useAuth();
 
   const [form, setForm] = useState({ email: '' , passoword: '' });
-  const [errorMessage, setErrorMessage] = useState({
-    email : '',
-    password : '',
-    login : ''
-  });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -36,18 +34,11 @@ function Login() {
     const password = form.password;
 
     if (!email) { // 빈 값 확인
-      setErrorMessage({
-        email : '이메일을 입력해주세요',
-        password : '', login : ''
-      });
+      setErrorMessage('이메일을 입력해주세요');
       return;
     }
     if (!password) { // 빈 값 확인
-      setErrorMessage({
-        email : '',
-        password : '비밀번호를 입력해주세요',
-        login : ''
-      });
+      setErrorMessage('비밀번호를 입력해주세요');
       return;
     }
 
@@ -58,50 +49,47 @@ function Login() {
       navigate("/");
       return;
     } else if (res == 'expired') { // 인증 링크 만료됨
-      setErrorMessage({ 
-        email : '', password : '',
-        login : '인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.'
-      });
+      setErrorMessage('인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.');
       return;
     } else if (res == 'sent') { // 인증 필요
-      setErrorMessage({
-        email : '', password : '',
-        login : '인증 링크가 발송되었습니다. 메일을 확인해주세요.'
-      });
+      setErrorMessage('인증 링크가 발송되었습니다. 메일을 확인해주세요.');
       return;
     } else { // 사용자 정보 없음
-      setErrorMessage({
-        login : '', password : '',
-        login : '이메일이나 비밀번호를 다시 확인해주세요'
-      });
+      setErrorMessage('이메일이나 비밀번호를 다시 확인해주세요');
       return;
     }
   }
 
   return (
     <Container>
-      <div className='inner'>
-        <h2>로그인</h2>
-        <form className="form-box" onSubmit={(e)=>{e.preventDefault()}}>
-          <div>
-            <input name="email" placeholder="email"
-            onChange={(e)=>{handleEmail(e.target.value)}}/>
-            <div className="email-error-box">{errorMessage.email}</div>
-          </div>
-          <div>
-            <input name="password" placeholder="password"
+      <div className='inner text-center'>
+        <h2 className={styles.title}>로그인</h2>
+        <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
+          <div className={styles.input_box}>
+            <input name="email" placeholder="email / 이메일"
+            className={styles.input_form}
+            onChange={(e)=>{handleEmail(e.target.value)}} autoFocus/>
+            <input name="password" placeholder="password / 비밀번호"
+            className={styles.input_form}
             type="password" onChange={(e)=>{handlePassword(e.target.value)}}/>
-            <div className="pwd-error-box">{errorMessage.password}</div>
           </div>
-          <div className="error-box">{errorMessage.login}</div>
+          {
+            errorMessage ?
+            <div className={styles.error_box}>{errorMessage}</div>
+            : null
+          }
           <div>
-            <Button className="confirm" type="submit" onClick={()=>{check()}}>확인</Button>
+            <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
+            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate(-1)}}>취소</Button>
           </div>
-          <div>
-            <div><Link to="/join">회원가입</Link></div>
+          <div className={styles.more_info}>
             <div>
-              <Link to="#">이메일 찾기</Link>
-              <Link to="#">비밀번호 찾기</Link>
+              <span className={styles.join_info}>BookCycle에 처음이신가요?</span>
+              <Link to="/join">회원가입</Link>
+            </div>
+            <div>
+              <Link to="#" className={styles.find_info}>이메일 찾기</Link>
+              <Link to="#" className={styles.find_info}>비밀번호 찾기</Link>
             </div>
           </div>
         </form>

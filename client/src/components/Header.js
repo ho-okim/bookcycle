@@ -1,4 +1,3 @@
-import { useContext, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -11,15 +10,14 @@ import { useAuth } from '../contexts/LoginUserContext.js';
 
 function Header() {
 
-  const { user, handleLogout } = useAuth();
+  const { user, handleLogout } = useAuth(); // 로그인 한 사용자
 
   const navigate = useNavigate();
 
-  async function handleLogoutClick() {
+  async function handleLogoutClick() { // 로그아웃 처리
     const res = await handleLogout();
     navigate("/");
   }
-
 
   return (
     <>
@@ -27,7 +25,7 @@ function Header() {
           <Container className='p-0'>
             <div className='inner d-flex' style={{ width: "100%" }}>
               <Navbar.Brand href="/" style={{ fontSize: "25px" }}>
-                <img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'250px' }} />
+                <img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'250px' }} alt='logo'/>
               </Navbar.Brand>
               <div className='d-flex justify-content-end toggleBtnWrap' style={{ width: "100%" }}>
                 <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} className='toggleBtn'/>

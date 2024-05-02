@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { sellList } from '../../api/mypage';  // axios 인스턴스 import
+import dateProcessing from '../../lib/dateProcessing.js';
 
 import Table from 'react-bootstrap/Table';
 import styles from '../../styles/mypage.module.css';
@@ -26,8 +27,6 @@ function SellList() {
     test()
   }, []);
 
-  console.log("TableList : " , sellItems)
-
   return (
     <Table responsive>
       <thead className={styles.buyList}>
@@ -42,11 +41,11 @@ function SellList() {
       <tbody>
         {sellItems.map((item, index) => (
           <tr key={index}>
-            <td>{item.soldDate}</td>
+            <td>{dateProcessing(item.soldDate)}</td>
             <td>{item.product_name}</td>
             <td>₩{parseInt(item.price).toLocaleString()}</td>
-            <td>{item.buyer_id}</td>
-            <td>{item.seller_id}</td>
+            <td>{item.buyer_nickname}</td>
+            <td>{item.seller_nickname}</td>
 
           </tr>
         ))}
