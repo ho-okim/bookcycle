@@ -33,7 +33,9 @@ router.post('/login', async (req, res, next) => {
 // 로그아웃 - DB에 저장된 세션에도 자동 처리됨
 router.get("/logout", isLoggedIn, (req, res) => {
     req.logOut(() => {
-        console.log("로그아웃 완료됨");
+        req.session.destroy((error) => {
+          if (error) throw error;
+        });
         res.send("logged out");
     });
 });

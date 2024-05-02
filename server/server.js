@@ -2,10 +2,13 @@
 // 환경변수
 require("dotenv").config();
 
+const PORT = process.env.PORT || 10000;
+
 // express 설정
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
 
 // http와 socket.io 설정
 const { createServer } = require("http");
@@ -14,7 +17,7 @@ const exp = require("constants");
 const server = createServer(app); // express를 사용한 http 서버 생성
 const io = new Server(server, {
   cors: {
-    origin: "*"
+    origin: whiteList
   }
 }); // socket 서버 생성
 
@@ -28,8 +31,6 @@ const MySQLStore = require("express-mysql-session")(session);
 // db
 const dbConfig = require("../db_config.json");
 const pool = require("./db.js");
-
-const PORT = process.env.PORT || 10000;
 
 // session 설정
 const sessionOption = {
@@ -51,11 +52,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
 
-const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
 // app 설정 : cors
 app.use(cors({
     origin: whiteList,
-    credentials: true,
+    credentials: true, // 쿠키 접근 허용
     optionsSuccessStatus: 200
 }));
 
