@@ -1,5 +1,6 @@
 import axios from '../lib/axios.js';
 
+// 상위 10개 게시글 조회
 export async function board(){
     const res = await axios.get('/board')
 
@@ -10,6 +11,8 @@ export async function board(){
     return body;
 }
 
+
+// 게시글 작성(추가)
 export async function boardWrite(title, content) {
     const res = await axios.post('/boardwrite', { title, content });
     
@@ -21,6 +24,7 @@ export async function boardWrite(title, content) {
     
     return body;
 }
+
 
 export async function fileupload(formData) {
   const res = await axios.post('/fileupload', formData, {
@@ -37,6 +41,7 @@ export async function fileupload(formData) {
 }
 
 
+// 특정 사용자 글 조회
 export async function boardDetail(id){
     
     const res = await axios.get(`/board/${id}`)
@@ -50,6 +55,7 @@ export async function boardDetail(id){
 }
 
 
+// 게시글 삭제
 export async function boardDelete(id){
 
     const res = await axios.post(`/delete/${id}`)
@@ -63,6 +69,7 @@ export async function boardDelete(id){
 }
 
 
+// 게시글 수정
 export async function boardEdit(id, title, content){
 
     const res = await axios.post(`/edit/${id}`, {title, content})
@@ -72,6 +79,34 @@ export async function boardEdit(id, title, content){
     } 
     const body = res.data;
 
+    return body;
+}
+
+
+// 댓글 작성 - replyWrite(id, reply)로 전달해야할까?
+export async function replyWrite(id, reply){
+
+    const res = await axios.post(`/replyWrite/${id}`, { reply });
+    
+    if (res.statusText != "OK") {
+        throw new Error("postReply fails");
+    } 
+    const body = res.data;
+    body.message = 'success'
+    
+    return body;
+}
+
+
+// 댓글 조회
+export async function replyList(id){
+
+    const res = await axios.get(`/reply/${id}`)
+
+    if (res.statusText != "OK") {
+        throw new Error("get fails");
+    } 
+    const body = res.data;
     return body;
 }
 

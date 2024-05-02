@@ -1,18 +1,25 @@
 import styles from '../../styles/board.module.css';
-import { boardDetail, boardDelete } from '../../api/board.js';
+import { boardDetail, boardDelete, replyWrite, boardReply } from '../../api/board.js';
+import ReplyForm from '../../components/board/ReplyForm.js'
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
+import { Heart } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Report from '../../components/Report.js';
-import { MegaphoneFill } from 'react-bootstrap-icons';
+import { useAuth } from '../../contexts/LoginUserContext.js';
+
 
 function BoardDetail(){
+
   const {id} = useParams();
   console.log("게시글 id :", id)
 
-
+  const { user } = useAuth();
+  console.log("사용자 정보: ", user)
+  
 	const navigate = useNavigate();
 
 	// 데이터 조회
@@ -51,9 +58,18 @@ function BoardDetail(){
 	}
 
 
+  const handleClose = () => { // modal 닫기/숨기기 처리
+    if (modalShow) setModalShow(false);
+  };
+
+  const handleOpen = () => { // modal 열기 처리
+    if (!modalShow) setModalShow(true);
+  };
+
+
   // 날짜 yyyy-mm-dd 시:분
   function DateProcessing(date){
-    
+  
     let newDate = new Date(date)
 
     let year = newDate.getFullYear();
@@ -65,14 +81,6 @@ function BoardDetail(){
     return formattedDate;
   }
 
-  const handleClose = () => { // modal 닫기/숨기기 처리
-    if (modalShow) setModalShow(false);
-  };
-
-  const handleOpen = () => { // modal 열기 처리
-    if (!modalShow) setModalShow(true);
-  };
-
   return(
     <>
       <Container className={styles.boardDetail}>
@@ -80,9 +88,10 @@ function BoardDetail(){
           <h2 className={styles.title}>게시글</h2>
           <div className={`col ${styles.detailWrapper}`}>
 						<div className={styles.detailMain}>
-							<div className={`${styles.detailHeader} d-flex justify-content-between`}>
+              <div className={`d-flex justify-content-end`}><Heart className={styles.heartBtn}/></div>
+							<div className={`${styles.detailHeader} d-flex justify-content-between align-items-center`}>
 								<h2 className={styles.detailTitle}>{content.title}</h2>
-								<div className={styles.btnWrap}>
+								<div className={`${styles.btnWrap}`}>
 									<Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`)}}>글 수정</Button>
 									<Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
 								</div>
@@ -92,32 +101,13 @@ function BoardDetail(){
                   <span className={styles.userid}>{content.user_id}</span>
                   <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                 </div>
-                <Button variant='danger' size="sm" onClick={handleOpen}><MegaphoneFill/> 신고</Button>
+                <div className={`${styles.spamBtn} medium`}>신고하기</div>
 							</div>
-							<div className={`${styles.detailContent} regular`}>{content.content}</div>
+							<div className={`${styles.detailContent}`}>{content.content}</div>
 						</div>
 
-						{/* 댓글 목록 */}
-						<div className={styles.commentList}>
-							<div className={`${styles.commentInfo} regular`}>
-								<span className={styles.userid}>아이디</span>
-								<span className={styles.date}>날짜</span>
-							</div>
-							<div className={styles.commentContent}>
-								댓글 내용 여기 나옴
-							</div>
-						</div>
-
-						{/* 댓글 작성 폼 */}
-						<form className={styles.commentForm}>
-							<div className={styles.commentId}>{content.user_id}</div>
-							<div className='d-flex justify-content-between'>
-								<input name='comment' id='commentInput' className={styles.commentInput}></input>
-								<Button className="submit" as="input" type="submit" value="등록"/>
-							</div>
-						</form>
+            <ReplyForm id={id}/>
           </div>
-
         </div>
       </Container>
     </>

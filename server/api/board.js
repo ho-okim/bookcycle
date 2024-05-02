@@ -3,7 +3,9 @@ const pool = require("../db.js"); // db connection pool
 
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {
-    // let { id } = req.params;
+
+    const loginUser = req.user ? req.user : null
+    
     // query문 설정
     let sql = "SELECT * FROM board ORDER BY createdAt DESC LIMIT 10";
 
@@ -15,14 +17,17 @@ router.get('/board', async (req, res) => {
 
 // 게시글 작성(추가)
 router.post('/boardwrite', async(req, res) => {
+  const loginUser = req.user ? req.user : null
+
   // client에서 보낸 request body
   const {title, content} = req.body;
 
-  let sql = 'INSERT INTO board (user_id, title, content) VALUES (1, ?, ?)';
+  let sql = 'INSERT INTO board (user_id, title, content) VALUES (?, ?, ?)';
 
   console.log("게시글 내용 추가: ", req.body)
 
   let result = await pool.query(sql, [
+    loginUser.id,
     title,
     content
   ]); 
@@ -31,7 +36,7 @@ router.post('/boardwrite', async(req, res) => {
 });
 
 
-// 특정 사용자 글 조회
+// 특정 글 조회
 router.get('/board/:id', async (req, res) => {
   let { id } = req.params;
   // query문 설정
@@ -59,14 +64,18 @@ router.post('/delete/:id', async (req, res) => {
       let sql2 = "DELETE FROM board_liked WHERE board_id = ?";
       let sql2_result = await pool.query(sql2, [id]);
 
-      let sql3 = "DELETE FROM board WHERE id = ?";
+      let sql3 = "DELETE FROM reply WHERE board_id = ?";
       let sql3_result = await pool.query(sql3, [id]);
+
+      let sql4 = "DELETE FROM board WHERE id = ?";
+      let sql4_result = await pool.query(sql4, [id]);
 
       console.log("Deleted image:", sql1_result);
       console.log("Deleted board:", sql2_result);
       console.log("Deleted board:", sql3_result);
+      console.log("Deleted board:", sql4_result);
 
-      res.status(200).json({ message: "Board and related images deleted successfully", deletedId: id });
+      res.status(200).json({ message: "Board, related images and liked deleted successfully", deletedId: id });
   } catch (error) {
       console.error("Error occurred during deletion:", error);
 
@@ -89,8 +98,37 @@ router.post('/edit/:id', async(req, res) => {
   console.log("게시글 수정 결과: ", result)
 
   res.send(result);
-
 });
+
+
+// 댓글 작성 
+router.post('/replyWrite/:id', async(req, res)=>{
+  const { reply } = req.body;
+  let { id } = req.params;
+
+  console.log("댓글 등록 내용: ", req.body)
+
+  let sql = 'INSERT INTO reply (board_id, user_id, content) VALUES (?, ?, ?)';
+
+  let result = await pool.query(sql, [id, 1, reply]); 
+
+  res.send(result);
+})
+
+
+// 댓글 조회
+router.get('/reply/:id', async(req, res) => {
+  let { id } = req.params;
+
+  let sql = "SELECT * FROM reply WHERE board_id = ? ORDER BY createdAt DESC";;
+
+  let result = await pool.query(sql, [id]);
+
+  console.log("댓글 조회: ", result)
+
+  res.send(result)
+})
+
 
 
 // 사진 업로드 위한 패키지 require

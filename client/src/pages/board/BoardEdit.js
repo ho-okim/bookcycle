@@ -1,7 +1,7 @@
 import styles from '../../styles/boardWrite.module.css';
 import { useState, useEffect } from 'react';
 import {boardEdit, boardDetail, boardWrite, fileupload} from '../../api/board.js';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
@@ -16,7 +16,7 @@ function BoardEdit() {
 
   // 수정 전 default 데이터 가져오기
   // api > board.js에서 특정 사용자 글 받아오기
-  async function getDefaultContent(){
+  async function getDefaultData(){
     const data = await boardDetail(id)
     return data;
   }
@@ -27,55 +27,32 @@ function BoardEdit() {
   // 최초 실행할 때 getDefaultContent()에서 기본값(defaultContent) 받아
   // defaultData에 꽂아준다 -> 이걸로 원래 title, content를 받아오는 것
   useEffect(()=>{
-    let defaultContent
+    let defaultData
     const test = async () => {
-      defaultContent = await getDefaultContent()
-      setDefault(defaultContent)
+      defaultData = await getDefaultData()
+      setDefault(defaultData)
     }
     test()
   }, [])
 
-  console.log("수정 전 default 내용: ", defaultData.content)
+  console.log("←수정 전 default title: ", defaultData.title)
+  console.log("←수정 전 default content: ", defaultData.content)
 
 
   // title, content 각각 useState로 defaultData.title / defaultData.content로 받고 
   // -> handleTitle / handleContent 콜백 실행해 e.target.value(수정값) 꽂아주기 
-
   const [title, setTitle] = useState(defaultData.title)
   const [content, setContent] = useState(defaultData.content)
 
   function handleTitle(e) {
-    if (e.target.value === '') {
-      setTitle(defaultData.title);
-    } else {
       setTitle(e.target.value);
-    }
   }
 
   function handleContent(e) {
-    if (e.target.value === '') {
-      setContent(defaultData.content);
-    } else {
       setContent(e.target.value);
-    }
   }
 
 
-  // 아래방식으로 form에 ''를 넣어 수정을 하게 되면
-  // defaultValue를 변경하지 않았을 때(수정사항 없을 때)
-  // 공백이 왔다고 봐서 제목 및 내용을 입력하라고 뜸
-  // const [form, setForm] = useState({title : '', content : ''});
-  // const [errorMessage, setErrorMessage] = useState('');
-
-  // const navigate = useNavigate();
-  
-  // function handleTitle(value){
-  //   setForm({...form, title : value});
-  // }
-
-  // function handleContent(value){
-  //   setForm({...form, content : value});
-  // }
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
@@ -116,16 +93,19 @@ function BoardEdit() {
     setUploadImg(uploadImg.filter((_, index) => index !== id));
   };
 
+
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
-    // const title = form.title;
-    // const content = form.content;
 
-    const finalTitle = title !== defaultData.title ? title : defaultData.title;
+    // title과 content의 값이 변경되지 않으면(onChange 이벤트 발생x) default data 그대로 제출 되도록 해야 함
+    // onChange 발생하지 않을 때의 값은 undefined -> undefined의 경우 default 값 받고, 아니면 수정값 받으면 됨
+    const finalTitle = title === undefined ? defaultData.title : title;
 
-    const finalContent = content !== defaultData.content ? content : defaultData.content;
+    const finalContent = content === undefined ? defaultData.content : content;
   
-    console.log("수정 후 title:", finalTitle, "/수정 후 content:", finalContent);
+    console.log("수정 후 title:", finalTitle);
+    console.log("수정 후 content:", finalContent)
+
   
     // 제목이나 내용 비어있으면 alert
     if (!finalTitle || finalTitle === '') {
@@ -144,7 +124,7 @@ function BoardEdit() {
     
     // 제목, 내용 다 있으면 데이터를 서버에 전송하기 위해
     // boardWrite 함수 호출
-    const res = await boardEdit(id, title, content);
+    const res = await boardEdit(id, finalTitle, finalContent);
 
     formData.append('boardId', res.insertId)
     const fileRes = await fileupload(formData)
@@ -155,6 +135,7 @@ function BoardEdit() {
       setErrorMessage("제목이나 내용을 다시 확인해주세요");
     }
   }
+
 
   return (
     <>

@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function Board() {
 
-  // api > board.js에서 받아온 상위 10개 게시글 리스트
+  const {user, setUser} = useAuth();
+
+  // client > api 에서 받아온 상위 10개 게시글 리스트
   async function getBoard(){
     const data = await board()
     return data;
@@ -15,6 +18,7 @@ function Board() {
 
   // api에서 받아온 데이터 useState 삽입
   let [contents, setContents] = useState([])
+  console.log(contents)
 
   // 화면 최초로 rendering 될 때만 데이터 get 요청
   useEffect(()=>{
