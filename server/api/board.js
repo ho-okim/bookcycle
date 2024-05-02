@@ -55,8 +55,8 @@ router.get('/board/:id', async (req, res) => {
 router.post('/delete/:id', async (req, res) => {
   let { id } = req.params;
 
-  // board와 board_image/board_liked 제약조건 관계로
-  // board_image/board_liked 열 먼저 삭제 후 -> board 열 삭제
+  // board - board_image/board_liked/reply 제약조건 관계로
+  // board_image/board_liked/reply 열 먼저 삭제 후 -> board 열 삭제
   try {
       let sql1 = "DELETE FROM board_image WHERE board_id = ?";
       let sql1_result = await pool.query(sql1, [id]);
@@ -103,6 +103,7 @@ router.post('/edit/:id', async(req, res) => {
 
 // 댓글 작성 
 router.post('/replyWrite/:id', async(req, res)=>{
+  const loginUser = req.user ? req.user : null
   const { reply } = req.body;
   let { id } = req.params;
 
@@ -110,7 +111,11 @@ router.post('/replyWrite/:id', async(req, res)=>{
 
   let sql = 'INSERT INTO reply (board_id, user_id, content) VALUES (?, ?, ?)';
 
-  let result = await pool.query(sql, [id, 1, reply]); 
+  let result = await pool.query(sql, [
+    id, 
+    loginUser.id, 
+    reply
+  ]); 
 
   res.send(result);
 })

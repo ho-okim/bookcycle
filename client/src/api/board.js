@@ -78,6 +78,7 @@ export async function boardEdit(id, title, content){
         throw new Error("boardEdit fails");
     } 
     const body = res.data;
+    body.message = 'success'
 
     return body;
 }
