@@ -25,21 +25,13 @@ import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
 import { useEffect } from 'react';
-import { LoginUserContext, useUser } from './contexts/LoginUserContext.js';
+import AuthProvider from './contexts/LoginUserContext.js';
 
 function App() {
   
-  const { user, setUser, handleLogin, handleLogout, handleGetCurrentUser } = useUser();
-
-  useEffect(()=>{
-    async function getCurrentUser() { // 로그인 한 유저 정보 가져옴
-      await handleGetCurrentUser();
-    }
-    getCurrentUser();
-  }, []);
-
+ 
   return (
-    <LoginUserContext.Provider value={{user, setUser, handleLogin, handleLogout, handleGetCurrentUser}}>
+    <AuthProvider>
       <Header/>
         <Routes>
           <Route path="/" element={<Main/>}/>
@@ -73,8 +65,9 @@ function App() {
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
         </Routes>
       <Footer/>
-    </LoginUserContext.Provider>
+    </AuthProvider>
   );
+
   
 }
 

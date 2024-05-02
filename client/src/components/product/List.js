@@ -6,19 +6,16 @@ import ProductDetail from '../../pages/product/ProductDetail';
 
 
 function List(props){
-
-  const { id } = useParams(); /* 데이터베이스 */
-
-  function getBookList(){
-    let reqOPtion={
-      method : "get",
-      headers : {
-        "content-type" : "application/json"
-      }
-    }
-    fetch("../../../../server/api/productList.js", reqOPtion).then((res)=> res.json()).then(data=>console.log(data));
-
+/** 
+ * 
+ * async function getProduct(){
+    const data = await productList()
+    return data;
   }
+ * 
+ * 
+*/
+
 
 
   return (

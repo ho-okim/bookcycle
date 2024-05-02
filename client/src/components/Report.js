@@ -4,12 +4,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import report_reason from '../lib/report_reason.js';
 import { Modal, Button } from 'react-bootstrap';
-import { LoginUserContext } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 import { addReport } from '../api/report.js';
 
 function Report({show, handleClose}) {
 
-    const { user } = useContext(LoginUserContext);
+    const { user } = useAuth();
 
     const currentUrl = window.location.href; // 현재 url
     const { id } = useParams(); // url에서 가져온 id param

@@ -3,11 +3,11 @@ import Container from 'react-bootstrap/Container';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css'
 import ChatUser from '../components/ChatUser';
-import { useUser } from '../contexts/LoginUserContext';
+import { useAuth } from '../contexts/LoginUserContext';
 import { chatList } from '../api/chat';
 
 function Chat() {
-  const {user, setUser} = useUser();
+  const {user, setUser} = useAuth();
   // const onSocket = () => {
   //   const socket = io('http://localhost:10000')
 

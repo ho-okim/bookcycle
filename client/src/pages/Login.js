@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/Button';
-import { LoginUserContext } from '../contexts/LoginUserContext.js';
+import { useAuth } from '../contexts/LoginUserContext.js';
 
 function Login() {
 
-  const { user, handleLogin } = useContext(LoginUserContext);
+  const { user, handleLogin } = useAuth();
 
   const [form, setForm] = useState({ email: '' , passoword: '' });
   const [errorMessage, setErrorMessage] = useState({
