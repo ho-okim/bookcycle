@@ -51,14 +51,7 @@ function ProductList() {
                 </select>
               }
             </div>
-          </div>
-
-
-
-
-
-
-
+          </div> 
 
           <div className={`${style.productLists}`}>
           <div className='column'>

@@ -26,10 +26,9 @@ import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './pages/mypage/ReviewWrite.js';
 import MyReport from './pages/mypage/MyReport.js';
-import AuthProvider from './contexts/LoginUserContext.js'
+import AuthProvider from './contexts/LoginUserContext.js';
 
 function App() {
-
   return (
     <AuthProvider>
       <Header/>
