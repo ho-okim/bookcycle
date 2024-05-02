@@ -3,9 +3,6 @@
 # dependencies
 /node_modules
 /client/node_modules
-/client/public
-/client/src/App.test.js
-/client/src/index.css
 
 
 /.pnp
@@ -18,6 +15,15 @@ db_config.json
 #client/src
 reportWebVitals.js
 setupTests.js
+/client/src/App.test.js
+/client/src/index.css
+
+#client/public
+/client/public/favicon.*
+/client/public/index.html
+/client/public/logo*
+/client/public/manifest.*
+/client/public/robots.txt
 
 # server
 /server/test.js
