@@ -1,23 +1,28 @@
 const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
+const { isLoggedIn } = require("../lib/auth.js");
 
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {
 
-    const loginUser = req.user ? req.user : null
-    
-    // query문 설정
-    let sql = "SELECT * FROM board ORDER BY createdAt DESC LIMIT 10";
+  const loginUser = req.user ? req.user : null
+  
+  // query문 설정
+  let sql = "SELECT * FROM board ORDER BY createdAt DESC LIMIT 10";
 
+  try {
     // db connection pool을 가져오고, query문 수행
     let result = await pool.query(sql);
     res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 
 // 게시글 작성(추가)
-router.post('/boardwrite', async(req, res) => {
-  const loginUser = req.user ? req.user : null
+router.post('/boardwrite', isLoggedIn, async(req, res) => {
 
   // client에서 보낸 request body
   const {title, content} = req.body;
@@ -26,13 +31,18 @@ router.post('/boardwrite', async(req, res) => {
 
   console.log("게시글 내용 추가: ", req.body)
 
-  let result = await pool.query(sql, [
-    loginUser.id,
-    title,
-    content
-  ]); 
-
-  res.send(result);
+  try {
+    let result = await pool.query(sql, [
+      req.user.id,
+      title,
+      content
+    ]); 
+  
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 
@@ -42,17 +52,22 @@ router.get('/board/:id', async (req, res) => {
   // query문 설정
   let sql = "SELECT * FROM board WHERE id = ?";
 
-  // db connection pool을 가져오고, query문 수행
-  let result = await pool.query(sql, [id]);
+  try {
+    // db connection pool을 가져오고, query문 수행
+    let result = await pool.query(sql, [id]);
 
-  console.log("특정 사용자글 조회: ", result)
+    console.log("특정 사용자글 조회: ", result)
 
-  res.send(result);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 
 // 게시글 삭제
-router.post('/delete/:id', async (req, res) => {
+router.post('/delete/:id', isLoggedIn, async (req, res) => {
   let { id } = req.params;
 
   // board와 board_image/board_liked 제약조건 관계로
@@ -85,7 +100,7 @@ router.post('/delete/:id', async (req, res) => {
 
 
 // 게시글 수정
-router.post('/edit/:id', async(req, res) => {
+router.post('/edit/:id', isLoggedIn, async(req, res) => {
   let { id } = req.params;
 
   let title = req.body.title;
@@ -93,16 +108,21 @@ router.post('/edit/:id', async(req, res) => {
 
   let sql = "UPDATE board SET title = ?, content = ? WHERE id = ?";
 
-  let result = await pool.query(sql, [title, content, id]);
+  try {
+    let result = await pool.query(sql, [title, content, id]);
 
-  console.log("게시글 수정 결과: ", result)
-
-  res.send(result);
+    console.log("게시글 수정 결과: ", result)
+  
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 
 // 댓글 작성 
-router.post('/replyWrite/:id', async(req, res)=>{
+router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
   const { reply } = req.body;
   let { id } = req.params;
 
@@ -110,10 +130,15 @@ router.post('/replyWrite/:id', async(req, res)=>{
 
   let sql = 'INSERT INTO reply (board_id, user_id, content) VALUES (?, ?, ?)';
 
-  let result = await pool.query(sql, [id, 1, reply]); 
+  try {
+    let result = await pool.query(sql, [id, 1, reply]); 
 
-  res.send(result);
-})
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
 
 
 // 댓글 조회
@@ -122,12 +147,17 @@ router.get('/reply/:id', async(req, res) => {
 
   let sql = "SELECT * FROM reply WHERE board_id = ? ORDER BY createdAt DESC";;
 
-  let result = await pool.query(sql, [id]);
+  try {
+    let result = await pool.query(sql, [id]);
 
-  console.log("댓글 조회: ", result)
-
-  res.send(result)
-})
+    console.log("댓글 조회: ", result);
+  
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
 
 
 
@@ -152,7 +182,7 @@ const upload = multer({
 });
 
 
-router.post('/fileupload', upload.array('files', 5), async(req, res)=>{
+router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
   const files = req.files
   let result
@@ -171,10 +201,5 @@ router.post('/fileupload', upload.array('files', 5), async(req, res)=>{
     console.log('fileupload POST 과정에서 오류 발생 : ', error)
   }
 })
-
-
-
-
-
 
 module.exports = router;

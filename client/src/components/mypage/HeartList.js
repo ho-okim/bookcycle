@@ -7,10 +7,9 @@ import { PersonFill } from "react-bootstrap-icons";
 import styles from "../../styles/mypage.module.css";
 
 function HeartList() {
-  const { id } = useParams();
 
   async function getHeart() {
-    const data = await heartList(id);
+    const data = await heartList();
     return data;
   }
 
@@ -22,7 +21,7 @@ function HeartList() {
       setHearts(items);
     };
     fetchHearts();
-  }, [id]);
+  }, []);
 
   if (!hearts || Object.keys(hearts).length === 0) {
     return <div>아직 찜한책이 없습니다.</div>;

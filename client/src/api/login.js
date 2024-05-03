@@ -11,18 +11,31 @@ export async function login(email, password) {
 }
 
 export async function getLoginUser() {
-    const res = await axios.get('/getLoginUser');
+    try {
+        const res = await axios.get('/getLoginUser');
+
+        if (res.statusText !== "OK") {
+            throw new Error("로그인 유저 정보 담기 실패");
+        }
     
-    if (res.statusText !== "OK") {
-        throw new Error("로그인 유저 정보 담기 실패");
+        const body = res.data;
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            return null;
+        } else {
+            throw error;
+        }
     }
 
-    const body = res.data;
-    return body;
 }
 
 export async function logout() {
-    const res = await axios.get("/logout");
-    const body = res.data;
-    return body;
+    try {
+        const res = await axios.get("/logout");
+        const body = res.data;
+        return body;
+    } catch (error) {
+        throw error;
+    }
 }

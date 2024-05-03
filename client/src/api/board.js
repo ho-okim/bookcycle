@@ -14,30 +14,48 @@ export async function board(){
 
 // 게시글 작성(추가)
 export async function boardWrite(title, content) {
-    const res = await axios.post('/boardwrite', { title, content });
+    try {
+        const res = await axios.post('/boardwrite', { title, content });
     
-    if (res.statusText != "OK") {
-        throw new Error("post fails");
-    } 
-    const body = res.data;
-    body.message = 'success'
-    
-    return body;
+        if (res.statusText != "OK") {
+            throw new Error("post fails");
+        } 
+        const body = res.data;
+        body.message = 'success'
+        
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
+    }
+
 }
 
 
 export async function fileupload(formData) {
-  const res = await axios.post('/fileupload', formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
+    try {
+        const res = await axios.post('/fileupload', formData, {
+            headers: {
+            "Content-Type": "multipart/form-data"
+            }
+        })
+        
+        if (res.statusText != "OK") {
+            throw new Error("file upload fails");
+        } 
+        
+        return res.statusText;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
     }
-  })
-  
-  if (res.statusText != "OK") {
-      throw new Error("file upload fails");
-  } 
-  
-  return res.statusText;
+
 }
 
 
@@ -58,43 +76,70 @@ export async function boardDetail(id){
 // 게시글 삭제
 export async function boardDelete(id){
 
-    const res = await axios.post(`/delete/${id}`)
+    try {
+        const res = await axios.post(`/delete/${id}`)
 
-    if (res.statusText != "OK") {
-        throw new Error("boardDelete fails");
-    } 
-    const body = res.data;
+        if (res.statusText != "OK") {
+            throw new Error("boardDelete fails");
+        } 
+        const body = res.data;
+    
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
+    }
 
-    return body;
 }
 
 
 // 게시글 수정
 export async function boardEdit(id, title, content){
 
-    const res = await axios.post(`/edit/${id}`, {title, content})
+    try {
+        const res = await axios.post(`/edit/${id}`, {title, content})
 
-    if (res.statusText != "OK") {
-        throw new Error("boardEdit fails");
-    } 
-    const body = res.data;
+        if (res.statusText != "OK") {
+            throw new Error("boardEdit fails");
+        } 
+        const body = res.data;
+    
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
+    }
 
-    return body;
 }
 
 
 // 댓글 작성 - replyWrite(id, reply)로 전달해야할까?
 export async function replyWrite(id, reply){
 
-    const res = await axios.post(`/replyWrite/${id}`, { reply });
+    try {
+        const res = await axios.post(`/replyWrite/${id}`, { reply });
     
-    if (res.statusText != "OK") {
-        throw new Error("postReply fails");
-    } 
-    const body = res.data;
-    body.message = 'success'
-    
-    return body;
+        if (res.statusText != "OK") {
+            throw new Error("postReply fails");
+        } 
+        const body = res.data;
+        body.message = 'success'
+        
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
+    }
+
 }
 
 

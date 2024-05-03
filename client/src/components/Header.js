@@ -52,7 +52,7 @@ function Header() {
                       : 
                       <>
                         <Nav.Link onClick={handleLogoutClick}>로그아웃</Nav.Link>
-                        <Nav.Link href={`/mypage/${user.id}/buyList`}>마이페이지</Nav.Link>
+                        <Nav.Link href={'/mypage/buyList'}>마이페이지</Nav.Link>
                       </>
                     }
                   </Nav>

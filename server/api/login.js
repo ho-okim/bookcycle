@@ -3,7 +3,7 @@ const passport = require("passport");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 
 // 로그인
-router.post('/login', async (req, res, next) => {
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
     passport.authenticate(("local"), (error, user, info) => {
         // 인증 오류 처리
@@ -47,7 +47,7 @@ router.get("/logout", isLoggedIn, (req, res) => {
 });
 
 // 로그인 한 사용자 조회
-router.get("/getLoginUser", (req, res)=>{
+router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   try {
     res.send(req.user);
   } catch (error) {

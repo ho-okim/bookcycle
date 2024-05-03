@@ -8,10 +8,8 @@ import styles from '../../styles/mypage.module.css';
 
 function SellList() {
 
-  const { id } = useParams();
-
   async function getItems(){
-    const data = await sellList(id)
+    const data = await sellList();
     return data
   }
 

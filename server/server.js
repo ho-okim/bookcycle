@@ -114,10 +114,16 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
     try {
         let [data] = await pool.query(sql, [user.email]);
     
-        delete data.password;
+        const userInfo = {
+            id : data.id,
+            email : data.email,
+            nickname : data.nickname,
+            profile_image : data.profile_image,
+            verification : data.verification
+        }
 
         process.nextTick(() => {
-            return done(null, data); // req.user에 user 저장
+            return done(null, userInfo); // req.user에 user 저장
         });
     } catch (error) {
         console.log(error);

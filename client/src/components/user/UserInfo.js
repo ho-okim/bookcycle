@@ -29,6 +29,9 @@ function UserInfo() {
     useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
         async function getUser() {
             const res = await getUserInfo(targetUserId);
+            if (res == 'error') {
+                navigate("/");
+            }
             setUserInfo(res);
         }
         getUser();
@@ -38,7 +41,7 @@ function UserInfo() {
     function profileImageBox() { // 프로필 이미지 처리
         if (userInfo.profile_image) {
             if (userInfo.profile_image.length != 0) {
-                return (<img className={styles.profile_image} src='' alt='프로필'/>);
+                return (<img className={styles.profile_image} src={`${process.env.PUBLIC_URL}/img/profile/${userInfo.profile_image}`} alt='프로필'/>);
             }
         } 
         return(<PersonCircle className={styles.profile_default}/>);
@@ -63,7 +66,7 @@ function UserInfo() {
                             {
                                 (userInfo.manner_score) ?
                                 (userInfo.manner_score).toFixed(1)
-                                : null
+                                : '-'
                             }
                             </p>
                             <StarFill className={styles.manner_score_star}/>

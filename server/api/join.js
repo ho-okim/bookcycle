@@ -74,20 +74,20 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
   let sql = 'INSERT INTO users (role_id, email, password, username, nickname, phone_number, verification) VALUES (2, ?, ?, ?, ?, ?, ?)';
 
   //console.log(req.body)
-    try {
-      let result = await pool.query(sql, [
-        email, 
-        await bcrypt.hash(password, 10),
-        username, 
-        nickname, 
-        phone_number, 
-        token // verification 칼럼에 생성된 난수 token 넣음
-      ]);
-      res.send(result);
-    } catch (error) {
-      console.error(error);
-      res.send('error');
-    }
+  try {
+    let result = await pool.query(sql, [
+      email, 
+      await bcrypt.hash(password, 10),
+      username, 
+      nickname, 
+      phone_number, 
+      token // verification 칼럼에 생성된 난수 token 넣음
+    ]);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // verify API
@@ -96,18 +96,23 @@ router.get('/verify', async(req, res)=>{
   
   let sql = 'SELECT * FROM users WHERE email = ?';
 
-  // 쿼리스트링으로 들어온 email을 이용하여 사용자 찾기
-  let result = await pool.query(sql, [email]);
-  
-  // 쿼리스트링으로 들어온 token과 해당 유저의 verification이 동일하다면 verification 칼럼 0으로 변경
-  if(result[0].verification == token){
-    let sql2 = 'UPDATE users SET verification=? WHERE id=?';
-    await pool.query(sql2, [0, result[0].id]);
+  try {
+    // 쿼리스트링으로 들어온 email을 이용하여 사용자 찾기
+    let result = await pool.query(sql, [email]);
+    
+    // 쿼리스트링으로 들어온 token과 해당 유저의 verification이 동일하다면 verification 칼럼 0으로 변경
+    if(result[0].verification == token){
+      let sql2 = 'UPDATE users SET verification=? WHERE id=?';
+      await pool.query(sql2, [0, result[0].id]);
 
-    res.send('인증이 완료되었습니다.')
-  } else(
-    res.send('인증 링크에 오류가 발생했습니다. 회원가입을 다시 진행해주세요.')
-  )
+      res.send('인증이 완료되었습니다.');
+    } else {
+      res.send('인증 링크에 오류가 발생했습니다. 회원가입을 다시 진행해주세요.');
+    }
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 module.exports = router;

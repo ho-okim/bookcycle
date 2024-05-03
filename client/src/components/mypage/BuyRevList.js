@@ -10,10 +10,8 @@ import styles from '../../styles/mypage.module.css';
 
 function BuyRevList() {
 
-  const { id } = useParams();
-
   async function getReviews(){
-    const data = await buyReviewList(id)
+    const data = await buyReviewList();
     return data
   }
 

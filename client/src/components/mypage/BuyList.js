@@ -8,11 +8,8 @@ import styles from '../../styles/mypage.module.css';
 
 function BuyList() {
 
-  const { id } = useParams();
-
-
   async function getItems(){
-    const data = await buyList(id)
+    const data = await buyList();
     return data
   }
 
