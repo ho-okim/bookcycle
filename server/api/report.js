@@ -1,17 +1,17 @@
 const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
-const { isLoggedIn } = require('../lib/auth.js');
+const { isLoggedIn, isAdmin, isIdenticalUser } = require('../lib/auth.js');
 
 // 내가 신고한 내역 조회
-router.get('/report/myreport/:userId', isLoggedIn, async (req, res) => {
-    let { userId } = req.params;
+router.get('/report/myreport/', isLoggedIn, async (req, res) => {
+    const id = req.user.id;
     
     // query문 설정
     let sql = 'SELECT * FROM report WHERE user_id = ?';
 
     try {
         // db connection pool을 가져오고, query문 수행
-        let result = await pool.query(sql, [userId]);
+        let result = await pool.query(sql, [id]);
         res.send(result);
     } catch (error) {
         console.error(error);
@@ -43,7 +43,7 @@ router.post('/report', isLoggedIn, async (req, res) => {
 });
 
 // 신고내역 확인 및 처리 표시
-router.put('/report/:id', async (req, res) => {
+router.get('/report/:id', isAdmin, async (req, res) => {
     const { id } = req.params;
 
     // query문 설정

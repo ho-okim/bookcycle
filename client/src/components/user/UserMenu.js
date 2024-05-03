@@ -17,8 +17,8 @@ function UserMenu() {
                     </p>
                     <div className={styles.menu_hr}/>
                         <ul className={styles.menu}>
-                            <li><Link to={`/mypage/${user?.id}/sellList`}>판매도서</Link></li>
-                            <li><Link to={`/mypage/${user?.id}/buyReviewList`}>구매후기</Link></li>
+                            <li><Link to={'/mypage/sellList'}>판매도서</Link></li>
+                            <li><Link to={'/mypage/buyReviewList'}>구매후기</Link></li>
                         </ul>
                 </div>
             </div>

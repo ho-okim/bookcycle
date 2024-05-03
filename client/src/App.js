@@ -36,7 +36,7 @@ function App() {
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/join" element={<Join/>}/>
-          <Route path="/mypage/:id">
+          <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>
             <Route path="buyReviewList" element={<MyBuyReview/>}/>
             <Route path="heartList" element={<MyHeartList/>}/>

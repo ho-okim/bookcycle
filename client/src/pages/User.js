@@ -20,17 +20,17 @@ function User() {
 
     if (user && user.id == id) { // 로그인 한 사용자는 내 페이지로 이동시킴
         return(
-            <Navigate to={`/mypage/${user.id}/buyList`}/>
+            <Navigate to={'/mypage/buyList'}/>
         )
     }
 
     // 하위 url인지 확인
     let subUrl = currentUrl.includes("product") || currentUrl.includes("review");
 
-    let boxStyle = subUrl ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
+    let boxStyle = (subUrl || !user) ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
 
     // 로그인 한 유저 상태에 따른 박스 스타일
-    let otherUserStyle = user ? styles.user_menu : styles.other_user_nologin;
+    let otherUserStyle = user ? styles.other_user : styles.other_user_nologin;
 
     return (
         <TargetUserContext.Provider value={targetUserId}>
@@ -41,7 +41,7 @@ function User() {
                         <UserMenu/>
                     </section>
                 }
-                <section className={styles.otherUserStyle}>
+                <section className={otherUserStyle}>
                     {
                         (subUrl) ?
                         <>

@@ -11,10 +11,9 @@ import styles from '../../styles/mypage.module.css';
 function MypageEdit() {
 
   const navigate = useNavigate();
-  const { id } = useParams();
 
   async function getUser() {
-    const data = await mypage(id);
+    const data = await mypage();
     return data;
   }
 
@@ -33,7 +32,7 @@ function MypageEdit() {
       setUser(items);
     };
     fetchUser();
-  }, [id])
+  }, []);
 
   // user 객체가 비어있는 경우 렌더링하지 않음
   if (!user || Object.keys(user).length === 0) {
@@ -73,8 +72,8 @@ function MypageEdit() {
   //       return;
   //     }
 
-  //     await mypageEdit(id, nickname, phoneNumber);
-  //     navigate(`/mypage/${id}/edit`);
+  //     await mypageEdit(nickname, phoneNumber);
+  //     navigate(`/mypage/edit`);
 
   //   } catch(error) {
   //     console.error('수정 실패: ', error.message)

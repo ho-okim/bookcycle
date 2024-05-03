@@ -4,92 +4,121 @@ const pool = require("../db.js"); // db connection pool
 const { isLoggedIn } = require("../lib/auth.js");
 
 // 회원정보관리 페이지
-router.get("/mypage/:id/edit", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/edit", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   // query문 설정
   let sql = "SELECT * FROM users WHERE id = ?";
 
-  // db connection pool을 가져오고, query문 수행
-  const result = await pool.query(sql, [id]);
-  console.log('mypage user: ', result)
+  try {
+    // db connection pool을 가져오고, query문 수행
+    const result = await pool.query(sql, [id]);
+    console.log('mypage user: ', result)
 
-  if (!result) {
-    return res.status(404).send("사용자 정보를 찾을 수 없습니다");
+    if (!result) {
+      return res.status(404).send("사용자 정보를 찾을 수 없습니다");
+    }
+
+    res.send(result); 
+  } catch (error) {
+    console.error(error);
+    res.send('error');
   }
-
-  res.send(result); 
 });
 
 
-router.put("/mypage/:id/edit", async(req, res) => { 
-  const { id } = req.params;
+router.put("/mypage/edit", isLoggedIn, async(req, res) => { 
+  const { id } = req.user;
   const { nickname, phone_number } = req.body;
-
-  const loginUser = req.user ? req.user.userid : null;
-
-  if(!loginUser) {
-    return res.status(401).send("로그인이 필요합니다");
-  }
 
   let sql = "UPDATE users SET nickname = ?, phone_number = ? WHERE id = ?";
 
-  await pool.query(sql, [nickname, phone_number, id]);
+  try {
+    await pool.query(sql, [nickname, phone_number, id]);
 
-  res.send("사용자 정보가 수정되었습니다.")
+    res.send("사용자 정보가 수정되었습니다.");
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 
 // 구매내역 페이지
-router.get("/mypage/:id/buyList", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/buyList", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   // product 테이블에서 createdAt 정렬
   let sql = "SELECT product.*, seller.nickname as seller_nickname, buyer.nickname as buyer_nickname FROM product JOIN users as seller ON product.seller_id = seller.id JOIN users as buyer ON product.buyer_id = buyer.id WHERE buyer_id = ?";
 
-  const result = await pool.query(sql, [id]);
-  res.send(result);
-  // 해당 result는 client > src > api > mypage.js에서 받아서 사용함
+  try {
+    const result = await pool.query(sql, [id]);
+    res.send(result);
+    // 해당 result는 client > src > api > mypage.js에서 받아서 사용함
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // 구매후기 페이지
-router.get("/mypage/:id/buyReviewList", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/buyReviewList", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   let sql = "SELECT review.*, buyer.nickname as buyer_nickname FROM review JOIN users as buyer ON review.buyer_id = buyer.id WHERE buyer_id = ?";
 
-  const result = await pool.query(sql, [id]);
-  res.send(result);
+  try {
+    const result = await pool.query(sql, [id]);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // 판매내역 페이지
-router.get("/mypage/:id/sellList", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/sellList", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   let sql = "SELECT product.*, seller.nickname as seller_nickname, buyer.nickname as buyer_nickname FROM product JOIN users as seller ON product.seller_id = seller.id JOIN users as buyer ON product.buyer_id = buyer.id WHERE seller_id = ?";
 
-  const result = await pool.query(sql, [id]);
-  res.send(result);
+  try {
+    const result = await pool.query(sql, [id]);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // 판매후기 페이지
-router.get("/mypage/:id/sellReviewList", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/sellReviewList", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   let sql = "SELECT review.*, buyer.nickname as buyer_nickname FROM review JOIN users AS buyer ON review.buyer_id = buyer.id WHERE seller_id = ?";
 
-  const result = await pool.query(sql, [id]);
-  res.send(result);
+  try {
+    const result = await pool.query(sql, [id]);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // 찜한책 페이지
-router.get("/mypage/:id/heartList", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
+  const { id } = req.user;
 
   let sql = "SELECT * FROM user_liked_product WHERE user_id = ?"
   
-  const result = await pool.query(sql, [id]);
-  res.send(result);
+  try {
+    const result = await pool.query(sql, [id]);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 // 리뷰작성 페이지
@@ -98,20 +127,25 @@ router.get("/productDetail/:id/reviewWrite", isLoggedIn, async(req, res) => {
 
   // 상품 정보 조회
   let userSql = "SELECT * FROM users WHERE id = ?";
-
-  const userResult = await pool.query(userSql, [id]);
-
   // 태그 정보 조회
   let tagSql = "SELECT * FROM tag";
-  const tagResult = await pool.query(tagSql);
 
-  // 조회된 상품 정보와 태그 정보를 클라이언트에게 전송
-  res.send({ user: userResult, tags: tagResult });
-})
+  try {
+    const userResult = await pool.query(userSql, [id]);
+
+    const tagResult = await pool.query(tagSql);
+  
+    // 조회된 상품 정보와 태그 정보를 클라이언트에게 전송
+    res.send({ user: userResult, tags: tagResult });
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
 
 
 // 리뷰작성
-router.post("/user/:id/reviewWrite", async (req, res) => {
+router.post("/user/:id/reviewWrite", isLoggedIn, async (req, res) => {
 
   // seller_id
   const { id } = req.params;
@@ -130,23 +164,24 @@ router.post("/user/:id/reviewWrite", async (req, res) => {
   }
 
   let reviewSql = `INSERT INTO review (buyer_id, seller_id, content, score, product_id) VALUES (?, ?, ?, ?, ?)`;
-    
-  const reviewResult = await pool.query(reviewSql, [req.user.id, id, reviewContent, rating, productId]);
+  let tagSql = `INSERT INTO review_tag (review_id, tag_id) VALUES (?, ?)`;
 
-  console.log(req.user)
+  try {
+    const reviewResult = await pool.query(reviewSql, [req.user.id, id, reviewContent, rating, productId]);
 
+    console.log(req.user)
 
-  // 리뷰 작성 후 리뷰 ID를 가져오는 SQL 쿼리
-  const reviewId = reviewResult.insertId;
+    // 리뷰 작성 후 리뷰 ID를 가져오는 SQL 쿼리
+    const reviewId = reviewResult.insertId;
 
+    const tagResult = await pool.query(tagSql, [reviewId, tagIndex]); 
 
-  let tagSql = `INSERT INTO review_tag (review_id, tag_id) VALUES (?, ?)`
-  const tagResult = await pool.query(tagSql, [reviewId, tagIndex]); 
-
-  res.send({review: reviewResult, tag: tagResult});
+    res.send({review: reviewResult, tag: tagResult});
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
-
-
 
 router.delete("/", (req, res) => {});
 

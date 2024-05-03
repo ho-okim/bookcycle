@@ -11,9 +11,8 @@ function ReportList() {
     const [reportItem, setReportItem] = useState([]); // 신고 내역 정보
 
     useEffect(()=> {
-        let id = user?.id; // user 정보 가져오는게 늦을 때를 위한 id 처리
         async function getItems() {
-            const res = await getReport(id);
+            const res = await getReport();
             setReportItem(res);
         }
 

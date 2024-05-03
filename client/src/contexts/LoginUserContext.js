@@ -8,7 +8,7 @@ function AuthProvider({children}) {
     const [user, setUser] = useState(null); // 로그인 한 사용자
 
     useEffect(()=>{
-        async function getUser() {
+        async function getUser() { // 현재 로그인 한 사용자 가져오기(req.user)
             const res = await getLoginUser();
             setUser(res);
         }

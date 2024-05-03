@@ -3,7 +3,7 @@ const passport = require("passport");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 
 // 로그인
-router.post('/login', async (req, res, next) => {
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
     passport.authenticate(("local"), (error, user, info) => {
         // 인증 오류 처리
@@ -33,13 +33,21 @@ router.post('/login', async (req, res, next) => {
 // 로그아웃 - DB에 저장된 세션에도 자동 처리됨
 router.get("/logout", isLoggedIn, (req, res) => {
     req.logOut(() => {
-        console.log("로그아웃 완료됨");
+        // 세션 제거
+        req.session.destroy((error) => {
+          if (error) throw error;
+        });
+        // 쿠키 제거
+        res.clearCookie('bookie', req.signedCookies['bookie'], {
+          httpOnly : true,
+          secure : false
+        });
         res.send("logged out");
     });
 });
 
 // 로그인 한 사용자 조회
-router.get("/getLoginUser", (req, res)=>{
+router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   try {
     res.send(req.user);
   } catch (error) {

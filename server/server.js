@@ -2,10 +2,14 @@
 // 환경변수
 require("dotenv").config();
 
+const PORT = process.env.PORT || 10000;
+
 // express 설정
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
 
 // http와 socket.io 설정
 const { createServer } = require("http");
@@ -14,7 +18,7 @@ const exp = require("constants");
 const server = createServer(app); // express를 사용한 http 서버 생성
 const io = new Server(server, {
   cors: {
-    origin: "*"
+    origin: whiteList
   }
 }); // socket 서버 생성
 
@@ -29,8 +33,6 @@ const MySQLStore = require("express-mysql-session")(session);
 const dbConfig = require("../db_config.json");
 const pool = require("./db.js");
 
-const PORT = process.env.PORT || 10000;
-
 // session 설정
 const sessionOption = {
     secret : process.env.COOKIE_SECRET, // secret 키
@@ -38,8 +40,10 @@ const sessionOption = {
     saveUninitialized : false,
     cookie : {
         maxAge : 60 * 60 * 1000, // 1시간
+        httpOnly : true,
         secure : false
     }, 
+    name : 'bookie',
     store : new MySQLStore( dbConfig )
 }
 
@@ -51,11 +55,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended : true }));
 
-const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
+// app 설정 : cookie-parser
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 // app 설정 : cors
 app.use(cors({
     origin: whiteList,
-    credentials: true,
+    credentials: true, // 쿠키 접근 허용
     optionsSuccessStatus: 200
 }));
 
@@ -108,10 +114,16 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
     try {
         let [data] = await pool.query(sql, [user.email]);
     
-        delete data.password;
+        const userInfo = {
+            id : data.id,
+            email : data.email,
+            nickname : data.nickname,
+            profile_image : data.profile_image,
+            verification : data.verification
+        }
 
         process.nextTick(() => {
-            return done(null, data); // req.user에 user 저장
+            return done(null, userInfo); // req.user에 user 저장
         });
     } catch (error) {
         console.log(error);
