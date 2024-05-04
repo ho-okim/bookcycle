@@ -17,6 +17,8 @@ function AuthProvider({children}) {
 
     // 로그인 처리
     const handleLogin = useCallback(async (email, password)=> {
+        email = email.trim();
+
         const res = await login(email, password);
         
         if (res.message == 'success') {

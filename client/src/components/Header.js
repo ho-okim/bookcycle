@@ -16,7 +16,7 @@ function Header() {
 
   async function handleLogoutClick() { // 로그아웃 처리
     const res = await handleLogout();
-    navigate("/");
+    navigate(0);
   }
 
   return (

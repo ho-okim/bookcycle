@@ -46,7 +46,7 @@ function Login() {
     const res = await handleLogin(email, password);
 
     if (res == 'success') {
-      navigate("/");
+      navigate(-1);
       return;
     } else if (res == 'expired') { // 인증 링크 만료됨
       setErrorMessage('인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.');
@@ -68,10 +68,14 @@ function Login() {
           <div className={styles.input_box}>
             <input name="email" placeholder="email / 이메일"
             className={styles.input_form}
-            onChange={(e)=>{handleEmail(e.target.value)}} autoFocus/>
+            onChange={(e)=>{handleEmail(e.target.value)}} 
+            maxLength={50}
+            autoFocus/>
             <input name="password" placeholder="password / 비밀번호"
             className={styles.input_form}
-            type="password" onChange={(e)=>{handlePassword(e.target.value)}}/>
+            type="password" 
+            onChange={(e)=>{handlePassword(e.target.value)}}
+            maxLength={13}/>
           </div>
           {
             errorMessage ?
