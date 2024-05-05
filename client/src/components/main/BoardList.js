@@ -44,11 +44,10 @@ function BoardList(){
           contents.map((el, i)=>{
             const {year, time} = DateProcessing(el.createdAt)
             return(
-              <Link to={''} style={{ textDecoration: "none", color: "black"}} key={el.id}>
+              <Link to={`/board/${el.id}`} style={{ textDecoration: "none", color: "black"}} key={el.id}>
                 <div className="row text-center boardWrap" key={el.id}>
                   <div className="col-5 col-lg-8 medium boardTitle">{el.title}</div>
-                  {/* 추후에 view로 수정 필요(유저 이름) */}
-                  <div className="col-2 col-lg-1 medium">{el.user_id}</div>
+                  <div className="col-2 col-lg-1 medium">{el.nickname}</div>
                   <div className="col-3 col-lg-2 regular date">
                     <p className="year">{year}</p>
                     <p className="time">{time}</p>

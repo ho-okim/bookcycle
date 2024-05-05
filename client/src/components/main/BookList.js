@@ -29,7 +29,7 @@ function BookList(){
         {
           books.map((el)=>{
             return(
-              <Link to={""} style={{ textDecoration: "none", color: "black"}} className="col" key={el.id}>
+              <Link to={""} style={{ textDecoration: "none", color: "black"}} className="col-6 col-sm-4 col-lg-2" key={el.id}>
                 <MiniBook key={el.id} el={el}/>
               </Link>
             )
