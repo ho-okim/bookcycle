@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
+import axios from "../lib/axios.js";
 
-useEffect(() => {
-    axios.get('/api/test')
-      .then(res => console.log(res))
-  })
+// 상품 카테고리 조회
+export async function getCategory() {
+  let url = `/product/category`;
 
-const [inputData, setInputData] = useState([{
-    id: '',
-    category_name: ''
-}])
-
-function product(){
-
-
+  const res = await axios.get(url);
+  
+  if (res.statusText !== "OK") {
+      throw new Error("카테고리 조회 실패");
+  }
+  const body = res.data;
+  return body;
 }
 
 export default product;

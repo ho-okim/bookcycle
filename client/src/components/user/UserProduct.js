@@ -3,9 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { ArrowDown, ArrowUp, CurrencyDollar } from 'react-bootstrap-icons';
+import { Button, Overlay, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { ArrowDown, ArrowUp, CurrencyDollar, Filter } from 'react-bootstrap-icons';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
+import { getCategory } from '../../api/product.js';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
@@ -23,11 +24,23 @@ function UserProduct() {
     const [offset, setOffset] =  useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
     const [order, setOrder] = useState({ name : 'createdAt', ascend : false }); // 정렬기준
-    let prevOrder = {};
+    const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
+    const [category, setCategory] = useState([]); // 상품 카테고리
+    const [showFilter, setShowFilter] = useState(false); // 필터목록 표시여부
     let limit = 10;
 
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
+
+    const target = useREf(null); // 필터 타겟
+
+    useEffect(()=>{
+        async function getCategoryList() { // 최초 렌더링 시 카테고리 가져오기
+            const res = await getCategory();
+            setCategory(res);
+        }
+        getCategoryList();
+    }, []);
 
     useEffect(()=>{
         async function getTotal() {
@@ -63,7 +76,7 @@ function UserProduct() {
                     res = await getUserProductList(targetUserId, limit, offset, order);
                 } else {
                     setOffset(0);
-                    res = await getUserProductList(targetUserId, limit, 0, order);
+                    res = await getUserProductList(targetUserId, limit, offset, order);
                 }
             }
             setProductList(res);
@@ -92,8 +105,9 @@ function UserProduct() {
 
     function handleOrder(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
-        prevOrder = order;
+        setPrevOrder((prevOrder)=>({...prevOrder, name : order.name, ascend : order.ascend }));
         setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
+        //navigate(`${url}?page=${pageNumber}`); // 정렬 바뀌면 무조건 1페이지로 이동
         console.log({...order})
     }
 
@@ -140,6 +154,11 @@ function UserProduct() {
                                 <Sorting 
                                 sortType={'price'} ascend={order.name === 'price' && order.ascend} 
                                 handleOrder={handleOrder}/>
+                                <Filtering 
+                                target={target} 
+                                showFilter={showFilter} setShowFilter={setShowFilter} 
+                                category={category}
+                                />
                             </div> 
                             : null
                         }
@@ -176,18 +195,66 @@ function UserProduct() {
 }
 
 function Sorting({sortType, ascend, handleOrder}) {
+
+    let tooltipName;
+    let sortIcon;
+    switch (tooltipName) {
+        case 'createdAt' :
+            tooltipName = '등록날짜';
+            sortIcon = <span className={styles.sortType_name}>가</span>;
+            break;
+        case 'price' :
+            tooltipName = '가격';
+            sortIcon = <CurrencyDollar/>;
+            break;
+        case 'product_name' :
+            tooltipName = '이름';
+            sortIcon = <Clock/>;
+            break;
+    }
+
     return(
         <OverlayTrigger
         placement='top'
         overlay={
-            <Tooltip>{sortType === 'product_name' ? '상품이름' : '가격'} {ascend ? '오름차순' : '내림차순'}</Tooltip>
+            <Tooltip>{tooltipName} {ascend ? '오름차순' : '내림차순'}</Tooltip>
         }
         >
             <span className={`${styles.sort_box}`} id={sortType} onClick={(e)=>{handleOrder(e)}}>
                 {ascend ? <ArrowUp/> : <ArrowDown/>}
-                {sortType === 'product_name' ? <span className={styles.sortType_name}>가</span> : <CurrencyDollar/>}
+                {sortIcon}
             </span>
         </OverlayTrigger>
+    )
+}
+
+function Filtering({target, showFilter, setShowFilter, category}) {
+    
+    return(
+        <>
+            <Button ref={target} onClick={()=>{setShowFilter(!showFilter)}}><Filter/></Button>
+            <Overlay target={target.current} show={show} placement='top'>
+                <div>
+                    <div>
+                        <input type='checkbox' id='sold'></input>
+                        <label for='sold'>판매된 상품 제외</label>
+                    </div>
+                    <hr/>
+                    <div>
+                        {
+                            category.map((el)=>{
+                                return(
+                                    <div key={el.id}>
+                                        <input type='checkbox' id={el.category_name}></input>  
+                                        <label for={el.category_name}>{el.category_name}</label>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </Overlay>
+        </>
     )
 }
 
@@ -199,7 +266,7 @@ function SoldBook({product}) {
                 <div className={`${styles.book_image_box}`}>
                     {
                         product.filename ? 
-                        <img className={styles.book_image} src={product.filename} alt='책사진'/>
+                        <img className={styles.book_image} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
                         :
                         <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
                     }

@@ -41,10 +41,11 @@ router.get('/user/:userId/productAll', async (req, res) => {
 // 특정 사용자의 판매목록 조회
 router.get('/user/:userId/product', async (req, res) => {
     const {userId} = req.params;
-    const {offset, limit} = req.query;
-    
+    const {limit, offset, name, ascend} = req.body;
+    let updown = ascend ? 'ASC' : 'DESC';
+
     // query문
-    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ? ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ? ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
 
     try {
         // 상품 목록 조회
@@ -76,10 +77,11 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
 // 특정 판매자의 상품에 대한 review 조회
 router.get('/user/:userId/review', async (req, res) => {
     const {userId} = req.params;
-    const {offset, limit} = req.query;
+    const {limit, offset, name, ascend} = req.body;
+    let updown = ascend ? 'ASC' : 'DESC';
 
     // query문 설정
-    let sql = `SELECT * FROM user_review WHERE seller_id = ? ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    let sql = `SELECT * FROM user_review WHERE seller_id = ? ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
 
     try {
         // db connection pool을 가져오고, query문 수행

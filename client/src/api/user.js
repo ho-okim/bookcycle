@@ -28,8 +28,8 @@ export async function getUserProductAll(userId) {
 // 특정 사용자의 판매목록 조회
 export async function getUserProductList(userId, limit, offset, order) {
     const { name, ascend } = order;
-    let url = `/user/${userId}/product?limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
-    const res = await axios.get(url);
+    let url = `/user/${userId}/product`;
+    const res = await axios.get(url, { limit, offset, name, ascend });
 
     if (res.statusText !== "OK") {
         throw new Error("판매목록 조회 실패");
@@ -55,8 +55,9 @@ export async function getUserReviewAll(userId) {
 
 // 특정 판매자의 상품에 대한 review 조회
 export async function getUserReviewList(userId, limit, offset) {
-    let url = `/user/${userId}/review?limit=${limit}&offset=${offset}`;
-    const res = await axios.get(url);
+    const { name, ascend } = order;
+    let url = `/user/${userId}/review`;
+    const res = await axios.get(url, { limit, offset, name, ascend });
     
     if (res.statusText !== "OK") {
         throw new Error("구매후기 조회 실패");

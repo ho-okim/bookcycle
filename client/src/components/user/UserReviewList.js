@@ -23,6 +23,7 @@ function UserReviewList() {
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
     const [order, setOrder] = useState({ name : 'score', ascend : false }); // 정렬기준
+    const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
     let limit = 10;
 
     // 더보기버튼 클릭 시 이동
@@ -59,14 +60,19 @@ function UserReviewList() {
             if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
                 res = await getUserReviewList(targetUserId, 5, 0);
             } else { // 더보기 후 상세 페이지라면 상세 정보
-                res = await getUserReviewList(targetUserId, limit, offset);
+                if (prevOrder.name === order.name && prevOrder.ascend === order.ascend) {
+                    res = await getUserReviewList(targetUserId, limit, offset);
+                } else {
+                    setOffset(0);
+                    res = await getUserReviewList(targetUserId, limit, offset);
+                }
             }
             setReviewList(res);
             setLoading(false);
         }
 
         getReviewList();
-    }, [offset]);
+    }, [offset, order]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
@@ -86,7 +92,9 @@ function UserReviewList() {
 
     function handleOrder(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
+        setPrevOrder((prevOrder)=>({...prevOrder, name : order.name, ascend : order.ascend }));
         setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
+        //navigate(`${url}?page=${pageNumber}`); // 정렬 바뀌면 무조건 1페이지로 이동
         console.log({...order})
     }
 
