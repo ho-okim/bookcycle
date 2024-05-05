@@ -26,8 +26,9 @@ export async function getUserProductAll(userId) {
 }
 
 // 특정 사용자의 판매목록 조회
-export async function getUserProductList(userId, limit, offset) {
-    let url = `/user/${userId}/product?limit=${limit}&offset=${offset}`;
+export async function getUserProductList(userId, limit, offset, order) {
+    const { name, ascend } = order;
+    let url = `/user/${userId}/product?limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
@@ -64,9 +65,9 @@ export async function getUserReviewList(userId, limit, offset) {
     return body;
 }
 
-// 특정 판매자에 대한 review와 review tag 조회
-export async function getUserReviewTag(userId, limit, offset) {
-    let url = `/user/${userId}/reviewtag?limit=${limit}&offset=${offset}`;
+// 특정 판매자에 대한 review와 review tag 전체 수 조회
+export async function getUserReviewTagTotal(userId) {
+    let url = `/user/${userId}/reviewTagTotal`;
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {
@@ -76,3 +77,15 @@ export async function getUserReviewTag(userId, limit, offset) {
     return body;
 }
 
+// 특정 판매자에 대한 review와 review tag 조회
+export async function getUserReviewTag(userId, limit, offset) {
+    let url = `/user/${userId}/reviewtag?limit=${limit}&offset=${offset}`;
+
+    const res = await axios.get(url);
+    
+    if (res.statusText !== "OK") {
+        throw new Error("리뷰 조회 실패");
+    }
+    const body = res.data;
+    return body;
+}

@@ -34,7 +34,7 @@ function User() {
 
     return (
         <TargetUserContext.Provider value={targetUserId}>
-            <Container className={boxStyle}>
+            <Container className={`${boxStyle} ${styles.undrag}`}>
                 {
                     !user ? null : 
                     <section className={styles.user_menu}>

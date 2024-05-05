@@ -6,6 +6,14 @@ a:hover{
     text-decoration: underline;
 }
 
+.undrag{
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .user_menu{
     width: 20%;
 }
@@ -71,20 +79,25 @@ a:hover{
     border-radius: 100%;
 }
 
+.title {
+    margin-bottom : 10px;
+    display: flex; justify-content: space-between;
+    align-items: center;
+}
+
 .title .box{
     width: 30%;
     text-align: center;
 }
 
-.review_title_box{
-    margin-bottom : 20px;
+.title_font {
+    line-height: 2;
 }
 
 .user_info{
     margin:10px; padding: 5px;
     background-color: #fff;
     border-radius: 5px;
-    border: 2px solid #dddddd;
     text-align: center;
 }
 
@@ -125,6 +138,16 @@ a:hover{
     font-size: 16px;
 }
 
+.sort_box {
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.sortType_name {
+    font-size: 20px;
+}
+
 .liked{
     padding: 0 5px 0 0;
     width: 15%;
@@ -142,8 +165,7 @@ a:hover{
 }
 
 .more_btn{
-    width: 70px;
-    margin: 0 0 8px;
+    width: 70px; height: 90%;
     padding: 7px;
     border-radius: 5px;
 }
@@ -157,6 +179,15 @@ a:hover{
 
 .review_tag_table {
     width: 100%;
+}
+
+.review_box{
+    margin: 3px 0;
+    border-bottom: 2px solid #dddddd;
+}
+
+.review_box:last-of-type{
+    border-bottom: none;
 }
 
 .review_box *{
@@ -178,7 +209,7 @@ a:hover{
     height: 25px;
 }
 
-.review-content {
+.review_content {
     overflow: hidden;
 }
 
@@ -191,10 +222,12 @@ a:hover{
     height: 120px;
     display: flex; justify-content: center;
     align-items: center;
+    border: 2px solid #dddddd;
+    border-radius: 5px;
 }
 
 .no_book_image {
-    width: 80%;
+    width: auto; height: 70%;
     display:block;
 }
 

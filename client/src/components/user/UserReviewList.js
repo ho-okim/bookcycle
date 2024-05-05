@@ -1,15 +1,15 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import { Button } from 'react-bootstrap';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
 import starRating from '../../lib/starRating.js';
-import StarSelect from '../StarSelect.js';
 
 function UserReviewList() {
 
@@ -22,6 +22,7 @@ function UserReviewList() {
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
+    const [order, setOrder] = useState({ name : 'score', ascend : false }); // 정렬기준
     let limit = 10;
 
     // 더보기버튼 클릭 시 이동
@@ -83,10 +84,11 @@ function UserReviewList() {
         setOffset((value-1)*limit);
     }
 
-    // 더보기 버튼 유무에 따른 타이틀 css
-    const titlebox_css = (isReviewUrl || !reviewList || reviewList.length == 0) ?
-    `${styles.title} ${styles.review_title_box}` 
-    : `${styles.title}`;
+    function handleOrder(e) { // 정렬 처리
+        let order_id = e.currentTarget.id;
+        setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
+        console.log({...order})
+    }
 
     // 로딩 및 데이터가 없을 때 박스 css
     const databox_css = reviewList.length == 0 ?
@@ -97,8 +99,8 @@ function UserReviewList() {
         return (
             <Container className={styles.section_sub_box}>
                 <div className='inner'>
-                    <div className={`${styles.title} ${styles.review_title_box}`}>
-                        <h4>구매후기</h4>
+                    <div className={styles.title}>
+                        <h4 className={styles.title_font}>구매후기</h4>
                     </div>
                     <div className={`${styles.box} d-flex justify-content-center`}>
                         <LoadingSpinner/>
@@ -111,11 +113,18 @@ function UserReviewList() {
     return(
         <Container className={styles.section_sub_box}>
             <div className='inner'>
-                <div className={`${titlebox_css} d-flex justify-content-between`}>
-                    <h4>구매후기</h4>
+                <div className={styles.title}>
+                    <h4 className={styles.title_font}>구매후기</h4>
                     {
                         (isReviewUrl || reviewList.length == 0) ? 
-                        null 
+                        <div>
+                            <Sorting 
+                            sortType={'score'} ascend={order.name === 'score' && order.ascend} 
+                            handleOrder={handleOrder}/>
+                            <Sorting 
+                            sortType={'createdAt'} ascend={order.name === 'createdAt' && order.ascend} 
+                            handleOrder={handleOrder}/>
+                        </div> 
                         : <Button 
                         variant='outline-primary' 
                         className={styles.more_btn}
@@ -155,21 +164,37 @@ function UserReviewList() {
     )
 }
 
+function Sorting({sortType, ascend, handleOrder}) {
+    return(
+        <OverlayTrigger
+        placement='top'
+        overlay={
+            <Tooltip>{sortType === 'score' ? '평점' : '작성일'} {ascend ? '오름차순' : '내림차순'}</Tooltip>
+        }
+        >
+            <span className={`${styles.sort_box}`} id={sortType} onClick={(e)=>{handleOrder(e)}}>
+                {ascend ? <ArrowUp/> : <ArrowDown/>}
+                {sortType === 'score' ? <Star/> : <Clock/>}
+            </span>
+        </OverlayTrigger>
+    )
+}
+
 function Review({review}) {
     return(
         <div className={
             `${styles.review_box} d-flex justify-content-around align-items-center`
         }>
-            <div className={`${styles.score} ${styles.box}`}>
+            <div className={styles.score}>
                 {
                     starRating(`${review.score}`)
                 }
             </div>
             <div className={`${styles.review} d-flex flex-column`}>
-                <p className={`${styles.review_content} ${styles.box}`}>{review.content}</p>
+                <p className={`${styles.review_content} ${styles.text_hidden}`}>{review.content}</p>
             </div>
-            <p className={`${styles.writer} ${styles.box}`}>{review.buyer_name}</p>
-            <p className={`${styles.date} ${styles.box}`}>{new Date(review.createdAt).toLocaleDateString("ko-kr")}</p>
+            <div className={styles.writer}><Link to={`/user/${review.buyer_id}`}>{review.buyer_name}</Link></div>
+            <p className={styles.date}>{new Date(review.createdAt).toLocaleDateString("ko-kr")}</p>
         </div>
     )
 }

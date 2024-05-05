@@ -91,6 +91,23 @@ router.get('/user/:userId/review', async (req, res) => {
     }
 });
 
+// 특정 판매자에 대한 review와 review tag 전체 수 조회
+router.get('/user/:userId/reviewTagTotal', async (req, res) => {
+    const {userId} = req.params;
+
+    // query문 설정
+    let sql = `SELECT COUNT(*) AS total FROM (SELECT COUNT(*) FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id) AS subquery`;
+
+    try {
+        // db connection pool을 가져오고, query문 수행
+        const [result] = await pool.query(sql, [userId]);
+        res.send(result);
+    } catch (error) {
+        console.error(error);
+        res.send('error');
+    }
+});
+
 // 특정 판매자에 대한 review와 review tag 조회 - 5개씩 추가 조회
 router.get('/user/:userId/reviewtag', async (req, res) => {
     const {userId} = req.params;
@@ -102,7 +119,6 @@ router.get('/user/:userId/reviewtag', async (req, res) => {
     try {
         // db connection pool을 가져오고, query문 수행
         const result = await pool.query(sql, [userId]); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
-        console.log(result)
         res.send(result);
     } catch (error) {
         console.error(error);
