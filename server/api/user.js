@@ -41,15 +41,19 @@ router.get('/user/:userId/productAll', async (req, res) => {
 // 특정 사용자의 판매목록 조회
 router.get('/user/:userId/product', async (req, res) => {
     const {userId} = req.params;
-    const {limit, offset, name, ascend} = req.body;
-    let updown = ascend ? 'ASC' : 'DESC';
+    const { limit, offset, name, ascend, sold, category_id } = req.query;
 
+    let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
+    
     // query문
-    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ? ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
+    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ?`;
+    sql = (sold === 'false') ? sql : sql + ` AND sold = 0`;
+    sql = (category_id == 0) ? sql : sql + ` AND category_id = ${category_id}`;
+    let order_sql = ` ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
 
     try {
         // 상품 목록 조회
-        const body = await pool.query(sql, [userId]);
+        const body = await pool.query(sql+order_sql, [userId]);
         res.send(body);
     } catch (error) {
         console.error(error);
@@ -76,9 +80,9 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
 
 // 특정 판매자의 상품에 대한 review 조회
 router.get('/user/:userId/review', async (req, res) => {
-    const {userId} = req.params;
-    const {limit, offset, name, ascend} = req.body;
-    let updown = ascend ? 'ASC' : 'DESC';
+    const { userId } = req.params;
+    const { limit, offset, name, ascend } = req.query;
+    let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
 
     // query문 설정
     let sql = `SELECT * FROM user_review WHERE seller_id = ? ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;

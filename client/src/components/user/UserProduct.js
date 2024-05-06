@@ -1,20 +1,22 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useContext, useEffect, useRef } from 'react';
+import { Link, useHref, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import { Button, Overlay, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { ArrowDown, ArrowUp, CurrencyDollar, Filter } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
 import { getCategory } from '../../api/product.js';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
+import Filtering from './Filtering.js';
+import ProductSorting from './ProductSorting.js';
 
 function UserProduct() {
 
     const currentUrl = window.location.href; // 현재 url
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
+    const url = useHref(); // 현재 경로 가져오기
 
     const targetUserId = useContext(TargetUserContext); // 대상 id
     
@@ -26,13 +28,27 @@ function UserProduct() {
     const [order, setOrder] = useState({ name : 'createdAt', ascend : false }); // 정렬기준
     const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
     const [category, setCategory] = useState([]); // 상품 카테고리
-    const [showFilter, setShowFilter] = useState(false); // 필터목록 표시여부
+    const [filter, setFilter] = useState({ sold : false, category_id : 0});
+    const [currentCategory, setCurrentCategory] = useState(-1); // 현재 선택된 카테고리
     let limit = 10;
 
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
-    const target = useREf(null); // 필터 타겟
+    // 기본 페이지 - 5개만 출력
+    async function getProductList() {
+        let res;
+        if (!isProductUrl) { // 사용자 페이지라면 간략한 정보
+            res = await getUserProductList(targetUserId, 5, 0, order, filter);
+        } else { // 더보기 후 상세 페이지라면 상세 정보
+            if (prevOrder.name !== order.name || prevOrder.ascend !== order.ascend) {
+                setOffset(0);
+            }
+            res = await getUserProductList(targetUserId, limit, offset, order, filter);
+        }
+        setProductList(res);
+        setLoading(false);
+    }
 
     useEffect(()=>{
         async function getCategoryList() { // 최초 렌더링 시 카테고리 가져오기
@@ -65,23 +81,6 @@ function UserProduct() {
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 상품 정보를 다시 가져옴
         setLoading(true);
-
-        // 기본 페이지 - 5개만 출력
-        async function getProductList() {
-            let res;
-            if (!isProductUrl) { // 사용자 페이지라면 간략한 정보
-                res = await getUserProductList(targetUserId, 5, 0, order);
-            } else { // 더보기 후 상세 페이지라면 상세 정보
-                if (prevOrder.name === order.name && prevOrder.ascend === order.ascend) {
-                    res = await getUserProductList(targetUserId, limit, offset, order);
-                } else {
-                    setOffset(0);
-                    res = await getUserProductList(targetUserId, limit, offset, order);
-                }
-            }
-            setProductList(res);
-            setLoading(false);
-        }
         getProductList();
 
     }, [offset, order]);
@@ -107,8 +106,27 @@ function UserProduct() {
         let order_id = e.currentTarget.id;
         setPrevOrder((prevOrder)=>({...prevOrder, name : order.name, ascend : order.ascend }));
         setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
-        //navigate(`${url}?page=${pageNumber}`); // 정렬 바뀌면 무조건 1페이지로 이동
+        //navigate(`${url}?page=1`); // 정렬 바뀌면 무조건 1페이지로 이동
         console.log({...order})
+    }
+
+    function handleChange(event, index, category_id) { // 카테고리 선택 수정
+        if (!index && !category_id) {
+            setFilter((filter)=>({...filter, sold : !filter.sold}));
+        } else {
+            if (event.target.checked) {
+                setFilter((filter)=>({...filter, category_id : category_id}));
+                setCurrentCategory(index);
+            }
+        }
+    }
+
+    function handleFilter(targetIdName) { // 필터 적용
+        if (targetIdName === 'reset_filter') {
+            setFilter((filter)=>({...filter, sold : false, category_id : 0}));
+            setCurrentCategory(-1);
+        }
+        getProductList();
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
@@ -116,6 +134,7 @@ function UserProduct() {
     `${styles.sold} ${styles.box} d-flex justify-content-center`
     : `${styles.sold} ${styles.box} d-flex justify-content-around row-cols-5 flex-wrap`;
 
+    // 로딩 상태일 때 출력
     if (loading) {
         return (
             <Container className={styles.section_sub_box}>
@@ -131,6 +150,7 @@ function UserProduct() {
         )
     } 
 
+    // 일반 출력
     return(
         <Container className={styles.section_sub_box}>
             <div className='inner'>
@@ -148,17 +168,16 @@ function UserProduct() {
                         {
                             (isProductUrl) ? 
                             <div>
-                                <Sorting 
+                                <ProductSorting 
                                 sortType={'product_name'} ascend={order.name === 'product_name' && order.ascend} 
                                 handleOrder={handleOrder}/>
-                                <Sorting 
+                                <ProductSorting 
                                 sortType={'price'} ascend={order.name === 'price' && order.ascend} 
                                 handleOrder={handleOrder}/>
-                                <Filtering 
-                                target={target} 
-                                showFilter={showFilter} setShowFilter={setShowFilter} 
-                                category={category}
-                                />
+                                <Filtering category={category} handleFilter={handleFilter}
+                                filter={filter} setFilter={setFilter}
+                                currentCategory={currentCategory}
+                                handleChange={handleChange}/>
                             </div> 
                             : null
                         }
@@ -179,7 +198,8 @@ function UserProduct() {
                         isProductUrl ?
                         <div className={styles.pagination_wrap}>
                             <DataPagination 
-                            totalData={totalData} limit={limit} blockPerPage={3}
+                            totalData={totalData} 
+                            limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}
                             />
                             <Button variant='secondary'
@@ -194,83 +214,19 @@ function UserProduct() {
     )
 }
 
-function Sorting({sortType, ascend, handleOrder}) {
-
-    let tooltipName;
-    let sortIcon;
-    switch (tooltipName) {
-        case 'createdAt' :
-            tooltipName = '등록날짜';
-            sortIcon = <span className={styles.sortType_name}>가</span>;
-            break;
-        case 'price' :
-            tooltipName = '가격';
-            sortIcon = <CurrencyDollar/>;
-            break;
-        case 'product_name' :
-            tooltipName = '이름';
-            sortIcon = <Clock/>;
-            break;
-    }
-
-    return(
-        <OverlayTrigger
-        placement='top'
-        overlay={
-            <Tooltip>{tooltipName} {ascend ? '오름차순' : '내림차순'}</Tooltip>
-        }
-        >
-            <span className={`${styles.sort_box}`} id={sortType} onClick={(e)=>{handleOrder(e)}}>
-                {ascend ? <ArrowUp/> : <ArrowDown/>}
-                {sortIcon}
-            </span>
-        </OverlayTrigger>
-    )
-}
-
-function Filtering({target, showFilter, setShowFilter, category}) {
-    
-    return(
-        <>
-            <Button ref={target} onClick={()=>{setShowFilter(!showFilter)}}><Filter/></Button>
-            <Overlay target={target.current} show={show} placement='top'>
-                <div>
-                    <div>
-                        <input type='checkbox' id='sold'></input>
-                        <label for='sold'>판매된 상품 제외</label>
-                    </div>
-                    <hr/>
-                    <div>
-                        {
-                            category.map((el)=>{
-                                return(
-                                    <div key={el.id}>
-                                        <input type='checkbox' id={el.category_name}></input>  
-                                        <label for={el.category_name}>{el.category_name}</label>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
-            </Overlay>
-        </>
-    )
-}
-
+// 판매 상품 목록
 function SoldBook({product}) {
 
     return(
         <div className={`${styles.book_card} d-flex flex-column`}>
             <Link to="#">
-                <div className={`${styles.book_image_box}`}>
+                <div className={styles.book_image_box}>
                     {
                         product.filename ? 
                         <img className={styles.book_image} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
                         :
                         <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
                     }
-
                 </div>
                 <div className={styles.book_info}>
                     <div className={`${styles.book_title} d-flex justify-content-center align-items-center`}>

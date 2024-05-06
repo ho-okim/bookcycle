@@ -3,13 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
 import starRating from '../../lib/starRating.js';
+import ReviewSorting from './ReviewSorting.js';
 
 function UserReviewList() {
 
@@ -22,7 +22,7 @@ function UserReviewList() {
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
-    const [order, setOrder] = useState({ name : 'score', ascend : false }); // 정렬기준
+    const [order, setOrder] = useState({ name : 'createdAt', ascend : false }); // 정렬기준
     const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
     let limit = 10;
 
@@ -58,14 +58,12 @@ function UserReviewList() {
         async function getReviewList() {
             let res;
             if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
-                res = await getUserReviewList(targetUserId, 5, 0);
+                res = await getUserReviewList(targetUserId, 5, 0, order);
             } else { // 더보기 후 상세 페이지라면 상세 정보
-                if (prevOrder.name === order.name && prevOrder.ascend === order.ascend) {
-                    res = await getUserReviewList(targetUserId, limit, offset);
-                } else {
+                if (prevOrder.name !== order.name || prevOrder.ascend !== order.ascend) {
                     setOffset(0);
-                    res = await getUserReviewList(targetUserId, limit, offset);
                 }
+                res = await getUserReviewList(targetUserId, limit, offset, order);
             }
             setReviewList(res);
             setLoading(false);
@@ -126,10 +124,10 @@ function UserReviewList() {
                     {
                         (isReviewUrl || reviewList.length == 0) ? 
                         <div>
-                            <Sorting 
+                            <ReviewSorting
                             sortType={'score'} ascend={order.name === 'score' && order.ascend} 
                             handleOrder={handleOrder}/>
-                            <Sorting 
+                            <ReviewSorting 
                             sortType={'createdAt'} ascend={order.name === 'createdAt' && order.ascend} 
                             handleOrder={handleOrder}/>
                         </div> 
@@ -169,22 +167,6 @@ function UserReviewList() {
                 }
             </div>
         </Container>
-    )
-}
-
-function Sorting({sortType, ascend, handleOrder}) {
-    return(
-        <OverlayTrigger
-        placement='top'
-        overlay={
-            <Tooltip>{sortType === 'score' ? '평점' : '작성일'} {ascend ? '오름차순' : '내림차순'}</Tooltip>
-        }
-        >
-            <span className={`${styles.sort_box}`} id={sortType} onClick={(e)=>{handleOrder(e)}}>
-                {ascend ? <ArrowUp/> : <ArrowDown/>}
-                {sortType === 'score' ? <Star/> : <Clock/>}
-            </span>
-        </OverlayTrigger>
     )
 }
 

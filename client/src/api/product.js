@@ -12,5 +12,3 @@ export async function getCategory() {
   const body = res.data;
   return body;
 }
-
-export default product;

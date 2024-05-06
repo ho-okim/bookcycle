@@ -119,6 +119,7 @@ function ReportReason({ index, currentIndex, content, handleChange }) {
         <tr>
             <td className={styles.checkbox}>
                 <input type="checkbox"
+                className={styles.input_checkbox}
                 checked={currentIndex===index}
                 onChange={(e)=>{handleChange(e, index)}}
                 ></input>

@@ -213,6 +213,40 @@ a:hover{
     overflow: hidden;
 }
 
+.filter_box {
+    padding: 10px;
+    width: 280px;
+    background-color: #e6e6e6;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: 'Pretendard-SemiBold' !important;
+}
+
+.popover-arrow{
+    background-color: #e6e6e6;
+}
+
+.filter_btn{
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.filter_input_box {
+    display: flex; justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter_label {
+    margin: 2px 5px 2px 3px;
+}
+
+.bar{
+    margin: 5px 0;
+    width: 100%; height: 1px;
+    background-color: #949494;
+}
+
 .book_card{
     width: calc((100% - 15px * 4) / 5);
     margin-top:10px;
@@ -226,8 +260,13 @@ a:hover{
     border-radius: 5px;
 }
 
+.book_image {
+    width: 100%; height:100%;
+    display:block;
+}
+
 .no_book_image {
-    width: auto; height: 70%;
+    width: 70%; height: 70%;
     display:block;
 }
 

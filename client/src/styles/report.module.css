@@ -19,7 +19,7 @@ table{
     text-align: center;
 }
 
-input[type=checkbox] {
+.input_checkbox {
     transform: scale(2);
 }
 

@@ -144,6 +144,7 @@ app.use("/", require('./api/main.js'));
 app.use("/", require('./api/login.js'));
 app.use("/", require('./api/join.js'));
 app.use("/", require('./api/mypage.js'));
+app.use("/", require('./api/product.js'));
 app.use("/", require('./api/user.js'));
 app.use("/", require('./api/board.js'));
 app.use("/", require('./api/report.js'));
