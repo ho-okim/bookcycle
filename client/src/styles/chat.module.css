@@ -1,12 +1,14 @@
-.title{margin-bottom: 20px;}
+.title{margin: 20px 0;}
 .col{margin: 0;}
 .box{width: 49%;}
+.chatBoxWrap{height: 100vh;}
 
 /* chatList */
 .active{background-color: #ddd;}
 .profileImgWrap{margin-right: 10px; width: 50px; height: 50px; border-radius: 25px; background-color: rgb(221, 242, 252); overflow: hidden;}
 .profileIcon{font-size: 40px;}
 .profileImg{width: 100%; height: 100%; object-fit: cover;}
+.nickname{padding-right: 30px;}
 .chatUser{width: 100%; padding: 20px; border-bottom: 1px solid #ddd; cursor: pointer;}
 .chatUser:last-of-type{border-bottom: none;}
 
