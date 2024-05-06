@@ -50,13 +50,11 @@ function UserReviewTag() {
                 return;
             }
         }
-        setLoading(true);
         getReviewTagList();
     }
 
     useEffect(()=>{ // 요청 id가 바뀔때마다 리뷰 정보를 다시 가져옴
         if (reviewTagTotal !== null) {
-            setLoading(true);
             getReviewTagList();
         }
     }, [reviewTagTotal]);

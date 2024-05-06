@@ -213,6 +213,10 @@ a:hover{
     overflow: hidden;
 }
 
+.option_box{
+    display: flex; justify-content: center; align-items: center;
+}
+
 .filter_box {
     padding: 10px;
     width: 280px;
@@ -220,6 +224,11 @@ a:hover{
     border-radius: 5px;
     font-size: 15px;
     font-family: 'Pretendard-SemiBold' !important;
+}
+
+.filter_icon{
+    margin-left: 8px;
+    line-height: 2;
 }
 
 .popover-arrow{

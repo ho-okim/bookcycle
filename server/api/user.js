@@ -24,9 +24,17 @@ router.get('/user/:userId', async (req, res) => {
 // 특정 사용자의 판매목록 전체 수 조회
 router.get('/user/:userId/productAll', async (req, res) => {
     const {userId} = req.params;
-    
+    const { sold, category_id } = req.query;
+
     // query문
     let sql = `SELECT COUNT(*) AS total FROM product WHERE seller_id = ?`;
+    
+    if (sold !== 'null') {
+        sql += ` AND sold = ${sold}`;
+    }
+    if (parseInt(category_id) !== 0) {
+        sql += ` AND category_id = ${category_id}`;
+    }
 
     try {
         // 상품 전체 수 조회
@@ -45,15 +53,20 @@ router.get('/user/:userId/product', async (req, res) => {
 
     let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
     
-    // query문
-    let sql = `SELECT * FROM product_simple_data WHERE seller_id = ?`;
-    sql = (sold === 'false') ? sql : sql + ` AND sold = 0`;
-    sql = (category_id == 0) ? sql : sql + ` AND category_id = ${category_id}`;
-    let order_sql = ` ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
-
     try {
+        // query문
+        let sql = `SELECT * FROM product_simple_data WHERE seller_id = ${userId}`;
+        if (sold !== 'null') {
+            sql += ` AND sold = ${sold}`;
+        }
+        if (parseInt(category_id) !== 0) {
+            sql += ` AND category_id = ${category_id}`;
+        }
+        let order_sql = ` ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
+
+        console.log(sql+order_sql)
         // 상품 목록 조회
-        const body = await pool.query(sql+order_sql, [userId]);
+        const body = await pool.query(sql+order_sql);
         res.send(body);
     } catch (error) {
         console.error(error);
@@ -120,7 +133,7 @@ router.get('/user/:userId/reviewtag', async (req, res) => {
     const {limit, offset} = req.query;
 
     // query문 설정
-    let sql = `SELECT *, count(*) AS size FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id ORDER BY size DESC LIMIT ${limit} OFFSET ${offset}`;
+    let sql = `SELECT tag_id, tag_name, count(*) AS size FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id ORDER BY size DESC LIMIT ${limit} OFFSET ${offset}`;
 
     try {
         // db connection pool을 가져오고, query문 수행

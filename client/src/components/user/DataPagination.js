@@ -7,8 +7,9 @@ function DataPagination({
     limit, 
     blockPerPage,
     handlePagination,
+    filter,
+    order
     }) {
-    
     const url = useHref(); // 현재 경로 가져오기
 
     const [totalPage, setTotalPage] = useState(1); // 전체 페이지 수
@@ -46,7 +47,7 @@ function DataPagination({
     function handleClickNumber(pageNumber) { // pagination 숫자 활성화 설정
         handlePagination(pageNumber);
         setActivePage(pageNumber);
-        navigate(`${url}?page=${pageNumber}`);
+        navigate(`${url}?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`);
     }
 
     function pageBlock() { // pagination 숫자 설정

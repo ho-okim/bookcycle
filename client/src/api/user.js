@@ -12,8 +12,19 @@ export async function getUserInfo(userId) {
 }
 
 // 특정 사용자의 판매목록 조회
-export async function getUserProductAll(userId) {
-    let url = `/user/${userId}/productAll`;
+export async function getUserProductAll(userId, filter) {
+    const { sold, category_id } = filter;
+    
+    let isSold;
+    if (sold === true || sold === 'true') {
+        isSold = 1;
+    } else if (sold === false || sold === 'false') {
+        isSold = 0;
+    } else {
+        isSold = 'null';
+    }    
+
+    let url = `/user/${userId}/productAll?sold=${isSold}&category_id=${category_id}`;
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
@@ -29,7 +40,17 @@ export async function getUserProductAll(userId) {
 export async function getUserProductList(userId, limit, offset, order, filter) {
     const { name, ascend } = order;
     const { sold, category_id } = filter;
-    let url = `/user/${userId}/product?limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}&sold=${sold}&category_id=${category_id}`;
+    
+    let isSold;
+    if (sold === true || sold === 'true') {
+        isSold = 1;
+    } else if (sold === false || sold === 'false') {
+        isSold = 0;
+    } else {
+        isSold = 'null';
+    }
+
+    let url = `/user/${userId}/product?sold=${isSold}&category_id=${category_id}&limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
 
     const res = await axios.get(url);
 

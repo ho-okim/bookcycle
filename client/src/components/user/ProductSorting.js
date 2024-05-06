@@ -9,16 +9,16 @@ function ProductSorting({sortType, ascend, handleOrder}) {
     let tooltipName;
     let sortIcon;
     switch (sortType) {
-        case 'createdAt' :
-            tooltipName = '등록날짜';
+        case 'product_name' :
+            tooltipName = '이름';
             sortIcon = <span className={styles.sortType_name}>가</span>;
             break;
         case 'price' :
             tooltipName = '가격';
             sortIcon = <CurrencyDollar/>;
             break;
-        case 'product_name' :
-            tooltipName = '이름';
+        case 'createdAt' :
+            tooltipName = '등록날짜';
             sortIcon = <Clock/>;
             break;
     }
@@ -30,10 +30,10 @@ function ProductSorting({sortType, ascend, handleOrder}) {
             <Tooltip>{tooltipName} {ascend ? '오름차순' : '내림차순'}</Tooltip>
         }
         >
-            <span className={styles.sort_box} id={sortType} onClick={(e)=>{handleOrder(e)}}>
+            <div className={styles.sort_box} id={sortType} onClick={(e)=>{handleOrder(e)}}>
                 {ascend ? <ArrowUp/> : <ArrowDown/>}
                 {sortIcon}
-            </span>
+            </div>
         </OverlayTrigger>
     )
 }

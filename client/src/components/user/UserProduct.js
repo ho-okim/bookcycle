@@ -1,7 +1,7 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect, useRef } from 'react';
-import { Link, useHref, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
@@ -16,7 +16,6 @@ function UserProduct() {
 
     const currentUrl = window.location.href; // 현재 url
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
-    const url = useHref(); // 현재 경로 가져오기
 
     const targetUserId = useContext(TargetUserContext); // 대상 id
     
@@ -25,25 +24,34 @@ function UserProduct() {
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] =  useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
-    const [order, setOrder] = useState({ name : 'createdAt', ascend : false }); // 정렬기준
-    const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
     const [category, setCategory] = useState([]); // 상품 카테고리
-    const [filter, setFilter] = useState({ sold : false, category_id : 0});
-    const [currentCategory, setCurrentCategory] = useState(-1); // 현재 선택된 카테고리
-    let limit = 10;
+    const [order, setOrder] = useState({ // 정렬기준
+        name : searchParams.get("order") ?? 'createdAt', 
+        ascend : searchParams.get("ascend") ?? false 
+    }); 
+    const [filter, setFilter] = useState({ // 필터링
+        sold : (!searchParams.get("sold") || searchParams.get("sold") === 'null') ? null : searchParams.get("sold"), 
+        category_id : searchParams.get("category_id") ?? 0
+    });
+    
+    let limit = 5;
 
+    console.log(order.ascend, order.name)
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
-    // 기본 페이지 - 5개만 출력
+    // 전체 상품 수 조회 - 페이징 처리 위함
+    async function getTotal() { 
+        const res = await getUserProductAll(targetUserId, filter);
+        setTotalData(res);
+    }
+
+    // 상품 목록 가져오기
     async function getProductList() {
         let res;
         if (!isProductUrl) { // 사용자 페이지라면 간략한 정보
             res = await getUserProductList(targetUserId, 5, 0, order, filter);
         } else { // 더보기 후 상세 페이지라면 상세 정보
-            if (prevOrder.name !== order.name || prevOrder.ascend !== order.ascend) {
-                setOffset(0);
-            }
             res = await getUserProductList(targetUserId, limit, offset, order, filter);
         }
         setProductList(res);
@@ -59,12 +67,7 @@ function UserProduct() {
     }, []);
 
     useEffect(()=>{
-        async function getTotal() {
-            const res = await getUserProductAll(targetUserId);
-            setTotalData(res);
-        }
-
-        async function pageOffset() {
+        async function pageOffset() { // 페이지 시작점 처리
             if (!searchParams.get("page") 
             || searchParams.get("page") < 0 
             || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
@@ -77,17 +80,17 @@ function UserProduct() {
 
         getTotal();
         pageOffset();
-    }, [totalData, searchParams])
+    }, [totalData, searchParams]);
 
-    useEffect(()=>{ // 요청 url이 바뀔때마다 상품 정보를 다시 가져옴
+    useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
         setLoading(true);
         getProductList();
 
-    }, [offset, order]);
+    }, [offset, order, searchParams]);
 
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
-            navigate(`/user/${targetUserId}/product?page=1`);
+            navigate(`/user/${targetUserId}/product?category_id=0&page=1`);
         }
     }
 
@@ -104,29 +107,13 @@ function UserProduct() {
 
     function handleOrder(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
-        setPrevOrder((prevOrder)=>({...prevOrder, name : order.name, ascend : order.ascend }));
         setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
-        //navigate(`${url}?page=1`); // 정렬 바뀌면 무조건 1페이지로 이동
-        console.log({...order})
+        // url 뒤늦게 반영되는 오류 해결 필요--------------------------------------
+        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=1`);
     }
 
-    function handleChange(event, index, category_id) { // 카테고리 선택 수정
-        if (!index && !category_id) {
-            setFilter((filter)=>({...filter, sold : !filter.sold}));
-        } else {
-            if (event.target.checked) {
-                setFilter((filter)=>({...filter, category_id : category_id}));
-                setCurrentCategory(index);
-            }
-        }
-    }
-
-    function handleFilter(targetIdName) { // 필터 적용
-        if (targetIdName === 'reset_filter') {
-            setFilter((filter)=>({...filter, sold : false, category_id : 0}));
-            setCurrentCategory(-1);
-        }
-        getProductList();
+    function handleFilter() { // 필터 적용
+        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=1`);
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
@@ -167,17 +154,19 @@ function UserProduct() {
                         }
                         {
                             (isProductUrl) ? 
-                            <div>
+                            <div className={styles.option_box}>
                                 <ProductSorting 
                                 sortType={'product_name'} ascend={order.name === 'product_name' && order.ascend} 
                                 handleOrder={handleOrder}/>
                                 <ProductSorting 
                                 sortType={'price'} ascend={order.name === 'price' && order.ascend} 
                                 handleOrder={handleOrder}/>
+                                <ProductSorting 
+                                sortType={'createdAt'} ascend={order.name === 'createdAt' && order.ascend} 
+                                handleOrder={handleOrder}/>
                                 <Filtering category={category} handleFilter={handleFilter}
                                 filter={filter} setFilter={setFilter}
-                                currentCategory={currentCategory}
-                                handleChange={handleChange}/>
+                                searchParams={searchParams}/>
                             </div> 
                             : null
                         }
@@ -201,6 +190,8 @@ function UserProduct() {
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}
+                            filter={filter}
+                            order={order}
                             />
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
