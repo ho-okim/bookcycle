@@ -1,10 +1,11 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
+import UserReviewContext from '../../contexts/UserReviewContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
@@ -13,29 +14,50 @@ import ReviewSorting from './ReviewSorting.js';
 
 function UserReviewList() {
 
-    const targetUserId = useContext(TargetUserContext); // 대상 id
     const currentUrl = window.location.href; // 현재 url
     const isReviewUrl = currentUrl.includes("review"); // 리뷰 목록 페이지 여부
+
+    const targetUserId = useContext(TargetUserContext); // 대상 id
 
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
-    const [order, setOrder] = useState({ name : 'createdAt', ascend : false }); // 정렬기준
-    const [prevOrder, setPrevOrder] = useState({ name : 'createdAt', ascend : false }); // 이전 정렬기준
-    let limit = 10;
+    const [order, setOrder] = useState({ // 정렬기준
+        name : searchParams.get("order") ?? 'createdAt', 
+        ascend : searchParams.get("ascend") ?? false 
+    }); 
+
+    let limit = 2;
+
+    // 메모로 state 최적화?
+    const reviewOption = useMemo(()=>({
+        order, setOrder, offset, setOffset
+    }), [order, setOrder, offset, setOffset]);
 
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        // 전체 데이터 수
-        async function getTotal() {
-            const res = await getUserReviewAll(targetUserId);
-            setTotalData(res);    
-        }
+    // 전체 데이터 수
+    async function getTotal() {
+        const res = await getUserReviewAll(targetUserId);
+        setTotalData(res);    
+    }
 
+    // 기본 페이지 - 5개만 출력
+    async function getReviewList() {
+        let res;
+        if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
+            res = await getUserReviewList(targetUserId, 5, 0, order);
+        } else { // 더보기 후 상세 페이지라면 상세 정보
+            res = await getUserReviewList(targetUserId, limit, offset, order);
+        }
+        setReviewList(res);
+        setLoading(false);
+    }
+
+    useEffect(()=>{
         async function pageOffset() {
             if (!searchParams.get("page") 
             || searchParams.get("page") < 0 
@@ -53,24 +75,8 @@ function UserReviewList() {
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
-        
-        // 기본 페이지 - 5개만 출력
-        async function getReviewList() {
-            let res;
-            if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
-                res = await getUserReviewList(targetUserId, 5, 0, order);
-            } else { // 더보기 후 상세 페이지라면 상세 정보
-                if (prevOrder.name !== order.name || prevOrder.ascend !== order.ascend) {
-                    setOffset(0);
-                }
-                res = await getUserReviewList(targetUserId, limit, offset, order);
-            }
-            setReviewList(res);
-            setLoading(false);
-        }
-
         getReviewList();
-    }, [offset, order]);
+    }, [offset, searchParams]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
@@ -88,12 +94,8 @@ function UserReviewList() {
         setOffset((value-1)*limit);
     }
 
-    function handleOrder(e) { // 정렬 처리
-        let order_id = e.currentTarget.id;
-        setPrevOrder((prevOrder)=>({...prevOrder, name : order.name, ascend : order.ascend }));
-        setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
-        //navigate(`${url}?page=${pageNumber}`); // 정렬 바뀌면 무조건 1페이지로 이동
-        console.log({...order})
+    function handleOptionClick() { // 필터, 정렬 적용
+        navigate(`/user/${targetUserId}/review?order=${order.name}&ascend=${order.ascend}`);
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
@@ -115,8 +117,9 @@ function UserReviewList() {
             </Container>
         )
     }
-
+    
     return(
+    <UserReviewContext.Provider value={reviewOption}>
         <Container className={styles.section_sub_box}>
             <div className='inner'>
                 <div className={styles.title}>
@@ -125,11 +128,13 @@ function UserReviewList() {
                         (isReviewUrl || reviewList.length == 0) ? 
                         <div>
                             <ReviewSorting
-                            sortType={'score'} ascend={order.name === 'score' && order.ascend} 
-                            handleOrder={handleOrder}/>
+                            sortType={'score'} 
+                            typeAscend={order.name === 'score' && order.ascend} 
+                            handleOptionClick={handleOptionClick}/>
                             <ReviewSorting 
-                            sortType={'createdAt'} ascend={order.name === 'createdAt' && order.ascend} 
-                            handleOrder={handleOrder}/>
+                            sortType={'createdAt'} 
+                            typeAscend={order.name === 'createdAt' && order.ascend} 
+                            handleOptionClick={handleOptionClick}/>
                         </div> 
                         : <Button 
                         variant='outline-primary' 
@@ -154,8 +159,10 @@ function UserReviewList() {
                     <>
                         <div className={styles.pagination_wrap}>
                             <DataPagination 
-                            totalData={totalData} limit={limit} blockPerPage={3}
+                            totalData={totalData} 
+                            limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}
+                            order={order}
                             />
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
@@ -167,6 +174,7 @@ function UserReviewList() {
                 }
             </div>
         </Container>
+    </UserReviewContext.Provider>
     )
 }
 

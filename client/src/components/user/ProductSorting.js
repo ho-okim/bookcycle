@@ -2,9 +2,16 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, CurrencyDollar } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
+import { useUserProduct } from '../../contexts/UserProductContext';
+import { useEffect } from 'react';
 
 // 정렬 버튼
-function ProductSorting({sortType, ascend, handleOrder}) {
+function ProductSorting({ sortType, typeAscend, handleOptionClick}) {
+
+    const navigate = useNavigate();
+
+    const {order, filter, setOrder} = useUserProduct();
 
     let tooltipName;
     let sortIcon;
@@ -23,15 +30,22 @@ function ProductSorting({sortType, ascend, handleOrder}) {
             break;
     }
 
+    function handleSort(e) { // 정렬 처리
+        let order_id = e.currentTarget.id;
+        setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
+        // 문제 -- url이 이전 state로 생성되어 현재 state와 차이가 있음
+        handleOptionClick();
+    }
+    
     return(
         <OverlayTrigger
         placement='top'
         overlay={
-            <Tooltip>{tooltipName} {ascend ? '오름차순' : '내림차순'}</Tooltip>
+            <Tooltip>{tooltipName} {typeAscend ? '내림차순 보기' : '오름차순 보기'}</Tooltip>
         }
         >
-            <div className={styles.sort_box} id={sortType} onClick={(e)=>{handleOrder(e)}}>
-                {ascend ? <ArrowUp/> : <ArrowDown/>}
+            <div className={styles.sort_box} id={sortType} onClick={(e)=>{handleSort(e);}}>
+                {typeAscend ? <ArrowDown/> : <ArrowUp/>}
                 {sortIcon}
             </div>
         </OverlayTrigger>

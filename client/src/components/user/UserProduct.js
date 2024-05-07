@@ -1,16 +1,18 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
 import { getCategory } from '../../api/product.js';
 import TargetUserContext from '../../contexts/TargetUserContext.js';
+import UserProductContext from '../../contexts/UserProductContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
 import Filtering from './Filtering.js';
 import ProductSorting from './ProductSorting.js';
+
 
 function UserProduct() {
 
@@ -36,7 +38,11 @@ function UserProduct() {
     
     let limit = 5;
 
-    console.log(order.ascend, order.name)
+    // 메모로 state 최적화?
+    const productOption = useMemo(()=>({
+        order, setOrder, filter, setFilter, offset, setOffset, category, setCategory
+    }), [order, setOrder, filter, setFilter, offset, setOffset, category, setCategory]);
+
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
@@ -85,9 +91,8 @@ function UserProduct() {
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
         setLoading(true);
         getProductList();
-
-    }, [offset, order, searchParams]);
-
+    }, [offset, searchParams]);
+    
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
             navigate(`/user/${targetUserId}/product?category_id=0&page=1`);
@@ -102,18 +107,10 @@ function UserProduct() {
 
     function handlePagination(pageNumber) { // pagination에서 offset 변경
         setOffset((pageNumber-1)*limit);
-        setSearchParams(pageNumber);
     }
 
-    function handleOrder(e) { // 정렬 처리
-        let order_id = e.currentTarget.id;
-        setOrder((order)=>({...order, name : order_id, ascend : !order.ascend}));
-        // url 뒤늦게 반영되는 오류 해결 필요--------------------------------------
-        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=1`);
-    }
-
-    function handleFilter() { // 필터 적용
-        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=1`);
+    function handleOptionClick() { // 필터, 정렬 적용
+        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}`);
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
@@ -139,6 +136,7 @@ function UserProduct() {
 
     // 일반 출력
     return(
+    <UserProductContext.Provider value={productOption}>
         <Container className={styles.section_sub_box}>
             <div className='inner'>
                     <div className={styles.title}>
@@ -155,17 +153,20 @@ function UserProduct() {
                         {
                             (isProductUrl) ? 
                             <div className={styles.option_box}>
-                                <ProductSorting 
-                                sortType={'product_name'} ascend={order.name === 'product_name' && order.ascend} 
-                                handleOrder={handleOrder}/>
-                                <ProductSorting 
-                                sortType={'price'} ascend={order.name === 'price' && order.ascend} 
-                                handleOrder={handleOrder}/>
-                                <ProductSorting 
-                                sortType={'createdAt'} ascend={order.name === 'createdAt' && order.ascend} 
-                                handleOrder={handleOrder}/>
-                                <Filtering category={category} handleFilter={handleFilter}
-                                filter={filter} setFilter={setFilter}
+                                <ProductSorting
+                                sortType={'product_name'} 
+                                typeAscend={order.name === 'product_name' && order.ascend}
+                                handleOptionClick={handleOptionClick}/>
+                                <ProductSorting
+                                sortType={'price'} 
+                                typeAscend={order.name === 'price' && order.ascend} 
+                                handleOptionClick={handleOptionClick}/>
+                                <ProductSorting
+                                sortType={'createdAt'} 
+                                typeAscend={order.name === 'createdAt' && order.ascend}
+                                handleOptionClick={handleOptionClick}/>
+                                <Filtering category={category} 
+                                handleOptionClick={handleOptionClick}
                                 searchParams={searchParams}/>
                             </div> 
                             : null
@@ -186,12 +187,12 @@ function UserProduct() {
                     {
                         isProductUrl ?
                         <div className={styles.pagination_wrap}>
-                            <DataPagination 
+                            <DataPagination
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}
-                            filter={filter}
                             order={order}
+                            filter={filter}
                             />
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
@@ -202,6 +203,7 @@ function UserProduct() {
                     }
             </div>
         </Container>
+    </UserProductContext.Provider>
     )
 }
 

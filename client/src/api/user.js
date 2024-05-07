@@ -79,6 +79,7 @@ export async function getUserReviewAll(userId) {
 // 특정 판매자의 상품에 대한 review 조회
 export async function getUserReviewList(userId, limit, offset, order) {
     const { name, ascend } = order;
+    
     let url = `/user/${userId}/review?limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
     const res = await axios.get(url);
     

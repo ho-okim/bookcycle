@@ -3,24 +3,25 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { FunnelFill } from 'react-bootstrap-icons';
+import { useUserProduct } from '../../contexts/UserProductContext';
 
 // 필터링 버튼과 오버레이
 function Filtering({
     category,
-    filter, setFilter,
-    handleFilter,
+    handleOptionClick,
     searchParams
     }) {
 
+    const { filter, setFilter } = useUserProduct();
     const [currentCategory, setCurrentCategory] = useState(searchParams.get("category_id")-1); // 현재 선택된 카테고리
-
+    
     function handleFilterBtn(targetIdName) {
         if (targetIdName === 'reset_filter') {
             setFilter((filter)=>({...filter, sold : null, category_id : 0}));
             setCurrentCategory(-1);
             return;
         }
-        handleFilter(); // 이동처리
+        handleOptionClick(); // 이동처리
     }
 
     function handleSoldChange(event) { // 판매여부 선택 수정

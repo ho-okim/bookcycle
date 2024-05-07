@@ -48,7 +48,7 @@ router.get('/user/:userId/productAll', async (req, res) => {
 
 // 특정 사용자의 판매목록 조회
 router.get('/user/:userId/product', async (req, res) => {
-    const {userId} = req.params;
+    const { userId } = req.params;
     const { limit, offset, name, ascend, sold, category_id } = req.query;
 
     let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
@@ -64,7 +64,6 @@ router.get('/user/:userId/product', async (req, res) => {
         }
         let order_sql = ` ORDER BY ${name} ${updown} LIMIT ${limit} OFFSET ${offset}`;
 
-        console.log(sql+order_sql)
         // 상품 목록 조회
         const body = await pool.query(sql+order_sql);
         res.send(body);
@@ -95,6 +94,7 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
 router.get('/user/:userId/review', async (req, res) => {
     const { userId } = req.params;
     const { limit, offset, name, ascend } = req.query;
+
     let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
 
     // query문 설정

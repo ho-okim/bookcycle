@@ -47,7 +47,17 @@ function DataPagination({
     function handleClickNumber(pageNumber) { // pagination 숫자 활성화 설정
         handlePagination(pageNumber);
         setActivePage(pageNumber);
-        navigate(`${url}?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`);
+        
+        let newUrl = '';
+
+        if (url.includes('product')) {
+            newUrl = `${url}?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`;
+        } else if (url.includes('review')) {
+            newUrl = `${url}?order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`;
+        } else {
+            newUrl = url;
+        }
+        navigate(newUrl);
     }
 
     function pageBlock() { // pagination 숫자 설정
