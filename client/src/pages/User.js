@@ -33,7 +33,7 @@ function User() {
     let otherUserStyle = user ? styles.other_user : styles.other_user_nologin;
 
     return (
-        <TargetUserContext.Provider value={targetUserId}>
+        <TargetUserContext.Provider value={{targetUserId, setTargetUserId}}>
             <Container className={`${boxStyle} ${styles.undrag}`}>
                 {
                     !user ? null : 

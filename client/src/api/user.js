@@ -1,4 +1,5 @@
 import axios from '../lib/axios.js';
+import REGEX from '../lib/regex.js';
 
 // 특정 사용자 조회
 export async function getUserInfo(userId) {
@@ -40,7 +41,9 @@ export async function getUserProductAll(userId, filter) {
 export async function getUserProductList(userId, limit, offset, order, filter) {
     const { name, ascend } = order;
     const { sold, category_id } = filter;
-    
+
+    let newName = REGEX.CHAR_REG.test(name) ? name.trim() : 'createdAt';
+
     let isSold;
     if (sold === true || sold === 'true') {
         isSold = 1;
@@ -50,7 +53,7 @@ export async function getUserProductList(userId, limit, offset, order, filter) {
         isSold = 'null';
     }
 
-    let url = `/user/${userId}/product?sold=${isSold}&category_id=${category_id}&limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
+    let url = `/user/${userId}/product?sold=${isSold}&category_id=${category_id}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
 
     const res = await axios.get(url);
 
@@ -80,7 +83,9 @@ export async function getUserReviewAll(userId) {
 export async function getUserReviewList(userId, limit, offset, order) {
     const { name, ascend } = order;
     
-    let url = `/user/${userId}/review?limit=${limit}&offset=${offset}&name=${name}&ascend=${ascend}`;
+    let newName = REGEX.CHAR_REG.test(name) ? name.trim() : 'createdAt';
+
+    let url = `/user/${userId}/review?limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {

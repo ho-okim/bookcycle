@@ -10,7 +10,7 @@ import LoadingSpinner from '../LoadingSpinner.js';
 
 function UserReviewTag() {
 
-    const targetUserId = useContext(TargetUserContext); // 대상 id
+    const {targetUserId} = useContext(TargetUserContext); // 대상 id
     const [reviewTagTotal, setReveiwTagTotal] = useState(null);
     const [reviewTagList, setReviewTagList] = useState([]); // 리뷰태그 목록
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리

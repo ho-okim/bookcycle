@@ -1,6 +1,12 @@
 import axios from '../lib/axios.js';
+import REGEX from '../lib/regex.js';
 
 export async function login(email, password) {
+
+    // 잘못 넘어온 값 처리
+    // let newEmail = REGEX.EMAIL_REG.test(email) ? email : null;
+    // let newPwd = REGEX.PASSWORD_REG.test(password) ? password : null;
+
     const res = await axios.post('/login', { email, password });
     
     if (res.statusText !== "OK") {

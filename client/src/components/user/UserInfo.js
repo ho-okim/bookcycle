@@ -11,7 +11,7 @@ import TargetUserContext from '../../contexts/TargetUserContext.js';
 
 function UserInfo() {
 
-    const targetUserId = useContext(TargetUserContext); // 대상 id
+    const {targetUserId} = useContext(TargetUserContext); // 대상 id
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 

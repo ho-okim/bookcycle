@@ -17,8 +17,8 @@ function UserReviewList() {
     const currentUrl = window.location.href; // 현재 url
     const isReviewUrl = currentUrl.includes("review"); // 리뷰 목록 페이지 여부
 
-    const targetUserId = useContext(TargetUserContext); // 대상 id
-
+    const {targetUserId, setTargetUserId} = useContext(TargetUserContext); // 대상 id
+    
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
@@ -29,7 +29,7 @@ function UserReviewList() {
         ascend : searchParams.get("ascend") ?? false 
     }); 
 
-    let limit = 2;
+    let limit = 10;
 
     // 메모로 state 최적화?
     const reviewOption = useMemo(()=>({
@@ -76,7 +76,7 @@ function UserReviewList() {
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
         getReviewList();
-    }, [offset, searchParams]);
+    }, [targetUserId, offset, searchParams]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
@@ -94,7 +94,7 @@ function UserReviewList() {
         setOffset((value-1)*limit);
     }
 
-    function handleOptionClick() { // 필터, 정렬 적용
+    function handleOptionClick() { // 정렬 적용
         navigate(`/user/${targetUserId}/review?order=${order.name}&ascend=${order.ascend}`);
     }
 
@@ -148,7 +148,8 @@ function UserReviewList() {
                         reviewList.length != 0 ? 
                         reviewList.map((el, i)=>{
                             return(
-                                <Review key={i} review={el}/>
+                                <Review key={i} review={el} 
+                                setTargetUserId={setTargetUserId}/>
                             )
                         })
                         : <p>아직 판매한 제품에 작성된 후기가 없어요!</p>
@@ -178,20 +179,25 @@ function UserReviewList() {
     )
 }
 
-function Review({review}) {
+function Review({review, setTargetUserId}) {
+
+    function handleTargetChange() {
+        setTargetUserId(review.buyer_id);
+    }
+
     return(
         <div className={
             `${styles.review_box} d-flex justify-content-around align-items-center`
         }>
             <div className={styles.score}>
                 {
-                    starRating(`${review.score}`)
+                    starRating(review.score)
                 }
             </div>
             <div className={`${styles.review} d-flex flex-column`}>
                 <p className={`${styles.review_content} ${styles.text_hidden}`}>{review.content}</p>
             </div>
-            <div className={styles.writer}><Link to={`/user/${review.buyer_id}`}>{review.buyer_name}</Link></div>
+            <div className={styles.writer} onClick={handleTargetChange}><Link to={`/user/${review.buyer_id}`}>{review.buyer_name}</Link></div>
             <p className={styles.date}>{new Date(review.createdAt).toLocaleDateString("ko-kr")}</p>
         </div>
     )

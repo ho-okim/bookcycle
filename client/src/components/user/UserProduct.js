@@ -19,7 +19,7 @@ function UserProduct() {
     const currentUrl = window.location.href; // 현재 url
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
 
-    const targetUserId = useContext(TargetUserContext); // 대상 id
+    const {targetUserId} = useContext(TargetUserContext); // 대상 id
     
     const [productList, setProductList] = useState([]); // 상품목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -91,7 +91,7 @@ function UserProduct() {
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
         setLoading(true);
         getProductList();
-    }, [offset, searchParams]);
+    }, [targetUserId, offset, searchParams]);
     
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
