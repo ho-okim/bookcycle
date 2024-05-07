@@ -1,6 +1,6 @@
 import styles from '../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import UserMenu from '../components/user/UserMenu.js';

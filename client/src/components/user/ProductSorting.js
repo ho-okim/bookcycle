@@ -4,10 +4,12 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, CurrencyDollar } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import { useUserProduct } from '../../contexts/UserProductContext';
-import { useEffect } from 'react';
+import { useTargetUser } from '../../contexts/TargetUserContext';
 
 // 정렬 버튼
-function ProductSorting({ sortType, typeAscend, handleOptionClick}) {
+function ProductSorting({ sortType, typeAscend }) {
+
+    const {targetUserId} = useTargetUser(); // 대상 id
 
     const navigate = useNavigate();
 
@@ -33,8 +35,8 @@ function ProductSorting({ sortType, typeAscend, handleOptionClick}) {
     function handleSort(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
         setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
-        // 문제 -- url이 이전 state로 생성되어 현재 state와 차이가 있음
-        handleOptionClick();
+        
+        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order_id}&ascend=${!typeAscend}`);
     }
     
     return(

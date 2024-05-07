@@ -3,16 +3,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
 import { useUserReview } from '../../contexts/UserReviewContext';
+import { useTargetUser } from '../../contexts/TargetUserContext';
+import { useNavigate } from 'react-router-dom';
 
-function ReviewSorting({sortType, typeAscend, handleOptionClick}) {
+function ReviewSorting({ sortType, typeAscend }) {
     
-    const {order, setOrder} = useUserReview();
+    const {targetUserId} = useTargetUser(); // 대상 id
+
+    const {order, setOrder } = useUserReview();
+
+    const navigate = useNavigate();
 
     function handleSort(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
         setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
-        // 문제 -- url이 이전 state로 생성되어 현재 state와 차이가 있음
-        handleOptionClick();
+        navigate(`/user/${targetUserId}/review?order=${order_id}&ascend=${!typeAscend}`);
     }
     
     return(

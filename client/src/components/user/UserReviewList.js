@@ -4,7 +4,7 @@ import { useState, useContext, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
-import TargetUserContext from '../../contexts/TargetUserContext.js';
+import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import UserReviewContext from '../../contexts/UserReviewContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
@@ -17,7 +17,7 @@ function UserReviewList() {
     const currentUrl = window.location.href; // 현재 url
     const isReviewUrl = currentUrl.includes("review"); // 리뷰 목록 페이지 여부
 
-    const {targetUserId, setTargetUserId} = useContext(TargetUserContext); // 대상 id
+    const {targetUserId, setTargetUserId} = useTargetUser(); // 대상 id
     
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -58,7 +58,7 @@ function UserReviewList() {
     }
 
     useEffect(()=>{
-        async function pageOffset() {
+        async function pageOffset() { // 페이지 시작점 처리
             if (!searchParams.get("page") 
             || searchParams.get("page") < 0 
             || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
@@ -94,10 +94,6 @@ function UserReviewList() {
         setOffset((value-1)*limit);
     }
 
-    function handleOptionClick() { // 정렬 적용
-        navigate(`/user/${targetUserId}/review?order=${order.name}&ascend=${order.ascend}`);
-    }
-
     // 로딩 및 데이터가 없을 때 박스 css
     const databox_css = reviewList.length == 0 ?
     `${styles.box} d-flex justify-content-center`
@@ -129,12 +125,10 @@ function UserReviewList() {
                         <div>
                             <ReviewSorting
                             sortType={'score'} 
-                            typeAscend={order.name === 'score' && order.ascend} 
-                            handleOptionClick={handleOptionClick}/>
+                            typeAscend={order.name === 'score' && order.ascend} />
                             <ReviewSorting 
                             sortType={'createdAt'} 
-                            typeAscend={order.name === 'createdAt' && order.ascend} 
-                            handleOptionClick={handleOptionClick}/>
+                            typeAscend={order.name === 'createdAt' && order.ascend} />
                         </div> 
                         : <Button 
                         variant='outline-primary' 

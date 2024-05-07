@@ -76,7 +76,6 @@ router.get('/user/:userId/product', async (req, res) => {
         // name string 에러
         variables.push(parseInt(limit), parseInt(offset));
 
-        console.log(order_sql)
         // 상품 목록 조회
         const body = await pool.query(sql+order_sql, variables);
         res.send(body);

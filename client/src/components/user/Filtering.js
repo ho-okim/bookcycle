@@ -4,24 +4,29 @@ import { useState } from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { FunnelFill } from 'react-bootstrap-icons';
 import { useUserProduct } from '../../contexts/UserProductContext';
+import { useNavigate } from 'react-router-dom';
+import { useTargetUser } from '../../contexts/TargetUserContext';
 
 // 필터링 버튼과 오버레이
 function Filtering({
     category,
-    handleOptionClick,
     searchParams
     }) {
 
-    const { filter, setFilter } = useUserProduct();
+    const { targetUserId } = useTargetUser(); // 대상 id
+
+    const { order, setOrder, filter, setFilter } = useUserProduct();
     const [currentCategory, setCurrentCategory] = useState(searchParams.get("category_id")-1); // 현재 선택된 카테고리
     
+    const navigate = useNavigate();
+
     function handleFilterBtn(targetIdName) {
         if (targetIdName === 'reset_filter') {
             setFilter((filter)=>({...filter, sold : null, category_id : 0}));
             setCurrentCategory(-1);
             return;
         }
-        handleOptionClick(); // 이동처리
+        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}`);
     }
 
     function handleSoldChange(event) { // 판매여부 선택 수정

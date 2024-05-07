@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { reviewWrite, reviewWritePost } from '../../api/mypage';
 import Button from 'react-bootstrap/Button';
-
 import Container from "react-bootstrap/Container";
 // import StarSelect from "../../components/StarSelect";
-
 import styles from "../../styles/mypage.module.css";
-
 // import { useState } from "react";
 import { StarFill } from "react-bootstrap-icons";
+import { useTargetUser } from '../../contexts/TargetUserContext';
 
 function ReviewWrite() {
 
   const { id } = useParams();
+  const {targetUserId} = useTargetUser();
   const [reviewTags, setReviewTags] = useState([]);
   
   const [rating, setRating] = useState(0);
@@ -22,12 +21,9 @@ function ReviewWrite() {
 
   const navigate = useNavigate();
   
-  const location = useLocation()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const productId = searchParams.get("productId")
-
-
-
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const productId = searchParams.get("productId");
 
   useEffect(() => {
     async function getReviews() {
@@ -65,8 +61,6 @@ function ReviewWrite() {
     }
   }
 
-
-    
   const totalStar = 5;
   const [hoverIndex, setHoverIndex] = useState(-1);
   const [score, setScore] = useState(0);

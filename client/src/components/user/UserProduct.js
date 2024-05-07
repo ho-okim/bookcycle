@@ -1,12 +1,12 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
 import { getCategory } from '../../api/product.js';
-import TargetUserContext from '../../contexts/TargetUserContext.js';
+import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import UserProductContext from '../../contexts/UserProductContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
@@ -19,7 +19,7 @@ function UserProduct() {
     const currentUrl = window.location.href; // 현재 url
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
 
-    const {targetUserId} = useContext(TargetUserContext); // 대상 id
+    const { targetUserId } = useTargetUser(); // 대상 id
     
     const [productList, setProductList] = useState([]); // 상품목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -109,10 +109,6 @@ function UserProduct() {
         setOffset((pageNumber-1)*limit);
     }
 
-    function handleOptionClick() { // 필터, 정렬 적용
-        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}`);
-    }
-
     // 로딩 및 데이터가 없을 때 박스 css
     const databox_css = (!productList || productList.length == 0) ?
     `${styles.sold} ${styles.box} d-flex justify-content-center`
@@ -155,18 +151,14 @@ function UserProduct() {
                             <div className={styles.option_box}>
                                 <ProductSorting
                                 sortType={'product_name'} 
-                                typeAscend={order.name === 'product_name' && order.ascend}
-                                handleOptionClick={handleOptionClick}/>
+                                typeAscend={order.name === 'product_name' && order.ascend}/>
                                 <ProductSorting
                                 sortType={'price'} 
-                                typeAscend={order.name === 'price' && order.ascend} 
-                                handleOptionClick={handleOptionClick}/>
+                                typeAscend={order.name === 'price' && order.ascend} />
                                 <ProductSorting
                                 sortType={'createdAt'} 
-                                typeAscend={order.name === 'createdAt' && order.ascend}
-                                handleOptionClick={handleOptionClick}/>
+                                typeAscend={order.name === 'createdAt' && order.ascend}/>
                                 <Filtering category={category} 
-                                handleOptionClick={handleOptionClick}
                                 searchParams={searchParams}/>
                             </div> 
                             : null

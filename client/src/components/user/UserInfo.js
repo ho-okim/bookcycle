@@ -1,17 +1,17 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';
 import { getUserInfo } from '../../api/user.js';
-import TargetUserContext from '../../contexts/TargetUserContext.js';
+import { useTargetUser } from '../../contexts/TargetUserContext.js';
 
 function UserInfo() {
 
-    const {targetUserId} = useContext(TargetUserContext); // 대상 id
+    const {targetUserId} = useTargetUser(); // 대상 id
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
