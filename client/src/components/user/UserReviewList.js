@@ -71,7 +71,7 @@ function UserReviewList() {
 
         getTotal();
         pageOffset();
-    }, [totalData, searchParams])
+    }, [totalData, searchParams]);
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
