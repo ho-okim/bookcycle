@@ -1,6 +1,6 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useContext, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';

@@ -1,5 +1,5 @@
-require('dotenv').config()
-const nodemailer = require('nodemailer')
+require('dotenv').config();
+const nodemailer = require('nodemailer');
 
 const router = require('express').Router();
 const pool = require("../db.js");
@@ -8,11 +8,11 @@ const { isNotLoggedIn } = require('../lib/auth.js');
 
 // 이메일 인증 링크 전용 8자리 난수 생성 코드
 const emailVerifyToken = (min = 11111111, max = 99999999) => {
-  const token = Math.floor(Math.random() * (max - min + 1) + min)
-  const expires = new Date()
-  expires.setHours(expires.getHours() + 24) // 24시간 후 링크 만료
+  const token = Math.floor(Math.random() * (max - min + 1) + min);
+  const expires = new Date();
+  expires.setHours(expires.getHours() + 24); // 24시간 후 링크 만료
 
-  return token
+  return token;
 }
 
 // 이메일 중복 체크
@@ -20,14 +20,14 @@ router.get('/email', isNotLoggedIn, async (req, res) => {
   // request query string
   const { email } = req.query;
   
-  let sql = 'SELECT * FROM users WHERE email = ?';
+  let sql = 'SELECT COUNT(*) AS size FROM users WHERE email = ?';
 
   try {
-    let result = await pool.query(sql, [email]);
+    const result = await pool.query(sql, [email]);
     res.send(result);
   } catch (error) {
     console.error(error);
-    res.send('error');
+    res.status(500).send('error');
   }
 });
 

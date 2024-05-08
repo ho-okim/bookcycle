@@ -4,12 +4,13 @@ import axios from '../lib/axios.js';
 export async function email_check(email) {
     try {
         const url = `/email?email=${email}`;
+        
         const res = await axios.get(url);
         
         if (res.statusText != "OK") {
             throw new Error("DB에 email 조회 실패");
         }
-        const body = res.data.length;
+        const body = res.data[0].size;
         return body;
     } catch (error) {
         if (error.response.status == 403) {
@@ -18,7 +19,6 @@ export async function email_check(email) {
             throw error;
         }
     }
-
 }
 
 // 회원가입

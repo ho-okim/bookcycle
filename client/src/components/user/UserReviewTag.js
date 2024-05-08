@@ -34,7 +34,7 @@ function UserReviewTag() {
                 setReviewTagList([]);
                 return;
             }
-            console.log('여기인가')
+
             setReviewTagList(res);
             setLoading(false);
         }

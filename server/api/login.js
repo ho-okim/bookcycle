@@ -1,6 +1,11 @@
+require('dotenv').config();
+const nodemailer = require('nodemailer');
 const router = require('express').Router();
 const passport = require("passport");
+const pool = require("../db.js");
+const bcrypt = require("bcrypt");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
+const { PASSWORD_REG } = require('../lib/regex_server');
 
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
@@ -53,6 +58,77 @@ router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   } catch (error) {
     console.error(error);
     res.send(null);
+  }
+});
+
+// 랜덤 비밀번호 생성
+function generateRandomPassword() {
+  const pallet = '9876543210abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&()_~[]';
+  const pwdLength = 13;
+
+  let result = '';
+
+  while (!PASSWORD_REG.test(result)) {
+      result = '';
+      for (let i = 0; i < pwdLength; i++) {
+          result += pallet.charAt(Math.random()*(pallet.length-1));
+      }
+      console.log(result)
+      console.log(PASSWORD_REG.test(result))
+  }
+  console.log(`final result : ${result}`);
+  return result;
+}
+
+// 비번찾기 - 이메일로 임시 비번 발급
+router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
+  const { email } = req.query;
+
+  // 임시 비밀번호 생성
+  const tempPassword = generateRandomPassword();
+
+  const sendMail =  async (email) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.GMAIL_OAUTH_USER,
+          pass: process.env.APP_PASSWORD
+        },
+      });
+  
+      const mailOptions = {
+        from: {
+          name: "BookCycle",
+          address: process.env.GMAIL_OAUTH_USER
+        },
+        to: email,
+        subject: "[북사이클] 임시 비밀번호 발급 이메일입니다.",
+        html: `<p>발급된 임시 비밀번호는 ${tempPassword} 입니다.</p><a href="http://localhost:3000/login">북사이클 로그인하기</a>`
+      };
+  
+      await transporter.sendMail(mailOptions);
+      console.log('email succecfully sended');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  //sendMail(email);
+
+  let sql = 'UPDATE users SET password = ? WHERE email = ?';
+
+  try {
+    let result = await pool.query(sql, [
+      await bcrypt.hash(tempPassword, 10), email
+    ]);
+    res.send('ok');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('error');
   }
 });
 

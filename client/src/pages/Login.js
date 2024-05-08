@@ -61,7 +61,7 @@ function Login() {
     const res = await handleLogin(email, password);
 
     if (res == 'success') {
-      navigate(-1);
+      navigate("/");
       return;
     } else if (res == 'expired') { // 인증 링크 만료됨
       setErrorMessage('인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.');
@@ -99,7 +99,7 @@ function Login() {
           }
           <div>
             <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
-            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate(-1)}}>취소</Button>
+            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
           </div>
           <div className={styles.more_info}>
             <div>
@@ -107,8 +107,7 @@ function Login() {
               <Link to="/join">회원가입</Link>
             </div>
             <div>
-              <Link to="#" className={styles.find_info}>이메일 찾기</Link>
-              <Link to="#" className={styles.find_info}>비밀번호 찾기</Link>
+              <Link to="/findpwd" className={styles.find_info}>비밀번호 찾기</Link>
             </div>
           </div>
         </form>

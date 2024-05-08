@@ -1,6 +1,8 @@
 import axios from '../lib/axios.js';
 import REGEX from '../lib/regex.js';
+import { email_check } from './join.js';
 
+// 로그인
 export async function login(email, password) {
 
     // 잘못 넘어온 값 처리
@@ -16,6 +18,7 @@ export async function login(email, password) {
     return body;
 }
 
+// 현재 로그인한 사용자 가져오기
 export async function getLoginUser() {
     try {
         const res = await axios.get('/getLoginUser');
@@ -28,7 +31,7 @@ export async function getLoginUser() {
         return body;
     } catch (error) {
         if (error.response.status == 403) {
-            return null;
+            console.error('로그인 후 사용 가능');
         } else {
             throw error;
         }
@@ -36,6 +39,7 @@ export async function getLoginUser() {
 
 }
 
+// 로그아웃
 export async function logout() {
     try {
         const res = await axios.get("/logout");
@@ -43,5 +47,41 @@ export async function logout() {
         return body;
     } catch (error) {
         throw error;
+    }
+}
+
+// 비번찾기
+export async function findpwd(email) {
+    try {
+        const res = await email_check(email);
+
+        if (res === 0) {
+            return JSON.stringify({ message : 'no email' });
+        } else if (res === 1) {
+            try {
+                const res = await axios.get(`/sendEmail?email=${email}`);
+                console.log(res)
+                if (res.statusText !== "OK") {
+                    throw new Error("내부 서버 에러");
+                }
+                return 'send';
+            } catch (error) {
+                if (error.response.status == 403) {
+                    return null;
+                } else {
+                    throw error;
+                }
+            }
+        } else {
+            return JSON.stringify({ message : 'error' });
+        }
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("already logged in");
+        } else if (error.response.status == 500) {
+            throw new Error("server error");
+        } else {
+            throw error;
+        }
     }
 }
