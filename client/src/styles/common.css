@@ -29,6 +29,16 @@ body{font-family: 'Pretendard-SemiBold';}
 @media screen and (min-width: 768px){
   .toggleBtnWrap{display: none!important;}
 } /* 헤더 토글 버튼 md보다 큰 화면에서 아예 보이지 않도록 설정 */
+/* .toggleBtnWrap{height: 50px;} */
+
+/* chatBtn */
+.chatBtnWrap{position: fixed; bottom: 40px; right: 40px;}
+.chatBtn{
+  width: 50px; height: 50px; border-radius: 50%;
+  background-color: rgb(77, 145, 182); border: none;
+  z-index: 20;
+}
+.ChatDotsFill{color: white; font-size: 30px;}
 
 /* common setting */
 *{margin: 0; padding: 0; box-sizing: border-box;}
