@@ -6,6 +6,7 @@ const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 const { PASSWORD_REG } = require('../lib/regex_server');
+const findpwdHtml = require('../html/findpwdHtml.js');
 
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
@@ -63,7 +64,7 @@ router.get("/getLoginUser", isLoggedIn, (req, res)=>{
 
 // 랜덤 비밀번호 생성
 function generateRandomPassword() {
-  const pallet = '9876543210abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&()_~[]';
+  const pallet = '9876543210abcdeABCDEfghijpqrstuvwSTUVWXxyzFGHIJKklmnoLMNOPQRYZ!@#$%^&()_~[]';
   const pwdLength = 13;
 
   let result = '';
@@ -73,8 +74,6 @@ function generateRandomPassword() {
       for (let i = 0; i < pwdLength; i++) {
           result += pallet.charAt(Math.random()*(pallet.length-1));
       }
-      console.log(result)
-      console.log(PASSWORD_REG.test(result))
   }
   console.log(`final result : ${result}`);
   return result;
@@ -86,6 +85,9 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
 
   // 임시 비밀번호 생성
   const tempPassword = generateRandomPassword();
+
+  // 이메일 html
+  const emailHtml = findpwdHtml(tempPassword);
 
   const sendMail =  async (email) => {
     try {
@@ -107,7 +109,12 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
         },
         to: email,
         subject: "[북사이클] 임시 비밀번호 발급 이메일입니다.",
-        html: `<p>발급된 임시 비밀번호는 ${tempPassword} 입니다.</p><a href="http://localhost:3000/login">북사이클 로그인하기</a>`
+        html: emailHtml,
+        attachments: [{
+          filename: 'bookcycle-logo.png',
+          path: 'http://localhost:3000/img/bookcycle-logo.png',
+          cid: 'provide@bookcycle-logo.png'
+        }]
       };
   
       await transporter.sendMail(mailOptions);
@@ -117,9 +124,9 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
     }
   };
   
-  //sendMail(email);
-
-  let sql = 'UPDATE users SET password = ? WHERE email = ?';
+  sendMail(email);
+// 발송 오류시 처리 - 비번 교체 차단
+  /*let sql = 'UPDATE users SET password = ? WHERE email = ?';
 
   try {
     let result = await pool.query(sql, [
@@ -129,7 +136,7 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('error');
-  }
+  }*/
 });
 
 module.exports = router;

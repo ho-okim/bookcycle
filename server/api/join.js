@@ -5,6 +5,7 @@ const router = require('express').Router();
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn } = require('../lib/auth.js');
+const authHtml = require('../html/authHtml.js');
 
 // 이메일 인증 링크 전용 8자리 난수 생성 코드
 const emailVerifyToken = (min = 11111111, max = 99999999) => {
@@ -38,6 +39,9 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
   
   const token = emailVerifyToken();
 
+  // 이메일 html
+  const  emailHtml = authHtml(email, token);
+
   const sendMail =  async (email) => {
     try {
       const transporter = nodemailer.createTransport({
@@ -58,8 +62,12 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
         },
         to: email,
         subject: "[북사이클] 회원가입 인증 메일입니다.",
-        html: `<p>인증링크를 클릭해주세요 : <a href="http://localhost:10000/verify?email=${email}&token=${token}">인증 링크</a></p>
-        <p>해당 인증 링크는 24시간 이후 만료됩니다.</p>`
+        html: emailHtml,
+        attachments: [{
+          filename: 'bookcycle-logo.png',
+          path: 'http://localhost:3000/img/bookcycle-logo.png',
+          cid: 'provide@bookcycle-logo.png'
+        }]
       };
   
       await transporter.sendMail(mailOptions);
