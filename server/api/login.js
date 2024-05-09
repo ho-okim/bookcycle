@@ -5,7 +5,7 @@ const passport = require("passport");
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
-const { PASSWORD_REG } = require('../lib/regex_server');
+const generateRandomString = require('../lib/generateRandom.js');
 const findpwdHtml = require('../html/findpwdHtml.js');
 
 // 로그인
@@ -62,32 +62,15 @@ router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   }
 });
 
-// 랜덤 비밀번호 생성
-function generateRandomPassword() {
-  const pallet = '9876543210abcdeABCDEfghijpqrstuvwSTUVWXxyzFGHIJKklmnoLMNOPQRYZ!@#$%^&()_~[]';
-  const pwdLength = 13;
-
-  let result = '';
-
-  while (!PASSWORD_REG.test(result)) {
-      result = '';
-      for (let i = 0; i < pwdLength; i++) {
-          result += pallet.charAt(Math.random()*(pallet.length-1));
-      }
-  }
-  console.log(`final result : ${result}`);
-  return result;
-}
-
-// 비번찾기 - 이메일로 임시 비번 발급
-router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
+// 비번찾기 - 이메일로 인증메일 발송
+router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
   const { email } = req.query;
 
-  // 임시 비밀번호 생성
-  const tempPassword = generateRandomPassword();
+  // 인증키 생성
+  const secured_key = await bcrypt.hash(generateRandomString('password'), 10);
 
   // 이메일 html
-  const emailHtml = findpwdHtml(tempPassword);
+  const emailHtml = findpwdHtml(encodeURIComponent(secured_key));
 
   const sendMail =  async (email) => {
     try {
@@ -108,7 +91,7 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
           address: process.env.GMAIL_OAUTH_USER
         },
         to: email,
-        subject: "[북사이클] 임시 비밀번호 발급 이메일입니다.",
+        subject: "[북사이클] 비밀번호 초기화 이메일입니다.",
         html: emailHtml,
         attachments: [{
           filename: 'bookcycle-logo.png',
@@ -117,26 +100,85 @@ router.get("/sendEmail", isNotLoggedIn, async (req, res) => {
         }]
       };
   
-      await transporter.sendMail(mailOptions);
-      console.log('email succecfully sended');
+      await transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+          res.status(500).send('email send error');
+        } else {
+          console.log('email succecfully sended');
+          res.status(200).send('ok');
+        }
+      });
     } catch (err) {
       console.error(err);
+      res.status(500).send('email send error');
     }
   };
   
-  sendMail(email);
-// 발송 오류시 처리 - 비번 교체 차단
-  /*let sql = 'UPDATE users SET password = ? WHERE email = ?';
+  // 사용자 정보 쿼리
+  let user_sql = 'SELECT id, is_verified, blocked FROM users WHERE email = ?';
 
-  try {
-    let result = await pool.query(sql, [
-      await bcrypt.hash(tempPassword, 10), email
-    ]);
-    res.send('ok');
+  try { // 사용자 정보 조회 - 접근 차단용
+    const [userRes] = await pool.query(user_sql, [email]);
+    console.log('사용자 먼저 조회 ===== ', userRes)
+    if (!userRes || userRes.is_verified === 0) { // 없는 이메일, 인증 안된 이메일은 차단
+      res.status(403).send('not allowed');
+      return;
+    }
+
+    // 인증 정보 쿼리
+    let verify_sql = 'INSERT INTO verification (user_id, secured_key, date_expired) VALUES (?, ?, DATE_ADD(CURRENT_TIMESTAMP(3), INTERVAL 10 MINUTE))';
+
+    try { // 인증 정보 저장
+      let result = await pool.query(verify_sql, [ userRes.id, secured_key ]);
+      console.log('인증 정보 DB에 저장 ==== ', result);
+
+      console.log('----------send mail-----------');
+      // 메일 전송
+      sendMail(email);
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('verification_error');
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send('error');
-  }*/
+  }
+});
+
+// verify API --- 수정
+router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
+  const { securedKey } = req.params;
+  console.log('인증키 : ', securedKey);
+  const decodedKey = decodeURIComponent(securedKey);
+  console.log('해독 : ', decodedKey);
+  let sql = 'SELECT * FROM verification WHERE secured_key = ?';
+
+  try {
+    // 쿼리스트링으로 들어온 securedKey로 테이블에 조회
+    const [result] = await pool.query(sql, [decodedKey]);
+    console.log('인증키로 정보 조회 ==== ', result);
+    console.log('인증키로 정보 조회 날짜 ==== ', new Date(result.date_expired));
+    let dateNow = new Date();
+    console.log('현재 시간 : ', dateNow)
+    // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
+    if(result && dateNow <= new Date(result.date_expired)) {
+      let user_sql = 'SELECT email FROM users WHERE id= ?';
+
+      const [user_result] = await pool.query(user_sql, [result.user_id]);
+      console.log('사용자 이메일 정보 가져옴 =====', user_result.email);
+      const hashedEmail = await bcrypt.hash(user_result.email, 10);
+      const encodedEmail = encodeURIComponent(hashedEmail);
+
+      res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
+    } else {
+      res.status(401).send('<p>인증 메일이 만료되었습니다. 다시 시도해주세요.</p><p><a href="http://localhost:3000/login">북사이클 바로가기</a></p>');
+    }
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 module.exports = router;

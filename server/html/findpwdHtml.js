@@ -1,4 +1,4 @@
-const findpwdHtml = (tempPassword) => {
+const findpwdHtml = (secured_key) => {
     return(
         `
         <!DOCTYPE html>
@@ -30,7 +30,7 @@ const findpwdHtml = (tempPassword) => {
                     </tr>
                     <tr>
                         <td align="center">
-                            <h2>임시 비밀번호 발급 안내</h2>
+                            <h2>비밀번호 초기화 안내</h2>
                         </td>
                     </tr>
                     
@@ -41,9 +41,9 @@ const findpwdHtml = (tempPassword) => {
                                     <tr>
                                         <td align="center" style="line-height:1.5 !important;">
                                             <p>안녕하세요, 북사이클입니다.</p>
-                                            <p>해당 이메일로 가입된 계정으로 발급된 임시 비밀번호는</p>
-                                            <p><strong style="font-size:18px;">${tempPassword}</strong> 입니다.</p>
-                                            <p>링크를 통해 <a href="http://localhost:3000/login">북사이클 로그인</a>해주시기 바랍니다.</p>
+                                            <p>해당 이메일로 가입된 계정의 비밀번호를 초기화하려면</p>
+                                            <p><a href="http://localhost:10000/password/verify/${secured_key}">링크</a>를 클릭해주시기 바랍니다.</p>
+                                            <p>만약 비밀번호 초기화를 요청하지 않았는데 이메일이 발송되었다면 고객지원 센터에 문의해주시기 바랍니다.</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -51,7 +51,6 @@ const findpwdHtml = (tempPassword) => {
                                     </tr>
                                     <tr>
                                         <td align="center" style="line-height:1.5 !important;">
-                                            <p>북사이클에 관한 문의사항은 북사이클 고객지원 센터를 이용해주시기 바랍니다.</p>
                                             <p>감사합니다. <br/> 북사이클 팁 드림</p>
                                         </td>
                                     </tr>

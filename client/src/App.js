@@ -28,6 +28,7 @@ import ReviewWrite from './components/user/ReviewWrite.js';
 import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 import FindPwd from './pages/FindPwd.js';
+import Reset from './pages/Reset.js'; 
 
 function App() {
   return (
@@ -37,7 +38,10 @@ function App() {
           <Route path="/" element={<Main/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/join" element={<Join/>}/>
-          <Route path="/findpwd" element={<FindPwd/>}/>
+          <Route path="/password">
+            <Route path="find" element={<FindPwd/>}/>
+            <Route path="reset" element={<Reset/>}/>
+          </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>
             <Route path="buyReviewList" element={<MyBuyReview/>}/>

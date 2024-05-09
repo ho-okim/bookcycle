@@ -107,7 +107,7 @@ function Login() {
               <Link to="/join">회원가입</Link>
             </div>
             <div>
-              <Link to="/findpwd" className={styles.find_info}>비밀번호 찾기</Link>
+              <Link to="/password/find" className={styles.find_info}>비밀번호 찾기</Link>
             </div>
           </div>
         </form>

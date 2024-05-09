@@ -99,7 +99,7 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
 });
 
 // verify API
-router.get('/verify', async(req, res)=>{
+router.get('/verify', isNotLoggedIn, async(req, res)=>{
   const { email, token } = req.query;
   
   let sql = 'SELECT * FROM users WHERE email = ?';

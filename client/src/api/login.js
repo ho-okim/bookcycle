@@ -59,8 +59,8 @@ export async function findpwd(email) {
             return JSON.stringify({ message : 'no email' });
         } else if (res === 1) {
             try {
-                const res = await axios.get(`/sendEmail?email=${email}`);
-                console.log(res)
+                const res = await axios.get(`/password/sendEmail?email=${email}`);
+                
                 if (res.statusText !== "OK") {
                     throw new Error("내부 서버 에러");
                 }
