@@ -39,7 +39,7 @@ const sessionOption = {
     resave : false,
     saveUninitialized : false,
     cookie : {
-        maxAge : 60 * 60 * 1000, // 1시간
+        maxAge : 60 * 60 * 10000, // 10시간, 테스트 편의를 위해 수정함(추후 1시간으로 변경 예정)
         httpOnly : true,
         secure : false
     }, 
@@ -139,6 +139,7 @@ if (pool) {
     });
 }
 
+
 // router --------------------------------------------------------
 app.use("/", require('./api/main.js'));
 app.use("/", require('./api/login.js'));
@@ -149,19 +150,62 @@ app.use("/", require('./api/board.js'));
 app.use("/", require('./api/report.js'));
 app.use("/", require('./api/chat.js'));
 
+const sessionMiddleware = session(sessionOption)
+
+// socket.io에 세션 미들웨어를 연결함으로써 req에 담겨있는 session 값들을 사용할 수 있게 된다
+io.use((socket, next)=>{
+  sessionMiddleware(socket.request, {}, next)
+})
 
 // 소켓 통신
 io.on('connection', (socket)=>{
-  console.log('websocket connected')
+  // console.log('websocket connected')
 
   socket.on('join', async (data)=>{
+    console.log("websocket join : ", data)
     socket.join(data)
   })
 
   socket.on('send-message', async (data) => {
-    console.log(data.socketMsg)
     // db에 메세지 저장
+    const {loginUserId, socketMsg, chatroomIdx} = data
+    const date = new Date()
+    console.log(chatroomIdx)
+
+    let sql = `INSERT INTO chat_message (user_id, room_id, message, createdAt) VALUES (?, ?, ?, ?)`;
+
+    if(socketMsg){
+      try {
+        let result = await pool.query(sql, [loginUserId, chatroomIdx, socketMsg, date]);
+        io.to(chatroomIdx).emit('success', {id : result.insertId, user_id : loginUserId, room_id: chatroomIdx, message: socketMsg, date})
+      } catch (error) {
+        console.error(error, 'chat message INSERT error');
+      }
+    }
   })
 
+  socket.on('refreshRON', async (data) => {
+    const {loginUserId, chatroomIdx} = data
+
+    let sql = `UPDATE chat_message SET read_or_not = 0 WHERE user_id != ? AND room_id = ? AND read_or_not = 1;`
+    
+    try {
+      let result = await pool.query(sql, [loginUserId, chatroomIdx]);
+      io.to(chatroomIdx).emit('refreshSuccess', {loginUserId, room_id : chatroomIdx})
+    } catch (error) {
+      console.error(error, 'read or not UPDATE error');
+    }
+  })
+
+  socket.on('sameChatroomIdx', (data)=>{
+    console.log("소켓 통신 : ", data)
+    io.to(data.room_id).emit('msgCnt0', {chatroomIdx: data.room_id})
+  })
+
+  socket.on('difChatroomIdx', (data)=>{
+    console.log('채팅방 위치 다름')
+    console.log(data.room_id)
+    io.to(data.room_id).emit('msgCnt1', {chatroomIdx: data.room_id})
+  })
   
 })
