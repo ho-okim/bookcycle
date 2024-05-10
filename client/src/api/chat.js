@@ -29,7 +29,6 @@ export async function newChatroom() {
     } 
     const body = res.data;
     body.message = 'success'
-    console.log(body.insertId)
     
     return body.insertId;
   } catch (error) {
@@ -45,14 +44,12 @@ export async function getChatMsg(roomId) {
   try {
     const URL = '/getChatMsg/' + roomId
     const result = await axios.get(URL);
-    const res = result.data.result
-    const product = result.data.product
+    const res = result.data
     
     if (result.statusText != "OK") {
       throw new Error("GET chat message failed");
     } 
-    const body = {res, product};
-    body.message = 'success'
+    const body = res;
     
     return body;
   } catch (error) {
