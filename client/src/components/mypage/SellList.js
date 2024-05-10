@@ -9,27 +9,24 @@ import styles from '../../styles/mypage.module.css';
 function SellList() {
 
   const { id } = useParams();
-
-  async function getItems(){
-    const data = await sellList(id)
-    return data
-  }
-
   const [sellItems, setSellItems] = useState([]);
 
   useEffect(() => {
-    // Axios 인스턴스를 이용하여 서버로부터 데이터 가져오기
-    let items
-    const test = async() => {
-      items = await getItems()
-      setSellItems(items)
+    async function getItems(){
+      try {
+        const data = await sellList(id)
+        setSellItems(data);
+      } catch (error) {
+        console.error('sellList 데이터를 가져오는 중 에러 발생: ', error);
+        setSellItems([]);
+      }
     }
-    test()
+    getItems();
   }, []);
 
   return (
     <Table responsive>
-      <thead className={styles.buyList}>
+      <thead className={styles.tradeList}>
         <tr>
           <th>거래일</th>
           <th>상품명</th>
@@ -44,9 +41,10 @@ function SellList() {
             <td>{dateProcessing(item.soldDate)}</td>
             <td>{item.product_name}</td>
             <td>₩{parseInt(item.price).toLocaleString()}</td>
-            <td>{item.buyer_nickname}</td>
+            <td>
+              <Link to={`/user/${item.buyer_id}`}>{item.buyer_nickname}</Link>
+            </td>
             <td>{item.seller_nickname}</td>
-
           </tr>
         ))}
       </tbody>

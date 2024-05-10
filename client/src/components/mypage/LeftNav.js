@@ -1,33 +1,44 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import styles from '../../styles/mypage.module.css';
+import { StarFill } from "react-bootstrap-icons";
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 
 function LeftNav() {
 
-  const { id } = useParams();
+  const { user } = useAuth();
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      <div className={`col ${styles.leftNav}`}>
-        <h5 className={`py-3 ${styles.navTitle}`}>마이페이지</h5>
+      <div className={styles.leftNav}>
+        <div className={`py-2 ${styles.navProfile}`}>
+          <img src="" style={{width:'20px', height:'20px', backgroundColor:'#ddd',  borderRadius:'100%'}}/>
+          <div>{user.nickname}</div>
+          <div><StarFill style={{color: '#FFC100'}}/> {user.manner_score.toFixed(1)}</div>
+        </div>
         <ul className="p-0">
           <li className="border-bottom">
             구매
             <ul className="ps-3">
-              <li><Link to={`/mypage/${id}/buyList`}>구매내역</Link></li>
-              <li><Link to={`/mypage/${id}/buyReviewList`}>구매후기</Link></li>
-              <li><Link to={`/mypage/${id}/heartList`}>찜한책</Link></li>
+              <li><Link to={`/mypage/${user.id}/buyList`}>구매내역</Link></li>
+              <li><Link to={`/mypage/${user.id}/buyReviewList`}>구매후기</Link></li>
+              <li><Link to={`/mypage/${user.id}/heartList`}>찜한책</Link></li>
             </ul>
           </li>
           <li className="border-bottom">
             판매
             <ul className="ps-3">
-              <li><Link to={`/mypage/${id}/sellList`}>판매내역</Link></li>
-              <li><Link to={`/mypage/${id}/sellReviewList`}>판매후기</Link></li>
+              <li><Link to={`/mypage/${user.id}/sellList`}>판매내역</Link></li>
+              <li><Link to={`/mypage/${user.id}/sellReviewList`}>판매후기</Link></li>
             </ul>
           </li>
-          <li><Link to={`/mypage/${id}/reportList`}>신고 내역</Link></li>
-          <li><Link to={`/mypage/${id}/edit`}>회원 정보 관리</Link></li>
+          <li><Link to={`/mypage/${user.id}/reportList`}>신고 내역</Link></li>
+          <li><Link to={`/mypage/${user.id}/edit`}>회원 정보 관리</Link></li>
         </ul>
       </div>
     </>
