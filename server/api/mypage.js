@@ -115,8 +115,8 @@ router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
 
 
 // 회원정보관리 페이지
-router.get("/mypage/:id/edit", isLoggedIn, async (req, res) => {
-  let { id } = req.params;
+router.get("/mypage/edit", isLoggedIn, async (req, res) => {
+  let { id } = req.user;
   // console.log(id)
 
   // query문 설정
@@ -135,9 +135,10 @@ router.get("/mypage/:id/edit", isLoggedIn, async (req, res) => {
 
 
 // 회원정보관리 - 비밀번호 확인
-router.post('/mypage/:id/edit', async (req, res) => {
+router.post('/mypage/edit', async (req, res) => {
 
-  const { id, password } = req.body;
+  const { password } = req.body;
+  const id = req.user.id;
   console.log("id: ", id)
   console.log("비밀번호: ", password)
 
@@ -172,8 +173,8 @@ router.post('/mypage/:id/edit', async (req, res) => {
 
 
 // 회원정보 수정
-router.put("/mypage/:id/edit", async(req, res) => { 
-  const { id } = req.params;
+router.put("/mypage/edit", async(req, res) => { 
+  const { id } = req.user;
   let { formData } = req.body;
   console.log("서버 - formData :", req.body)
 
@@ -188,7 +189,7 @@ router.put("/mypage/:id/edit", async(req, res) => {
 
 
 // 리뷰작성 페이지
-router.get("/user/:id/reviewWrite", isLoggedIn, async(req, res) => {
+router.get("/user/reviewWrite", isLoggedIn, async(req, res) => {
 
   // 태그 정보 조회
   let sql = "SELECT * FROM tag";
@@ -232,8 +233,7 @@ router.post("/user/:id/reviewWrite", isLoggedIn, async (req, res) => {
 });
 
 // 리뷰수정 페이지
-router.get("/user/:id/reviewEdit", isLoggedIn, async(req, res) => {
-  const { id } = req.params;
+router.get("/user/reviewEdit", isLoggedIn, async(req, res) => {
   const { productId } = req.query;
   console.log(productId)
 
