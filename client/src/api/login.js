@@ -86,3 +86,33 @@ export async function findpwd(email) {
         }
     }
 }
+
+// 비번 초기화
+export async function resetpwd(formData) {
+    const { email, password } = formData;
+    
+    let password_length = password.length <= 13 ? true : false;
+    
+    if (password_length) {
+        try {
+            const res = await axios.post('/password/reset', { email, password });
+            
+            if (res.statusText != "OK") {
+                throw new Error("비밀번호 초기화 실패");
+            }
+
+            const body = res.data;
+            return body;
+        } catch (error) {
+            if (error.response.status == 403) {
+                throw new Error("already logged in");
+            } else if (error.response.status == 400) {
+                throw new Error("request failed");
+            } else {
+                throw error;
+            }
+        }
+    } else {
+        return('error');
+    }
+}

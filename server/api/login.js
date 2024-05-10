@@ -56,6 +56,7 @@ router.get("/logout", isLoggedIn, (req, res) => {
 router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   try {
     res.send(req.user);
+    console.log(req.user)
   } catch (error) {
     console.error(error);
     res.send(null);
@@ -168,8 +169,7 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
 
     // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
     if(result && dateNow <= new Date(result.date_expired)) {
-      const hashedEmail = await bcrypt.hash(result.email, 10);
-      const encodedEmail = encodeURIComponent(hashedEmail);
+      const encodedEmail = encodeURIComponent(result.email);
 
       res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
     } else {
@@ -180,5 +180,32 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
     res.status(500).send('error');
   }
 });
+
+// 비밀번호 초기화
+router.post('/password/reset', isNotLoggedIn, async (req, res) => {
+  const { email, password } = req.body;
+
+  // 비밀번호 복호화 및 이메일 디코딩
+  const newPassword = await bcrypt.hash(password, 10);
+  const decodedEmail = decodeURIComponent(email);
+
+  console.log('비번 : ', newPassword)
+  console.log('이메일 : ', decodedEmail)
+  // 비밀번호 업데이트
+  let sql = 'UPDATE users SET password = ? WHERE email = ?';
+
+  try {
+    const result = await pool.query(sql, [newPassword, decodedEmail]);
+    console.log(result);
+    if (result.affectedRows == 0) {
+      res.status(400).send('error');
+    } else if (result.affectedRows == 1) {
+      res.status(200).send('success');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('error');
+  }
+})
 
 module.exports = router;

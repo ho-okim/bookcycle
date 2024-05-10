@@ -154,19 +154,17 @@ function Join() {
 
         if (!joinPass) { // 유효성 검사 통과 못하면 차단
             return;
-        }
+        } 
 
-        if (joinPass) {
-            // 회원가입
-            const res = await join(formData);
+        // 회원가입
+        const res = await join(formData);
 
-            if (res == 'success') {
-                alert('입력하신 이메일로 전송된 메일을 확인해주세요!');
-                navigate("/login");
-            } else {
-                alert('회원 가입에 실패했습니다. 다시 시도해주세요!')
-                return;
-            }
+        if (res == 'success') {
+            alert('입력하신 이메일로 전송된 메일을 확인해주세요!');
+            navigate("/login");
+        } else {
+            alert('회원 가입에 실패했습니다. 다시 시도해주세요!')
+            return;
         }
     }
 

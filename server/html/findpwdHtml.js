@@ -42,8 +42,9 @@ const findpwdHtml = (secured_key) => {
                                         <td align="center" style="line-height:1.5 !important;">
                                             <p>안녕하세요, 북사이클입니다.</p>
                                             <p>해당 이메일로 가입된 계정의 비밀번호를 초기화하려면</p>
-                                            <p><a href="http://localhost:10000/password/verify/${secured_key}">링크</a>를 클릭해주시기 바랍니다.</p>
-                                            <p>만약 비밀번호 초기화를 요청하지 않았는데 이메일이 발송되었다면 고객지원 센터에 문의해주시기 바랍니다.</p>
+                                            <p><a href="http://localhost:10000/password/verify/${secured_key}"><strong>링크</strong></a>를 클릭해주시기 바랍니다.</p>
+                                            <p>해당 인증 링크는 <span style="color:red;">10분 후 만료</span>됩니다.</p>
+                                            <p>만약 비밀번호 초기화를 요청하지 않았음에도 이메일이 발송되었다면 고객지원 센터에 문의해주시기 바랍니다.</p>
                                         </td>
                                     </tr>
                                     <tr>
