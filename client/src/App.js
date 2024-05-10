@@ -40,7 +40,7 @@ function App() {
           <Route path="/join" element={<Join/>}/>
           <Route path="/password">
             <Route path="find" element={<FindPwd/>}/>
-            <Route path="reset" element={<Reset/>}/>
+            <Route path="reset/:email" element={<Reset/>}/>
           </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>

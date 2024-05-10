@@ -36,7 +36,6 @@ export async function getLoginUser() {
             throw error;
         }
     }
-
 }
 
 // 로그아웃
@@ -54,12 +53,14 @@ export async function logout() {
 export async function findpwd(email) {
     try {
         const res = await email_check(email);
-
+        
         if (res === 0) {
             return JSON.stringify({ message : 'no email' });
         } else if (res === 1) {
             try {
-                const res = await axios.get(`/password/sendEmail?email=${email}`);
+                const encodedEmail = encodeURIComponent(email);
+
+                const res = await axios.get(`/password/sendEmail?email=${encodedEmail}`);
                 
                 if (res.statusText !== "OK") {
                     throw new Error("내부 서버 에러");

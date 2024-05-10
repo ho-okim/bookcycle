@@ -1,30 +1,23 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
-
 const router = require('express').Router();
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn } = require('../lib/auth.js');
+const {generateRandomNumber} = require('../lib/generateRandom.js');
 const authHtml = require('../html/authHtml.js');
-
-// 이메일 인증 링크 전용 8자리 난수 생성 코드
-const emailVerifyToken = (min = 11111111, max = 99999999) => {
-  const token = Math.floor(Math.random() * (max - min + 1) + min);
-  const expires = new Date();
-  expires.setHours(expires.getHours() + 24); // 24시간 후 링크 만료
-
-  return token;
-}
 
 // 이메일 중복 체크
 router.get('/email', isNotLoggedIn, async (req, res) => {
   // request query string
   const { email } = req.query;
   
+  const decodedEmail = decodeURIComponent(email);
+  
   let sql = 'SELECT COUNT(*) AS size FROM users WHERE email = ?';
 
   try {
-    const result = await pool.query(sql, [email]);
+    const result = await pool.query(sql, [decodedEmail]);
     res.send(result);
   } catch (error) {
     console.error(error);
@@ -37,10 +30,12 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
 
   const { email, password, username, nickname, phone_number } = req.body;
   
-  const token = emailVerifyToken();
+  // 인증키 생성
+  const token = await bcrypt.hash(generateRandomNumber().toString(), 10);
+  const encodeToken = encodeURIComponent(token);
 
   // 이메일 html
-  const  emailHtml = authHtml(email, token);
+  const emailHtml = authHtml(encodeToken);
 
   const sendMail =  async (email) => {
     try {
@@ -70,56 +65,111 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
         }]
       };
   
-      await transporter.sendMail(mailOptions);
-      console.log('email succecfully sended');
+      await transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          console.log(error);
+          res.status(500).send('email send error');
+        } else {
+          console.log('email succecfully sended');
+        }
+      });
     } catch (err) {
       console.error(err);
     }
   };
-  
+
+  console.log('----------send mail-----------');
+  // 메일 전송
   sendMail(email);
 
-  let sql = 'INSERT INTO users (role_id, email, password, username, nickname, phone_number, verification) VALUES (2, ?, ?, ?, ?, ?, ?)';
+  // 회원 정보 등록 쿼리
+  let user_sql = 'INSERT INTO users (email, password, username, nickname, phone_number) VALUES (?, ?, ?, ?, ?)';
+
+  // 인증 정보 쿼리
+  let verify_sql = 'INSERT INTO verification (user_id, secured_key, date_expired) VALUES (?, ?, ?)';
+
+  // 만료일
+  const date_expired = new Date();
+  date_expired.setHours(date_expired.getHours() + 24); // 24시간 후 링크 만료
 
   //console.log(req.body)
   try {
-    let result = await pool.query(sql, [
+    // 회원 등록
+    const result = await pool.query(user_sql, [
       email, 
       await bcrypt.hash(password, 10),
       username, 
       nickname, 
-      phone_number, 
-      token // verification 칼럼에 생성된 난수 token 넣음
+      phone_number
     ]);
-    res.send(result);
+    
+    const verify_result = await pool.query(verify_sql, [result.insertId, token, date_expired])
+    
+    if (result.affectedRows === 1 && verify_result.affectedRows === 1) {
+      res.send('success');
+    } else {
+      // 한쪽에는 데이터 들어가고 다른쪽에 안 들어갈 수 있으므로 둘 다 조회 후 제거 동작 필요
+      if (result) {
+        let userDel_sql = 'DELETE FROM users WHERE id = ?';
+        try {
+          await pool.query(userDel_sql, [result.insertId]);
+          console.log('success deleting registered user info');
+        } catch (error) {
+          console.error(error);
+          console.log('failed to delete registered user info');
+        }
+      }
+      res.send('failed');
+    }
   } catch (error) {
     console.error(error);
-    res.send('error');
+    res.status(500).send('error');
   }
 });
 
 // verify API
-router.get('/verify', isNotLoggedIn, async(req, res)=>{
-  const { email, token } = req.query;
+router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
+  const { token } = req.query;
   
-  let sql = 'SELECT * FROM users WHERE email = ?';
+  const decodedToken = decodeURIComponent(token);
+
+  let verify_sql = 'SELECT * FROM user_verification WHERE secured_key = ?';
 
   try {
-    // 쿼리스트링으로 들어온 email을 이용하여 사용자 찾기
-    let result = await pool.query(sql, [email]);
-    
-    // 쿼리스트링으로 들어온 token과 해당 유저의 verification이 동일하다면 verification 칼럼 0으로 변경
-    if(result[0].verification == token){
-      let sql2 = 'UPDATE users SET verification=? WHERE id=?';
-      await pool.query(sql2, [0, result[0].id]);
+    // 쿼리스트링으로 들어온 securedKey로 테이블에 조회
+    let [result] = await pool.query(verify_sql, [decodedToken]);
+    let dateNow = new Date();
 
-      res.send('인증이 완료되었습니다.');
+    if (!result) {
+      res.status(400).send('<p>이미 완료된 인증이거나 잘못된 인증입니다.</p>');
+    }
+    
+    // 쿼리스트링으로 들어온 token이 존재하고, 만료기한 내에 접근했다면 인증 완료 처리
+    if(result && dateNow <= new Date(result.date_expired)) {
+      // 사용자 인증 여부 수정
+      let user_sql = 'UPDATE users SET verification = 1 WHERE id = ?';
+      // 인증 테이블의 데이터 제거
+      let verifyRM_sql = 'DELETE FROM verification WHERE secured_key = ?';
+
+        try {
+          const user_result = await pool.query(user_sql, [result.user_id]);
+          const verifyRM_result = await pool.query(verifyRM_sql, [decodedToken]);
+
+          if (user_result.affectedRows === 1 && verifyRM_result.affectedRows === 1) {
+            res.send('<p>인증이 완료되었습니다.</p><p><a href="http://localhost:3000/login">로그인 바로가기</a></p>');
+          } else {
+            res.send('<p>인증 과정에서 문제가 발생했습니다.</p><p>관리자에게 문의해주세요.</p>');
+          }
+        } catch (error) {
+          console.error(error);
+          res.status(500).send('error');
+        }
     } else {
-      res.send('인증 링크에 오류가 발생했습니다. 회원가입을 다시 진행해주세요.');
+      res.status(401).send('<p>인증 메일이 만료되었습니다. 회원가입을 다시 진행해주세요.</p><p><a href="http://localhost:3000/join">회원가입 바로가기</a></p>');
     }
   } catch (error) {
     console.error(error);
-    res.send('error');
+    res.status(500).send('error');
   }
 });
 

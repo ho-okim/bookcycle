@@ -3,10 +3,12 @@ import axios from '../lib/axios.js';
 // 이메일 중복체크
 export async function email_check(email) {
     try {
-        const url = `/email?email=${email}`;
+        const encodedEmail = encodeURIComponent(email);
+
+        const url = `/email?email=${encodedEmail}`;
         
         const res = await axios.get(url);
-        
+
         if (res.statusText != "OK") {
             throw new Error("DB에 email 조회 실패");
         }
@@ -44,7 +46,7 @@ export async function join(formData) {
             if (res.statusText != "OK") {
                 throw new Error("회원가입 실패");
             }
-        
+
             const body = res.data;
             return body;
         } catch (error) {

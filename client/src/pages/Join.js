@@ -159,9 +159,8 @@ function Join() {
         if (joinPass) {
             // 회원가입
             const res = await join(formData);
-            console.log(res)
 
-            if (res.serverStatus == 2) {
+            if (res == 'success') {
                 alert('입력하신 이메일로 전송된 메일을 확인해주세요!');
                 navigate("/login");
             } else {
