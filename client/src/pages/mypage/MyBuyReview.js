@@ -10,11 +10,7 @@ function MyBuyReview() {
       <Container>
         <div className={styles.inner}>
           <LeftNav />
-          <div className={styles.content}>
-            <p>총 _개의 구매후기</p>
-            <BuyRevList />
-            <span>1 2 3 4 5 &gt;</span>
-          </div>
+          <BuyRevList />
         </div>
       </Container>
     </>

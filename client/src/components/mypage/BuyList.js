@@ -7,28 +7,27 @@ import Table from 'react-bootstrap/Table';
 import styles from '../../styles/mypage.module.css';
 
 function BuyList() {
-
-  async function getItems(){
-    const data = await buyList();
-    return data
-  }
-
   const [buyItems, setBuyItems] = useState([]);
 
   useEffect(() => {
-    // Axios 인스턴스를 이용하여 서버로부터 데이터 가져오기
-    let items
-    const test = async() => {
-      items = await getItems()
-      setBuyItems(items)
+    async function getItems(){
+      try {
+        const data = await buyList();
+        setBuyItems(data);
+      } catch (error) {
+        console.error('buyList 데이터를 가져오는 중 에러 발생: ', error);
+        setBuyItems([]); // 에러 발생 시 빈 배열 저장
+      }
     }
-    test()
+    getItems();
   }, []);
+
+  console.log(buyItems)
 
 
   return (
     <Table responsive>
-      <thead className={styles.buyList}>
+      <thead className={styles.tradeList}>
         <tr>
           <th>거래일</th>
           <th>상품명</th>
@@ -45,17 +44,23 @@ function BuyList() {
             <td>{item.product_name}</td>
             <td>₩{parseInt(item.price).toLocaleString()}</td>
             <td>{item.buyer_nickname}</td>
-            <td>{item.seller_nickname}</td>
             <td>
-              <Link 
-                to={{ 
+              <Link to={`/user/${item.seller_id}`}>{item.seller_nickname}</Link>
+            </td>
+            <td>
+              {(item.content !== null) ? (
+                <div className={`${styles.reviewBtn} ${styles.complete}`}>작성완료</div>
+              ) : (
+                <Link
+                to={{
                   pathname: `/user/${item.seller_id}/reviewWrite`,
-                  search: `?productId=${item.id}` 
+                  search: `?productId=${item.product_id}`,
                 }}
                 className={styles.reviewBtn}
               >
-                리뷰 작성
+                작성하기
               </Link>
+              )}
             </td>
           </tr>
         ))}

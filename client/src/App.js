@@ -25,6 +25,7 @@ import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './components/user/ReviewWrite.js';
+import ReviewEdit from './components/user/ReviewEdit.js';
 import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 
@@ -55,6 +56,7 @@ function App() {
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
             <Route path="reviewWrite" element={<ReviewWrite/>}/>
+            <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
           <Route path="/chat">
             <Route path="" element={<Chat/>}/>

@@ -1,16 +1,19 @@
 * { margin: 0; padding: 0; }
 ul, ol, li { list-style: none; }
 
-.inner { display: flex; }
+.inner { display: flex; justify-content: space-between;}
 
-.leftNav, .content { border: 1px solid black; }
-.leftNav { padding: 10px 20px; width: 15%; }
-.content { padding: 20px 30px; width: 85%; }
-.navTitle { border-bottom: 2px solid black; }
+.leftNav, .content { border: 1px solid #bbb; border-radius: 6px; }
+.leftNav { padding: 10px 20px; width: 15%; height: 300px; white-space: nowrap; overflow: hidden; }
+.content { padding: 20px 30px; width: 83%; }
+.navProfile { display: flex; border-bottom: 1px solid black; }
 
-/* BUY LIST */
-.buyList { border-top: 2px solid black; }
-.reviewBtn { padding: 3px 5px; background-color: #427D9D; border: none; border-radius: 10px; color: white; }
+
+/* TRADE LIST */
+.tradeList { border-top: 1px solid black; }
+.reviewBtn {  padding: 3px 10px; background-color: #427D9D; border: none; border-radius: 10px; color: white; }
+.complete { width: 75px; padding: 1px 5px; background-color: #bbb; text-align: center;}
+
 
 /* REVIEW LIST*/
 .revWrap { 
@@ -18,22 +21,13 @@ ul, ol, li { list-style: none; }
   margin: 0; padding: 10px 0;
   border-bottom: 1px solid #ddd; 
 }
-.revWrap:first-of-type { border-top: 2px solid black; }
-.more { border: 0; background-color: transparent; }
+.revWrap:first-of-type { border-top: 1px solid black; }
 
 .toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus { 
   background-color: transparent; border: 0; color: black; box-shadow: none; outline: none;
 }
 .toggleBtn::after { content: none; }
 
-
-/* MYPAGE EDIT */
-.infoItem { display: flex; }
-.infoItem p { width: 30%; }
-.infoItem input { width: 70%; }
-
-.btnWrap .cancel {}
-.btnWrap .edit {}
 
 /* HEART LIST */ 
 .heartList { padding: 10px 0; border-top: 1px solid grey; }
@@ -50,6 +44,23 @@ ul, ol, li { list-style: none; }
 
 .heartWrap .heartSeller { display: flex; font-size: 18px; align-items: center; margin-bottom: auto }
 .heartWrap .heartSeller .person { font-size: 20px;  }
+
+
+/* MYPAGE EDIT */
+.confirm { display: flex; flex-direction: column; text-align: center; justify-content: center; }
+
+.editPage { padding: 50px 100px; }
+
+.input_box { display: flex; }
+.input_box .value { width: 30%; }
+.input_box input { width: 70%; }
+
+.error_box { margin-left: 30%; width: 70%; color: red;  }
+
+.btnWrap { }
+.btnWrap .cancel {}
+.btnWrap .edit {}
+
 
 
 /* REVIEW WRITE */
@@ -74,4 +85,3 @@ ul, ol, li { list-style: none; }
 }
 
 .btnWrap { text-align: end; }
-/* .btnWrap .submitBtn { padding: 3px 10px; background-color: #427D9D; color: white; border: none; border-radius: 10px; } */

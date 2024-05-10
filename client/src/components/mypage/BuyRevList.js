@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { buyReviewList } from '../../api/mypage';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { buyReviewList, reviewDelete } from '../../api/mypage';
 import dateProcessing from '../../lib/dateProcessing.js';
 import starRating from '../../lib/starRating.js';
 
@@ -9,47 +9,62 @@ import styles from '../../styles/mypage.module.css';
 
 
 function BuyRevList() {
-
-  async function getReviews(){
-    const data = await buyReviewList();
-    return data
-  }
+  const navigate = useNavigate();
 
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    // Axios 인스턴스를 이용하여 서버로부터 데이터 가져오기
-    let items
-    const test = async() => {
-      items = await getReviews()
-      setReviews(items)
+    async function getReviews(){
+      try {
+        const data = await buyReviewList();
+        setReviews(data);
+      } catch (error) {
+        console.error('buyReviewList 데이터를 가져오는 중 에러 발생: ', error);
+        setReviews([]); 
+      }
     }
-    test()
+    getReviews();
   }, []);
   
+  console.log(reviews)
+
+  // 데이터 삭제
+	async function onDelete(id) {
+		try {
+			await reviewDelete(id); 
+			document.location.href = `/reviewDelete/${id}`
+      navigate(0)
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
   return (
-    <>
+    <div className={styles.content}>
+      <p>총 {reviews.length}개의 구매후기</p>
       <div className="rev-list">
         {reviews.map((review, index) => (
           <div key={index} className={`row ${styles.revWrap}`}>
             <div className="rating col col-2">{starRating(review.score)}</div>
             <div className="col col-6">{review.content}</div>
             <div className="col col-1">{review.buyer_nickname}</div>
-            <div className="col-2">{dateProcessing(review.createdAt)}</div>
+            <div className="col-2" style={{fontSize:''}}>{dateProcessing(review.createdAt)}</div>
             <Dropdown className="col col-1">
               <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
                 ⁝
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">수정</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">삭제</Dropdown.Item>
+                <Dropdown.Item href={`/user/${review.seller_id}/reviewEdit?productId=${review.product_id}`}>
+                  수정
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
         ))}
       </div>
-    </>
+      <span>1 2 3 4 5 &gt;</span>
+    </div>
   );
 }
 

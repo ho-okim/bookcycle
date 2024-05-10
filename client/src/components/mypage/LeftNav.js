@@ -1,13 +1,26 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import styles from '../../styles/mypage.module.css';
+import { StarFill } from "react-bootstrap-icons";
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 
 function LeftNav() {
 
+  const { user } = useAuth();
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <div className={'col ${styles.leftNav}'}>
-        <h5 className={'py-3 ${styles.navTitle}'}>마이페이지</h5>
+      <div className={styles.leftNav}>
+        <div className={`py-2 ${styles.navProfile}`}>
+          <img src="" style={{width:'20px', height:'20px', backgroundColor:'#ddd',  borderRadius:'100%'}}/>
+          <div>{user.nickname}</div>
+          <div><StarFill style={{color: '#FFC100'}}/> {user.manner_score.toFixed(1)}</div>
+        </div>
         <ul className="p-0">
           <li className="border-bottom">
             구매

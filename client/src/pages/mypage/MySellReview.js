@@ -4,21 +4,17 @@ import SellRevList from "../../components/mypage/SellRevList";
 
 import styles from "../../styles/mypage.module.css";
 
-function MyBuyReview() {
+function MySellReview() {
   return (
     <>
       <Container>
         <div className={styles.inner}>
           <LeftNav />
-          <div className={styles.content}>
-            <p>총 _개의 판매후기</p>
-            <SellRevList />
-            <span>1 2 3 4 5 &gt;</span>
-          </div>
+          <SellRevList />
         </div>
       </Container>
     </>
   );
 }
 
-export default MyBuyReview;
+export default MySellReview;
