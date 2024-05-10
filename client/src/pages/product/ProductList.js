@@ -6,6 +6,7 @@ import "../../styles/common.css";
 import style from "../../styles/productList.module.css";
 import ProductDetail from "./ProductDetail.js";
 import List from "../../components/product/List.js";
+import ProductCategory from "../../components/product/ProductCategory.js";
 
 
 function ProductList() {
@@ -27,9 +28,6 @@ function ProductList() {
     function onSelected(){};
 
     
-
-
-
     return (
       <Container>
         <div className={`${style.inner}`}>
@@ -54,19 +52,7 @@ function ProductList() {
           </div> 
 
           <div className={`${style.productLists}`}>
-          <div className='column'>
-                    <div className={`${style.category}`}>
-                        <div className={`${style.box}`}>
-                            <ul className='nav-bar'>
-                                <Link to={''} style={{ textDecoration: "none", color: "black"}}>전체보기<br></br></Link>
-                                <Link to={'/novel'} style={{ textDecoration: "none", color: "black"}}>소설<br></br></Link>
-                                <Link to={'/literature'} style={{ textDecoration: "none", color: "black"}}>문학/인문<br></br></Link>
-                                <Link to={'/history'} style={{ textDecoration: "none", color: "black"}}>역사/철학/심리/교육<br></br></Link>
-                                <Link to={'/develop'} style={{ textDecoration: "none", color: "black"}}>자기계발</Link>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+          <ProductCategory/>
             <div className={`${style.productDetailList}`}>
             <List/>
             </div>
