@@ -1,47 +1,5 @@
 import axios from "../lib/axios.js";
 
-export async function mypage() {
-  try {
-    const res = await axios.get('/mypage/edit');
-  
-    if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
-    }
-    const body = res.data;
-    return body;
-  } catch (error) {
-    if (error.response.status == 403) {
-      throw new Error("login needed");
-    } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    } else if (error.response.status == 404) {
-      throw new Error("user not found");
-    } else {
-      throw error;
-    }
-  }
-}
-
-export async function mypageEdit(nickname, phoneNumber) {
-  try {
-    const res = await axios.put('/mypage/edit', {nickname, phoneNumber});
-  
-    if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
-    }
-    const body = res.data;
-    return body;
-  } catch (error) {
-    if (error.response.status == 403) {
-      throw new Error("login needed");
-    } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    }  else {
-      throw error;
-    }
-  }
-}
-
 export async function buyList() {
   try {
     const res = await axios.get('/mypage/buyList');
@@ -139,7 +97,6 @@ export async function sellList() {
 // 회원정보관리 - 비밀번호 확인
 export async function confirmPassword(password) {
   const res = await axios.post('/mypage/edit', { password });
-  // console.log(password)
   
   if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
@@ -148,27 +105,50 @@ export async function confirmPassword(password) {
   return body;
 }
 
-// 회원정보관리 - 원래 데이터 가져오기
+
 export async function mypage() {
-  const res = await axios.get('/mypage/edit');
+  try {
+    const res = await axios.get('/mypage/edit');
   
-  if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+    if (res.statusText !== "OK") {
+        throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else if (error.response.status == 404) {
+      throw new Error("user not found");
+    } else {
+      throw error;
+    }
   }
-  const body = res.data;
-  return body;
 }
 
 // 회원정보관리 - PUT
 export async function mypageEdit(formData) {
-  const res = await axios.put('/mypage/edit', { formData });
+  try {
+    const res = await axios.put('/mypage/edit', {formData});
   
-  if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+    if (res.statusText !== "OK") {
+        throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    }  else {
+      throw error;
+    }
   }
-  const body = res.data;
-  return body;
 }
+
 
 
 // 리뷰작성 - tag목록 가져오기

@@ -12,8 +12,6 @@ function ConfirmPassword({ onConfirm }) {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  console.log("user: ", user)
-
   const handleConfirmPassword = async () => {
     try {
       if (!user) {

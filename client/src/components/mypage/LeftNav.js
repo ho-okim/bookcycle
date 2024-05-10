@@ -19,7 +19,7 @@ function LeftNav() {
         <div className={`py-2 ${styles.navProfile}`}>
           <img src="" style={{width:'20px', height:'20px', backgroundColor:'#ddd',  borderRadius:'100%'}}/>
           <div>{user.nickname}</div>
-          <div><StarFill style={{color: '#FFC100'}}/> {user.manner_score.toFixed(1)}</div>
+          <div><StarFill style={{color: '#FFC100'}}/> {user.manner_score}</div>
         </div>
         <ul className="p-0">
           <li className="border-bottom">
