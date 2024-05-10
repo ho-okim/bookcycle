@@ -15,10 +15,10 @@ import { useAuth } from '../../contexts/LoginUserContext.js';
 function BoardDetail(){
 
   const {id} = useParams();
-  console.log("게시글 id :", id)
 
   const { user } = useAuth();
-  console.log("사용자 정보: ", user)
+  console.log("로그인한 회원 정보: ", user)
+  console.log("로그인한 회원 닉네임: ", user?.nickname)
   
 	const navigate = useNavigate();
 
@@ -43,7 +43,8 @@ function BoardDetail(){
     test()
   }, [])
 
-  console.log("게시글 내용: ", content)
+  // console.log("게시글 내용: ", content)
+  console.log("게시글 작성자 nickname: ", content.nickname)
 
 
 	// 데이터 삭제
@@ -91,14 +92,17 @@ function BoardDetail(){
               <div className={`d-flex justify-content-end`}><Heart className={styles.heartBtn}/></div>
 							<div className={`${styles.detailHeader} d-flex justify-content-between align-items-center`}>
 								<h2 className={styles.detailTitle}>{content.title}</h2>
-								<div className={`${styles.btnWrap}`}>
-									<Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`)}}>글 수정</Button>
-									<Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
-								</div>
+                {user?.nickname == content.nickname ? (
+                  <div className={`${styles.btnWrap}`}>
+                    <Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`)}}>글 수정</Button>
+                    <Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
+								  </div>
+                ): null}
+								
 							</div>
 							<div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                 <div className='info'>
-                  <span className={styles.userid}>{content.user_id}</span>
+                  <span className={styles.userid}>{content.nickname}</span>
                   <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                 </div>
                 <div className={`${styles.spamBtn} medium`}>신고하기</div>

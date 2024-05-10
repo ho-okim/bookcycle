@@ -5,10 +5,10 @@ const { isLoggedIn } = require("../lib/auth.js");
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {
 
-  const loginUser = req.user ? req.user : null
-  
-  // query문 설정
-  let sql = "SELECT * FROM board ORDER BY createdAt DESC LIMIT 10";
+    const loginUser = req.user ? req.user : null
+    
+    // query문 설정
+    let sql = "SELECT * FROM board_user ORDER BY createdAt DESC LIMIT 10";
 
   try {
     // db connection pool을 가져오고, query문 수행
@@ -50,7 +50,7 @@ router.post('/boardwrite', isLoggedIn, async(req, res) => {
 router.get('/board/:id', async (req, res) => {
   let { id } = req.params;
   // query문 설정
-  let sql = "SELECT * FROM board WHERE id = ?";
+  let sql = "SELECT * FROM board_user WHERE id = ?";
 
   try {
     // db connection pool을 가져오고, query문 수행
@@ -145,7 +145,7 @@ router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
 router.get('/reply/:id', async(req, res) => {
   let { id } = req.params;
 
-  let sql = "SELECT * FROM reply WHERE board_id = ? ORDER BY createdAt DESC";;
+  let sql = "SELECT * FROM reply_user WHERE board_id = ? ORDER BY createdAt DESC";;
 
   try {
     let result = await pool.query(sql, [id]);

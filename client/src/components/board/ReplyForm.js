@@ -14,8 +14,6 @@ function ReplyForm(props){
   const { id } = props;
   const { user } = useAuth();
 
-  // const {id} = useParams();
-
   const navigate = useNavigate();
 
   // 댓글 조회
@@ -89,8 +87,18 @@ function ReplyForm(props){
 
 
 function ReplyList(props){
-
+  const { user } = useAuth();
   const {replies} = props;
+
+  // 댓글 삭제
+  // async function onDelete(id){
+  //   try{
+  //     await replyDelete(id);
+  //     document.location.href = `/board/`
+  //   }
+  // }
+
+  async function onDelete(){}
 
   // 날짜 yyyy-mm-dd 시:분
   function DateProcessing(date){
@@ -115,9 +123,17 @@ function ReplyList(props){
         replies.map((reply) => {
           return(
             <div className={styles.commentList}>
-              <div className={`${styles.commentInfo} regular`}>
-                <span className={styles.userid}>{reply.user_id}</span>
-                <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
+              <div className={`${styles.commentInfo} d-flex justify-content-between regular`}>
+                <div className='info'>
+                  <span className={styles.userid}>{reply.nickname}</span>
+                  <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
+                </div>
+                {user?.nickname == reply.nickname ? (
+                  <Button variant="outline-secondary" className={styles.deleteBtn} id={reply.id} onClick={onDelete}>삭제</Button>
+                ) : null}
+                {user?.nickname !== reply.nickname ? (
+                  <Button variant="outline-secondary" className={styles.deleteBtn}>신고하기</Button>
+                ) : null}
               </div>
               <div className={styles.commentContent}>
                 {reply.content}
@@ -126,7 +142,6 @@ function ReplyList(props){
           )
         })
       }
-      
     </>
   )
 }

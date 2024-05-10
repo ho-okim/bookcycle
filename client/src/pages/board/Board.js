@@ -30,6 +30,14 @@ function Board() {
     test()
   }, [])
 
+  async function onPost(){
+    if(user){
+      document.location.href = `/board/write`
+    } else{
+      alert('로그인 후 작성할  수 있습니다.')
+    }
+  }
+
   // 날짜 yyyy-mm-dd 형식 변환
   function DateProcessing(date){
     
@@ -55,7 +63,7 @@ function Board() {
         <div className="inner">
           <div className={`col ${styles.boardHeader} d-flex justify-content-between align-items-center`}>
             <h2 className={`${styles.title} m-0`}>게시판</h2>
-            <Button onClick={()=>{navigate('/board/write')}}>글쓰기</Button>
+            <Button onClick={onPost}>글쓰기</Button>
           </div>
           <div className={`col ${styles.listHeader} d-flex justify-content-between`}>
             <p>총 {contents.length}건</p>
@@ -72,7 +80,7 @@ function Board() {
                 <div key={content.id} className={`col ${styles.list}`} onClick={()=>{navigate(`/board/${content.id}`)}}>
                   <div className={styles.listTitle}>{content.title}</div>
                   <div className={`${styles.listInfo} regular`}>
-                    <span className={styles.userid}>{content.user_id}</span>
+                    <span className={styles.userid}>{content.nickname}</span>
                     <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                   </div>
                 </div>

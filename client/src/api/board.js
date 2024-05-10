@@ -156,4 +156,29 @@ export async function replyList(id){
 }
 
 
+// 댓글  삭제
+export async function replyDelete(id){
+    const res = await axios.post(`/replyDelete/${id}`)
+
+    if (res.statusText != "OK") {
+        throw new Error("boardDelete fails");
+    } 
+    const body = res.data;
+
+    return body;
+}
+
+
+// export async function boardDelete(id){
+
+//     const res = await axios.post(`/delete/${id}`)
+
+    // if (res.statusText != "OK") {
+    //     throw new Error("boardDelete fails");
+    // } 
+    // const body = res.data;
+
+    // return body;
+// }
+
 
