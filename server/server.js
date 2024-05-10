@@ -198,13 +198,10 @@ io.on('connection', (socket)=>{
   })
 
   socket.on('sameChatroomIdx', (data)=>{
-    console.log("소켓 통신 : ", data)
     io.to(data.room_id).emit('msgCnt0', {chatroomIdx: data.room_id})
   })
 
   socket.on('difChatroomIdx', (data)=>{
-    console.log('채팅방 위치 다름')
-    console.log(data.room_id)
     io.to(data.room_id).emit('msgCnt1', {chatroomIdx: data.room_id})
   })
   
