@@ -22,7 +22,7 @@ function Header() {
 
   async function handleLogoutClick() { // 로그아웃 처리
     const res = await handleLogout();
-    navigate("/");
+    navigate(0);
   }
 
   // 현재 페이지가 chat 이라면 채팅 바로가기 버튼 안 보이도록 설정하기 위함

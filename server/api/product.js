@@ -19,8 +19,14 @@ router.get('/productDetail/:id', (req, res) => {
     res.send(result);
 });
 
-router.put('/', (req, res) => {
+// 상품 카테고리 조회
+router.get('/product/category', async (req, res) => {
+    // query문 설정
+    let sql = "SELECT * FROM product_category";
 
+    // db connection pool을 가져오고, query문 수행
+    let result = await pool.query(sql);
+    res.send(result);
 });
 
 router.delete('/', (req, res) => {

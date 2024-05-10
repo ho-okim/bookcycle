@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../contexts/LoginUserContext.js';
+import REGEX from '../lib/regex.js';
 
 function Login() {
 
@@ -29,6 +30,7 @@ function Login() {
     setForm({...form, password: value});
   }
 
+
   async function check() {
     const email = form.email;
     const password = form.password;
@@ -37,10 +39,23 @@ function Login() {
       setErrorMessage('이메일을 입력해주세요');
       return;
     }
+
+    // 잘못 넘어온 값 처리
+    // if (!REGEX.EMAIL_REG.test(email)) { // 유효성 검사
+    //   setErrorMessage('이메일 형식이 맞지 않습니다');
+    //   return;
+    // }
+
     if (!password) { // 빈 값 확인
       setErrorMessage('비밀번호를 입력해주세요');
       return;
     }
+
+    // 잘못 넘어온 값 처리
+    // if (REGEX.PASSWORD_REG.test(password)) { // 유효성 검사
+    //   setErrorMessage('비밀번호 형식이 맞지 않습니다');
+    //   return;
+    // }
 
     // 로그인 진행
     const res = await handleLogin(email, password);
@@ -68,10 +83,14 @@ function Login() {
           <div className={styles.input_box}>
             <input name="email" placeholder="email / 이메일"
             className={styles.input_form}
-            onChange={(e)=>{handleEmail(e.target.value)}} autoFocus/>
+            onChange={(e)=>{handleEmail(e.target.value)}} 
+            maxLength={50}
+            autoFocus/>
             <input name="password" placeholder="password / 비밀번호"
             className={styles.input_form}
-            type="password" onChange={(e)=>{handlePassword(e.target.value)}}/>
+            type="password" 
+            onChange={(e)=>{handlePassword(e.target.value)}}
+            maxLength={13}/>
           </div>
           {
             errorMessage ?
@@ -80,7 +99,7 @@ function Login() {
           }
           <div>
             <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
-            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate(-1)}}>취소</Button>
+            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
           </div>
           <div className={styles.more_info}>
             <div>
@@ -88,8 +107,7 @@ function Login() {
               <Link to="/join">회원가입</Link>
             </div>
             <div>
-              <Link to="#" className={styles.find_info}>이메일 찾기</Link>
-              <Link to="#" className={styles.find_info}>비밀번호 찾기</Link>
+              <Link to="/password/find" className={styles.find_info}>비밀번호 찾기</Link>
             </div>
           </div>
         </form>

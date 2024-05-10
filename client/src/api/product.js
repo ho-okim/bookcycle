@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from '../lib/axios.js';
 
+// 상품 카테고리 조회
+export async function getCategory() {
+  let url = `/product/category`;
+}
 
 export async function productList() {
   const res = await axios.get('/productList');

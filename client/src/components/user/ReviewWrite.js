@@ -3,14 +3,13 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { reviewWrite, reviewWritePost } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
-
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
-
 
 function ReviewWrite() {
 
   const { id } = useParams();
+
   const [reviewTags, setReviewTags] = useState([]);
   
   const [tagIndex, setTagIndex] = useState(0);
@@ -20,7 +19,6 @@ function ReviewWrite() {
   
   const [searchParams, setSearchParams] = useSearchParams()
   const productId = searchParams.get("productId")
-
 
   useEffect(() => {
     async function getReviews() {

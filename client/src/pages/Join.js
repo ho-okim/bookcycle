@@ -29,9 +29,9 @@ function Join() {
 
     const defaultError = {
         email : '이메일을 입력해주세요',
-        password : '비밀번호를 입력해주세요',
-        username : '사용자 이름을 입력해주세요',
-        nickname : '닉네임을 입력해주세요',
+        password : '비밀번호를 8~13자로 입력해주세요',
+        username : '사용자 이름을 2~13자로 입력해주세요',
+        nickname : '닉네임을 2~13자로 입력해주세요',
         phone_number : '전화번호를 입력해주세요',
     }
 
@@ -88,7 +88,7 @@ function Join() {
                 ...errorMessage, 
                 [name] : (value && REGEX.PASSWORD_REG.test(value)) ? '' :
                 (value && !REGEX.PASSWORD_REG.test(value)) ? 
-                '영문 소문자, 대문자, 특수문자, 숫자를 1개 이상 포함한 8~13글자로 입력해주세요' 
+                '공백없이 영문 소문자, 대문자, 특수문자, 숫자를 1개 이상 포함한 8~13글자로 입력해주세요'  
                 : defaultError[name]
             }));
         }
@@ -154,16 +154,17 @@ function Join() {
 
         if (!joinPass) { // 유효성 검사 통과 못하면 차단
             return;
-        }
+        } 
 
-        if (joinPass) {
-            // 회원가입
-            const res = await join(formData);
+        // 회원가입
+        const res = await join(formData);
 
-            if (res) {
-                alert('입력하신 이메일로 전송된 메일을 확인해주세요!');
-                navigate("/login");
-            }
+        if (res == 'success') {
+            alert('입력하신 이메일로 전송된 메일을 확인해주세요!');
+            navigate("/login");
+        } else {
+            alert('회원 가입에 실패했습니다. 다시 시도해주세요!')
+            return;
         }
     }
 
@@ -179,7 +180,8 @@ function Join() {
                 type={value === 'password' ? 'password' 
                     : value === 'phone_number' ? 'tel' : 'text'} 
                 onChange={handleInputChange}
-                autoFocus={value === "email"}
+                autoFocus={value === 'email'}
+                maxLength={value === 'email' ? 50 : 13}
                 />
                 {
                     value === "email" &&

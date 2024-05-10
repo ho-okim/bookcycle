@@ -74,6 +74,7 @@ passport.use(new LocalStrategy( // 로그인 방법
     {usernameField : "email", passwordField : "password"}, // 사용자이메일, 비번
     async (email, password, done) => { // 로그인 처리
         try {
+            // sql injection 대비 코드 추가 필요-----------------------------------------------
             // db에서 email 조회
             let sql = `SELECT * FROM users WHERE email = ?`;
             let [data] = await pool.query(sql, [email])
@@ -81,7 +82,8 @@ passport.use(new LocalStrategy( // 로그인 방법
             // 아이디 없음 처리
             if (!data || data.length === 0) {
                 console.log('아이디없음');
-                return done(null, false, { message : "id fail" });
+                // 둘 중 뭐가 틀렸는지 모르게 처리
+                return done(null, false, { message : "login fail" });
             }
 
             // 비밀번호 비교 처리
@@ -91,7 +93,8 @@ passport.use(new LocalStrategy( // 로그인 방법
                 return done(null, data);
             } else {
                 console.log('비번불일치');
-                return done(null, false, { message : "password fail" });
+                // 둘 중 뭐가 틀렸는지 모르게 처리
+                return done(null, false, { message : "login fail" });
             }
         } catch (error) {
             console.log(error);
@@ -145,6 +148,7 @@ app.use("/", require('./api/main.js'));
 app.use("/", require('./api/login.js'));
 app.use("/", require('./api/join.js'));
 app.use("/", require('./api/mypage.js'));
+app.use("/", require('./api/product.js'));
 app.use("/", require('./api/user.js'));
 app.use("/", require('./api/board.js'));
 app.use("/", require('./api/report.js'));
