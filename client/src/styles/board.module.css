@@ -1,9 +1,22 @@
 /* common */
-.listInfo, .detailInfo, .commentInfo {
+.updateBtn, .deleteBtn, .alertBtn, .goBoard {
+  border: 1px solid #e8e8e8;
+  font-size: 13px;
+}
+.onPost {
+  background-color: #4D91B6; 
+  border: none;
+}
+.onPost:hover {
+  background-color: #427D9D;
+}
+.listInfo, .detailInfo, .replyInfo {
   font-size: 14px; color: #6A6A6A;
 }
 
+
 /* board (게시판) */
+.board .onPostBtn {background-color: #4D91B6; border: none;}
 .board .boardHeader {margin-top: 40px}
 .board .listHeader {padding: 20px 0 17px; border-bottom: 1px solid #171717;}
 
@@ -23,20 +36,16 @@
 }
 
 
-
 /* board-Detail (상세 게시글) */
-.boardDetail .title {margin: 40px 0 20px}
+.boardDetail .titleWrap {margin: 40px 0 20px}
 .boardDetail .detailWrapper {
   border: 1px solid #e8e8e8;
   border-radius: 8px;
-  padding: 40px;
+  padding: 60px 50px;
+  margin-bottom: 50px;
 }
 .detailMain .heartBtn{cursor: pointer; margin: 0 10px 10px 0}
 .detailMain .detailTitle { width: 70%;}
-.detailMain .btnWrap .updateBtn, .deleteBtn {
-  border: 1px solid #e8e8e8;
-  font-size: 13px;
-}
 .detailMain .detailInfo{
   padding: 0 0 20px;
   margin: 0 0 20px;
@@ -47,39 +56,78 @@
   margin: 5px;
 }
 .detailMain .detailInfo .spamBtn{cursor: pointer; color: rgb(220, 53, 69);}
-.detailMain .detailContent {
-  padding: 0 0 130px;
+.detailMain .detailContentWrap {
+  padding: 0 0 170px;
 }
+.detailContentWrap .detailImage {margin-bottom: 15px;}
+.detailContentWrap .detailImage img {margin-bottom: 10px; display: block;}
 .detailMain .btnWrap .updateBtn {margin-right: 5px;}
 
-.replyCount {border-bottom: 1px solid #e8e8e8; padding: 0 0 10px 0;}
-.replyCount span {color: #427D9D;}
-.commentList {padding: 20px 0; border-bottom: 1px solid #eee;}
-.commentList .commentInfo .userid:after{
+
+/* ReplyForm (댓글 폼) */
+.replyHeader {border-bottom: 1px solid #e8e8e8; padding: 0 0 10px 0;}
+.replyCountWrap .replyCount {margin-right: 15px;}
+.replyCountWrap .chatIcon, .replyLength, .likeCounts {color: #427D9D;}
+.replyCountWrap .chatIcon, .heartIcon {
+  margin-right: 5px;
+}
+.replyCountWrap .heartIcon {color: #427D9D; cursor: pointer;}
+
+.replyList {padding: 20px 0; border-bottom: 1px solid #eee;}
+.replyList .replyInfo .userid:after{
   content:'|';
   margin: 5px;
 }
 
-.commentForm {padding: 20px 0;}
-.commentForm .commentId {margin-bottom: 10px;}
-.commentForm .commentInput{
+.replyForm {padding: 20px 0;}
+.replyForm .replyId {margin-bottom: 10px; color: #427D9D; font-size: 15px;}
+.replyForm .replyInput{
   padding: 0 16px;
   border: 1px solid #d2d2d2;
   border-radius: 8px;
-  width: 95%;
+  width: 100%;
 }
-.submit {background-color: #4D91B6;}
-.loginNeeded {margin: 60px 0 30px 0; text-align: center;}
+.replyForm .replySubmit{
+  background-color: #4D91B6; 
+  border: none;
+  margin: 0 0 0 10px;
+}
+.replySubmit:hover {background-color: #427D9D;}
+
+.loginNeeded {margin: 60px 0 50px 0; text-align: center;}
 .login {color: #427D9D;}
-
-
-
-
 
 
 /* board-Write (게시글 작성 폼) */
 .boardForm .titleBox {margin: 20px 0;}
 .boardForm .titleInput, .contentInput {width: 90%}
 .boardForm .reset {margin-right: 5px;}
+
+
+/* Pagination */
+.pageNav {margin: 30px 0 80px;}
+.pageNav .prevBtn, .pageNav .nextBtn {
+  background-color: transparent; 
+  border: none; 
+  color: #494949;
+  cursor: pointer;
+}
+.pageNav .prevBtn {margin-right: 7px;}
+.pageNav .nextBtn {margin-left: 7px;}
+.pageNav .currentPageBtn {background-color: transparent; color: #4D91B6;}
+.noCurrentPageBtn {background-color: transparent;}
+.currentPageBtn, .noCurrentPageBtn {
+  margin: 0 7px;
+  border: none; 
+  color: #494949;
+}
+
+.pageNav .prevBtn:hover, .pageNav .nextBtn:hover, .pageNav .currentPageBtn:hover, .pageNav .noCurrentPageBtn:hover {
+  background-color: transparent; color: #4D91B6;
+}
+
+.pageNav .prevBtn:active, .pageNav .nextBtn:active, .pageNav .currentPageBtn:active, .pageNav .noCurrentPageBtn:active {background-color: transparent;}
+
+
 
 

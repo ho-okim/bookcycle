@@ -8,7 +8,7 @@ router.get('/board', async (req, res) => {
     const loginUser = req.user ? req.user : null
     
     // query문 설정
-    let sql = "SELECT * FROM board_user ORDER BY createdAt DESC LIMIT 10";
+    let sql = "SELECT * FROM board_user ORDER BY createdAt DESC";
 
   try {
     // db connection pool을 가져오고, query문 수행
@@ -56,7 +56,7 @@ router.get('/board/:id', async (req, res) => {
     // db connection pool을 가져오고, query문 수행
     let result = await pool.query(sql, [id]);
 
-    console.log("특정 사용자글 조회: ", result)
+    // console.log("특정 사용자글 조회: ", result)
 
     res.send(result);
   } catch (error) {
@@ -71,7 +71,7 @@ router.post('/delete/:id', isLoggedIn, async (req, res) => {
   let { id } = req.params;
 
   // board - board_image/board_liked/reply 제약조건 관계로
-  // board_image/board_liked/reply 열 먼저 삭제 후 -> board 열 삭제
+  // 3개 테이블의 열 먼저 삭제 후 -> board 열 삭제 가능
   try {
       let sql1 = "DELETE FROM board_image WHERE board_id = ?";
       let sql1_result = await pool.query(sql1, [id]);
@@ -86,8 +86,8 @@ router.post('/delete/:id', isLoggedIn, async (req, res) => {
       let sql4_result = await pool.query(sql4, [id]);
 
       console.log("Deleted image:", sql1_result);
-      console.log("Deleted board:", sql2_result);
-      console.log("Deleted board:", sql3_result);
+      console.log("Deleted board_liked:", sql2_result);
+      console.log("Deleted reply:", sql3_result);
       console.log("Deleted board:", sql4_result);
 
       res.status(200).json({ message: "Board, related images and liked deleted successfully", deletedId: id });
@@ -141,16 +141,16 @@ router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
 });
 
 
-// 댓글 조회
+// 댓글 조회 (id = boardId)
 router.get('/reply/:id', async(req, res) => {
   let { id } = req.params;
 
-  let sql = "SELECT * FROM reply_user WHERE board_id = ? ORDER BY createdAt DESC";;
+  let sql = "SELECT * FROM reply_user WHERE board_id = ? ORDER BY createdAt ASC";
 
   try {
     let result = await pool.query(sql, [id]);
 
-    console.log("댓글 조회: ", result);
+    // console.log("댓글 조회: ", result);
   
     res.send(result);
   } catch (error) {
@@ -158,6 +158,41 @@ router.get('/reply/:id', async(req, res) => {
     res.send('error');
   }
 });
+
+
+// 댓글 삭제 (id = 삭제되는 댓글 id)
+router.post('/replyDelete/:id', async(req, res)=>{
+  let { id } = req.params;
+
+  console.log("삭제되는 댓글 id: ", id)
+
+  try {
+    let sql = "DELETE FROM reply WHERE id = ?";
+    let sql_result = await pool.query(sql, [id]);
+
+    res.send(sql_result);
+  } catch(error){
+    console.error(error);
+  }
+})
+
+
+// 좋아요 개수 조회 (id = boardId)
+router.get('/likeCount/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = "SELECT likehit FROM board WHERE id = ?";
+
+  try {
+    let result = await pool.query(sql, [id]);
+    res.send(result)
+    console.log(result)
+
+  } catch(error) {
+    console.error(error);
+    res.send('error');
+  }
+})
 
 
 

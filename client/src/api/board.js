@@ -75,15 +75,12 @@ export async function boardDetail(id){
 
 // 게시글 삭제
 export async function boardDelete(id){
-
     try {
         const res = await axios.post(`/delete/${id}`)
-
         if (res.statusText != "OK") {
             throw new Error("boardDelete fails");
         } 
         const body = res.data;
-    
         return body;
     } catch (error) {
         if (error.response.status == 403) {
@@ -92,7 +89,6 @@ export async function boardDelete(id){
             throw error;
         }
     }
-
 }
 
 
@@ -119,9 +115,8 @@ export async function boardEdit(id, title, content){
 }
 
 
-// 댓글 작성 - replyWrite(id, reply)로 전달해야할까?
+// 댓글 작성 
 export async function replyWrite(id, reply){
-
     try {
         const res = await axios.post(`/replyWrite/${id}`, { reply });
     
@@ -157,28 +152,35 @@ export async function replyList(id){
 
 
 // 댓글  삭제
+// id는 삭제하고자 하는 댓글의 id며(reply.id)로 이를 param으로 받는다
 export async function replyDelete(id){
     const res = await axios.post(`/replyDelete/${id}`)
+
+    console.log("삭제 댓글: ", id)
 
     if (res.statusText != "OK") {
         throw new Error("boardDelete fails");
     } 
     const body = res.data;
+    body.message = 'success'
 
     return body;
 }
 
 
-// export async function boardDelete(id){
 
-//     const res = await axios.post(`/delete/${id}`)
+// 좋아요 개수 조회
+export async function likeCount(id){
+    const res = await axios.get(`/likeCount/${id}`)
 
-    // if (res.statusText != "OK") {
-    //     throw new Error("boardDelete fails");
-    // } 
-    // const body = res.data;
+    if (res.statusText != "OK"){
+        throw new Error("get likeCount fails");
+    }
 
-    // return body;
-// }
+    const body = res.data[0];
+
+    return body;
+}
+
 
 
