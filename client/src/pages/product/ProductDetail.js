@@ -3,7 +3,6 @@ import { Container } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
 import React, {useEffect, useState} from 'react';
 
-
 function ProductDetail() {
   const {id} = useParams();
 

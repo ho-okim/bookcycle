@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {Link, useParams} from 'react-router-dom';
+import {productList} from "../../api/product";
 import style from "../../styles/productList.module.css";
 import ProductDetail from '../../pages/product/ProductDetail';
 
@@ -15,7 +16,39 @@ function List(props){
  * 
  * 
 */
+async function getProduct(){
+  const data = await productList()
+  return data;
+}
 
+let [product, productL] = useState([
+  {
+    product_name : '',
+    wirter : '',
+    publisher : '',
+    public_date : '',
+    price : ''
+  }
+])
+
+/*
+const [productList, setProductLIst] = useState([]);
+*/
+/*
+useEffect(()=>{
+  let product
+  const test = async () => {
+    product = await getProduct()
+    productL(product),{
+      product_name: rowData.product_name,
+      wirter: rowData.writer,
+      publisher: rowData.publisher,
+      public_date: rowData.public_date,
+      price: rowData.price
+    }
+  }
+  test()
+}, [])
 
 
   return (
@@ -26,15 +59,16 @@ function List(props){
                   <img className="book-pic-box" src="" alt="사진" />
                 </div>
                 <div className={`${style.bookinfoabout}`}>
-                  <div clasName="booktitle">제목</div>
-                  <div clasName="bookauthor">저자/출판사/출간일</div>
-                  <div clasName="bookprice">가격</div>
+                  <div clasName="booktitle">{rowData.product_name}</div>
+                  <div clasName="bookauthor">{rowData.wirter}, {rowData.publisher}, {rowData.public_date}</div>
+                  <div clasName="bookprice">{rowData.price}</div>
                 </div>
                 <div clasName={`${style.booknicname}`}>닉네임</div>
               </div>
             </Link>
             </div>
   );
+  */
 };
 
 export default List;
