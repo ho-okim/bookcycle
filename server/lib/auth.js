@@ -2,7 +2,7 @@ const pool = require("../db.js"); // db connection pool
 
 // 로그인 여부 확인하는 함수
 exports.isLoggedIn = (req, res, next) => {
-    if (req.isAuthenticated() && req.user.verification == 0) {
+    if (req.isAuthenticated() && req.user.verification == 1) {
         next();
     } else {
         res.status(403).json({ message : "not logged in" });
@@ -28,7 +28,7 @@ async function getUserRole(userId) {
 // 관리자 접근 확인하는 함수
 exports.isAdmin = async (req, res, next) => {
     const { user } = req;
-    if (req.isAuthenticated() && user.verification == 0) {
+    if (req.isAuthenticated() && user.verification == 1) {
         try {
             // DB에서 해당 사용자 권한 조회
             const res = await getUserRole(user.id);

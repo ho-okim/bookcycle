@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
 import axios from '../lib/axios.js';
 
-// 상품 카테고리 조회
+// 상품 카테고리 조회 - user page에서 사용중
 export async function getCategory() {
-  let url = `/product/category`;
+  const res = await axios.get('/product/category');
+    
+  if (res.statusText != "OK") {
+    throw new Error("product 데이터 로딩 실패");
+  }
+  const body = res.data;
+  return body;
 }
 
 export async function productList() {

@@ -18,7 +18,7 @@ function ConfirmPassword({ onConfirm }) {
         setErrorMessage("사용자 정보를 불러올 수 없습니다.");
         return;
       }
-      const response = await confirmPassword(user?.id, password);
+      const response = await confirmPassword(password);
 
       if (response.message === "success") {
         console.log("비밀번호 확인 성공");
