@@ -63,11 +63,8 @@ function Login() {
     if (res == 'success') {
       navigate("/");
       return;
-    } else if (res == 'expired') { // 인증 링크 만료됨
-      setErrorMessage('인증 링크가 만료되었습니다. 회원가입부터 다시 진행해주세요.');
-      return;
-    } else if (res == 'sent') { // 인증 필요
-      setErrorMessage('인증 링크가 발송되었습니다. 메일을 확인해주세요.');
+    } else if (res == 'not verified') { // 인증 링크 만료됨
+      setErrorMessage('인증이 완료되지 않았습니다. 인증 이메일을 확인해주세요');
       return;
     } else { // 사용자 정보 없음
       setErrorMessage('이메일이나 비밀번호를 다시 확인해주세요');

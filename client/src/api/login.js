@@ -68,7 +68,7 @@ export async function findpwd(email) {
                 return 'send';
             } catch (error) {
                 if (error.response.status == 403) {
-                    return null;
+                    throw new Error("already logged in");
                 } else {
                     throw error;
                 }

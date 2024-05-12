@@ -30,6 +30,10 @@ import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 import FindPwd from './pages/FindPwd.js';
 import Reset from './pages/Reset.js'; 
+import VerifyError from './pages/verification/VerifyError.js';
+import VerifyConfirmed from './pages/verification/VerifyConfimed.js';
+import VerifyExpired from './pages/verification/VerifyExpired.js';
+import VerifyNotFound from './pages/verification/VerifyNotFound.js';
 
 function App() {
   return (
@@ -42,6 +46,12 @@ function App() {
           <Route path="/password">
             <Route path="find" element={<FindPwd/>}/>
             <Route path="reset/:email" element={<Reset/>}/>
+          </Route>
+          <Route path='/verify'>
+            <Route path='confirmed' element={<VerifyConfirmed/>}/>
+            <Route path='error' element={<VerifyError/>}/>
+            <Route path='expired' element={<VerifyExpired/>}/>
+            <Route path='notfound' element={<VerifyNotFound/>}/>
           </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>
@@ -71,6 +81,9 @@ function App() {
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
+          <Route path="/error" element={<p>에러테스트</p>}>
+
+          </Route>
         </Routes>
       <Footer/>
     </AuthProvider>

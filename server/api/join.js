@@ -141,11 +141,10 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
     let dateNow = new Date();
 
     if (!result) {
-      res.status(400).send('<p>이미 완료된 인증이거나 잘못된 인증입니다.</p>');
-    }
-    
-    // 쿼리스트링으로 들어온 token이 존재하고, 만료기한 내에 접근했다면 인증 완료 처리
-    if(result && dateNow <= new Date(result.date_expired)) {
+      res.status(400).redirect("http://localhost:3000/verify/notfound");
+    } else if(dateNow <= new Date(result.date_expired)) {
+      // 쿼리스트링으로 들어온 token이 존재하고, 만료기한 내에 접근했다면 인증 완료 처리
+      
       // 사용자 인증 여부 수정
       let user_sql = 'UPDATE users SET verification = 1 WHERE id = ?';
       // 인증 테이블의 데이터 제거
@@ -156,20 +155,18 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
           const verifyRM_result = await pool.query(verifyRM_sql, [decodedToken]);
 
           if (user_result.affectedRows === 1 && verifyRM_result.affectedRows === 1) {
-            res.send('<p>인증이 완료되었습니다.</p><p><a href="http://localhost:3000/login">로그인 바로가기</a></p>');
-          } else {
-            res.send('<p>인증 과정에서 문제가 발생했습니다.</p><p>관리자에게 문의해주세요.</p>');
+            res.redirect("http://localhost:3000/verify/confirmed");
           }
         } catch (error) {
           console.error(error);
-          res.status(500).send('error');
+          res.status(500).redirect("http://localhost:3000/verify/error");
         }
     } else {
-      res.status(401).send('<p>인증 메일이 만료되었습니다. 회원가입을 다시 진행해주세요.</p><p><a href="http://localhost:3000/join">회원가입 바로가기</a></p>');
+      res.status(401).redirect("http://localhost:3000/verify/expired");
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send('error');
+    res.status(500).redirect("http://localhost:3000/verify/error");
   }
 });
 

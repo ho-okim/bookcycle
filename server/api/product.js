@@ -10,7 +10,7 @@ router.get('/productList', async (req, res) => {
     res.send(result);
 });
 
-router.get('/productDetail/:id', (req, res) => {
+router.get('/productDetail/:id', async (req, res) => {
     // query문 설정
     let sql = "SELECT * FROM product ORDER BY createdAt DESC LIMIT 5";
 

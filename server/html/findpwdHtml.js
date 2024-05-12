@@ -52,7 +52,7 @@ const findpwdHtml = (secured_key) => {
                                     </tr>
                                     <tr>
                                         <td align="center" style="line-height:1.5 !important;">
-                                            <p>감사합니다. <br/> 북사이클 팁 드림</p>
+                                            <p>감사합니다. <br/> 북사이클 팀 드림</p>
                                         </td>
                                     </tr>
                                 </tbody>    
@@ -62,6 +62,9 @@ const findpwdHtml = (secured_key) => {
                 </tbody>
             </table>
         </body>
+        <script>
+                
+        </script>
         </html>
         `
     )

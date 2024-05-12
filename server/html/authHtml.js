@@ -53,7 +53,7 @@ const authHtml = (token) => {
                                     <tr>
                                         <td align="center" style="line-height:1.5 !important;">
                                             <p>북사이클에 관한 문의사항은 북사이클 고객지원 센터를 이용해주시기 바랍니다.</p>
-                                            <p>감사합니다. <br/> 북사이클 팁 드림</p>
+                                            <p>감사합니다. <br/> 북사이클 팀 드림</p>
                                         </td>
                                     </tr>
                                 </tbody>    

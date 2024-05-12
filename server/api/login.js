@@ -17,10 +17,8 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
         // 로그인 실패 처리
         if (!user) return res.json({ message : info.message });
         // verification 검증
-        if (user.verification == 1){
-          return res.json({ message : "expired" })
-        } else if (user.verification != 0){
-          return res.json({ message : "sent" })
+        if (user.verification == 0) {
+          return res.json({ message : "not verified" });
         }
         // 에러 발생 시 next 미들웨어로 오류 처리 넘김
         if (error) return next(err);
@@ -161,23 +159,38 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
   const decodedKey = decodeURIComponent(securedKey);
 
   let sql = 'SELECT * FROM user_verification WHERE secured_key = ?';
-
+  
   try {
     // 쿼리스트링으로 들어온 securedKey로 테이블에 조회
     const [result] = await pool.query(sql, [decodedKey]);
     let dateNow = new Date();
 
-    // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
-    if(result && dateNow <= new Date(result.date_expired)) {
+    if (!result) {
+      res.status(400).redirect("http://localhost:3000/verify/notfound");
+    } else if(dateNow <= new Date(result.date_expired)) {
+      // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
+
       const encodedEmail = encodeURIComponent(result.email);
 
-      res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
+      // 인증 테이블의 데이터 제거
+      let verifyRM_sql = 'DELETE FROM verification WHERE secured_key = ?';
+      
+      try {
+        const verifyRM_result = await pool.query(verifyRM_sql, [decodedKey]);
+
+        if (verifyRM_result.affectedRows === 1) {
+          res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).redirect("http://localhost:3000/verify/error");
+      }
     } else {
-      res.status(401).send('<p>인증 메일이 만료되었습니다. 다시 시도해주세요.</p><p><a href="http://localhost:3000/login">북사이클 바로가기</a></p>');
+      res.status(401).redirect("http://localhost:3000/verify/expired");
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send('error');
+    res.status(500).redirect("http://localhost:3000/verify/error");
   }
 });
 
@@ -189,14 +202,12 @@ router.post('/password/reset', isNotLoggedIn, async (req, res) => {
   const newPassword = await bcrypt.hash(password, 10);
   const decodedEmail = decodeURIComponent(email);
 
-  console.log('비번 : ', newPassword)
-  console.log('이메일 : ', decodedEmail)
   // 비밀번호 업데이트
   let sql = 'UPDATE users SET password = ? WHERE email = ?';
 
   try {
     const result = await pool.query(sql, [newPassword, decodedEmail]);
-    console.log(result);
+
     if (result.affectedRows == 0) {
       res.status(400).send('error');
     } else if (result.affectedRows == 1) {
