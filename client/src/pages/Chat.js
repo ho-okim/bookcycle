@@ -9,17 +9,22 @@ import { EmojiTear, Person, SendFill } from 'react-bootstrap-icons';
 import { Button } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
 import { Link, useNavigate } from 'react-router-dom';
+import DefaultModal from '../components/DefaultModal';
 
 var prevIdx
 var currentIdx = null
 
 function Chat() {
   const navigate = useNavigate();
-  // 현재 로그인 한 유저 가져오기 위한 context
+  
   const {user} = useAuth();
 
+  // socket 연결
+  const socket = io('http://localhost:10000')
+  socket.connect()
+
   // 우측에 열린 채팅창의 상대가 갖고 있는 room_id
-  const [chatroomIdx, setChatroomIdx] = useState(null)
+  // const [chatroomIdx, setChatroomIdx] = useState(null)
   // 우측에 열린 채팅방의 정보
   const [activeChatroom, setActiveChatroom] = useState({})
   // 현재 로그인 한 계정이 갖고 있는 chatRoom 객체의 배열
@@ -31,6 +36,7 @@ function Chat() {
   // 선택된 채팅방 배경 변경 위한 active 변수
   const [active, setActive] = useState(null)
 
+  const chatRef = useRef()
 
   // textarea 높이 자동 조절 함수
   const textRef = useRef();
@@ -41,7 +47,7 @@ function Chat() {
 
   // 채팅방 요소 클릭 시 수행되는 핸들러
   const handleChatroomClick = (e, room_id, i) => {
-    setChatroomIdx(room_id)
+    // setChatroomIdx(room_id)
     setActiveChatroom(chatRoom.find((item) => item.room_id == room_id))
     currentIdx = room_id
     if(readOrNot.length){
@@ -51,11 +57,38 @@ function Chat() {
     setActive(i)
   }
 
+  // 채팅방 스크롤 제어 핸들러
+  const handleScroll = (ref) => {
+    if(ref.current){
+      ref.current.scrollTop = ref.current.scrollHeight
+    }
+  }
+
+  // modal
+  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+
+  const handleClose = () => { // modal 닫기/숨기기 처리
+    if (modalShow) setModalShow(false);
+  };
+
+  const handleOpen = () => { // modal 열기 처리
+    if (!modalShow) setModalShow(true);
+  };
+
+
   let prevChatRoom
 
-  // socket 연결
-  const socket = io('http://localhost:10000')
-  socket.connect()
+  // 언마운트될 때 현재 채팅방 번호를 저장하는 전역변수 초기화
+  useEffect(()=>{
+    return(()=>{
+      currentIdx = null;
+    })
+  }, [])
+
+  useEffect(()=>{
+    setActiveChatroom(chatRoom.find((item) => item.room_id == currentIdx))
+    handleScroll(chatRef)
+  }, [activeChatroom])
 
   // 모든 채팅방에 대해 join(계속 연결된 상태여야 메시지를 주고받을 수 있기 때문)
   useEffect(()=>{
@@ -68,13 +101,8 @@ function Chat() {
     })
   }, [chatRoom])
 
-  // 채팅방 스크롤 제어
-  const chatRef = useRef()
   useEffect(()=>{
-    // console.log("useState에서 출력: ", msgs)
-    if(chatRef.current){
-      chatRef.current.scrollTop = chatRef.current.scrollHeight
-    }
+    handleScroll(chatRef)
   }, [msgs])
 
   // 채팅 보내기 버튼 클릭 시 textarea값 socket 통신으로 서버에 전송
@@ -83,12 +111,83 @@ function Chat() {
     if(textRef.current.value != ""){
       const loginUserId = user?.id
       const socketMsg = textRef.current.value
-      socket.emit('send-message', {loginUserId, socketMsg, chatroomIdx})
+      socket.emit('send-message', {loginUserId, socketMsg, chatroomIdx: currentIdx})
       textRef.current.value = ""
       textRef.current.focus() // 채팅방 진입 시 textarea에 focus
     }
   }
 
+  // 우측 채팅 메시지 화면 랜더링 될 때 보내는 socket 통신(readOrNot 처리 위함)
+  useEffect(()=>{
+    const loginUserId = user?.id
+    if(chatRoom){
+      socket.emit('refreshRON', {loginUserId, chatroomIdx: currentIdx})
+    }
+    return()=>{
+      prevIdx = currentIdx
+    }
+  }, [currentIdx])
+
+  
+  // API
+  // api > chat.js에서 GET 요청한 채팅 목록
+  async function getChatList(){
+    const data = await chatList()
+    return data;
+  }
+  // 화면 최초로 rendering 될 때만 데이터 GET 요청
+  useEffect(()=>{
+    const test = async () => {
+      let {res, ron} = await getChatList()
+      setChatRoom(res)
+      setReadOrNot(ron)
+    }
+    test()
+  }, [])
+
+  // api > chat.js에서 POST 요청한 채팅룸 아이디 받아오기
+  async function getNewChatroomId(){
+    const id = await newChatroom()
+    return id
+  }
+  const test = async () => {
+    let chatroomId = await getNewChatroomId()
+    return chatroomId
+  }
+
+  // api > chat.js에서 GET 요청한 채팅방 메세지 받아오기
+  async function chatMsgList(){
+    if(currentIdx){
+      const data = await getChatMsg(currentIdx)
+      return data;
+    }
+  }
+  // chatroomIdx 변경 될 때만 데이터 GET 요청
+  useEffect(()=>{
+    if(textRef.current){
+    textRef.current.focus() // 채팅방 진입 시 textarea에 focus
+    }
+    const test = async () => {
+      if(currentIdx){
+        let res = await chatMsgList()
+        setMsgs(res)
+      }
+    }
+    test()
+  }, [currentIdx]);
+
+  // 리뷰 작성 페이지로 redirect 핸들러
+  const reviewWriteHandler = (sellerId, productId) => {
+    navigate(`/user/${sellerId}/reviewWrite?productId=${productId}`)
+  }
+
+  // 거래 완료 버튼 누른 후 product 업데이트
+  const getSoldOut = (isSold) => {
+    setActiveChatroom((prevRoom)=>{prevRoom.soldDate = isSold})
+  }
+  
+
+  // 소켓 통신
   if(user){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함
     // 채팅 메시지 전송 성공 시 서버에서 보낸 정보 받기
     socket.on('success', (data) => {
@@ -126,9 +225,7 @@ function Chat() {
 
     setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
     // readOrNot 배열 중 현재 채팅방에 해당하는 배열의 read_count를 0으로 갱신
-    setReadOrNot(prevItem => prevItem.map((item) => item.room_id == chatroomIdx ? { ...item, read_count: 0} : item))
-    // let temp = readOrNot.map((item) => item.room_id == chatroomIdx ? { ...item, read_count: 0} : item)
-    // setReadOrNot(temp)
+    setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
   })
 
   if(user){
@@ -138,80 +235,13 @@ function Chat() {
       // 메시지를 확인한 사람이 내가 아니고, 현재 위치한 채팅방과 동일하다면 진행
       if(loginUserId != user.id && room_id == currentIdx) {
         setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == chatroomIdx ? { ...item, read_count: 0} : item))
+        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
       if(loginUserId == user.id && room_id == currentIdx){
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == chatroomIdx ? { ...item, read_count: 0} : item))
+        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
     })
   }
-
-  // 우측 채팅 메시지 화면 랜더링 될 때 보내는 socket 통신(readOrNot 처리 위함)
-  useEffect(()=>{
-    const loginUserId = user?.id
-    if(chatRoom){
-      socket.emit('refreshRON', {loginUserId, chatroomIdx})
-    }
-    return()=>{
-      prevIdx = chatroomIdx
-    }
-  }, [chatroomIdx])
-
-  
-  // api > chat.js에서 GET 요청한 채팅 목록
-  async function getChatList(){
-    const data = await chatList()
-    return data;
-  }
-  // 화면 최초로 rendering 될 때만 데이터 GET 요청
-  useEffect(()=>{
-    const test = async () => {
-      let {res, ron} = await getChatList()
-      setChatRoom(res)
-      setReadOrNot(ron)
-    }
-    test()
-  }, [])
-
-  // api > chat.js에서 POST 요청한 채팅룸 아이디 받아오기
-  async function getNewChatroomId(){
-    const id = await newChatroom()
-    return id
-  }
-  const test = async () => {
-    let chatroomId = await getNewChatroomId()
-    return chatroomId
-  }
-
-  // api > chat.js에서 GET 요청한 채팅방 메세지 받아오기
-  async function chatMsgList(){
-    if(chatroomIdx){
-      const data = await getChatMsg(chatroomIdx)
-      return data;
-    }
-  }
-  // chatroomIdx 변경 될 때만 데이터 GET 요청
-  useEffect(()=>{
-    if(textRef.current){
-    textRef.current.focus() // 채팅방 진입 시 textarea에 focus
-    }
-    const test = async () => {
-      if(chatroomIdx){
-        let res = await chatMsgList()
-        setMsgs(res)
-      }
-    }
-    test()
-  }, [chatroomIdx]);
-
-  const soldOutHandler = () => {
-    alert("판매 완료 했나요?")
-  }
-
-  const reviewWriteHandler = (sellerId, productId) => {
-    navigate(`/user/${sellerId}/reviewWrite?productId=${productId}`)
-  }
-  
 
   return (
     <Container className={`chattingSec p-0`}>
@@ -235,7 +265,7 @@ function Chat() {
           </div>
           <div className={`${styles.box} ${styles.chatBoxWrap}`}>
             {
-              chatroomIdx == null ?
+              currentIdx == null || !activeChatroom ?
               <div className={`${styles.emptyChat} d-flex flex-column justify-content-center align-items-center regular`}>
                 <SendFill className={`${styles.send}`}/>
                 <span>좌측의 채팅방을 클릭하여</span>
@@ -249,7 +279,7 @@ function Chat() {
                       <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
                         {
                           activeChatroom.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
-                          : <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
+                          : <img src={process.env.PUBLIC_URL + `/img/profile/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
                         }
                       </div>
                       <div className={`${styles.nickname} d-flex align-items-center`}>
@@ -265,26 +295,35 @@ function Chat() {
                   <>
                     <div className={`${styles.productWrap} d-flex justify-content-between`}>
                       <Link style={{ textDecoration: 'none' }}>
-                        <div className={`d-flex`}>
-                          <div>
+                        <div className={`d-flex align-items-center`}>
+                          <div className='d-flex justify-content-center align-items-center'>
                             <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>
-                              <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg}`}/>
+                              <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg} ${activeChatroom.soldDate && styles.soldOut}`}/>
                             </div>
                           </div>
-                          <div className={`${styles.productContent} d-flex justify-content-center flex-column`}>
-                            <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
-                            <div className={`${styles.price} regular`}>{activeChatroom?.price.toLocaleString()}원</div>
+                          <div>
+                            {
+                              activeChatroom.soldDate &&
+                              <div className={`${styles.soldOutText}`}>(판매완료)</div>
+                            }
+                            <div className={`${styles.productContent} ${activeChatroom.soldDate && styles.soldOut} d-flex justify-content-center flex-column`}>
+                              <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
+                              <div className={`${styles.price} regular`}>{activeChatroom?.price.toLocaleString()}원</div>
+                            </div>
                           </div>
                         </div>
                       </Link>
                       <div className={`d-flex align-items-center ${styles.btnWrap}`}>
                         {
-                          activeChatroom.sold ?
+                          activeChatroom.soldDate ?
                           <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.product_id)}>후기 작성</Button>
                           : user?.id == activeChatroom.seller_id ?
-                            <Button variant="outline-danger" className={`${styles.btn}`} onClick={soldOutHandler}>판매 완료</Button>
+                            <Button variant="outline-danger" className={`${styles.btn}`} onClick={handleOpen}>거래 완료</Button>
                             : null
                         }
+                        <DefaultModal show={modalShow} handleClose={handleClose}
+                        targetId={activeChatroom.user_id} getSoldOut={getSoldOut}
+                        productId={activeChatroom.product_id}/>
                       </div>
                     </div>
                   </>

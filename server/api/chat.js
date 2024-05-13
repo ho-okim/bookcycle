@@ -62,8 +62,23 @@ router.get('/getChatMsg/:roomId', isLoggedIn, async (req, res) => {
   }
 });
 
-router.put('/', (req, res) => {
+router.put('/setBuyerId', async (req, res) => {
+  const targetId = req.body.targetId
+  const productId = req.body.productId
+  
+  const date = new Date()
+  
+  let sql = "UPDATE product SET buyer_id = ?, soldDate = ? WHERE id = ?";
+  let sql2 = "DELETE FROM liked WHERE product_id = ?"
 
+  try {
+    let result = await pool.query(sql, [targetId, date, productId])
+    let result2 = await pool.query(sql2, [productId])
+    res.send(result)
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
 });
 
 router.delete('/', (req, res) => {

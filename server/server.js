@@ -174,7 +174,6 @@ io.on('connection', (socket)=>{
     // db에 메세지 저장
     const {loginUserId, socketMsg, chatroomIdx} = data
     const date = new Date()
-    console.log(chatroomIdx)
 
     let sql = `INSERT INTO chat_message (user_id, room_id, message, createdAt) VALUES (?, ?, ?, ?)`;
 

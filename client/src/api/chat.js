@@ -60,3 +60,24 @@ export async function getChatMsg(roomId) {
     }
   }
 }
+
+export async function setBuyerId(targetId, productId) {
+  try {
+    const URL = '/setBuyerId'
+    const result = await axios.put(URL, {targetId, productId});
+    const res = result.data
+    
+    if (result.statusText != "OK") {
+      throw new Error("PUT buyer id failed");
+    } 
+    const body = res;
+    
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else {
+      throw error;
+    }
+  }
+}
