@@ -14,7 +14,7 @@ function ChatUser(props){
           <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
             {
               el.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
-              : <img src={process.env.PUBLIC_URL + `/img/${el.profile_image}`} className={`${styles.profileImg}`}/>
+              : <img src={process.env.PUBLIC_URL + `/img/profile/${el.profile_image}`} className={`${styles.profileImg}`}/>
             }
           </div>
         </div>
