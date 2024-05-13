@@ -5,11 +5,11 @@ import { Navigate, Outlet, useHref, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import UserMenu from '../components/user/UserMenu.js';
 import UserReviewTag from '../components/user/UserReviewTag.js';
-import UserReviewList from '../components/user/UserReviewList.js';
 import UserProduct from '../components/user/UserProduct.js';
 import TargetUserContext from '../contexts/TargetUserContext.js';
 import UserInfo from '../components/user/UserInfo.js';
 import { useAuth } from '../contexts/LoginUserContext.js';
+import UserReviewList from '../components/user/UserReviewList.js';
 
 function User() {
     const currentUrl = useHref(); // 현재 경로

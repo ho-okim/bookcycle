@@ -36,7 +36,8 @@ function UserProduct() {
         category_id : searchParams.get("category_id") ?? 0
     });
     
-    let limit = 5;
+    let limit = 10;
+    let showLimit = 5;
 
     // 메모로 state 최적화?
     const productOption = useMemo(()=>({
@@ -56,7 +57,7 @@ function UserProduct() {
     async function getProductList() {
         let res;
         if (!isProductUrl) { // 사용자 페이지라면 간략한 정보
-            res = await getUserProductList(targetUserId, 5, 0, order, filter);
+            res = await getUserProductList(targetUserId, showLimit, 0, order, filter);
         } else { // 더보기 후 상세 페이지라면 상세 정보
             res = await getUserProductList(targetUserId, limit, offset, order, filter);
         }
@@ -138,7 +139,7 @@ function UserProduct() {
                     <div className={styles.title}>
                         <h4 className={styles.title_font}>판매목록</h4>
                         {
-                            (isProductUrl || !productList || productList.length == 0) ? 
+                            (isProductUrl || !productList || productList.length == 0 || totalData <= showLimit) ? 
                             null
                             : <Button 
                             variant='outline-primary' 

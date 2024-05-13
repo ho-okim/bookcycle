@@ -62,7 +62,6 @@ router.get('/user/:userId/product', async (req, res) => {
         // query문
         let sql = 'SELECT * FROM product_simple_data WHERE seller_id = ?';
         let variables = [userId];
-
     
         if (sold === 'NOT NULL') {
             sql += ' AND soldDate IS NOT NULL';
@@ -84,37 +83,68 @@ router.get('/user/:userId/product', async (req, res) => {
     }
 });
 
-// 특정 판매자의 상품에 대한 review 전체 수 조회
+// 특정 사용자의 review 전체 수 조회
 router.get('/user/:userId/reviewAll', async (req, res) => {
     const {userId} = req.params;
+    const {type} = req.query;
     
+    const tradeType = type.toLowerCase();
+
+    let variables = [parseInt(userId)];
+
     // query문
-    let sql = 'SELECT COUNT(*) AS total FROM user_review WHERE seller_id = ?';
+    let sql = 'SELECT COUNT(*) AS total FROM trade_review WHERE writer_id = ?';
+
+    if (tradeType === 'buy') {
+        sql += ' AND buyer_id = ?';
+        variables.push(parseInt(userId));
+    } else if (tradeType === 'sell') {
+        sql += ' AND seller_id = ?';
+        variables.push(parseInt(userId));
+    }
 
     try {
         // 상품 전체 수 조회
-        const body = await pool.query(sql, [userId]);
-        res.send(body);
+        const [result] = await pool.query(sql, variables);
+
+        res.send(result);
     } catch (error) {
         console.error(error);
         res.send('error');
     }
 });
 
-// 특정 판매자의 상품에 대한 review 조회
+// 특정 사용자의 review 조회
 router.get('/user/:userId/review', async (req, res) => {
     const { userId } = req.params;
-    const { limit, offset, name, ascend } = req.query;
+    const { type, limit, offset, name, ascend } = req.query;
+
+    const tradeType = type.toLowerCase();
 
     let newName = CHAR_REG.test(name) ? name.trim() : 'createdAt';
     let updown = (ascend == 'true') ? 'ASC' : 'DESC'; // boolean -> string 주의
     
+    let variables = [parseInt(userId)];
+
     // query문 설정
-    let sql = `SELECT * FROM user_review WHERE seller_id = ? ORDER BY ${newName} ${updown} LIMIT ? OFFSET ?`;
+    let sql = 'SELECT * FROM trade_review WHERE writer_id = ?';
+
+    let order_sql = ` ORDER BY ${newName} ${updown} LIMIT ? OFFSET ?`;
+
+    if (tradeType === 'buy') {
+        sql += ' AND buyer_id = ?';
+        variables.push(parseInt(userId));
+    } else if (tradeType === 'sell') {
+        sql += ' AND seller_id = ?';
+        variables.push(parseInt(userId));
+    }
+    
+    variables.push(parseInt(limit), parseInt(offset));
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const result = await pool.query(sql, [parseInt(userId), parseInt(limit), parseInt(offset)]); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
+        const result = await pool.query(sql+order_sql, variables);
+
         res.send(result);
     } catch (error) {
         console.error(error);

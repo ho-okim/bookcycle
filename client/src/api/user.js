@@ -61,27 +61,26 @@ export async function getUserProductList(userId, limit, offset, order, filter) {
     return body;
 }
 
-// 특정 사용자의 상품에 대한 review 조회
-export async function getUserReviewAll(userId) {
-    let url = `/user/${userId}/reviewAll`;
+// 특정 사용자의 review 조회
+export async function getUserReviewAll(userId, buyOrSell) {
+    let url = `/user/${userId}/reviewAll?type=${buyOrSell}`;
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
         throw new Error("구매후기 조회 실패");
     }
-    // res.data는 배열
-    const body = res.data[0].total;
-
+    
+    const body = res.data.total;
     return body;
 }
 
 // 특정 판매자의 상품에 대한 review 조회
-export async function getUserReviewList(userId, limit, offset, order) {
+export async function getUserReviewList(userId, buyOrSell, limit, offset, order) {
     const { name, ascend } = order;
     
     let newName = REGEX.CHAR_REG.test(name) ? name.trim() : 'createdAt';
 
-    let url = `/user/${userId}/review?limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
+    let url = `/user/${userId}/review?type=${buyOrSell}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {

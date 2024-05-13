@@ -21,7 +21,6 @@ import User from './pages/User.js';
 import ProductList from './pages/product/ProductList.js';
 import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
-import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import ReviewWrite from './components/user/ReviewWrite.js';
 import ReviewEdit from './components/user/ReviewEdit.js';
@@ -35,6 +34,8 @@ import VerifyError from './components/verify/VerifyError.js';
 import VerifyExpired from './components/verify/VerifyExpired.js';
 import VerifyNotFound from './components/verify/VerifyNotFound.js';
 import Error from './pages/Error.js';
+import UserReview from './components/user/UserReview.js';
+import UserReviewList from './components/user/UserReviewList.js';
 
 function App() {
   return (
@@ -71,7 +72,9 @@ function App() {
           </Route>
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
-            <Route path="review" element={<UserReviewList/>}/>
+            <Route path="review" element={<UserReviewList/>}>
+              <Route path="*" element={<UserReview/>}/>
+            </Route>
             <Route path="reviewWrite" element={<ReviewWrite/>}/>
             <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
