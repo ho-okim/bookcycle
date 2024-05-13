@@ -22,6 +22,9 @@ function Report({show, handleClose, ownerId}) {
     } else if (currentUrl.includes("board")) {
         reasonList = report_reason.board;
         category = "board";
+    } else if (currentUrl.includes("reply")) {
+        reasonList = report_reason.reply;
+        category = "reply";
     } else if (currentUrl.includes("product")) {
         reasonList = report_reason.product;
         category = "product";
@@ -54,7 +57,7 @@ function Report({show, handleClose, ownerId}) {
         }
         
         const res = await addReport(reportForm);
-        if (res.affectedRows == 1 && res.serverStatus == 2) {
+        if (res.affectedRows == 1 && res.insertId != 0) {
             alert('신고가 접수되었습니다!');
             setErrorMessage('');
             setCurrentIndex(-1);
