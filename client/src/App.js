@@ -1,7 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/common.css';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
@@ -30,10 +29,12 @@ import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 import FindPwd from './pages/FindPwd.js';
 import Reset from './pages/Reset.js'; 
-import VerifyError from './pages/verification/VerifyError.js';
-import VerifyConfirmed from './pages/verification/VerifyConfimed.js';
-import VerifyExpired from './pages/verification/VerifyExpired.js';
-import VerifyNotFound from './pages/verification/VerifyNotFound.js';
+import Verify from './pages/Verify.js';
+import VerifyConfirmed from './components/verify/VerifyConfirmed.js';
+import VerifyError from './components/verify/VerifyError.js';
+import VerifyExpired from './components/verify/VerifyExpired.js';
+import VerifyNotFound from './components/verify/VerifyNotFound.js';
+import Error from './pages/Error.js';
 
 function App() {
   return (
@@ -47,7 +48,7 @@ function App() {
             <Route path="find" element={<FindPwd/>}/>
             <Route path="reset/:email" element={<Reset/>}/>
           </Route>
-          <Route path='/verify'>
+          <Route path='/verify' element={<Verify/>}>
             <Route path='confirmed' element={<VerifyConfirmed/>}/>
             <Route path='error' element={<VerifyError/>}/>
             <Route path='expired' element={<VerifyExpired/>}/>
@@ -81,8 +82,8 @@ function App() {
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
-          <Route path="/error" element={<p>에러테스트</p>}>
-
+          <Route path="/error">
+            <Route path=":errorCode" element={<Error/>}/>
           </Route>
         </Routes>
       <Footer/>

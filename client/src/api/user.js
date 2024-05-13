@@ -18,11 +18,9 @@ export async function getUserProductAll(userId, filter) {
     
     let isSold;
     if (sold === true || sold === 'true') {
-        isSold = 1;
-    } else if (sold === false || sold === 'false') {
-        isSold = 0;
+        isSold = 'NOT NULL';
     } else {
-        isSold = 'null';
+        isSold = 'NULL';
     }    
 
     let url = `/user/${userId}/productAll?sold=${isSold}&category_id=${category_id}`;
@@ -46,11 +44,9 @@ export async function getUserProductList(userId, limit, offset, order, filter) {
 
     let isSold;
     if (sold === true || sold === 'true') {
-        isSold = 1;
-    } else if (sold === false || sold === 'false') {
-        isSold = 0;
+        isSold = 'NOT NULL';
     } else {
-        isSold = 'null';
+        isSold = 'NULL';
     }
 
     let url = `/user/${userId}/product?sold=${isSold}&category_id=${category_id}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;

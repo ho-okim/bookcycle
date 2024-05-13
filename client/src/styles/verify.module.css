@@ -1,0 +1,35 @@
+.box{
+    padding: 30px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.home_link {
+    color: blue;
+}
+
+.home_link:hover{
+    text-decoration: underline;
+}
+
+.title_box {
+    margin-bottom:10px;
+}
+
+.title {
+    text-align: center;
+}
+
+.content_box {
+    text-align: center;
+    line-height: 2;
+}
+
+.message_highlight {
+    text-decoration: underline;
+    color: rgb(220, 53, 69);
+}
+
+.error_alert{
+    color: rgb(220, 53, 69);
+}

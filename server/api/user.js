@@ -7,7 +7,7 @@ router.get('/user/:userId', async (req, res) => {
     const {userId} = req.params;
 
     // query문 설정
-    let sql = 'SELECT * FROM users WHERE id = ?';
+    let sql = 'SELECT id, nickname, profile_image, manner_score FROM users WHERE id = ?';
 
     try {
         // db connection pool을 가져오고, query문 수행
@@ -31,9 +31,8 @@ router.get('/user/:userId/productAll', async (req, res) => {
     let sql = `SELECT COUNT(*) AS total FROM product WHERE seller_id = ?`;
     let variables = [parseInt(userId)];
     
-    if (sold !== 'null') {
-        sql += ' AND sold = ?';
-        variables.push(parseInt(sold));
+    if (sold === 'NOT NULL') {
+        sql += ' AND soldDate IS NOT NULL';
     }
     if (parseInt(category_id) !== 0) {
         sql += ' AND category_id = ?';
@@ -64,9 +63,9 @@ router.get('/user/:userId/product', async (req, res) => {
         let sql = 'SELECT * FROM product_simple_data WHERE seller_id = ?';
         let variables = [userId];
 
-        if (sold !== 'null') {
-            sql += ' AND sold = ?';
-            variables.push(parseInt(sold));
+    
+        if (sold === 'NOT NULL') {
+            sql += ' AND soldDate IS NOT NULL';
         }
         if (parseInt(category_id) !== 0) {
             sql += ' AND category_id = ?';
