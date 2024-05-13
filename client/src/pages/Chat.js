@@ -249,7 +249,7 @@ function Chat() {
                       <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
                         {
                           activeChatroom.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
-                          : <img src={process.env.PUBLIC_URL + `/img/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
+                          : <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
                         }
                       </div>
                       <div className={`${styles.nickname} d-flex align-items-center`}>
@@ -268,7 +268,7 @@ function Chat() {
                         <div className={`d-flex`}>
                           <div>
                             <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>
-                              <img src={process.env.PUBLIC_URL + `/img/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg}`}/>
+                              <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg}`}/>
                             </div>
                           </div>
                           <div className={`${styles.productContent} d-flex justify-content-center flex-column`}>

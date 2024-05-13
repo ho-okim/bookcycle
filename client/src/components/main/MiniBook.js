@@ -10,7 +10,7 @@ function MiniBook(props){
         <div className="productImgWrap d-flex flex-column justify-content-center align-items-center">
           {
             filename ? 
-              <img src={process.env.PUBLIC_URL + `/img/${filename}`} alt="" className="productImg"/> :
+              <img src={process.env.PUBLIC_URL + `/img/product/${filename}`} alt="" className="productImg"/> :
               <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className="productImg"/>
           }
         </div>
