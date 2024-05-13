@@ -1,0 +1,7 @@
+.modalBtn{font-size: 17px;}
+
+.yesBtn{
+  width: 50px;
+  background-color: rgb(77, 145, 182); border: 1px solid rgb(77, 145, 182);
+}
+.yesBtn:hover{background: rgb(22, 72, 99); border: 1px solid rgb(22, 72, 99);}
