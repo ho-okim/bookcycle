@@ -1,44 +1,58 @@
-import React from 'react';
-import {Link, useParams} from 'react-router-dom';
-import style from "../../styles/productList.module.css";
+import { useEffect, useState } from 'react';
+import styles from "../../styles/productList.module.css";
+import { getCategory } from '../../api/product';
+import { useProductOption } from '../../contexts/ProductOptionContext';
+import { useNavigate } from 'react-router-dom';
 
+function ProductCategory() {
 
-export const productcate=[
-    {id : 0, text: '전체보기', name : '/'},
-    {id : 1, text: '문학', name : 'literature'},
-    {id : 2, text: '철학', name : 'philosophy'},
-    {id : 3, text: '종교', name : 'religion'},
-    {id : 4, text: '사회과학', name : 'social'},
-    {id : 5, text: '자연과학', name : 'natural'},
-    {id : 6, text: '기술과학', name : 'technology'},
-    {id : 7, text: '예술', name : 'art'},
-    {id : 8, text: '언어', name : 'language'},
-    {id : 9, text: '역사', name : 'history'},
-    {id : 10, text: '인문/교양', name : 'culture'},
-    {id : 11, text: '컴퓨터/모바일', name : 'computer'},
-];
+    const {order, filter, setFilter} = useProductOption();
+    const [category, setCategory] = useState([]);
 
+    const navigate = useNavigate();
 
+    useEffect(()=>{
+        async function getCategoryData() {
+            const res = await getCategory(); // 카테고리 가져오기
+            setCategory(res);
+        }
+        getCategoryData();
+    }, []);
 
-function ProductCategory(props) {
+    function handleFilter(e) { // 필터의 카테고리 id 변경
+        const id = e.currentTarget.id;
+        setFilter((filter)=>({...filter, category_id : parseInt(id)}));
+        navigate(`/productList?category_id=${filter.category_id}&condition=${filter.condition}&order=${order.name}&ascend=${order.ascend}`);
+    }
 
-    <div className='column'>
-    <div className={`${style.category}`}>
-        <div className={`${style.box}`}>
-           <ul className='nav-bar'>
-                {['전체보기', '문학', '철학', '종교', '사회과학', '자연과학', '기술과학', '예술', '언어', '역사', '인문/교양', '컴퓨터/모바일'].map(cate=>{
-                    return(
-                        <li key={cate} className={ProductCategory === cate ? 'productLinkOn': 'productLink'}>
-                            <Link to ={`/productList/${cate}`}>{cate}</Link>
-                        </li>
-                    );
-                })}
+    return(
+        <div className={styles.category_box}>
+            <ul className={styles.category_list}>
+                <li className={styles.category}>
+                    <button id={0} 
+                    className={styles.category_btn} 
+                    onClick={(e)=>{handleFilter(e)}}
+                    disabled={filter.category_id === 0}>
+                        전체보기
+                    </button>
+                </li>
+                {
+                    category.map((el) => {
+                        return(
+                            <li key={el.id} className={styles.category}>
+                                <button className={styles.category_btn} 
+                                id={el.id} 
+                                onClick={(e)=>{handleFilter(e)}}
+                                disabled={filter.category_id === el.id}>
+                                    {el.category_name}
+                                </button>
+                            </li>
+                        )
+                    })
+                }
             </ul>
         </div>
-    </div>
-</div>
-
-    
+    )
 }
 
 export default ProductCategory;

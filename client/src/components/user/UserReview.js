@@ -14,7 +14,7 @@ import UserReviewBox from './UserReviewBox.js';
 function UserReview({tradeType}) {
     const url = useHref(); // 현재 url
     const isReviewUrl = url.includes("review"); // 리뷰 목록 페이지 여부
-    const {targetUserId, setTargetUserId} = useTargetUser(); // 대상 id
+    const {targetUserId, setTargetUserId, targetUsername} = useTargetUser(); // 대상 id
     
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -100,9 +100,9 @@ function UserReview({tradeType}) {
                         <h4 className={styles.title_font}>
                             {
                                 tradeType === 'buy' ?
-                                '구매후기'
+                                `${targetUsername}님의 상품을 구매했어요`
                                 : tradeType === 'sell' ?
-                                '판매후기'
+                                `${targetUsername}님에게 상품을 판매했어요`
                                 :null
                             }
                         </h4>
@@ -122,14 +122,14 @@ function UserReview({tradeType}) {
                     <h4 className={styles.title_font}>
                         {
                             tradeType === 'buy' ?
-                            '구매후기'
+                            `${targetUsername}님의 상품을 구매했어요`
                             : tradeType === 'sell' ?
-                            '판매후기'
+                            `${targetUsername}님에게 상품을 판매했어요`
                             :null
                         }
                     </h4>
                     {
-                        (isReviewUrl || reviewList.length == 0) ? 
+                        (isReviewUrl) ? 
                         <div>
                             <UserReviewSorting
                             sortType={'score'} 

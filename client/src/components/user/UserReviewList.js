@@ -12,11 +12,11 @@ function UserReviewList() {
         <>
         {
             isReviewUrl ?
-                <UserReview tradeType={currentType} />
+                <UserReview tradeType={currentType}/>
             :
             <>
-                <UserReview tradeType={'buy'}/>
                 <UserReview tradeType={'sell'}/>
+                <UserReview tradeType={'buy'}/>
             </>
         }
         </>

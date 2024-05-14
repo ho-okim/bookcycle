@@ -1,71 +1,35 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import {Link, useParams} from 'react-router-dom';
-import {productList} from "../../api/product";
-import style from "../../styles/productList.module.css";
-import ProductDetail from '../../pages/product/ProductDetail';
+import { Link } from "react-router-dom";
+import styles from "../../styles/productList.module.css";
+import {Eye, HeartFill} from 'react-bootstrap-icons';
 
-
-function List(props){
-/** 
- * 
- * async function getProduct(){
-    const data = await productList()
-    return data;
-  } 
- * 
- * 
-*/
-async function getProduct(){
-  const data = await productList()
-  return data;
-}
-
-let [product, productL] = useState([
-  {
-    product_name : '',
-    wirter : '',
-    publisher : '',
-    public_date : '',
-    price : ''
-  }
-])
-
-
-const [productList, setProductLIst] = useState([]);
-
-useEffect(()=>{
-  // let product
-  // const test = async () => {
-  //   product = await getProduct()
-  //   productL(product),{
-  //     product_name: rowData.product_name,
-  //     wirter: rowData.writer,
-  //     publisher: rowData.publisher,
-  //     public_date: rowData.public_date,
-  //     price: rowData.price
-  //   }
-  // }
-  // test()
-}, [])
-
+function List({product}){
 
   return (
-            <div className={`${style.productDetailList}`}>
-            {/* <Link to={"/productDetail/:id"} style={{ textDecoration: "none", color: "black" }}>
-              <div className={`${style.book}`}>
-                <div clasName={`${style.bookpicbox}`}>
-                  <img className="book-pic-box" src="" alt="사진" />
-                </div>
-                <div className={`${style.bookinfoabout}`}>
-                  <div clasName="booktitle">{rowData.product_name}</div>
-                  <div clasName="bookauthor">{rowData.wirter}, {rowData.publisher}, {rowData.public_date}</div>
-                  <div clasName="bookprice">{rowData.price}</div>
-                </div>
-                <div clasName={`${style.booknicname}`}>닉네임</div>
-              </div>
-            </Link> */}
-            </div>
+    <Link to={`/productDetail/${product.id}`} className={styles.product_link}>
+      <div className={styles.product}>
+        <div clasName={styles.bookpicbox}>
+        {
+            product.filename ? 
+            <img className={styles.bookpic} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
+            :
+            <img className={styles.no_bookpic} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
+        }
+        </div>
+        <div className={styles.bookinfoabout}>
+          <p className={styles.book_title}>{product.product_name}</p>
+          <p>{product.category_name}</p>
+          <p className={styles.book_info}>
+            {product.writer} | {product.publisher} | {new Date(product.publish_date).toLocaleDateString()}
+          </p>
+          <p>&#8361; {product.price.toLocaleString()}</p>
+        </div>
+        <div clasName={styles.seller_info}>
+          <p>{product.nickname}</p>
+          <p><Eye/> {product.view_count}</p>
+          <p><HeartFill className={styles.heart}/> {product.liked}</p>
+        </div>
+      </div>
+    </Link>
   );
 };
 
