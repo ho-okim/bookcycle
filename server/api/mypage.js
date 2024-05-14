@@ -330,4 +330,50 @@ router.delete("/reviewDelete/:id", async (req, res) => {
   }
 });
 
+
+// 프로필 사진 업로드 위한 패키지 require
+const path = require('path')
+const multer = require('multer')
+const uuid4 = require('uuid4')
+// 파일 시스템 함수 require
+const fs = require('fs')
+
+// 미들웨어 설정
+const upload = multer({
+  storage: multer.diskStorage({
+    filename(req, file, done) {
+      const randomID = uuid4();
+      const ext = path.extname(file.originalname);
+      const filename = randomID + ext;
+      done(null, filename);
+    },
+    destination(req, file, done) {
+      done(null, path.join(__dirname, "../../client/public/img/profile"));
+    },
+  }),
+  limits: { fileSize: 1024 * 1024 },
+});
+
+// 프로필 파일 업로드
+router.post('/profileupload', isLoggedIn, upload.array('files', 1), async(req, res)=>{
+  let sql = 'UPDATE users SET profile_image = ? WHERE id = ?';
+  let result
+  const files = req.files[0]
+  const {delProfile} = req.body
+  console.log(delProfile)
+
+  try {
+    if(files){ // 새 파일로 데이터베이스 업데이트
+      result = await pool.query(sql, [files.filename, req.user.id])
+    }
+    if(delProfile){ // 기존 프로필 존재하면 삭제
+      fs.unlink(`./client/public/img/profile/${delProfile}`, (err)=>{})
+    }
+  
+    res.send(result);
+  } catch (error) {
+    console.log('profileupload UPDATE 과정에서 오류 발생 : ', error)
+  }
+})
+
 module.exports = router;

@@ -45,6 +45,7 @@ body{font-family: 'Pretendard-SemiBold';}
 ul, ol, li{list-style: none;}
 a{text-decoration: none;}
 .inner{max-width: 1320px;}
+input{padding: 2px 5px; border: 1px solid #ddd; border-radius: 2px; outline: none;}
 
 input[type="file"]{
   /* 파일 업로드 기본 버튼 삭제 */

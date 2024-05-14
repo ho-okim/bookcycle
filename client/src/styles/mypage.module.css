@@ -56,20 +56,37 @@ ul, ol, li { list-style: none; }
 
 
 /* MYPAGE EDIT */
+
+.profileImgWrap{margin-right: 30px; width: 120px; height: 120px; border-radius: 50%; background-color: rgb(221, 242, 252); overflow: hidden;}
+.profileIcon{font-size: 70px; color: rgb(22, 72, 99);}
+.profileImg{width: 100%; height: 100%; object-fit: cover;}
+.fileBtn{cursor: pointer;}
+
+
 .confirm { display: flex; flex-direction: column; text-align: center; justify-content: center; }
 
-.editPage { padding: 50px 100px; }
+.editPage{padding: 40px; display: flex; justify-content: center; align-items: center;}
 
-.input_box { display: flex; }
+.email{padding: 2px 5px;}
+.input_form{padding: 2px 5px; border: 1px solid #ddd; border-radius: 2px;}
+.input_box{display: flex; margin-top: 10px;}
 .input_box .value { width: 30%; }
 .input_box input { width: 70%; }
 
 .error_box { margin-left: 30%; width: 70%; color: red;  }
 
-.btnWrap { }
-.btnWrap .cancel {}
-.btnWrap .edit {}
+.btnWrap{margin-top: 20px;}
+.btnWrap .cancel{margin-left: 10px;}
+.btnWrap .edit{background-color: rgb(77, 145, 182); border: 1px solid rgb(77, 145, 182);}
+.btnWrap .edit:hover{background: rgb(22, 72, 99); border: 1px solid rgb(22, 72, 99);}
 
+@media screen and (max-width: 767px){
+  .infoWrap{flex-direction: column;}
+  .profileImgWrap{margin: 30px 0; width: 150px; height: 150px;}
+  .profileIcon{font-size: 80px;}
+  .btnWrap{margin-top: 40px;}
+  .form_box{width: 100%;}
+}
 
 
 /* REVIEW WRITE */

@@ -269,14 +269,6 @@ const uuid4 = require('uuid4')
 // 파일 시스템 함수 require
 const fs = require('fs')
 
-// fs.readdir('./client/public/img/board', function(err, filesList) {
-//   if (err) {
-//     console.error('Error reading directory:', err);
-//     return;
-//   }
-//   console.log("list:", filesList);
-// });
-
 // 미들웨어 설정
 const upload = multer({
   storage: multer.diskStorage({

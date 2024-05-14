@@ -39,7 +39,7 @@ function ReplyForm(props){
       return;
     }
 
-    console.log("댓글 등록 내용: ", reply)
+    // console.log("댓글 등록 내용: ", reply)
 
     // client api 함수 호출해 등록된 reply -> server에 날리기(server에서 update 쿼리 실행)
     const res = await replyWrite(id, reply);
@@ -124,11 +124,11 @@ function ReplyList(props){
     test();
   }, [])
 
-  console.log("좋아요 개수: ", likeCounts)
-  console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates)
+  // console.log("좋아요 개수: ", likeCounts)
+  // console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates)
   const like = likeStates.find(el => el.board_id === Number(boardId));
-  console.log("boardId: ", boardId)
-  console.log("find: ", like)
+  // console.log("boardId: ", boardId)
+  // console.log("find: ", like)
 
   // setLikeStates(likeState) - 만약 현재 게시글의 boardId와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
 

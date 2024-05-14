@@ -289,3 +289,26 @@ export async function reviewDelete(id) {
   const body = res.data;
   return body;
 }
+
+// 프로필 사진 파일 업로드
+export async function profileupload(formData) {
+  try {
+    const res = await axios.post('/profileupload', formData, {
+      headers: {
+      "Content-Type": "multipart/form-data"
+      }
+    })
+    
+    if (res.statusText != "OK") {
+      throw new Error("file upload fails");
+    } 
+    
+    return res.statusText;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else {
+      throw error;
+    }
+  }
+}

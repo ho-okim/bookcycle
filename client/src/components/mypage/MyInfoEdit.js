@@ -1,15 +1,21 @@
 import styles from "../../styles/mypage.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { mypageEdit } from "../../api/mypage";
+import { mypageEdit, profileupload } from "../../api/mypage";
 import { Button } from "react-bootstrap";
 import { useAuth } from "../../contexts/LoginUserContext.js";
 import REGEX from "../../lib/regex.js";
+import { Person } from "react-bootstrap-icons";
 
 function MyInfoEdit({ password }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // 실제로 전송할 파일 변수
+  const [profileImg, serProfileImg] = useState()
+  // 파일의 URL 정보 담는 useState
+  const [profile, setProfile] = useState()
 
   const [formData, setFormData] = useState({
     username: user.username,
@@ -34,6 +40,15 @@ function MyInfoEdit({ password }) {
     password: true,
     phone_number: true,
   });
+
+  // 이미지 미리보기 함수
+  const onchangeImageUpload = (event) => {
+    let img = event.target.files[0]
+    if(img){
+      serProfileImg(img)
+      setProfile(URL.createObjectURL(img))
+    }
+  };
 
   // 입력 input 필드 제어 및 에러 처리
   function handleInputChange(e) {
@@ -99,6 +114,13 @@ function MyInfoEdit({ password }) {
 
     let editPass = Object.entries(formState).filter(([key, value]) => !value).map(([key]) => key);
 
+    const fileFormData = new FormData()
+    fileFormData.append('files', profileImg)
+    if(user.profile_image){
+      fileFormData.append('delProfile', user.profile_image)
+    }
+    const fileRes = await profileupload(fileFormData)
+
     if (editPass.length > 0) {
       console.log("다음 항목에서 통과하지 못했습니다:", editPass);
       return;
@@ -120,13 +142,15 @@ function MyInfoEdit({ password }) {
     const defaultValue = formData[value]
     return (
       <>
-        <div className={styles.value}>
-          {
-            value === "username" ? "이름"
-              : value === "nickname" ? "닉네임"
-              : value === "password" ? "비밀번호"
-              : "전화번호"
-          }
+        <div className={`${styles.value} d-flex align-items-center`}>
+          <p>
+            {
+              value === "username" ? "이름"
+                : value === "nickname" ? "닉네임"
+                : value === "password" ? "비밀번호"
+                : "전화번호"
+            }
+          </p>
         </div>
         <input
           name={value}
@@ -143,30 +167,48 @@ function MyInfoEdit({ password }) {
 
   return (
     <div className={`inner ${styles.content} ${styles.editPage}`}>
-      <form
-        className={styles.form_box}
-        onSubmit={(e) => { e.preventDefault(); }}
-      >
-        {Object.keys(formData).map((el, i) => {
-          return (
-            <div key={i} >
-              <div className={styles.input_box}>
-                { renderInput(el) }
-              </div>
-              <div className={styles.error_box}>
-                {errorMessage[el]}
-              </div>
+      <form className={`${styles.form_box}`} onSubmit={(e) => {e.preventDefault();}}>
+        <div className={`${styles.infoWrap} d-flex`}>
+          <div className={`d-flex flex-column justify-content-center align-items-center`}>
+            <div className={`${styles.imageUploadBtn}`}>
+              {/* 이미지 업로드 버튼 */}
+              <label htmlFor="file" className={`${styles.fileBtn}`}>
+                <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                  {
+                    profile ?
+                    <img className={`${styles.profileImg}`} alt='preview' src={profile}/>
+                    : user.profile_image == '' ?
+                      <Person className={`${styles.profileIcon}`}/> :
+                      <img src={process.env.PUBLIC_URL + `/img/profile/${user.profile_image}`} className={`${styles.profileImg}`}/>
+                  }
+                </div>
+              </label>
+              <input type="file" multiple name='profileImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
             </div>
-          );
-        })}
-        <div className={styles.input_box}>
-          <div className={styles.value}>email</div>
-          <input defaultValue={user.email} readOnly/>
+          </div>
+          <div className="medium">
+            <div className={styles.input_box}>
+              <div className={styles.value}>email</div>
+              <p className={styles.email}>{user.email}</p>
+            </div>
+            {Object.keys(formData).map((el, i) => {
+              return (
+                <div key={i} >
+                  <div className={styles.input_box}>
+                    { renderInput(el) }
+                  </div>
+                  <div className={styles.error_box}>
+                    {errorMessage[el]}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div className={styles.btnWrap}>
-          <Button className={styles.edit} variant="primary" type="submit" onClick={handleSubmit}>수정</Button>
-          <Button className={styles.cancel} variant="secondary" type="button" onClick={() => {navigate(`/mypage/buyList`);}}>취소</Button>
-        </div>
+          <div className={styles.btnWrap}>
+            <Button className={styles.edit} variant="primary" type="submit" onClick={handleSubmit}>수정</Button>
+            <Button className={styles.cancel} variant="outline-secondary" type="button" onClick={() => {navigate(`/mypage/buyList`);}}>취소</Button>
+          </div>
       </form>
     </div>
   );
