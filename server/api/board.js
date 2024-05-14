@@ -55,10 +55,8 @@ router.get('/board/:id', async (req, res) => {
   try {
     // db connection pool을 가져오고, query문 수행
     let result = await pool.query(sql, [id]);
-
-    // console.log("특정 사용자글 조회: ", result)
-
     res.send(result);
+
   } catch (error) {
     console.error(error);
     res.send('error');
@@ -92,7 +90,7 @@ router.post('/delete/:id', isLoggedIn, async (req, res) => {
 
       res.status(200).json({ message: "Board, related images and liked deleted successfully", deletedId: id });
   } catch (error) {
-      console.error("Error occurred during deletion:", error);
+      console.error(error);
 
       res.status(500).json({ error: "An error occurred while processing the request" });
   }
@@ -114,6 +112,7 @@ router.post('/edit/:id', isLoggedIn, async(req, res) => {
     // console.log("게시글 수정 결과: ", result)
   
     res.send(result);
+
   } catch (error) {
     console.error(error);
     res.send('error');
@@ -132,8 +131,8 @@ router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
 
   try {
     let result = await pool.query(sql, [id, req.user.id, reply]); 
-
     res.send(result);
+
   } catch (error) {
     console.error(error);
     res.send('error');
@@ -171,8 +170,10 @@ router.post('/replyDelete/:id', async(req, res)=>{
     let sql_result = await pool.query(sql, [id]);
 
     res.send(sql_result);
+
   } catch(error){
     console.error(error);
+    res.send('error');
   }
 })
 
@@ -209,6 +210,58 @@ router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
     res.send('error');
   }
 })
+
+// 좋아요 등록 - 🤍 unliked 상태일 때, 하트 누를 경우 -> 좋아요 등록
+router.post('/hitLike/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = 'INSERT INTO board_liked (user_id, board_id) VALUES (?, ?)';
+
+  try {
+    let result = await pool.query(sql, [req.user.id, id]);
+    res.send(result);
+
+  } catch (error){
+    console.error(error);
+    res.send('error')
+  }
+})
+
+
+// 좋아요 삭제(취소) - 💛 liked 상태일 때, 하트 누를 경우 -> 좋아요 삭제
+router.post('/unLike/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = 'DELETE FROM board_liked WHERE user_id = ? AND board_id = ?';
+
+  try{
+    let result = await pool.query(sql, [req.user.id, id]);
+    res.send(result);
+
+  } catch(error){
+    console.error(error);
+    res.send('error');
+  }
+})
+
+
+// 좋아요 조회 - liked 🤍 / unliked 💛 어떤 상태인지 조회한 다음 등록/삭제 가능
+router.get('/likeState/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = 'SELECT user_id, board_id FROM board_liked WHERE user_id = ?';
+
+  try{
+    let result = await pool.query(sql, [req.user.id]);
+    res.send(result);
+
+  } catch(error){
+    console.error(error);
+    res.send('error');
+  }
+})
+
+
 
 
 // 사진 업로드 위한 패키지 require

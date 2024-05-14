@@ -32,11 +32,12 @@ function Pagination({ total, limit, page, setPage }) {
 
   return (
     <Nav role="navigation" className={`${styles.pageNav} d-flex justify-content-center`}>
-      { page == 1 
-        ? null : 
-        <Button className={styles.prevBtn} onClick={() => handlePrevBtn()}>
-          <ChevronLeft/>
-        </Button>   
+      { 
+        page == 1 
+          ? null : 
+          <Button className={styles.prevBtn} onClick={() => handlePrevBtn()}>
+            <ChevronLeft/>
+          </Button>   
       }
       {
         Array(numPages)
@@ -52,11 +53,12 @@ function Pagination({ total, limit, page, setPage }) {
             </Button>
           ))
       }
-      { page == numPages 
-        ? null :
-        <Button className={styles.nextBtn} onClick={() => handleNextBtn()} disabled={page === numPages}>
-          <ChevronRight/>
-        </Button>
+      { 
+        page == numPages 
+          ? null :
+          <Button className={styles.nextBtn} onClick={() => handleNextBtn()} disabled={page === numPages}>
+            <ChevronRight/>
+          </Button>
       }
     </Nav>
   );
