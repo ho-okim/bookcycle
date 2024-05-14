@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../../styles/common.css";
 import style from "../../styles/productList.module.css";
-import ProductDetail from "./ProductDetail.js";
 import List from "../../components/product/List.js";
 import ProductCategory from "../../components/product/ProductCategory.js";
+import ProductSorting from "../../components/user/UserProductSorting.js";
 
 
 function ProductList() {
@@ -31,25 +31,7 @@ function ProductList() {
     return (
       <Container>
         <div className={`${style.inner}`}>
-          <div className={`${style.buttonList}`}>
-            <span>1 2 3 4 5 &gt; </span>
-            <div className={`${style.productcondition}`}>
-              {<select id="sort" className=" outline-none" onChange={onSelected}>
-                  <option value="condition">상품상태</option>
-                  <option value="conditiontop">상</option>
-                  <option value="conditionmid">중</option>
-                  <option value="conditionbo">하</option>
-                </select>
-              }
-            </div>
-            <div className={`${style.order}`}>
-              {<select id="sort" className=" outline-none" onChange={onSelected}>
-                  <option value="createdAt">최신순</option>
-                  <option value="likeOrder">좋아요 순</option>
-                </select>
-              }
-            </div>
-          </div> 
+          <ProductSorting/>
 
           <div className={`${style.productLists}`}>
           <ProductCategory/>

@@ -12,7 +12,7 @@ function List(props){
  * async function getProduct(){
     const data = await productList()
     return data;
-  }
+  } 
  * 
  * 
 */
@@ -35,24 +35,24 @@ let [product, productL] = useState([
 const [productList, setProductLIst] = useState([]);
 
 useEffect(()=>{
-  let product
-  const test = async () => {
-    product = await getProduct()
-    productL(product),{
-      product_name: rowData.product_name,
-      wirter: rowData.writer,
-      publisher: rowData.publisher,
-      public_date: rowData.public_date,
-      price: rowData.price
-    }
-  }
-  test()
+  // let product
+  // const test = async () => {
+  //   product = await getProduct()
+  //   productL(product),{
+  //     product_name: rowData.product_name,
+  //     wirter: rowData.writer,
+  //     publisher: rowData.publisher,
+  //     public_date: rowData.public_date,
+  //     price: rowData.price
+  //   }
+  // }
+  // test()
 }, [])
 
 
   return (
             <div className={`${style.productDetailList}`}>
-            <Link to={"/productDetail/:id"} style={{ textDecoration: "none", color: "black" }}>
+            {/* <Link to={"/productDetail/:id"} style={{ textDecoration: "none", color: "black" }}>
               <div className={`${style.book}`}>
                 <div clasName={`${style.bookpicbox}`}>
                   <img className="book-pic-box" src="" alt="사진" />
@@ -64,7 +64,7 @@ useEffect(()=>{
                 </div>
                 <div clasName={`${style.booknicname}`}>닉네임</div>
               </div>
-            </Link>
+            </Link> */}
             </div>
   );
 };

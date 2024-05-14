@@ -37,7 +37,6 @@ import VerifyError from './components/verify/VerifyError.js';
 import VerifyExpired from './components/verify/VerifyExpired.js';
 import VerifyNotFound from './components/verify/VerifyNotFound.js';
 import Error from './pages/Error.js';
-import UserReview from './components/user/UserReview.js';
 import UserReviewList from './components/user/UserReviewList.js';
 
 function App() {
@@ -77,10 +76,11 @@ function App() {
           </Route>
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
-            <Route path="review" element={<UserReviewList/>}>
-              <Route path="*" element={<UserReview/>}/>
+            <Route path="review">
+              <Route path="*" element={<UserReviewList/>}/>
             </Route>
-            <Route path="reviewWrite" element={<ReviewWrite/>}/>
+            <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
+            <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
             <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
           <Route path="/chat">
@@ -88,7 +88,6 @@ function App() {
             <Route path=":id" element={<Chat/>}/>
           </Route>
           <Route path="/productList" element={<ProductList/>}/>
-          <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
           <Route path="/error">
             <Route path=":errorCode" element={<Error/>}/>

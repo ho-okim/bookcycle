@@ -24,7 +24,7 @@ function User() {
     }
 
     // 하위 url인지 확인
-    let subUrl = currentUrl.includes("product") || currentUrl.includes("review");
+    let subUrl = currentUrl.includes("product") || currentUrl.includes("review") ||  currentUrl.includes("sellerReviewWrite") ||  currentUrl.includes("buyerReviewWrite") ||  currentUrl.includes("reviewEdit");
 
     let boxStyle = (subUrl || !user) ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
 

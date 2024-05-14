@@ -4,7 +4,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
 import { useHref, useNavigate } from 'react-router-dom';
 
-function ReviewSorting({ sortType, typeAscend, order, setOrder }) {
+function UserReviewSorting({ sortType, typeAscend, order, setOrder }) {
     
     const url = useHref();
 
@@ -31,4 +31,4 @@ function ReviewSorting({ sortType, typeAscend, order, setOrder }) {
     )
 }
 
-export default ReviewSorting;
+export default UserReviewSorting;
