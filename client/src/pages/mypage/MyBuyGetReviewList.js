@@ -1,20 +1,20 @@
 import Container from "react-bootstrap/Container";
 import LeftNav from "../../components/mypage/LeftNav";
-import BuyList from "../../components/mypage/BuyList";
+import BuyGetReviewList from "../../components/mypage/BuyGetReviewList";
+
 import styles from "../../styles/mypage.module.css";
 
-function MyBuyList() {
-
+function MyBuyGiveReview() {
   return (
     <>
       <Container>
         <div className={styles.inner}>
           <LeftNav />
-          <BuyList />
+          <BuyGetReviewList />
         </div>
       </Container>
     </>
   );
 }
 
-export default MyBuyList;
+export default MyBuyGiveReview;

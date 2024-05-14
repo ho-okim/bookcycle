@@ -1,5 +1,6 @@
 import axios from "../lib/axios.js";
 
+// 구매내역
 export async function buyList() {
   try {
     const res = await axios.get('/mypage/buyList');
@@ -20,10 +21,10 @@ export async function buyList() {
   }
 }
 
-export async function buyReviewList() {
+// 구매 후 남긴후기
+export async function buyGiveReviewList() {
   try {
-    // 구매후기
-    const res = await axios.get('/mypage/buyReviewList');
+    const res = await axios.get('/mypage/buyGiveReviewList');
     if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
     }
@@ -40,12 +41,10 @@ export async function buyReviewList() {
   }
 }
 
-
-// 판매후기
-export async function sellReviewList() {
+// 구매 후 받은후기
+export async function buyGetReviewList() {
   try {
-    const res = await axios.get('/mypage/sellReviewList');
-
+    const res = await axios.get('/mypage/buyGetReviewList');
     if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
     }
@@ -62,6 +61,7 @@ export async function sellReviewList() {
   }
 }
 
+// 찜한책
 export async function heartList() {
   try {
     const res = await axios.get('/mypage/heartList');
@@ -93,6 +93,47 @@ export async function sellList() {
   return body;
 }
 
+// 판매 후 남긴 후기
+export async function sellGiveReviewList() {
+  try {
+    const res = await axios.get('/mypage/sellGiveReviewList');
+
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
+  }
+}
+
+// 판매 후 받은 후기
+export async function sellGetReviewList() {
+  try {
+    const res = await axios.get('/mypage/sellGetReviewList');
+
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
+  }
+}
 
 // 회원정보관리 - 비밀번호 확인
 export async function confirmPassword(password) {
@@ -105,7 +146,7 @@ export async function confirmPassword(password) {
   return body;
 }
 
-
+// 회원정보관리 - 데이터 조회
 export async function mypage() {
   try {
     const res = await axios.get('/mypage/edit');
@@ -132,6 +173,7 @@ export async function mypage() {
 export async function mypageEdit(formData) {
   try {
     const res = await axios.put('/mypage/edit', {formData});
+    console.log("클라이언트 :", formData)
   
     if (res.statusText !== "OK") {
         throw new Error("mypage 로딩 실패");
@@ -149,12 +191,30 @@ export async function mypageEdit(formData) {
   }
 }
 
-
-
-// 리뷰작성 - tag목록 가져오기
-export async function reviewWrite() {
+// 내가 구매자일 때 리뷰작성 - tag목록 가져오기
+export async function sellerReviewWrite() {
   try {
-    const res = await axios.get('/user/reviewWrite');
+    const res = await axios.get('/user/sellerReviewWrite');
+
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
+  }
+}
+// 내가 판매자일 때 리뷰작성 - tag목록 가져오기
+export async function buyerReviewWrite() {
+  try {
+    const res = await axios.get('/user/buyerReviewWrite');
 
     if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");

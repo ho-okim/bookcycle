@@ -4,9 +4,18 @@ ul, ol, li { list-style: none; }
 .inner { display: flex; justify-content: space-between;}
 
 .leftNav, .content { border: 1px solid #bbb; border-radius: 6px; }
-.leftNav { padding: 10px 20px; width: 15%; height: 300px; white-space: nowrap; overflow: hidden; }
+.leftNav { padding: 10px 20px; width: 15%; height: 350px; white-space: nowrap; overflow: hidden; }
 .content { padding: 20px 30px; width: 83%; }
 .navProfile { display: flex; border-bottom: 1px solid black; }
+
+/* PAGINATION */
+.pagination { display: flex; justify-content: center; }
+.pageBtnWrap { display: flex; align-items: center; }
+.pageBtn { font-size: small; margin: 0 5px; background-color: transparent; border: 0; }
+.pageBtn:hover, .pageBtn:active { color: #427D9D; }
+.pageNumWrap { margin: 0 10px; }
+.pageNum { margin: 0 10px; background-color: transparent; border: 0; }
+.pageNum:hover { text-decoration: underline; }
 
 
 /* TRADE LIST */

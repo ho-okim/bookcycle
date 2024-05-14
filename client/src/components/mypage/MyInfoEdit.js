@@ -10,7 +10,6 @@ import REGEX from "../../lib/regex.js";
 function MyInfoEdit({ password }) {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { id } = useParams();
 
   const [formData, setFormData] = useState({
     username: user.username,
@@ -93,21 +92,20 @@ function MyInfoEdit({ password }) {
       }));
     }
   }
-  console.log(formData)
+  console.log("formData :", formData)
 
   // 확인 버튼 누를 시 수정
   async function handleSubmit() {
 
     let editPass = Object.entries(formState).filter(([key, value]) => !value).map(([key]) => key);
-    console.log(formState)
 
     if (editPass.length > 0) {
       console.log("다음 항목에서 통과하지 못했습니다:", editPass);
       return;
     }
 
-    const res = await mypageEdit(id, formData);
-    navigate(`/mypage/${id}/buyList`);
+    const res = await mypageEdit(formData);
+    navigate(`/mypage/buyList`);
 
     if (res) {
       alert("수정되었습니다");
@@ -167,7 +165,7 @@ function MyInfoEdit({ password }) {
         </div>
         <div className={styles.btnWrap}>
           <Button className={styles.edit} variant="primary" type="submit" onClick={handleSubmit}>수정</Button>
-          <Button className={styles.cancel} variant="secondary" type="button" onClick={() => {navigate(`/mypage/${id}/buyList`);}}>취소</Button>
+          <Button className={styles.cancel} variant="secondary" type="button" onClick={() => {navigate(`/mypage/buyList`);}}>취소</Button>
         </div>
       </form>
     </div>

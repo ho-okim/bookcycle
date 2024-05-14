@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { reviewWrite, reviewWritePost } from '../../api/mypage';
+import { buyerReviewWrite, reviewWritePost } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
 
-function ReviewWrite() {
+function BuyerReviewWrite() {
 
   const { id } = useParams();
 
@@ -23,7 +23,7 @@ function ReviewWrite() {
   useEffect(() => {
     async function getReviews() {
       try {
-        const data = await reviewWrite(id);
+        const data = await buyerReviewWrite(id);
         setReviewTags(data); // 태그 배열만 저장
       } catch (error) {
         console.error('리뷰 데이터를 가져오는 중 에러 발생: ', error);
@@ -110,7 +110,7 @@ function ReviewWrite() {
             <textarea value={reviewContent} onChange={handleReviewContent}></textarea>
           </div>
           <div className={styles.btnWrap}>
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/${id}/buyList`)}}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()}/>
           </div>
         </div>
@@ -119,4 +119,4 @@ function ReviewWrite() {
   );
 }
 
-export default ReviewWrite;
+export default BuyerReviewWrite;

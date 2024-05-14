@@ -8,14 +8,10 @@ function MyReport() {
     return(
         <>
             <Container>
-            <div className={styles.inner}>
-                <LeftNav />
-                <div className={styles.content}>
-                <p> &gt; 전체 신고 내역</p>
-                <ReportList/>
-                <span>1 2 3 4 5 &gt;</span>
+                <div className={styles.inner}>
+                    <LeftNav />
+                    <ReportList/>
                 </div>
-            </div>
             </Container>
         </>
     )

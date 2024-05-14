@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { heartList } from "../../api/mypage";
 import dateProcessing from '../../lib/dateProcessing.js';
+import Pagination from './Pagination.js';
 
 import { PersonFill } from "react-bootstrap-icons";
 import styles from "../../styles/mypage.module.css";
@@ -10,6 +11,11 @@ function HeartList() {
 
   const [hearts, setHearts] = useState([]);
   const [sortOption, setSortOption] = useState("최근담은순")
+  
+  let total = hearts.length; // 전체 게시물 수
+  let limit = 10; // 페이지 당 게시물 수
+  let [page, setPage] = useState(1); // 현재 페이지 번호
+  let offset = (page - 1) * limit; // 페이지당 첫 게시물 위치
 
   useEffect(() => {
     async function getHeart(){
@@ -58,7 +64,7 @@ function HeartList() {
     <>
       <div className={styles.content}>
         <div className={styles.heartTop}>
-          <span>1 2 3 4 5 &gt;</span>
+        <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
           <select value={sortOption} onChange={handleChange}>
             <option>최근담은순</option>
             <option>상품명순</option>
@@ -71,23 +77,26 @@ function HeartList() {
           {hearts.length === 0 ? (
             <div style={{textAlign:"center", marginTop:'auto'}}>아직 찜한책이 없습니다! 사이트를 둘러보세요😉</div>
           ) : (
-            getSortedHearts().map((heart, index) => (
-              <div key={index} className={styles.heartWrap}>
-                <img className={styles.heartImg} src="" />
-                <Link to={`/productDetail`} className={styles.heartInfo}>
-                  <p className={styles.heartTitle}>{heart.product_name}</p>
-                  <p className={styles.heartContent}>
-                    <span>저자 {heart.writer}</span>
-                    <span>출판사 {heart.publisher}</span>
-                    <span>출간일 {dateProcessing(heart.publish_date)}</span>
-                  </p>
-                  <p className={styles.heartPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
-                </Link>
-                <Link to={`/user/${heart.seller_id}`} className={styles.heartSeller}>
-                  <PersonFill className={styles.person} />
-                  <p>{heart.nickname}</p>
-                </Link>
-              </div>
+            getSortedHearts().slice(offset, offset + limit).map((heart, index) => (
+              // soldDate가 null인 경우에만 하트 리스트에 표시
+              heart.soldDate === null && (
+                <div key={index} className={styles.heartWrap}>
+                  <img className={styles.heartImg} src="" />
+                  <Link to={`/productDetail`} className={styles.heartInfo}>
+                    <p className={styles.heartTitle}>{heart.product_name}</p>
+                    <p className={styles.heartContent}>
+                      <span>저자 {heart.writer}</span>
+                      <span>출판사 {heart.publisher}</span>
+                      <span>출간일 {dateProcessing(heart.publish_date)}</span>
+                    </p>
+                    <p className={styles.heartPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
+                  </Link>
+                  <Link to={`/user/${heart.seller_id}`} className={styles.heartSeller}>
+                    <PersonFill className={styles.person} />
+                    <p>{heart.nickname}</p>
+                  </Link>
+                </div>
+              )
             ))
           )}
         </div>

@@ -10,11 +10,7 @@ function MySellList() {
       <Container>
         <div className={styles.inner}>
           <LeftNav />
-          <div className={styles.content}>
-            <p> &gt; 전체 판매 내역</p>
-            <SellList />
-            <span>1 2 3 4 5 &gt;</span>
-          </div>
+          <SellList />
         </div>
       </Container>
     </>
