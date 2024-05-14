@@ -134,7 +134,6 @@ export async function replyWrite(id, reply){
             throw error;
         }
     }
-
 }
 
 
@@ -183,4 +182,51 @@ export async function likeCount(id){
 }
 
 
+// 좋아요 등록 - 🤍 unliked 상태일 때, 하트 누를 경우 -> 좋아요 등록
+export async function hitLike(id){
 
+    try {
+        const res = await axios.post(`/hitLike/${id}`)
+    
+        if (res.statusText != "OK") {
+            throw new Error("hitLike fails");
+        } 
+        const body = res.data;
+        body.message = 'success'
+        
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            throw new Error("login needed");
+        } else {
+            throw error;
+        }
+    }
+}
+
+
+// 좋아요 삭제(취소) - 💛 liked 상태일 때, 하트 누를 경우 -> 좋아요 삭제
+export async function unLike(id){
+    const res = await axios.post(`/unLike/${id}`);
+
+    if (res.statusText != "OK") {
+        throw new Error("unlike fails");
+    } 
+    const body = res.data;
+    body.message = 'success'
+
+    return body;
+}
+
+
+// 좋아요 조회 - liked 🤍 / unliked 💛 어떤 상태인지 조회
+export async function likeState(id){
+    const res = await axios.get(`/likeState/${id}`)
+
+    if (res.statusText != "OK") {
+        throw new Error("getLikeState fails");
+    } 
+    const body = res.data;
+
+    return body;
+}

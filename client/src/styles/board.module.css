@@ -51,9 +51,11 @@
   margin: 0 0 20px;
   border-bottom: 1px solid #e8e8e8
 }
+.detailMain .detailInfo .userid {color: #4D91B6;}
 .detailMain .detailInfo .userid:after{
   content:'|';
   margin: 5px;
+  color: #6A6A6A;
 }
 .detailMain .detailInfo .spamBtn{cursor: pointer; color: rgb(220, 53, 69);}
 .detailMain .detailContentWrap {

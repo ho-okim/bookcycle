@@ -108,15 +108,14 @@ function BoardDetail(){
 							</div>
 							<div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                 <div className='info'>
-                  <span className={styles.userid}>{content.nickname}</span>
+                  <span className={`${styles.userid} medium`}>{content.nickname}</span>
                   <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                 </div>
                 <div className={`${styles.spamBtn} medium`} onClick={onSpam}>신고하기</div>
 							</div>
 							<div className={styles.detailContentWrap}>
                 <div className={styles.detailImage}>
-                  <img src='../../img/emma.jpg'></img>
-                  <img src='../../img/emma.jpg'></img>
+                  <img src='../../img/quantum.jpeg'></img>
                 </div>
                 <div>{content.content}</div>
               </div>

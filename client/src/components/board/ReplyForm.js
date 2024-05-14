@@ -4,18 +4,22 @@ import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import {ChatLeftQuote} from 'react-bootstrap-icons';
 import { Heart } from 'react-bootstrap-icons';
-import { replyWrite, replyList, replyDelete, likeCount } from '../../api/board';
+import { HeartFill } from 'react-bootstrap-icons';
+import { BalloonHeart } from 'react-bootstrap-icons';
+import { BalloonHeartFill } from 'react-bootstrap-icons';
+import { replyWrite, replyList, replyDelete, likeCount, hitLike, unLike, likeState } from '../../api/board';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext';
 import { Link } from 'react-router-dom'
 
 
-// 댓글 작성 폼
+// 댓글 작성 폼 ---------------------------------------------
 function ReplyForm(props){
   // boardDetail이 내려준 게시글 id 
   // -> 댓글 삭제시 해당 게시글로 navigate 하기 위해, 댓글 목록(replyList)으로 내려준다
   const { id } = props; 
   const { user } = useAuth(); 
+
 
   const navigate = useNavigate();
 
@@ -68,18 +72,12 @@ function ReplyForm(props){
 
 
 
-// 댓글 목록
+// 댓글 목록 및 좋아요---------------------------------------------
 function ReplyList(props){
   const { user } = useAuth();
   const {boardId} = props;
 
   const [errorMessage, setErrorMessage] = useState('');
-
-  const [isLike, setIsLike] = useState('')
-  // setIsLike 함수 이용해 아래 조건 모두 충족하면 liked / 하나라도 아니면 unliked로 update
-  // board.id = board_liked.board_id
-  // user.id = board_liked.user_id
-
 
   const navigate = useNavigate();
 
@@ -96,29 +94,80 @@ function ReplyList(props){
     return data;
   }
 
-  // api에서 받아온 likeCount useState 삽입
-  let [likeCounts, setLikeCounts] = useState(0);
-  // api에서 받아온 reply useState 삽입
-  let [replies, setReplies] = useState([]);
+  // 좋아요 상태 조회
+  async function getLikeState(){
+    const data = await likeState(boardId);
+    return data;
+  }
 
-  // 화면 최초로 rendering 될 때만 reply/likeCount 요청(+이후 좋아요상태 여부도 추가)
+  // api에서 받아온 reply/likeCount/likeState - useState 삽입
+  let [replies, setReplies] = useState([]);
+  let [likeCounts, setLikeCounts] = useState(0);
+  let [likeStates, setLikeStates] = useState([])
+
+
+  // 화면 최초로 rendering 될 때만 reply/likeCount/likeState 요청
   useEffect(()=>{
     let reply;
     let likeCount;
+    let likeState;
+
     const test = async () => {
       reply = await getReply();
       likeCount = await getLikeCount();
+      likeState = await getLikeState();
 
       setReplies(reply)
       setLikeCounts(likeCount)
+      setLikeStates(likeState)
     }
     test();
   }, [])
 
-  console.log("좋아요 개수: ", likeCounts.likehit)
+  console.log("좋아요 개수: ", likeCounts)
+  console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates)
+  const like = likeStates.find(el => el.board_id === Number(boardId));
+  console.log("boardId: ", boardId)
+  console.log("find: ", like)
+
+  // setLikeStates(likeState) - 만약 현재 게시글의 boardId와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
+
+
+  // 하트 클릭 시 🤍 -> 💛
+  const changeToLike = async() => {
+
+    if (!user){
+      alert("로그인 후 이용하실 수 있습니다.")
+    } else{
+      hitLike(boardId)
+
+      // 기존 prevlikeStates에 새로운 state 추가
+      setLikeStates(prevLikeStates => [...prevLikeStates, {user_id: user?.id, board_id: Number(boardId)}])
+
+      // 기존 prevLikeCounts에 + 1
+      setLikeCounts(prevLikeCounts => ({...prevLikeCounts, likehit: likeCounts.likehit + 1}))
+    }
+  }
+
+  // 하트 클릭 시 💛 ->  🤍
+  const changeToUnLike = async() => {
+
+    if (!user){
+      alert("로그인 후 이용하실 수 있습니다.")
+    } else {
+      unLike(boardId)
+
+      // 기존에 존재하던 prevlikeStates에 해당 state 제거
+      setLikeStates(prevLikeStates => prevLikeStates.filter(likeState => likeState.board_id !== Number(boardId)));
+  
+      // 기존 prevLikeCounts에 - 1
+      setLikeCounts(prevLikeCounts => ({...prevLikeCounts, likehit: likeCounts.likehit - 1}))
+    }
+  }
+
 
   // 댓글 삭제
-  // id는 reply.id(삭제할 댓글의 id) -> api 함수의 인자로 전달
+  // id = reply.id(삭제할 댓글의 id) 
   async function onDelete(id){
     console.log("삭제한 댓글 id: ", id)
     console.log("게시글 아이디: ", boardId)
@@ -131,33 +180,6 @@ function ReplyList(props){
       setErrorMessage("댓글이 삭제되지 않았습니다.")
     }
   }
-
-
-
-  const handleLike = async()=>{
-
-  }
-
-  // 좋아요 등록
-  // const handleLike = async()=>{
-  //   // unliked 상황에서 좋아요 누르면
-  //   // -> board_id와 user_id 등록
-  //   if (isLike == unliked){
-  //     const res = await likeActive(user?.id, boardId);
-  //     if(res.message == 'success'){
-  //       navigate(0);
-  //     } else {
-  //       setErrorMessage("좋아요 등록 실패");
-  //     }
-  //   } else { // liked 상황에서 좋아요 누르면 -> 열 삭제
-  //     const res = await likeDelete(user?.id, boardId);
-  //     if(res.message == 'success'){
-  //       navigate(0);
-  //     } else {
-  //       setErrorMessage("좋아요 취소 실패");
-  //     }
-  //   }
-  // }
 
 
   // 신고하기 기능
@@ -191,7 +213,11 @@ function ReplyList(props){
             <span className={styles.replyLength}>{replies.length}</span>개
           </div>
           <div className={styles.heartCount}>
-            <Heart size="20" className={styles.heartIcon} onClick={() => handleLike()}/>
+          { 
+            likeStates.find(el => el.board_id === Number(boardId))
+            ? <BalloonHeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>
+            : <BalloonHeart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
+          }
             <span>좋아요 </span>
             <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
           </div>
