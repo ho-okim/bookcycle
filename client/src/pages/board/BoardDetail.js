@@ -1,5 +1,5 @@
 import styles from '../../styles/board.module.css';
-import { boardDetail, boardDelete, replyWrite, boardReply } from '../../api/board.js';
+import { boardDetail, boardDelete, replyWrite, boardReply, filesList } from '../../api/board.js';
 import ReplyForm from '../../components/board/ReplyForm.js'
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
@@ -28,6 +28,8 @@ function BoardDetail(){
 
   // api에서 받아온 특정 사용자의 글 useState에 삽입
   let [content, setContent] = useState([])
+  // 파일의 배열
+  const [files, setFiles] = useState()
 
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
@@ -40,8 +42,19 @@ function BoardDetail(){
     test()
   }, [])
 
-  // console.log("게시글 내용: ", content)
-  // console.log("게시글 작성자 nickname: ", content.nickname)
+  // 사진 파일 받아오기
+  async function getFiles(){
+    const data = await filesList(id)
+    return data;
+  }
+  // 화면 최초로 rendering 될 때만 데이터 GET 요청
+  useEffect(()=>{
+    const test = async () => {
+      let res = await getFiles()
+      setFiles(res)
+    }
+    test()
+  }, [])
 
 
 	// 데이터 삭제
@@ -101,7 +114,7 @@ function BoardDetail(){
 								<h2 className={styles.detailTitle}>{content.title}</h2>
                 {user?.nickname == content.nickname ? (
                   <div className={`${styles.btnWrap}`}>
-                    <Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`)}}>글 수정</Button>
+                    <Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`, {state:{title: content.title, content: content.content, files}})}}>글 수정</Button>
                     <Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
 								  </div>
                 ): null}
@@ -114,9 +127,18 @@ function BoardDetail(){
                 <div className={`${styles.spamBtn} medium`} onClick={onSpam}>신고하기</div>
 							</div>
 							<div className={styles.detailContentWrap}>
-                <div className={styles.detailImage}>
-                  <img src='../../img/emma.jpg'></img>
-                  <img src='../../img/emma.jpg'></img>
+                <div className={`${styles.detailImage} d-flex flex-column align-items-center`}>
+                  {
+                    files ?
+                    files.map((el)=>{
+                      return(
+                        <img key={el.id}
+                        src={process.env.PUBLIC_URL + `/img/board/${el.filename}`}
+                        alt='board image' className={`${styles.boardImg}`}/>
+                      )
+                    })
+                    : null
+                  }
                 </div>
                 <div>{content.content}</div>
               </div>

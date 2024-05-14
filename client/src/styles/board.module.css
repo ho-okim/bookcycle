@@ -60,7 +60,16 @@
   padding: 0 0 170px;
 }
 .detailContentWrap .detailImage {margin-bottom: 15px;}
-.detailContentWrap .detailImage img {margin-bottom: 10px; display: block;}
+.detailContentWrap .detailImage .boardImg {
+  margin-bottom: 10px; display: block;
+  width: 75%; height: auto;
+}
+@media screen and (min-width: 992px){
+  .detailContentWrap .detailImage .boardImg{width: 60%;}
+}
+@media screen and (min-width: 1200px){
+  .detailContentWrap .detailImage .boardImg{width: 40%;}
+}
 .detailMain .btnWrap .updateBtn {margin-right: 5px;}
 
 

@@ -111,7 +111,7 @@ router.post('/edit/:id', isLoggedIn, async(req, res) => {
   try {
     let result = await pool.query(sql, [title, content, id]);
 
-    console.log("게시글 수정 결과: ", result)
+    // console.log("게시글 수정 결과: ", result)
   
     res.send(result);
   } catch (error) {
@@ -194,12 +194,28 @@ router.get('/likeCount/:id', isLoggedIn, async(req, res)=>{
   }
 })
 
+// 게시글 사진 조회
+router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = "SELECT id, boardNo, filename FROM board_image WHERE board_id = ?";
+
+  try {
+    let result = await pool.query(sql, [id]);
+    res.send(result)
+
+  } catch(error) {
+    console.error(error);
+    res.send('error');
+  }
+})
 
 
 // 사진 업로드 위한 패키지 require
 const path = require('path')
 const multer = require('multer')
 const uuid4 = require('uuid4')
+
 // 미들웨어 설정
 const upload = multer({
   storage: multer.diskStorage({
@@ -210,13 +226,13 @@ const upload = multer({
       done(null, filename);
     },
     destination(req, file, done) {
-      done(null, path.join(__dirname, "../../client/public/img"));
+      done(null, path.join(__dirname, "../../client/public/img/board"));
     },
   }),
   limits: { fileSize: 1024 * 1024 },
 });
 
-
+// 파일 업로드
 router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
   const files = req.files
@@ -235,6 +251,44 @@ router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)
   } catch (error) {
     console.log('fileupload POST 과정에서 오류 발생 : ', error)
   }
+})
+
+// 파일 수정
+router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+  let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
+  let sql2 = 'DELETE FROM board_image WHERE board_id = ? AND boardNo = ?'
+  let sql3 = 'DELETE FROM board_image WHERE board_id = ?'
+  let result
+  const files = req.files
+  const {lastIdx, editBoardId, prevFiles} = req.body
+  console.log(editBoardId, prevFiles)
+  console.log(prevFiles[prevFiles.length - 1].id)
+
+  // try {
+  //   if(isNaN(lastIdx)){ // lastIdx가 undefined면 기존 파일이 모두 지워졌다는 뜻
+  //     // 해당 게시글의 사진 전부 지우기
+  //     await pool.query(sql3, [editBoardId])
+  //     // 여기서는 실제 파일들 지우기
+
+  //     files.forEach(async (el, i)=>{
+  //       result = await pool.query(sql, [editBoardId, i, el.filename]); 
+  //     })
+  //   } else { // lastIdx가 숫자면 기존 파일이 남아있다는 뜻
+  //     // 해당 게시글의 사진 지우기
+  //     for(let i = lastIdx + 1; i < 5; i++){
+  //       await pool.query(sql2, [editBoardId, i])
+  //     }
+  //     // 여기서는 실제 파일들 지우기
+
+  //     files.forEach(async (el, i)=>{
+  //       result = await pool.query(sql, [editBoardId, i + lastIdx + 1, el.filename]); 
+  //     })
+  //   }
+  
+  //   res.send(result);
+  // } catch (error) {
+  //   console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
+  // }
 })
 
 module.exports = router;

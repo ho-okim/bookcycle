@@ -1,48 +1,40 @@
 import styles from '../../styles/boardWrite.module.css';
 import { useState, useEffect } from 'react';
 import {boardEdit, boardDetail, boardWrite, fileupload} from '../../api/board.js';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
 import { useParams } from 'react-router-dom';
 
+// 버려진 기존 파일 이름 담을 배열
+var delFiles = []
+
 function BoardEdit() {
   const {id} = useParams();
-  console.log("게시글 id :", id)
 
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
 
-  // 수정 전 default 데이터 가져오기
-  // api > board.js에서 특정 사용자 글 받아오기
-  async function getDefaultData(){
-    const data = await boardDetail(id)
-    return data;
-  }
-
-  // api에서 받아온 특정 사용자의 글 defaultData에 삽입
-  let [defaultData, setDefault] = useState([])
-
-  // 최초 실행할 때 getDefaultContent()에서 기본값(defaultContent) 받아
-  // defaultData에 꽂아준다 -> 이걸로 원래 title, content를 받아오는 것
-  useEffect(()=>{
-    let defaultData
-    const test = async () => {
-      defaultData = await getDefaultData()
-      setDefault(defaultData)
-    }
-    test()
-  }, [])
-
-  console.log("←수정 전 default title: ", defaultData.title)
-  console.log("←수정 전 default content: ", defaultData.content)
-
+  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
+  let location = useLocation()
+  const defaultData = location.state
+  const {files} = defaultData
 
   // title, content 각각 useState로 defaultData.title / defaultData.content로 받고 
   // -> handleTitle / handleContent 콜백 실행해 e.target.value(수정값) 꽂아주기 
   const [title, setTitle] = useState(defaultData.title)
   const [content, setContent] = useState(defaultData.content)
+  // 파일의 실제 정보 담는 useState
+  const [uploadImg, setUploadImg] = useState("")
+  // 이미지 미리보기 URL 담는 useState
+  const [uploadImgUrl, setUploadImgUrl] = useState("");
+
+  // 최초 렌더링 때 이미지 초기값 useState에 담아주기
+  useEffect(()=>{
+    setUploadImg(files)
+    setUploadImgUrl(files)
+  }, [])
 
   function handleTitle(e) {
       setTitle(e.target.value);
@@ -51,14 +43,6 @@ function BoardEdit() {
   function handleContent(e) {
       setContent(e.target.value);
   }
-
-
-
-  // 파일의 실제 정보 담는 useState
-  const [uploadImg, setUploadImg] = useState("")
-
-  // 이미지 미리보기 URL 담는 useState
-  const [uploadImgUrl, setUploadImgUrl] = useState("");
 
   // 이미지 미리보기 함수
   const onchangeImageUpload = (event) => {
@@ -89,10 +73,13 @@ function BoardEdit() {
 
   // X 버튼 클릭 시 이미지 파일 삭제
   const handleDeleteImage = (id) => {
+    if(uploadImg[id].id){
+      // id가 존재한다면 기존의 파일이므로 delFiles에 저장
+      delFiles.push(uploadImg[id].filename)
+    }
     setUploadImgUrl(uploadImgUrl.filter((_, index) => index !== id));
     setUploadImg(uploadImg.filter((_, index) => index !== id));
   };
-
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
@@ -102,9 +89,6 @@ function BoardEdit() {
     const finalTitle = title === undefined ? defaultData.title : title;
 
     const finalContent = content === undefined ? defaultData.content : content;
-  
-    console.log("수정 후 title:", finalTitle);
-    console.log("수정 후 content:", finalContent)
 
   
     // 제목이나 내용 비어있으면 alert
@@ -118,9 +102,25 @@ function BoardEdit() {
     }
 
     const formData = new FormData()
-    for(let i = 0; i < uploadImg.length; i++){
-      formData.append('files', uploadImg[i])
-    }
+    let prevFiles = []
+    let lastIdx
+    uploadImg.forEach((el, i) => {
+      if(!el.id) {
+        formData.append('files', el)
+      } else {
+        console.log(el)
+        prevFiles.push(el)
+        lastIdx = i
+      }
+    })
+    console.log(prevFiles)
+    console.log("기존 파일 마지막 idx: ", lastIdx)
+    formData.delete('lastIdx')
+    formData.append('lastIdx', lastIdx)
+    formData.delete('editBoardId')
+    formData.append('editBoardId', id)
+    formData.delete('prevFiles')
+    formData.append('prevFiles', JSON.stringify(prevFiles))
     
     // 제목, 내용 다 있으면 데이터를 서버에 전송하기 위해
     // boardWrite 함수 호출
@@ -157,7 +157,11 @@ function BoardEdit() {
                   return(
                     <div className='col-6 col-sm-4 col-lg-2' key={id}>
                       <div className={`${styles.uploadedImgBox}`}>
-                        <img className={`${styles.previewImg}`} alt='preview' src={img}/>
+                        { // img.id가 존재한다면 기존의 파일임
+                          img.id ?
+                          <img className={`${styles.previewImg}`} alt='preview' src={process.env.PUBLIC_URL + `/img/board/${img.filename}`}/>
+                          : <img className={`${styles.previewImg}`} alt='preview' src={img}/>
+                        }
                         <button className={`${styles.previewImgDelBtn}`} type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
                       </div>
                     </div>
