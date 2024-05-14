@@ -86,6 +86,7 @@ function BoardWrite() {
     formData.append('boardId', res.insertId)
     const fileRes = await fileupload(formData)
 
+    console.log(res.message, fileRes)
     if(res.message == 'success' && fileRes == 'OK'){
       navigate("/board");
     } else {

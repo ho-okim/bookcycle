@@ -116,7 +116,7 @@ function BoardDetail(){
                   <div className={`${styles.btnWrap}`}>
                     <Button variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/board/edit/${content.id}`, {state:{title: content.title, content: content.content, files}})}}>글 수정</Button>
                     <Button variant="outline-secondary" className={styles.deleteBtn} id={content.id} onClick={onDelete}>글 삭제</Button>
-								  </div>
+                    </div>
                 ): null}
 							</div>
 							<div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>

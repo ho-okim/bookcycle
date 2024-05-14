@@ -29,7 +29,7 @@ router.post('/boardwrite', isLoggedIn, async(req, res) => {
 
   let sql = 'INSERT INTO board (user_id, title, content) VALUES (?, ?, ?)';
 
-  console.log("게시글 내용 추가: ", req.body)
+  // console.log("게시글 내용 추가: ", req.body)
 
   try {
     let result = await pool.query(sql, [
@@ -187,23 +187,7 @@ router.get('/likeCount/:id', isLoggedIn, async(req, res)=>{
   try {
     let result = await pool.query(sql, [id]);
     res.send(result)
-    console.log(result)
-
-  } catch(error) {
-    console.error(error);
-    res.send('error');
-  }
-})
-
-// 게시글 사진 조회
-router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
-  let { id } = req.params;
-
-  let sql = "SELECT id, boardNo, filename FROM board_image WHERE board_id = ?";
-
-  try {
-    let result = await pool.query(sql, [id]);
-    res.send(result)
+    // console.log(result)
 
   } catch(error) {
     console.error(error);
@@ -261,13 +245,37 @@ router.get('/likeState/:id', isLoggedIn, async(req, res)=>{
   }
 })
 
+// 게시글 사진 조회
+router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
 
+  let sql = "SELECT id, boardNo, filename FROM board_image WHERE board_id = ? ORDER BY boardNo";
+
+  try {
+    let result = await pool.query(sql, [id]);
+    res.send(result)
+
+  } catch(error) {
+    console.error(error);
+    res.send('error');
+  }
+})
 
 
 // 사진 업로드 위한 패키지 require
 const path = require('path')
 const multer = require('multer')
 const uuid4 = require('uuid4')
+// 파일 시스템 함수 require
+const fs = require('fs')
+
+// fs.readdir('./client/public/img/board', function(err, filesList) {
+//   if (err) {
+//     console.error('Error reading directory:', err);
+//     return;
+//   }
+//   console.log("list:", filesList);
+// });
 
 // 미들웨어 설정
 const upload = multer({
@@ -309,39 +317,62 @@ router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)
 // 파일 수정
 router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
-  let sql2 = 'DELETE FROM board_image WHERE board_id = ? AND boardNo = ?'
+  let sql2 = 'DELETE FROM board_image WHERE id = ?'
   let sql3 = 'DELETE FROM board_image WHERE board_id = ?'
+  let sql4 = "UPDATE board_image SET boardNo = ? WHERE id = ?";
   let result
   const files = req.files
-  const {lastIdx, editBoardId, prevFiles} = req.body
-  console.log(editBoardId, prevFiles)
-  console.log(prevFiles[prevFiles.length - 1].id)
+  const {editBoardId, prevFiles, delFiles} = req.body
+  // 기존 파일들 데이터 받아옴
+  const prevArray = JSON.parse(prevFiles)
+  const delArray = JSON.parse(delFiles)
+  const lastIdx = prevArray[prevArray.length - 1]?.boardNo
+  // console.log("prevArray ", prevArray)
+  // console.log("delArray: ", delArray)
 
-  // try {
-  //   if(isNaN(lastIdx)){ // lastIdx가 undefined면 기존 파일이 모두 지워졌다는 뜻
-  //     // 해당 게시글의 사진 전부 지우기
-  //     await pool.query(sql3, [editBoardId])
-  //     // 여기서는 실제 파일들 지우기
+  try {
+    if(prevArray.length == 0){ // prevArray.length가 0이면 기존 파일이 모두 지워졌다는 뜻
+      // 해당 게시글의 사진 전부 지우기
+      await pool.query(sql3, [editBoardId])
 
-  //     files.forEach(async (el, i)=>{
-  //       result = await pool.query(sql, [editBoardId, i, el.filename]); 
-  //     })
-  //   } else { // lastIdx가 숫자면 기존 파일이 남아있다는 뜻
-  //     // 해당 게시글의 사진 지우기
-  //     for(let i = lastIdx + 1; i < 5; i++){
-  //       await pool.query(sql2, [editBoardId, i])
-  //     }
-  //     // 여기서는 실제 파일들 지우기
+      // 실제 파일들 지우기
+      delArray.forEach((el)=>{
+        fs.unlink(`./client/public/img/board/${el.filename}`, (err)=>{})
+      })
 
-  //     files.forEach(async (el, i)=>{
-  //       result = await pool.query(sql, [editBoardId, i + lastIdx + 1, el.filename]); 
-  //     })
-  //   }
+
+      // 새로운 파일 DB에 저장
+      files.forEach(async (el, i)=>{
+        result = await pool.query(sql, [editBoardId, i, el.filename]); 
+      })
+    } else { // 기존 파일이 남아있을 때 진입
+      // 해당 게시글의 파일 DB 지우기
+      delArray.forEach(async (el, i)=>{
+        // console.log("삭제하는 사진의 id: ", el.id)
+        const result = await pool.query(sql2, [el.id])
+      })
+      
+      // 기존 파일 boardNo 업데이트
+      prevArray.forEach(async (el, i)=>{
+        // console.log(el.id, "의 boardNo를 ", i, "로 변경")
+        await pool.query(sql4, [i, el.id]);
+      })
+
+      // 실제 파일들 지우기
+      delArray.forEach((el)=>{
+        fs.unlink(`./client/public/img/board/${el.filename}`, (err)=>{})
+      })
+      
+      // 새로운 파일 DB에 저장
+      files.forEach(async (el, i)=>{
+        result = await pool.query(sql, [editBoardId, i + prevArray.length, el.filename]); 
+      })
+    }
   
-  //   res.send(result);
-  // } catch (error) {
-  //   console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
-  // }
+    res.send(result);
+  } catch (error) {
+    console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
+  }
 })
 
 module.exports = router;

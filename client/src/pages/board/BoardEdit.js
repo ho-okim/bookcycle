@@ -1,6 +1,6 @@
 import styles from '../../styles/boardWrite.module.css';
 import { useState, useEffect } from 'react';
-import {boardEdit, boardDetail, boardWrite, fileupload} from '../../api/board.js';
+import {boardEdit, boardDetail, boardWrite, fileupload, fileupdate} from '../../api/board.js';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
@@ -34,6 +34,9 @@ function BoardEdit() {
   useEffect(()=>{
     setUploadImg(files)
     setUploadImgUrl(files)
+    return(()=>{
+      delFiles = []
+    })
   }, [])
 
   function handleTitle(e) {
@@ -75,7 +78,8 @@ function BoardEdit() {
   const handleDeleteImage = (id) => {
     if(uploadImg[id].id){
       // id가 존재한다면 기존의 파일이므로 delFiles에 저장
-      delFiles.push(uploadImg[id].filename)
+      delFiles.push({id: uploadImg[id].id, boardNo: uploadImg[id].boardNo, filename: uploadImg[id].filename})
+      console.log(delFiles)
     }
     setUploadImgUrl(uploadImgUrl.filter((_, index) => index !== id));
     setUploadImg(uploadImg.filter((_, index) => index !== id));
@@ -87,9 +91,7 @@ function BoardEdit() {
     // title과 content의 값이 변경되지 않으면(onChange 이벤트 발생x) default data 그대로 제출 되도록 해야 함
     // onChange 발생하지 않을 때의 값은 undefined -> undefined의 경우 default 값 받고, 아니면 수정값 받으면 됨
     const finalTitle = title === undefined ? defaultData.title : title;
-
     const finalContent = content === undefined ? defaultData.content : content;
-
   
     // 제목이나 내용 비어있으면 alert
     if (!finalTitle || finalTitle === '') {
@@ -109,28 +111,28 @@ function BoardEdit() {
         formData.append('files', el)
       } else {
         console.log(el)
-        prevFiles.push(el)
+        prevFiles.push({id: el.id, boardNo: el.boardNo})
         lastIdx = i
       }
     })
-    console.log(prevFiles)
-    console.log("기존 파일 마지막 idx: ", lastIdx)
-    formData.delete('lastIdx')
-    formData.append('lastIdx', lastIdx)
     formData.delete('editBoardId')
     formData.append('editBoardId', id)
     formData.delete('prevFiles')
     formData.append('prevFiles', JSON.stringify(prevFiles))
+    formData.delete('delFiles')
+    formData.append('delFiles', JSON.stringify(delFiles))
     
     // 제목, 내용 다 있으면 데이터를 서버에 전송하기 위해
     // boardWrite 함수 호출
     const res = await boardEdit(id, finalTitle, finalContent);
 
     formData.append('boardId', res.insertId)
-    const fileRes = await fileupload(formData)
+    const fileRes = await fileupdate(formData)
 
     if(res.message == 'success' && fileRes == 'OK'){
       navigate(`/board/${id}`);
+      // navigate로 이동 시 수정 사항이 제대로 반영되지 않아서 일단 새로고침 넣어봤음 추후 보완 필요
+      window.location.reload()
     } else {
       setErrorMessage("제목이나 내용을 다시 확인해주세요");
     }
