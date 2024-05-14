@@ -31,10 +31,9 @@ let [product, productL] = useState([
   }
 ])
 
-/*
+
 const [productList, setProductLIst] = useState([]);
-*/
-/*
+
 useEffect(()=>{
   let product
   const test = async () => {
@@ -68,7 +67,6 @@ useEffect(()=>{
             </Link>
             </div>
   );
-  */
 };
 
 export default List;
