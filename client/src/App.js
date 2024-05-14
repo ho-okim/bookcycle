@@ -8,10 +8,12 @@ import Footer from './components/Footer.js';
 import Login from './pages/Login.js';
 import Join from './pages/Join.js';
 import MyBuyList from './pages/mypage/MyBuyList.js';
-import MyBuyReview from './pages/mypage/MyBuyReview.js';
+import MyBuyGiveReviewList from './pages/mypage/MyBuyGiveReviewList.js';
+import MyBuyGetReviewList from './pages/mypage/MyBuyGetReviewList.js';
 import MyHeartList from './pages/mypage/MyHeartList.js';
 import MySellList from './pages/mypage/MySellList.js';
-import MySellReview from './pages/mypage/MySellReview.js';
+import MySellGiveReviewList from './pages/mypage/MySellGiveReviewList.js';
+import MySellGetReviewList from './pages/mypage/MySellGetReviewList.js';
 import MypageEdit from './pages/mypage/MypageEdit.js';
 import Main from './pages/Main.js'
 import Board from './pages/board/Board.js';
@@ -24,7 +26,8 @@ import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
-import ReviewWrite from './components/user/ReviewWrite.js';
+import SellerReviewWrite from './components/user/SellerReviewWrite.js';
+import BuyerReviewWrite from './components/user/BuyerReviewWrite.js';
 import ReviewEdit from './components/user/ReviewEdit.js';
 import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
@@ -55,10 +58,12 @@ function App() {
           </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>
-            <Route path="buyReviewList" element={<MyBuyReview/>}/>
+            <Route path="buyGiveReviewList" element={<MyBuyGiveReviewList/>}/>
+            <Route path="buyGetReviewList" element={<MyBuyGetReviewList/>}/>
             <Route path="heartList" element={<MyHeartList/>}/>
             <Route path="sellList" element={<MySellList/>}/>
-            <Route path="sellReviewList" element={<MySellReview/>}/>
+            <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
+            <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
             <Route path="edit" element={<MypageEdit/>}/>
             <Route path="reportList" element={<MyReport/>}/>
           </Route>
@@ -71,7 +76,8 @@ function App() {
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
             <Route path="review" element={<UserReviewList/>}/>
-            <Route path="reviewWrite" element={<ReviewWrite/>}/>
+            <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
+            <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
             <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
           <Route path="/chat">
