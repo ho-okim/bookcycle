@@ -1,7 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/common.css';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
@@ -24,7 +23,6 @@ import User from './pages/User.js';
 import ProductList from './pages/product/ProductList.js';
 import ProductDetail from './pages/product/ProductDetail.js';
 import UserProduct from './components/user/UserProduct.js';
-import UserReviewList from './components/user/UserReviewList.js';
 import Chat from './pages/Chat.js';
 import SellerReviewWrite from './components/user/SellerReviewWrite.js';
 import BuyerReviewWrite from './components/user/BuyerReviewWrite.js';
@@ -33,10 +31,14 @@ import MyReport from './pages/mypage/MyReport.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 import FindPwd from './pages/FindPwd.js';
 import Reset from './pages/Reset.js'; 
-import VerifyError from './pages/verification/VerifyError.js';
-import VerifyConfirmed from './pages/verification/VerifyConfimed.js';
-import VerifyExpired from './pages/verification/VerifyExpired.js';
-import VerifyNotFound from './pages/verification/VerifyNotFound.js';
+import Verify from './pages/Verify.js';
+import VerifyConfirmed from './components/verify/VerifyConfirmed.js';
+import VerifyError from './components/verify/VerifyError.js';
+import VerifyExpired from './components/verify/VerifyExpired.js';
+import VerifyNotFound from './components/verify/VerifyNotFound.js';
+import Error from './pages/Error.js';
+import UserReview from './components/user/UserReview.js';
+import UserReviewList from './components/user/UserReviewList.js';
 
 function App() {
   return (
@@ -50,7 +52,7 @@ function App() {
             <Route path="find" element={<FindPwd/>}/>
             <Route path="reset/:email" element={<Reset/>}/>
           </Route>
-          <Route path='/verify'>
+          <Route path='/verify' element={<Verify/>}>
             <Route path='confirmed' element={<VerifyConfirmed/>}/>
             <Route path='error' element={<VerifyError/>}/>
             <Route path='expired' element={<VerifyExpired/>}/>
@@ -75,9 +77,10 @@ function App() {
           </Route>
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
-            <Route path="review" element={<UserReviewList/>}/>
-            <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
-            <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
+            <Route path="review" element={<UserReviewList/>}>
+              <Route path="*" element={<UserReview/>}/>
+            </Route>
+            <Route path="reviewWrite" element={<ReviewWrite/>}/>
             <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
           <Route path="/chat">
@@ -87,8 +90,8 @@ function App() {
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
-          <Route path="/error" element={<p>에러테스트</p>}>
-
+          <Route path="/error">
+            <Route path=":errorCode" element={<Error/>}/>
           </Route>
         </Routes>
       <Footer/>

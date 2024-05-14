@@ -1,0 +1,25 @@
+.box{
+    padding: 30px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+
+.title_box {
+    margin-bottom: 10px;
+}
+
+.title {
+    text-align: center;
+    color: rgb(220, 53, 69);
+}
+
+.content_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.error_message {
+    line-height: 2;
+}
