@@ -30,6 +30,7 @@ function ProductCategory() {
             newUrl += location.search;
         }
         
+        // setFilter만으로도 잘 작동한다면 제거해도 됨
         navigate(newUrl,  { state : {filter : {category_id : parseInt(id)}} });
     }
 

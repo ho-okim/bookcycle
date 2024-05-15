@@ -13,7 +13,9 @@ function UserReviewSorting({ sortType, typeAscend, order, setOrder }) {
     function handleSort(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
         setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
-        navigate(`${url}?order=${order_id}&ascend=${!typeAscend}`);
+        
+        // setOrder만으로도 잘 작동한다면 제거해도 됨
+        //navigate(url);
     }
     
     return(

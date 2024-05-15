@@ -6,9 +6,7 @@ function DataPagination({
     totalData,
     limit, 
     blockPerPage,
-    handlePagination,
-    filter,
-    order
+    handlePagination
     }) {
     const url = useHref(); // 현재 경로 가져오기
 
@@ -50,10 +48,8 @@ function DataPagination({
         
         let newUrl = '';
 
-        if (url.includes('product')) {
-            newUrl = `${url}?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`;
-        } else if (url.includes('review')) {
-            newUrl = `${url}?order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`;
+        if (url.includes('product') || url.includes('review')) {
+            newUrl = `${url}?page=${pageNumber}`;
         } else {
             newUrl = url;
         }

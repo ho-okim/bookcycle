@@ -22,6 +22,7 @@ function ProductSorting() {
 
     setOrder((order)=>({...order, name : name, ascend : ascend}));
 
+    // setOrder만으로도 잘 작동한다면 제거해도 됨
     navigate(newUrl,  { state : {order : {name : name, ascend : ascend}} });
   }
 
@@ -29,6 +30,7 @@ function ProductSorting() {
     let condition = e.currentTarget.value ?? 'all';
     setFilter((filter)=>({...filter, condition : condition }));
 
+    // setFilter만으로도 잘 작동한다면 제거해도 됨
     navigate(newUrl,  { state : {filter : {condition : condition}} });
   }
 

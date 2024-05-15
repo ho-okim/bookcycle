@@ -1,7 +1,7 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
-import { useHref, useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
@@ -14,6 +14,8 @@ import UserReviewBox from './UserReviewBox.js';
 function UserReview({tradeType}) {
     const url = useHref(); // 현재 url
     const isReviewUrl = url.includes("review"); // 리뷰 목록 페이지 여부
+    const location = useLocation(); // location 객체
+    
     const {targetUserId, setTargetUserId, targetUsername} = useTargetUser(); // 대상 id
     
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
@@ -22,11 +24,11 @@ function UserReview({tradeType}) {
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
     const [order, setOrder] = useState({ // 정렬기준
-        name : searchParams.get("order") ?? 'createdAt', 
-        ascend : searchParams.get("ascend") ?? false 
+        name : location.state?.order?.name ?? 'createdAt', 
+        ascend : location.state?.order?.ascend ?? false 
     }); 
 
-    let limit = 10;
+    let limit = 15;
     let showLimit = 5;
 
     // 더보기버튼 클릭 시 이동
@@ -69,11 +71,11 @@ function UserReview({tradeType}) {
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
         getReviewList();
-    }, [targetUserId, offset, searchParams]);
+    }, [targetUserId, offset, searchParams, order]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
-            navigate(`/user/${targetUserId}/review/${tradeType}?page=1`);
+            navigate(`/user/${targetUserId}/review/${tradeType}`);
         }
     }
 
@@ -170,9 +172,7 @@ function UserReview({tradeType}) {
                             <DataPagination 
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
-                            handlePagination={handlePagination}
-                            order={order}
-                            />
+                            handlePagination={handlePagination}/>
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}
