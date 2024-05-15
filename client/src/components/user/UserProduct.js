@@ -115,23 +115,6 @@ function UserProduct() {
     `${styles.sold} ${styles.box} d-flex justify-content-center`
     : `${styles.sold} ${styles.box} d-flex justify-content-around row-cols-5 flex-wrap`;
 
-    // 로딩 상태일 때 출력
-    if (loading) {
-        return (
-            <Container className={styles.section_sub_box}>
-                <div className='inner'>
-                    <div className={styles.title}>
-                        <h4 className={styles.title_font}>판매목록</h4>
-                    </div>
-                    <div className={databox_css}>
-                        <LoadingSpinner/>
-                    </div>
-                </div>
-            </Container>
-        )
-    } 
-
-    // 일반 출력
     return(
     <UserProductContext.Provider value={productOption}>
         <Container className={styles.section_sub_box}>
@@ -164,6 +147,13 @@ function UserProduct() {
                             : null
                         }
                     </div>
+                    {
+                        (loading) ?
+                        <div className={databox_css}>
+                            <LoadingSpinner/>
+                        </div>
+                        : null
+                    }
                     <div className={databox_css}>
                         {
                             (productList && productList.length > 0) ?

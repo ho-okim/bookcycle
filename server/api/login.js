@@ -2,6 +2,7 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const router = require('express').Router();
 const passport = require("passport");
+const mysql = require('mysql2');
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
@@ -119,7 +120,8 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
   let user_sql = 'SELECT id, verification, blocked FROM users WHERE email = ?';
 // verification -> is_verified
   try { // 사용자 정보 조회 - 접근 차단용
-    const [userRes] = await pool.query(user_sql, [decodedEmail]);
+    const user_query = mysql.format(user_sql, [decodedEmail]);
+    const [userRes] = await pool.query(user_query);
 
     if (!userRes || userRes.verification === 0) { // 없는 이메일, 인증 안된 이메일은 차단
       res.status(403).send('not allowed');
@@ -139,7 +141,8 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
       sendMail(email);
       
        // 인증 정보 저장
-      const result = await pool.query(verify_sql, [ userRes.id, secured_key, date_expired ]);
+      const verify_query = mysql.format(verify_sql, [ userRes.id, secured_key, date_expired ]);
+      const result = await pool.query(verify_query);
 
       res.send(result);
     } catch (error) {
@@ -162,7 +165,8 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
   
   try {
     // 쿼리스트링으로 들어온 securedKey로 테이블에 조회
-    const [result] = await pool.query(sql, [decodedKey]);
+    const query = mysql.format(sql, [decodedKey]);
+    const [result] = await pool.query(query);
     let dateNow = new Date();
 
     if (!result) {
@@ -176,7 +180,8 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
       let verifyRM_sql = 'DELETE FROM verification WHERE secured_key = ?';
       
       try {
-        const verifyRM_result = await pool.query(verifyRM_sql, [decodedKey]);
+        const query = mysql.format(verifyRM_sql, [decodedKey]);
+        const verifyRM_result = await pool.query(query);
 
         if (verifyRM_result.affectedRows === 1) {
           res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
@@ -206,7 +211,8 @@ router.post('/password/reset', isNotLoggedIn, async (req, res) => {
   let sql = 'UPDATE users SET password = ? WHERE email = ?';
 
   try {
-    const result = await pool.query(sql, [newPassword, decodedEmail]);
+    const query = mysql.format(sql, [newPassword, decodedEmail]);
+    const result = await pool.query(query);
 
     if (result.affectedRows == 0) {
       res.status(400).send('error');

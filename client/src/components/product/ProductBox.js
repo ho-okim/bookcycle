@@ -3,6 +3,13 @@ import styles from "../../styles/productList.module.css";
 import {Eye, HeartFill} from 'react-bootstrap-icons';
 
 function ProductBox({product}){
+  
+  let newDate = '';
+  if (product.publish_date) {
+      newDate = new Date(product.publish_date).toLocaleDateString();
+  } else {
+      newDate = '❔';
+  }
 
   return (
     <Link to={`/productDetail/${product.id}`} className={styles.product_link}>
@@ -19,7 +26,7 @@ function ProductBox({product}){
           <p className={styles.book_title}>{product.product_name}</p>
           <p>{product.category_name}</p>
           <p className={styles.book_info}>
-            {product.writer} | {product.publisher} | {new Date(product.publish_date).toLocaleDateString()}
+            {product.writer ?? '❔'} | {product.publisher ?? '❔'} | {newDate}
           </p>
           <p>&#8361; {product.price.toLocaleString()}</p>
         </div>

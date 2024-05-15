@@ -38,6 +38,8 @@ import VerifyExpired from './components/verify/VerifyExpired.js';
 import VerifyNotFound from './components/verify/VerifyNotFound.js';
 import Error from './pages/Error.js';
 import UserReviewList from './components/user/UserReviewList.js';
+import Search from './pages/Search.js';
+import SearchUser from './components/search/SearchUser.js';
 
 function App() {
   return (
@@ -56,6 +58,9 @@ function App() {
             <Route path='error' element={<VerifyError/>}/>
             <Route path='expired' element={<VerifyExpired/>}/>
             <Route path='notfound' element={<VerifyNotFound/>}/>
+          </Route>
+          <Route path='/search' element={<Search/>}>
+            <Route path='user' element={<SearchUser/>}/>
           </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>

@@ -40,9 +40,10 @@ function ProductSearchInput() {
                     <Dropdown.Item id='product_name' eventKey='제목'>제목</Dropdown.Item>
                     <Dropdown.Item id='writer' eventKey='저자'>저자</Dropdown.Item>
                     <Dropdown.Item id='publisher' eventKey='출판사'>출판사</Dropdown.Item>
+                    <Dropdown.Item id='nickname' eventKey='등록인'>등록인</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
-            <Form.Control id='searchKeyword' maxLength={50} onChange={(e)=>{handleKeyword(e)}}/>
+            <Form.Control type="search" id='searchKeyword' maxLength={50} onChange={(e)=>{handleKeyword(e)}} value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/>검색</Button>
         </InputGroup>
     )

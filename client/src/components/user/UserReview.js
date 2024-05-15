@@ -93,29 +93,6 @@ function UserReview({tradeType}) {
     const databox_css = reviewList.length == 0 ?
     `${styles.box} d-flex justify-content-center`
     : `${styles.box}`;
-
-    if (loading) {
-        return (
-            <Container className={styles.section_sub_box}>
-                <div className='inner'>
-                    <div className={styles.title}>
-                        <h4 className={styles.title_font}>
-                            {
-                                tradeType === 'buy' ?
-                                `${targetUsername}님의 상품을 구매했어요`
-                                : tradeType === 'sell' ?
-                                `${targetUsername}님에게 상품을 판매했어요`
-                                :null
-                            }
-                        </h4>
-                    </div>
-                    <div className={`${styles.box} d-flex justify-content-center`}>
-                        <LoadingSpinner/>
-                    </div>
-                </div>
-            </Container>
-        )
-    }
     
     return(
         <Container className={styles.section_sub_box}>
@@ -149,6 +126,13 @@ function UserReview({tradeType}) {
                             >더보기</Button>
                     }
                 </div>
+                {
+                    (loading) ? 
+                    <div className={`${styles.box} d-flex justify-content-center`}>
+                        <LoadingSpinner/>
+                    </div>
+                    : null
+                }
                 <div className={databox_css}>
                     {
                         reviewList.length != 0 ? 

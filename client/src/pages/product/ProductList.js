@@ -38,17 +38,17 @@ function ProductList() {
   const limit = 15;
 
     // 전체 상품 수 조회 - 페이징 처리 위함
-    async function getTotal() { 
-      const res = await getProductAll(filter, searchKeyword);
-      setTotalData(res);
+  async function getTotal() { 
+    const res = await getProductAll(filter, searchKeyword);
+    setTotalData(res);
   }
 
   // 상품 목록 가져오기
   async function getProducts() {
-      let res;
-      res = await getProductList(limit, offset, order, filter, searchKeyword);
-      setProductList(res);
-      setLoading(false);
+    let res;
+    res = await getProductList(limit, offset, order, filter, searchKeyword);
+    setProductList(res);
+    setLoading(false);
   }
 
   useEffect(()=>{
@@ -102,11 +102,13 @@ function ProductList() {
                   :
                   <div className={styles.product_box}>
                   {
+                    (productList && productList.length > 0) ?
                     productList.map((el, i)=>{
                       return(
                         <ProductBox key={i} product={el}/>
                       )
                     })
+                    : <div><p>검색된 상품이 없어요!</p></div>
                   }
                   </div>
                 }

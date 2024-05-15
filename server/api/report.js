@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
 const { isLoggedIn, isAdmin, isIdenticalUser } = require('../lib/auth.js');
 
@@ -11,7 +12,8 @@ router.get('/report/myreport/', isLoggedIn, async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        let result = await pool.query(sql, [id]);
+        const query = mysql.format(sql, [id]);
+        const result = await pool.query(query);
         res.send(result);
     } catch (error) {
         console.error(error);
@@ -34,7 +36,8 @@ router.post('/report', isLoggedIn, async (req, res) => {
 
     try {
         // db에 query문 실행
-        let result = await pool.query(sql, [category, user_id, target_id, content]);
+        const query = mysql.format(sql, [category, user_id, target_id, content]);
+        const result = await pool.query(query);
         res.send(result);
     } catch (error) {
         console.error(error);
@@ -51,7 +54,8 @@ router.get('/report/:id', isAdmin, async (req, res) => {
 
     try {
         // db에 query문 실행
-        let result = await pool.query(sql, [id]);
+        const query = mysql.format(sql, [id]);
+        let result = await pool.query(query);
         res.send(result);
     } catch (error) {
         console.error(error);
