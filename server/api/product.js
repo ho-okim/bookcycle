@@ -4,12 +4,18 @@ const { CHAR_REG } = require('../lib/regex_server.js');
 
 // 상품 전체 수 조회
 router.get('/productList/all', async (req, res) => {
-    const { category_id, condition } = req.query;
+    const { category_id, condition, stype } = req.query;
+    let { search } = req.query;
 
     // query문
     let sql = 'SELECT COUNT(*) AS total FROM product WHERE soldDate IS NULL';
     let variables = [];
 
+    if (search !== 'null') {
+        search = search.toLocaleLowerCase();
+        sql += ` AND LOWER(${stype}) LIKE ?`;
+        variables.push(`%${search}%`);
+    }
     if (parseInt(category_id) !== 0) {
         sql += ' AND category_id = ?';
         variables.push(parseInt(category_id));
@@ -32,27 +38,33 @@ router.get('/productList/all', async (req, res) => {
 
 // 상품 목록 조회
 router.get('/productList/product', async (req, res) => {
-    const { limit, offset, name, ascend, category_id, condition } = req.query;
+    const { limit, offset, name, ascend, category_id, condition, stype } = req.query;
+    let { search } = req.query;
 
     let newName = CHAR_REG.test(name) ? name.trim() : 'createdAt';
+
+    // query문
+    let sql = 'SELECT * FROM product_detail WHERE soldDate IS NULL';
+    let variables = [];
+
+    if (search !== 'null') {
+        search = search.toLocaleLowerCase();
+        sql += ` AND LOWER(${stype}) LIKE ?`;
+        variables.push(`%${search}%`);
+    }
+    if (parseInt(category_id) !== 0) {
+        sql += ' AND category_id = ?';
+        variables.push(parseInt(category_id));
+    }
+    if (condition !== 'all') {
+        sql += ' AND `condition` LIKE ?';
+        variables.push(condition);
+    }
     
+    let order_sql = ` ORDER BY ${newName} ${ascend} LIMIT ? OFFSET ?`;
+    variables.push(parseInt(limit), parseInt(offset));
+
     try {
-        // query문
-        let sql = 'SELECT * FROM product_detail WHERE soldDate IS NULL';
-        let variables = [];
-
-        if (parseInt(category_id) !== 0) {
-            sql += ' AND category_id = ?';
-            variables.push(parseInt(category_id));
-        }
-        if (condition !== 'all') {
-            sql += ' AND `condition` LIKE ?';
-            variables.push(condition);
-        }
-        
-        let order_sql = ` ORDER BY ${newName} ${ascend} LIMIT ? OFFSET ?`;
-        variables.push(parseInt(limit), parseInt(offset));
-
         // 상품 목록 조회
         const body = await pool.query(sql+order_sql, variables);
         res.send(body);

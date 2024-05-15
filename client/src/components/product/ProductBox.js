@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import styles from "../../styles/productList.module.css";
 import {Eye, HeartFill} from 'react-bootstrap-icons';
 
-function List({product}){
+function ProductBox({product}){
 
   return (
     <Link to={`/productDetail/${product.id}`} className={styles.product_link}>
       <div className={styles.product}>
-        <div clasName={styles.bookpicbox}>
+        <div className={styles.bookpicbox}>
         {
             product.filename ? 
             <img className={styles.bookpic} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
@@ -23,7 +23,7 @@ function List({product}){
           </p>
           <p>&#8361; {product.price.toLocaleString()}</p>
         </div>
-        <div clasName={styles.seller_info}>
+        <div className={styles.seller_info}>
           <p>{product.nickname}</p>
           <p><Eye/> {product.view_count}</p>
           <p><HeartFill className={styles.heart}/> {product.liked}</p>
@@ -33,4 +33,4 @@ function List({product}){
   );
 };
 
-export default List;
+export default ProductBox;

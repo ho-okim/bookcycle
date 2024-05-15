@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import styles from "../../styles/productList.module.css";
 import { getCategory } from '../../api/product';
 import { useProductOption } from '../../contexts/ProductOptionContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 function ProductCategory() {
 
+    const location = useLocation(); // location 객체
+    const [searchParams, setSearchParams] = useSearchParams(); // 현재 page
     const {order, filter, setFilter} = useProductOption();
-    const [category, setCategory] = useState([]);
+    const [category, setCategory] = useState([]); // 카테고리
 
     const navigate = useNavigate();
 
@@ -22,7 +24,13 @@ function ProductCategory() {
     function handleFilter(e) { // 필터의 카테고리 id 변경
         const id = e.currentTarget.id;
         setFilter((filter)=>({...filter, category_id : parseInt(id)}));
-        navigate(`/productList?category_id=${filter.category_id}&condition=${filter.condition}&order=${order.name}&ascend=${order.ascend}`);
+
+        let newUrl = '/productList';
+        if (location.search && !searchParams.get("page")) {
+            newUrl += location.search;
+        }
+        
+        navigate(newUrl,  { state : {filter : {category_id : parseInt(id)}} });
     }
 
     return(

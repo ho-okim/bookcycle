@@ -2,7 +2,7 @@ import styles from "../../styles/productList.module.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
-import { useHref, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useProductOption } from "../../contexts/ProductOptionContext";
 
 function ProductPagination({
@@ -11,12 +11,13 @@ function ProductPagination({
     blockPerPage,
     handlePagination
     }) {
-    const url = useHref(); // 현재 경로 가져오기
 
-    const {order, filter} = useProductOption();
+    const location = useLocation(); // location 객체
+    const [searchParams, setSearchParams] = useSearchParams(); // 현재 page
+
+    const {filter, searchKeyword} = useProductOption();
     const [totalPage, setTotalPage] = useState(1); // 전체 페이지 수
     const [offset, setOffset] = useState(1); // pagination 시작점
-    const [searchParams, setSearchParams] = useSearchParams(); // 현재 page
     const [activePage, setActivePage] = useState( // 활성화된 페이지
         !searchParams.get("page") ? 1 : searchParams.get("page")
     ); 
@@ -44,13 +45,18 @@ function ProductPagination({
         }
         getTotalPage();
 
-    }, [totalData, limit, offset, filter]);
+    }, [totalData, limit, offset, filter, searchKeyword]);
 
     function handleClickNumber(pageNumber) { // pagination 숫자 활성화 설정
         handlePagination(pageNumber);
         setActivePage(pageNumber);
         
-        let newUrl = `${url}?category_id=${filter.category_id}&condition=${filter.condition}&order=${order.name}&ascend=${order.ascend}&page=${pageNumber}`;
+        let newUrl = '/productList';
+        if (location.search && !searchParams.get("page")) {
+            newUrl += `${location.search}&page=${pageNumber}`;
+        } else {
+            newUrl += `?page=${pageNumber}`;
+        }
         navigate(newUrl);
     }
 

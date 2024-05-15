@@ -13,17 +13,20 @@ export async function getCategory() {
 }
 
 // 상품 전체 수 조회
-export async function getProductAll(filter) {
+export async function getProductAll(filter, searchKeyword) {
   const { category_id, condition } = filter;
+  const { type, keyword} = searchKeyword;
 
   let newCondition = (condition === '상' || condition === '중' || condition === '하') ? condition : 'all';
+  let newType = (type === 'product_name' || type === 'writer' || type === 'publisher') ? type : 'product_name';
+  let newKeyword = (!keyword) ? null : keyword;
 
-  let url = `/productList/all?category_id=${category_id}&condition=${newCondition}`;
+  let url = `/productList/all?search=${newKeyword}&stype=${newType}&category_id=${category_id}&condition=${newCondition}`;
 
   const res = await axios.get(url);
 
   if (res.statusText !== "OK") {
-      throw new Error("판매목록 조회 실패");
+    throw new Error("판매목록 조회 실패");
   }
   // res.data는 배열
   const body = res.data[0].total;
@@ -31,20 +34,22 @@ export async function getProductAll(filter) {
 }
 
 // 상품 목록 조회
-export async function getProductList(limit, offset, order, filter) {
+export async function getProductList(limit, offset, order, filter, searchKeyword) {
   const { name, ascend } = order;
   const { category_id, condition } = filter;
+  const { type, keyword } = searchKeyword;
 
   let newName = REGEX.CHAR_REG.test(name) ? name.trim() : 'createdAt';
-
   let newCondition = (condition === '상' || condition === '중' || condition === '하') ? condition : 'all';
+  let newType = (type === 'product_name' || type === 'writer' || type === 'publisher') ? type : 'product_name';
+  let newKeyword = (!keyword) ? null : keyword;
 
-  let url = `/productList/product?category_id=${category_id}&condition=${newCondition}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
+  let url = `/productList/product?search=${newKeyword}&stype=${newType}&category_id=${category_id}&condition=${newCondition}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;
 
   const res = await axios.get(url);
 
   if (res.statusText !== "OK") {
-      throw new Error("판매목록 조회 실패");
+    throw new Error("판매목록 조회 실패");
   }
   const body = res.data;
 
