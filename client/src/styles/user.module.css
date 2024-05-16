@@ -1,8 +1,8 @@
-a{
+.user_content a{
     text-decoration: none; color:black;
 }
 
-a:hover{
+.user_content a:hover{
     text-decoration: underline;
 }
 
@@ -35,10 +35,6 @@ a:hover{
 
 .menu li{
     list-style: disc;
-}
-
-.other_user{
-    width: 78%;
 }
 
 .other_user_nologin{

@@ -35,6 +35,12 @@ function Header() {
     navigate(`/search?keyword=${search}`);
   }
 
+  function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
+    if (e.keyCode == 13) {
+      handleSubmit();
+    }
+  }
+
   // 현재 페이지가 chat 이라면 채팅 바로가기 버튼 안 보이도록 설정하기 위함
   const location = useLocation();
 
@@ -90,6 +96,7 @@ function Header() {
                     className="me-2"
                     aria-label="Search"
                     onChange={(e)=>{handleKeyword(e)}}
+                    onKeyUp={(e)=>{handleEnter(e)}}
                     maxLength={50}
                   />
                   <Button 

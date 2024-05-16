@@ -26,14 +26,16 @@ function ProductBox({product}){
           <p className={styles.book_title}>{product.product_name}</p>
           <p>{product.category_name}</p>
           <p className={styles.book_info}>
-            {product.writer ?? '❔'} | {product.publisher ?? '❔'} | {newDate}
+            <span className={styles.writer}>{product.writer ?? '❔'}</span>
+            <span className={styles.publisher}>{product.publisher ?? '❔'}</span>
+            <span>{newDate}</span>
           </p>
           <p>&#8361; {product.price.toLocaleString()}</p>
         </div>
         <div className={styles.seller_info}>
           <p>{product.nickname}</p>
-          <p><Eye/> {product.view_count}</p>
-          <p><HeartFill className={styles.heart}/> {product.liked}</p>
+          <p><Eye/> {product.view_count.toLocaleString()}</p>
+          <p><HeartFill className={styles.heart}/> {product.liked.toLocaleString()}</p>
         </div>
       </div>
     </Link>

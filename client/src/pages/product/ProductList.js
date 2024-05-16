@@ -95,8 +95,8 @@ function ProductList() {
                 </div>
                 {
                   loading ? 
-                  <div className={styles.loading_box}>
-                    <p>데이터를 불러오는 중입니다</p>
+                  <div className='blank_box'>
+                    <p className='blank_message'>데이터를 불러오는 중입니다</p>
                     <LoadingSpinner/>
                   </div>
                   :
@@ -108,7 +108,12 @@ function ProductList() {
                         <ProductBox key={i} product={el}/>
                       )
                     })
-                    : <div><p>검색된 상품이 없어요!</p></div>
+                    :
+                    <div className='blank_box'>
+                      <p className='blank_message'>
+                          검색된 상품이 없어요!
+                      </p>
+                    </div>
                   }
                   </div>
                 }

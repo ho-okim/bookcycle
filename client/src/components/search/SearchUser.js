@@ -10,9 +10,11 @@ function SearchUser() {
 
     return(
         <>
-            <div>
-                <h2>"{keyword}" 사용자 검색 결과</h2>
-                <p>총 {userResult?.length ?? 0}건</p>
+            <div className={styles.title_box}>
+                <div className={styles.result_box}>
+                    <h2>"{keyword}" 사용자 검색 결과</h2>
+                    <p className={styles.result_count}>총 {userResult?.length ?? 0}건</p>
+                </div>
                 <Button onClick={handleMoreView}>더보기</Button>
             </div>
             <div className={styles.user}>
@@ -23,7 +25,12 @@ function SearchUser() {
                     <UserDataBox key={el.id} user={el}/>
                     )
                 })
-                : <div><p>검색된 사용자가 없어요!</p></div>
+                :
+                <div className='blank_box'>
+                    <p className='blank_message'>
+                        검색된 사용자가 없어요!
+                    </p>
+                </div>
             }
             </div>
         </>

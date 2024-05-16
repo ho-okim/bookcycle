@@ -6,6 +6,7 @@ import { email_check, join } from '../api/join.js';
 import { Button, Container } from 'react-bootstrap';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import REGEX from '../lib/regex.js';
+import { Eye, EyeSlash } from 'react-bootstrap-icons';
 
 function Join() {
 
@@ -53,6 +54,8 @@ function Join() {
         nickname : false,
         phone_number : false,
     });
+
+    const [pwdVisible, setPwdVisible] = useState(false); // password 보이기 여부
 
     // 입력 input 필드 제어 및 에러 처리
     function handleInputChange(e) { 
@@ -168,6 +171,18 @@ function Join() {
         }
     }
 
+    function selectInputType(value) { // input type 지정
+        if (value === 'password') {
+            return (pwdVisible) ? 'text' : 'password';
+        } else if (value === 'phone_number') {
+            return 'tel';
+        } else if (value === 'email') {
+            return 'email';
+        } else {
+            return 'text';
+        }
+    }
+
     // input 렌더링
     function renderInput(value) { 
         // value는 formData에 들어있는 객체의 property(Object.keys(formData)로 배열화된 element)
@@ -177,8 +192,7 @@ function Join() {
                 <input name={value} 
                 placeholder={value} 
                 className={styles.input_form}
-                type={value === 'password' ? 'password' 
-                    : value === 'phone_number' ? 'tel' : 'text'} 
+                type={selectInputType(value)} 
                 onChange={handleInputChange}
                 autoFocus={value === 'email'}
                 maxLength={value === 'email' ? 50 : 13}
@@ -191,6 +205,11 @@ function Join() {
         )
     }
 
+    function handlePasswordVisible() { // 비밀번호 보임 처리
+        setPwdVisible((pwdVisible)=>(!pwdVisible));
+    }
+
+
     return (
         <Container className={styles.container_box}>
         <div className="inner text-center">
@@ -199,9 +218,20 @@ function Join() {
                 {
                     Object.keys(formData).map((el, i) => {
                         return (
-                            <div key={i} className={styles.input_box}>
+                            <div key={i} className={`${styles.input_box} ${styles[el]}`}>
                                 {
                                     renderInput(el)
+                                }
+                                {
+                                    (el === 'password') ?
+                                    <span className={styles.password_eye} 
+                                    onClick={handlePasswordVisible}>
+                                    {
+                                        (pwdVisible) ? 
+                                        <EyeSlash/>:<Eye/>
+                                    }
+                                    </span>
+                                    : null
                                 }
                                 <div className={`${styles.error_box} 
                                 ${el === 'email' && formState.email.dupleCheck ? styles.duple_ok : ''}

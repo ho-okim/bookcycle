@@ -12,8 +12,8 @@ function ProductDataBox({product}) {
     }
 
     return(
-        <Link to={`/productDetail/${product.product_id}`}>
-            <div className={styles.product}>
+        <Link to={`/productDetail/${product.product_id}`} className={styles.product_box}>
+            <div className={styles.box_content}>
                 <div className={styles.bookpicbox}>
                 {
                     product.filename ? 
@@ -26,12 +26,17 @@ function ProductDataBox({product}) {
                     <p className={styles.book_title}>{product.product_name}</p>
                     <p>{product.category_name}</p>
                     <p className={styles.book_info}>
-                    {product.writer ?? '❔'} | {product.publisher ?? '❔'} | {newDate}
+                        <span className={styles.writer}>{product.writer ?? '❔'}</span>
+                        <span className={styles.publisher}>{product.publisher ?? '❔'}</span>
+                        <span>{newDate}</span>
                     </p>
                     <p>&#8361; {product.price.toLocaleString()}</p>
                     <div className={styles.seller_info}>
                         <p>{product.nickname}</p>
-                        <p><Eye/> {product.view_count} | <HeartFill className={styles.heart}/> {product.liked}</p>
+                        <p>
+                            <span className={styles.view_count}><Eye/> {product.view_count.toLocaleString()}</span>
+                            <span><HeartFill className={styles.heart}/> {product.liked.toLocaleString()}</span>
+                        </p>
                     </div>
                 </div>
             </div>

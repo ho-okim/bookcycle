@@ -90,6 +90,13 @@
     color:#555555;
 }
 
+/* 상품 */
+.writer:after,
+.publisher:after{
+    content:'|';
+    margin: 5px;
+}
+
 .seller_info{
     width: 10%;
 }

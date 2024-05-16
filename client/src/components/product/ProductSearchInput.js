@@ -24,8 +24,14 @@ function ProductSearchInput() {
         setSearchKeyword((searchKeyword)=>({...searchKeyword, keyword : newKeyword}));
     }
 
-    function handleSubmit() {
+    function handleSubmit() { // 검색
         navigate(`/productList?search=${searchKeyword.keyword}&stype=${searchKeyword.type}`);
+    }
+
+    function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
+        if (e.keyCode == 13) {
+        handleSubmit();
+        }
     }
 
     return(
@@ -43,7 +49,10 @@ function ProductSearchInput() {
                     <Dropdown.Item id='nickname' eventKey='등록인'>등록인</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
-            <Form.Control type="search" id='searchKeyword' maxLength={50} onChange={(e)=>{handleKeyword(e)}} value={searchKeyword.keyword}/>
+            <Form.Control type="search" id='searchKeyword' 
+            maxLength={50} onChange={(e)=>{handleKeyword(e)}} 
+            onKeyUp={(e)=>{handleEnter(e)}}
+            value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/>검색</Button>
         </InputGroup>
     )

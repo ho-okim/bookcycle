@@ -4,7 +4,7 @@ import dateProcessing from "../../lib/dateProcessing";
 
 function BoardDataBox({board}) {
     return(
-        <Link to={`/board/${board.id}`}>
+        <Link to={`/board/${board.id}`} class={styles.board_box}>
             <div className={`col ${styles.list}`}>
                 <p className={styles.listTitle}>{board.title}</p>
                     <div className={`${styles.listInfo} regular`}>

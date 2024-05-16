@@ -26,13 +26,10 @@ function User() {
     // 하위 url인지 확인
     let subUrl = currentUrl.includes("product") || currentUrl.includes("review") ||  currentUrl.includes("sellerReviewWrite") ||  currentUrl.includes("buyerReviewWrite") ||  currentUrl.includes("reviewEdit");
 
-    // 로그인 한 유저 상태에 따른 박스 스타일
-    let otherUserStyle = user ? styles.other_user : styles.other_user_nologin;
-
     return (
         <TargetUserContext.Provider value={{targetUserId, setTargetUserId, targetUsername, setTargetUsername}}>
             <Container className={`d-flex justify-content-center ${styles.undrag}`}>
-                <section className={otherUserStyle}>
+                <section className={styles.user_content}>
                     {
                         (subUrl) ?
                         <>

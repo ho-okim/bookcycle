@@ -10,9 +10,11 @@ function SearchBoard() {
 
     return(
         <>
-            <div>
-                <h2>"{keyword}" 게시글 검색 결과</h2>
-                <p>총 {boardResult?.length ?? 0}건</p>
+            <div className={styles.title_box}>
+                <div className={styles.result_box}>
+                    <h2>"{keyword}" 게시글 검색 결과</h2>
+                    <p className={styles.result_count}>총 {boardResult?.length ?? 0}건</p>
+                </div>
                 <Button onClick={handleMoreView}>더보기</Button>
             </div>
             <div className={styles.board}>
@@ -23,7 +25,12 @@ function SearchBoard() {
                     <BoardDataBox key={el.id} board={el}/>
                     )
                 })
-                : <div><p>검색된 게시글이 없어요!</p></div>
+                : 
+                <div className='blank_box'>
+                    <p className='blank_message'>
+                        검색된 게시글이 없어요!
+                    </p>
+                </div>
             }
             </div>
         </>

@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/esm/Container.js';
 import Button from 'react-bootstrap/Button';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import REGEX from '../lib/regex.js';
+import { Eye, EyeSlash } from 'react-bootstrap-icons';
 
 function Login() {
 
@@ -13,6 +14,7 @@ function Login() {
 
   const [form, setForm] = useState({ email: '' , passoword: '' });
   const [errorMessage, setErrorMessage] = useState('');
+  const [pwdVisible, setPwdVisible] = useState(false); // password 보이기 여부
 
   const navigate = useNavigate();
 
@@ -72,6 +74,10 @@ function Login() {
     }
   }
 
+  function handlePasswordVisible() { // 비밀번호 보임 처리
+    setPwdVisible((pwdVisible)=>(!pwdVisible));
+  }
+
   return (
     <Container>
       <div className='inner text-center'>
@@ -83,11 +89,20 @@ function Login() {
             onChange={(e)=>{handleEmail(e.target.value)}} 
             maxLength={50}
             autoFocus/>
-            <input name="password" placeholder="password / 비밀번호"
-            className={styles.input_form}
-            type="password" 
-            onChange={(e)=>{handlePassword(e.target.value)}}
-            maxLength={13}/>
+            <div className={styles.password_box}>
+              <input name="password" placeholder="password / 비밀번호"
+              className={styles.input_form}
+              type={(pwdVisible) ? "text" : "password"}
+              onChange={(e)=>{handlePassword(e.target.value)}}
+              maxLength={13}/>
+              <span className={styles.password_eye} 
+              onClick={handlePasswordVisible}>
+                {
+                  (pwdVisible) ? 
+                  <EyeSlash/>:<Eye/>
+                }
+              </span>
+            </div>
           </div>
           {
             errorMessage ?

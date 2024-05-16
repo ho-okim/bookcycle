@@ -8,12 +8,17 @@ import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';
 import { getUserInfo } from '../../api/user.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
+import { getReportedOrNot } from '../../api/report.js';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function UserInfo() {
+
+    const { user } = useAuth();
 
     const {targetUserId, setTargetUsername} = useTargetUser(); // 대상 id
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+    const [isReported, setIsReported] = useState(true); // 신고 여부
 
     // 이동용 navigate
     const navigate = useNavigate();
@@ -26,18 +31,30 @@ function UserInfo() {
         if (!modalShow) setModalShow(true);
     };
 
-    useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
-        async function getUser() {
-            const res = await getUserInfo(targetUserId);
-            if (res == 'error') {
-                navigate("/");
-            }
-            setUserInfo(res);
-            setTargetUsername(res.nickname);
+    async function getUser() { // 대상 사용자 정보 가져오기
+        const res = await getUserInfo(targetUserId);
+        if (res == 'error') {
+            navigate("/");
         }
-        getUser();
+        setUserInfo(res);
+        setTargetUsername(res.nickname);
+    }
 
+    async function getReported() { // 신고 여부 확인
+        const res = await getReportedOrNot('user', targetUserId);
+        console.log(res)
+        setIsReported((isReported)=>((res === 0) ? false : true));
+    }
+
+    useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
+        getUser();
     }, [targetUserId]);
+
+    useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
+        if (user) { // 로그인을 했을 때만 호출
+            getReported();
+        }
+    }, [user]);
 
     function profileImageBox() { // 프로필 이미지 처리
         if (userInfo.profile_image) {
@@ -75,10 +92,16 @@ function UserInfo() {
                         <p className={`${styles.user_info} col-4`}>{userInfo.nickname}</p>
                     </div>
                     <div className={styles.report_box}>
-                            <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                            variant='outline-danger' onClick={()=>{handleOpen()}}
-                            ><MegaphoneFill/> 신고</Button>
-                            <Report show={modalShow} handleClose={handleClose} ownerId={targetUserId}/>
+                        {
+                            (!isReported) ?
+                            <>
+                                <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
+                                variant='outline-danger' onClick={()=>{handleOpen()}}
+                                ><MegaphoneFill/> 신고</Button>
+                                <Report show={modalShow} handleClose={handleClose} ownerId={targetUserId}/>
+                            </>
+                            : null
+                        }
                     </div>
                 </div>
             </div>

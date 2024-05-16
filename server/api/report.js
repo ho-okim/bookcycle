@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
-const { isLoggedIn, isAdmin, isIdenticalUser } = require('../lib/auth.js');
+const { isLoggedIn, isAdmin } = require('../lib/auth.js');
 
 // 내가 신고한 내역 조회
 router.get('/report/myreport/', isLoggedIn, async (req, res) => {
@@ -14,6 +14,26 @@ router.get('/report/myreport/', isLoggedIn, async (req, res) => {
         // db connection pool을 가져오고, query문 수행
         const query = mysql.format(sql, [id]);
         const result = await pool.query(query);
+        res.send(result);
+    } catch (error) {
+        console.error(error);
+        res.send('error');
+    }
+});
+
+// 신고 했는지 여부 확인
+router.get('/report/reported/', isLoggedIn, async (req, res) => {
+    const id = req.user.id;
+    const { category, target_id } = req.query;
+
+    // query문 설정
+    let sql = 'SELECT COUNT(*) AS size FROM report WHERE user_id = ? AND category = ? AND target_id = ?';
+
+    try {
+        // db connection pool을 가져오고, query문 수행
+        const query = mysql.format(sql, [id, category, parseInt(target_id)]);
+        const result = await pool.query(query);
+
         res.send(result);
     } catch (error) {
         console.error(error);

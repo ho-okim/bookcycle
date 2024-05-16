@@ -15,8 +15,8 @@ function UserDataBox({user}) {
 
 
     return(
-        <Link to={`/user/${user.id}`}>
-            <div className={styles.user_box}>
+        <Link to={`/user/${user.id}`} className={styles.user_box}>
+            <div className={styles.user_content}>
                 <div className={styles.image_box}>
                     {
                         profileImageBox()
