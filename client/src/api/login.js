@@ -12,7 +12,7 @@ export async function login(email, password) {
     const res = await axios.post('/login', { email, password });
     
     if (res.statusText !== "OK") {
-        throw new Error("로그인 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
@@ -24,7 +24,7 @@ export async function getLoginUser() {
         const res = await axios.get('/getLoginUser');
 
         if (res.statusText !== "OK") {
-            throw new Error("로그인 유저 정보 담기 실패");
+            window.location.href = '/error/500';
         }
     
         const body = res.data;
@@ -33,7 +33,7 @@ export async function getLoginUser() {
         if (error.response.status == 403) {
             console.error('로그인 후 사용 가능');
         } else {
-            throw error;
+            window.location.href = '/error/500';
         }
     }
 }
@@ -45,7 +45,7 @@ export async function logout() {
         const body = res.data;
         return body;
     } catch (error) {
-        throw error;
+        window.location.href = '/error/500';
     }
 }
 
@@ -63,12 +63,12 @@ export async function findpwd(email) {
                 const res = await axios.get(`/password/sendEmail?email=${encodedEmail}`);
                 
                 if (res.statusText !== "OK") {
-                    throw new Error("내부 서버 에러");
+                    window.location.href = '/error/500';
                 }
                 return 'send';
             } catch (error) {
                 if (error.response.status == 403) {
-                    throw new Error("already logged in");
+                    window.location.href = '/error/403';
                 } else {
                     throw error;
                 }
@@ -78,11 +78,11 @@ export async function findpwd(email) {
         }
     } catch (error) {
         if (error.response.status == 403) {
-            throw new Error("already logged in");
+            window.location.href = '/error/401';
         } else if (error.response.status == 500) {
-            throw new Error("server error");
+            window.location.href = '/error/500';
         } else {
-            throw error;
+            window.location.href = '/error/500';
         }
     }
 }
@@ -98,18 +98,18 @@ export async function resetpwd(formData) {
             const res = await axios.post('/password/reset', { email, password });
             
             if (res.statusText != "OK") {
-                throw new Error("비밀번호 초기화 실패");
+                window.location.href = '/error/500';
             }
 
             const body = res.data;
             return body;
         } catch (error) {
             if (error.response.status == 403) {
-                throw new Error("already logged in");
+                window.location.href = '/error/401';
             } else if (error.response.status == 400) {
-                throw new Error("request failed");
+                window.location.href = '/error/400';
             } else {
-                throw error;
+                window.location.href = '/error/500';
             }
         }
     } else {

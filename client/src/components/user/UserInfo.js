@@ -34,7 +34,7 @@ function UserInfo() {
     async function getUser() { // 대상 사용자 정보 가져오기
         const res = await getUserInfo(targetUserId);
         if (res == 'error') {
-            navigate("/");
+            //navigate("/error/400");
         }
         setUserInfo(res);
         setTargetUsername(res.nickname);

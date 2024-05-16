@@ -55,7 +55,7 @@ router.get("/logout", isLoggedIn, (req, res) => {
 router.get("/getLoginUser", isLoggedIn, (req, res)=>{
   try {
     res.send(req.user);
-    console.log(req.user)
+    //console.log(req.user)
   } catch (error) {
     console.error(error);
     res.send(null);

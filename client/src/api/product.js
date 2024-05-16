@@ -6,7 +6,7 @@ export async function getCategory() {
   const res = await axios.get('/product/category');
     
   if (res.statusText != "OK") {
-    throw new Error("product 데이터 로딩 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
   return body;
@@ -26,7 +26,7 @@ export async function getProductAll(filter, searchKeyword) {
   const res = await axios.get(url);
 
   if (res.statusText !== "OK") {
-    throw new Error("판매목록 조회 실패");
+    window.location.href = '/error/500';
   }
   // res.data는 배열
   const body = res.data[0].total;
@@ -49,7 +49,7 @@ export async function getProductList(limit, offset, order, filter, searchKeyword
   const res = await axios.get(url);
 
   if (res.statusText !== "OK") {
-    throw new Error("판매목록 조회 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
 
