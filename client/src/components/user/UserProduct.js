@@ -102,7 +102,8 @@ function UserProduct() {
 
     function handleMoveBack() { // 이전 페이지 - 유저정보
         if (isProductUrl) {
-            navigate(`/user/${targetUserId}`);
+            //navigate(`/user/${targetUserId}`);
+            navigate(-1);
         }
     }
 
@@ -191,7 +192,7 @@ function SoldBook({product}) {
 
     return(
         <div className={`${styles.book_card} d-flex flex-column`}>
-            <Link to="#">
+            <Link to={`/product/detail/${product.id}`}>
                 <div className={styles.book_image_box}>
                     {
                         product.filename ? 

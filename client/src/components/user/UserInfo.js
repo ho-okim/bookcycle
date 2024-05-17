@@ -65,6 +65,26 @@ function UserInfo() {
         return(<PersonCircle className={styles.profile_default}/>);
     }
 
+    function renderReport() {
+        if(user) {
+            if (!isReported) {
+                return(
+                    <>
+                        <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
+                        variant='outline-danger' onClick={()=>{handleOpen()}}
+                        ><MegaphoneFill/> 신고</Button>
+                        <Report show={modalShow} handleClose={handleClose} targetId={targetUserId} category={'user'}/>
+                    </>
+                )
+            } else {
+                return(
+                    <div>이미 신고했어요</div>
+                )
+            }
+        }
+        return null;
+    }
+
     return(
         <Container className={styles.section_sub_box}>
             <div className='inner'>
@@ -93,14 +113,7 @@ function UserInfo() {
                     </div>
                     <div className={styles.report_box}>
                         {
-                            (!isReported) ?
-                            <>
-                                <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                                variant='outline-danger' onClick={()=>{handleOpen()}}
-                                ><MegaphoneFill/> 신고</Button>
-                                <Report show={modalShow} handleClose={handleClose} targetId={targetUserId} category={'user'}/>
-                            </>
-                            : null
+                            renderReport()
                         }
                     </div>
                 </div>
