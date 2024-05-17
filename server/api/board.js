@@ -1,19 +1,26 @@
 const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
+const mysql = require('mysql2');
+const { CHAR_REG } = require('../lib/regex_server.js');
 const { isLoggedIn } = require("../lib/auth.js");
 
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {
+  const { sortBy, updown } = req.query; // 초기 query 없음 -> 아래와 같이 초기 값 설정 됨 {'createdAt' : 'DESC'}
 
-    const loginUser = req.user ? req.user : null
-    
-    // query문 설정
-    let sql = "SELECT * FROM board_user ORDER BY createdAt DESC";
+  // 초기 sortBy(likehit/createdAt) & updown(ASC/DESC)
+  let newSortBy = CHAR_REG.test(sortBy) ? sortBy.trim() : 'createdAt';
+  
+  // query문 설정
+  let sql = "SELECT * FROM board_user ";
+
+  let order_sql = `ORDER BY ${newSortBy} ${updown}`;
 
   try {
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql);
+    let result = await pool.query(sql+order_sql);
     res.send(result);
+
   } catch (error) {
     console.error(error);
     res.send('error');
@@ -32,11 +39,12 @@ router.post('/boardwrite', isLoggedIn, async(req, res) => {
   console.log("게시글 내용 추가: ", req.body)
 
   try {
-    let result = await pool.query(sql, [
+    const query = mysql.format(sql, [
       req.user.id,
       title,
       content
-    ]); 
+    ]);
+    let result = await pool.query(query); 
   
     res.send(result);
   } catch (error) {
@@ -178,25 +186,8 @@ router.post('/replyDelete/:id', async(req, res)=>{
 })
 
 
-// 좋아요 개수 조회 (id = boardId)
-router.get('/likeCount/:id', isLoggedIn, async(req, res)=>{
-  let { id } = req.params;
-
-  let sql = "SELECT likehit FROM board WHERE id = ?";
-
-  try {
-    let result = await pool.query(sql, [id]);
-    res.send(result)
-    console.log(result)
-
-  } catch(error) {
-    console.error(error);
-    res.send('error');
-  }
-})
-
 // 게시글 사진 조회
-router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
+router.get('/board/file/:id', async(req, res)=>{
   let { id } = req.params;
 
   let sql = "SELECT id, boardNo, filename FROM board_image WHERE board_id = ?";
@@ -210,6 +201,24 @@ router.get('/board/file/:id', isLoggedIn, async(req, res)=>{
     res.send('error');
   }
 })
+
+
+// 좋아요 개수 조회 (id = boardId)
+router.get('/likeCount/:id', async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = "SELECT likehit FROM board WHERE id = ?";
+
+  try {
+    let result = await pool.query(sql, [id]);
+    res.send(result)
+
+  } catch(error) {
+    console.error(error);
+    res.send('error');
+  }
+})
+
 
 // 좋아요 등록 - 🤍 unliked 상태일 때, 하트 누를 경우 -> 좋아요 등록
 router.post('/hitLike/:id', isLoggedIn, async(req, res)=>{
@@ -246,19 +255,26 @@ router.post('/unLike/:id', isLoggedIn, async(req, res)=>{
 
 
 // 좋아요 조회 - liked 🤍 / unliked 💛 어떤 상태인지 조회한 다음 등록/삭제 가능
-router.get('/likeState/:id', isLoggedIn, async(req, res)=>{
+router.get('/likeState/:id', async(req, res)=>{
   let { id } = req.params;
 
-  let sql = 'SELECT user_id, board_id FROM board_liked WHERE user_id = ?';
-
   try{
-    let result = await pool.query(sql, [req.user.id]);
-    res.send(result);
+      if (!req.user) {
+        let sql = 'SELECT user_id, board_id FROM board_liked';
+        let result = await pool.query(sql);
 
-  } catch(error){
-    console.error(error);
-    res.send('error');
-  }
+        res.send(result);
+      } 
+      if (req.user) {
+        let sql2 = 'SELECT user_id, board_id FROM board_liked WHERE user_id = ?';
+        let result2 = await pool.query(sql2, [req.user.id]);
+
+        res.send(result2);
+      }
+    } catch(error){
+      console.error(error);
+      res.send('error');
+    }
 })
 
 

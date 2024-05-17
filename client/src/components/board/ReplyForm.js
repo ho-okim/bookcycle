@@ -15,8 +15,7 @@ import { Link } from 'react-router-dom'
 
 // 댓글 작성 폼 ---------------------------------------------
 function ReplyForm(props){
-  // boardDetail이 내려준 게시글 id 
-  // -> 댓글 삭제시 해당 게시글로 navigate 하기 위해, 댓글 목록(replyList)으로 내려준다
+  // id = boardDetail이 내려준 게시글 id 
   const { id } = props; 
   const { user } = useAuth(); 
 
@@ -126,14 +125,12 @@ function ReplyList(props){
 
   console.log("좋아요 개수: ", likeCounts)
   console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates)
-  const like = likeStates.find(el => el.board_id === Number(boardId));
   console.log("boardId: ", boardId)
-  console.log("find: ", like)
 
   // setLikeStates(likeState) - 만약 현재 게시글의 boardId와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
 
 
-  // 하트 클릭 시 🤍 -> 💛
+  // 빈 하트 클릭 : '좋아요'로 바꾸기 🤍 -> 💛
   const changeToLike = async() => {
 
     if (!user){
@@ -149,7 +146,7 @@ function ReplyList(props){
     }
   }
 
-  // 하트 클릭 시 💛 ->  🤍
+  // 채워진 하트 클릭 : '좋아요 취소' 하기 💛 ->  🤍
   const changeToUnLike = async() => {
 
     if (!user){
@@ -163,6 +160,10 @@ function ReplyList(props){
       // 기존 prevLikeCounts에 - 1
       setLikeCounts(prevLikeCounts => ({...prevLikeCounts, likehit: likeCounts.likehit - 1}))
     }
+  }
+
+  const noUserLike = async() => {
+    alert("로그인 후 이용하실 수 있습니다.")
   }
 
 
@@ -212,15 +213,25 @@ function ReplyList(props){
             <span>댓글 </span>
             <span className={styles.replyLength}>{replies.length}</span>개
           </div>
-          <div className={styles.heartCount}>
-          { 
-            likeStates.find(el => el.board_id === Number(boardId))
-            ? <BalloonHeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>
-            : <BalloonHeart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
+          {
+            !user ? (
+              <div className={styles.heartCount}>
+                <BalloonHeart size="20" className={styles.heartIcon} onClick={() => noUserLike()}/>
+                <span>좋아요 </span>
+                <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
+              </div>
+            ) : (
+              <div className={styles.heartCount}>
+                { 
+                  likeStates.find(el => el.board_id === Number(boardId))
+                  ? <BalloonHeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>
+                  : <BalloonHeart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
+                }
+                <span>좋아요 </span>
+                <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
+              </div>
+            )
           }
-            <span>좋아요 </span>
-            <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
-          </div>
         </div>
         <Button variant="outline-secondary" className={`${styles.goBoard}`} onClick={()=>{navigate('/board')}}>목록으로</Button>
       </div>
