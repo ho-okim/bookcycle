@@ -62,7 +62,7 @@ function SoldBook({product}) {
 
     return(
         <div className={`${styles.book_card} d-flex flex-column`}>
-            <Link to={`/productDetail/${product.id}`}>
+            <Link to={`/product/detail/${product.id}`}>
                 <div className={styles.book_image_box}>
                     {
                         product.filename ? 

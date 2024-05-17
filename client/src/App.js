@@ -6,14 +6,18 @@ import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 import Login from './pages/Login.js';
 import Join from './pages/Join.js';
-import MyBuyList from './pages/mypage/MyBuyList.js';
-import MyBuyGiveReviewList from './pages/mypage/MyBuyGiveReviewList.js';
-import MyBuyGetReviewList from './pages/mypage/MyBuyGetReviewList.js';
-import MyHeartList from './pages/mypage/MyHeartList.js';
-import MySellList from './pages/mypage/MySellList.js';
-import MySellGiveReviewList from './pages/mypage/MySellGiveReviewList.js';
-import MySellGetReviewList from './pages/mypage/MySellGetReviewList.js';
-import MypageEdit from './pages/mypage/MypageEdit.js';
+import Mypage from './pages/Mypage.js'
+import MyBuyList from './components/mypage/MyBuyList.js';
+import MyBuyGiveReviewList from './components/mypage/MyBuyGiveReviewList.js';
+import MyBuyGetReviewList from './components/mypage/MyBuyGetReviewList.js';
+import MyHeartList from './components/mypage/MyHeartList.js';
+import MySellList from './components/mypage/MySellList.js';
+import MySellGiveReviewList from './components/mypage/MySellGiveReviewList.js';
+import MySellGetReviewList from './components/mypage/MySellGetReviewList.js';
+import MyPostList from './components/mypage/MyPostList.js';
+import MyReportList from './components/mypage/MyReportList.js';
+import ConfirmPassword from './components/mypage/ConfirmPassword';
+import MyInfoEdit from './components/mypage/MyInfoEdit';
 import Main from './pages/Main.js'
 import Board from './pages/board/Board.js';
 import BoardWrite from './pages/board/BoardWrite.js';
@@ -28,8 +32,8 @@ import UserProduct from './components/user/UserProduct.js';
 import Chat from './pages/Chat.js';
 import SellerReviewWrite from './components/user/SellerReviewWrite.js';
 import BuyerReviewWrite from './components/user/BuyerReviewWrite.js';
-import ReviewEdit from './components/user/ReviewEdit.js';
-import MyReport from './pages/mypage/MyReport.js';
+import SellerReviewEdit from './components/user/SellerReviewEdit.js';
+import BuyerReviewEdit from './components/user/BuyerReviewEdit.js';
 import AuthProvider from './contexts/LoginUserContext.js';
 import FindPwd from './pages/FindPwd.js';
 import Reset from './pages/Reset.js'; 
@@ -64,7 +68,7 @@ function App() {
           <Route path='/search' element={<Search/>}>
             <Route path='user' element={<SearchUser/>}/>
           </Route>
-          <Route path="/mypage">
+          <Route path="/mypage" element={<Mypage/>}>
             <Route path="buyList" element={<MyBuyList/>}/>
             <Route path="buyGiveReviewList" element={<MyBuyGiveReviewList/>}/>
             <Route path="buyGetReviewList" element={<MyBuyGetReviewList/>}/>
@@ -72,8 +76,9 @@ function App() {
             <Route path="sellList" element={<MySellList/>}/>
             <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
             <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
-            <Route path="edit" element={<MypageEdit/>}/>
-            <Route path="reportList" element={<MyReport/>}/>
+            <Route path="postList" element={<MyPostList/>}/>
+            <Route path="reportList" element={<MyReportList/>}/>
+            <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
           </Route>
           <Route path="/board">
             <Route path="" element={<Board/>}/>
@@ -88,17 +93,19 @@ function App() {
             </Route>
             <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
             <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
-            <Route path="reviewEdit" element={<ReviewEdit/>}/>
+            <Route path="sellerReviewEdit" element={<SellerReviewEdit/>}/>
+            <Route path="buyerReviewEdit" element={<BuyerReviewEdit/>}/>
           </Route>
           <Route path="/chat">
             <Route path="" element={<Chat/>}/>
             <Route path=":id" element={<Chat/>}/>
           </Route>
-          {/* 합칠 때 수정하기 */}
-          <Route path="/productList" element={<ProductList/>}/>
-          <Route path="/productDetail/:id" element={<ProductDetail/>}/>
-          <Route path="/product/write" element={<ProductWrite/>}/>
-          <Route path="/product/edit/:id" element={<ProductEdit/>}/>
+          <Route path="/product">
+            <Route path="" element={<ProductList/>}/>
+            <Route path='detail/:id' element={<ProductDetail/>}/>
+            <Route path="edit/:id"  element={<ProductEdit/>}/>
+            <Route path="write" element={<ProductWrite/>}/>
+          </Route>
           <Route path="/error">
             <Route path=":errorCode" element={<Error/>}/>
           </Route>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { sellerReviewWrite, reviewEditData, reviewEditPost } from '../../api/mypage';
+import { sellerReviewWrite, sellerReviewEditData, sellerReviewEdit } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
 
@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
 
 
-function ReviewEdit() {
+function SellerReviewEdit() {
 
   const { id } = useParams();
   const [reviewTags, setReviewTags] = useState([]);
@@ -38,7 +38,8 @@ function ReviewEdit() {
     async function getReviewData() {
       try {
         // 리뷰 데이터 가져오기
-        const reviewData = await reviewEditData(id, productId);
+        const reviewData = await sellerReviewEditData(id, productId);
+        console.log(reviewData)
         const tagIndex = reviewData[0].tag_id;
         
         setTagIndex(tagIndex);
@@ -64,7 +65,7 @@ function ReviewEdit() {
   const handleSubmit = async () => {
     try {
       console.log("id :", id, " / score :", score, " / tagIndex :", tagIndex, " / reviewContent :", reviewContent, " / productId :")
-      await reviewEditPost(id, score, tagIndex, reviewContent, productId);
+      await sellerReviewEdit(id, score, tagIndex, reviewContent, productId);
       navigate(`/user/${id}`);
     } catch(error) {
       console.error('리뷰 등록 실패: ', error.message)
@@ -137,4 +138,4 @@ function ReviewEdit() {
   );
 }
 
-export default ReviewEdit;
+export default SellerReviewEdit;

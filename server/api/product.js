@@ -2,7 +2,6 @@ const router = require('express').Router();
 const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
 const { isLoggedIn } = require("../lib/auth.js");
-const mysql = require("mysql2")
 const { CHAR_REG } = require('../lib/regex_server.js');
 
 // 상품 전체 수 조회

@@ -18,17 +18,22 @@ function ConfirmPassword({ onConfirm }) {
         setErrorMessage("사용자 정보를 불러올 수 없습니다.");
         return;
       }
-      const response = await confirmPassword(password);
 
-      if (response.message === "success") {
-        console.log("비밀번호 확인 성공");
+      const res = await confirmPassword(password);
+      console.log(res)
+
+      if (res.message === "success") {
         onConfirm(password);
       } else {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       }
     } catch (error) {
-      console.error(error);
-      setErrorMessage("서버 오류");
+      if(error.message === "not allowed") {
+        setErrorMessage("비밀번호가 일치하지 않습니다.");
+      } else {
+        console.error(error);
+        setErrorMessage("뭔가.. 오류");
+      }
     }
   };
 

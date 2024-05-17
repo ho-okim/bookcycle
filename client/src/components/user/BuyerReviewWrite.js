@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { buyerReviewWrite, reviewWritePost } from '../../api/mypage';
+import { buyerReviewWrite, buyerReviewWritePost } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
@@ -8,6 +8,7 @@ import styles from "../../styles/mypage.module.css";
 
 function BuyerReviewWrite() {
 
+  // 상대방(=구매자) id
   const { id } = useParams();
 
   const [reviewTags, setReviewTags] = useState([]);
@@ -24,17 +25,14 @@ function BuyerReviewWrite() {
     async function getReviews() {
       try {
         const data = await buyerReviewWrite(id);
-        setReviewTags(data); // 태그 배열만 저장
+        setReviewTags(data);
       } catch (error) {
         console.error('리뷰 데이터를 가져오는 중 에러 발생: ', error);
-        setReviewTags([]); // 에러 발생 시 빈 배열 저장
+        setReviewTags([]);
       }
     }
-  
     getReviews();
   }, []);
-
-  console.log(reviewTags)
 
   const handleTagSelect = (index) => { 
     setTagIndex(index+1); 
@@ -47,7 +45,7 @@ function BuyerReviewWrite() {
   const handleSubmit = async () => {
     try {
       console.log("handleSubmit 호출");
-      await reviewWritePost(id, score, tagIndex, reviewContent, productId);
+      await buyerReviewWritePost(id, score, tagIndex, reviewContent, productId);
       console.log("리뷰 등록 완료")
       navigate(`/user/${id}`);
     } catch(error) {

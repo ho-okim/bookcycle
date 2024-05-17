@@ -294,7 +294,7 @@ function Chat() {
                 {
                   <>
                     <div className={`${styles.productWrap} d-flex justify-content-between`}>
-                      <Link style={{ textDecoration: 'none' }}>
+                      <Link style={{ textDecoration: 'none' }} to={`/product/detail/${activeChatroom.product_id}`}>
                         <div className={`d-flex align-items-center`}>
                           <div className='d-flex justify-content-center align-items-center'>
                             <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>

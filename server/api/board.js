@@ -3,7 +3,6 @@ const pool = require("../db.js"); // db connection pool
 const mysql = require('mysql2');
 const { CHAR_REG } = require('../lib/regex_server.js');
 const { isLoggedIn } = require("../lib/auth.js");
-const mysql = require("mysql2")
 
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {

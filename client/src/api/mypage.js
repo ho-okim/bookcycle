@@ -135,15 +135,45 @@ export async function sellGetReviewList() {
   }
 }
 
+export async function postList() {
+  try {
+    const res = await axios.get('/mypage/postList');
+
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
+  }
+}
+
 // 회원정보관리 - 비밀번호 확인
 export async function confirmPassword(password) {
-  const res = await axios.post('/mypage/edit', { password });
-  
-  if (res.statusText !== "OK") {
+  try {
+    const res = await axios.post('/mypage/confirmPassword', { password });
+
+    if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
   }
-  const body = res.data;
-  return body;
 }
 
 // 회원정보관리 - 데이터 조회
@@ -192,29 +222,9 @@ export async function mypageEdit(formData) {
 }
 
 // 내가 구매자일 때 리뷰작성 - tag목록 가져오기
-export async function sellerReviewWrite() {
+export async function sellerReviewWrite(id) {
   try {
-    const res = await axios.get('/user/sellerReviewWrite');
-
-    if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
-    }
-    const body = res.data;
-    return body;
-  } catch (error) {
-    if (error.response.status == 403) {
-      throw new Error("login needed");
-    } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    } else {
-      throw error;
-    }
-  }
-}
-// 내가 판매자일 때 리뷰작성 - tag목록 가져오기
-export async function buyerReviewWrite() {
-  try {
-    const res = await axios.get('/user/buyerReviewWrite');
+    const res = await axios.get(`/user/${id}/sellerReviewWrite`);
 
     if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
@@ -232,10 +242,10 @@ export async function buyerReviewWrite() {
   }
 }
 
-// 리뷰작성 - POST
-export async function reviewWritePost(id, score, tagIndex, reviewContent, productId) {
+// 내가 구매자일 때 리뷰작성 - POST
+export async function sellerReviewWritePost(id, score, tagIndex, reviewContent, productId) {
   try {
-    const res = await axios.post(`/user/${id}/reviewWrite`, {score, tagIndex, reviewContent, productId});
+    const res = await axios.post(`/user/${id}/sellerReviewWrite`, {score, tagIndex, reviewContent, productId});
     console.log('요청결과',res)
     if (res.statusText !== "OK") {
       throw new Error("mypage 로딩 실패");
@@ -248,10 +258,47 @@ export async function reviewWritePost(id, score, tagIndex, reviewContent, produc
   }
 }
 
-// 리뷰수정 - 원래 데이터 가져오기
-export async function reviewEditData(productId) {
+// 내가 판매자일 때 리뷰작성 - tag목록 가져오기
+export async function buyerReviewWrite(id) {
+  try {
+    const res = await axios.get(`/user/${id}/buyerReviewWrite`);
+
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else {
+      throw error;
+    }
+  }
+}
+
+// 내가 판매자일 때 리뷰작성 - POST
+export async function buyerReviewWritePost(id, score, tagIndex, reviewContent, productId) {
+  try {
+    const res = await axios.post(`/user/${id}/buyerReviewWrite`, {score, tagIndex, reviewContent, productId});
+    console.log('요청결과',res)
+    if (res.statusText !== "OK") {
+      throw new Error("mypage 로딩 실패");
+    }
+    const body = res.data;
+    return body;
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// 리뷰수정 - 원래 데이터 가져오기 (내가 구매자일 때)
+export async function sellerReviewEditData(id, productId) {
   try{
-    const res = await axios.get(`/user/reviewEdit?productId=${productId}`);
+    const res = await axios.get(`/user/${id}/sellerReviewEdit?productId=${productId}`);
       if (res.statusText !== "OK") {
         throw new Error("mypage 로딩 실패");
       }
@@ -268,9 +315,40 @@ export async function reviewEditData(productId) {
   }
 }
 
-// 리뷰 수정 - PUT
-export async function reviewEditPost(id, score, tagIndex, reviewContent, productId) {
-  const res = await axios.put(`/user/${id}/reviewEdit`, {score, tagIndex, reviewContent, productId});
+// 리뷰 수정 - PUT (내가 구매자일 때)
+export async function sellerReviewEdit(id, score, tagIndex, reviewContent, productId) {
+  const res = await axios.put(`/user/${id}/sellerReviewEdit`, {score, tagIndex, reviewContent, productId});
+
+  if (res.statusText !== "OK") {
+    throw new Error("mypage 로딩 실패");
+  }
+  const body = res.data;
+  return body;
+}
+
+// 리뷰수정 - 원래 데이터 가져오기 (내가 판매자일 때)
+export async function buyerReviewEditData(id, productId) {
+  try{
+    const res = await axios.get(`/user/${id}/buyerReviewEdit?productId=${productId}`);
+      if (res.statusText !== "OK") {
+        throw new Error("mypage 로딩 실패");
+      }
+      const body = res.data;
+      return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else if (error.response.status == 401) {
+      throw new Error("not allowed");
+    } else if (error.response.status == 400) {
+      throw new Error("required data missing");
+    }
+  }
+}
+
+// 리뷰 수정 - PUT (내가 판매자일 때)
+export async function buyerReviewEdit(id, score, tagIndex, reviewContent, productId) {
+  const res = await axios.put(`/user/${id}/buyerReviewEdit`, {score, tagIndex, reviewContent, productId});
 
   if (res.statusText !== "OK") {
     throw new Error("mypage 로딩 실패");

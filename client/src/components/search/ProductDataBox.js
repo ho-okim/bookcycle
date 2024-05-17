@@ -12,7 +12,7 @@ function ProductDataBox({product}) {
     }
 
     return(
-        <Link to={`/productDetail/${product.product_id}`} className={styles.product_box}>
+        <Link to={`/product/detail/${product.product_id}`} className={styles.product_box}>
             <div className={styles.box_content}>
                 <div className={styles.bookpicbox}>
                 {

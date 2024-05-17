@@ -24,7 +24,7 @@ function User() {
     }
 
     // 하위 url인지 확인
-    let subUrl = currentUrl.includes("product") || currentUrl.includes("review") ||  currentUrl.includes("sellerReviewWrite") ||  currentUrl.includes("buyerReviewWrite") ||  currentUrl.includes("reviewEdit");
+    let subUrl = currentUrl.includes("product") || currentUrl.includes("review") || currentUrl.includes("sellerReviewWrite") || currentUrl.includes("buyerReviewWrite") || currentUrl.includes("sellerReviewEdit") || currentUrl.includes("buyerReviewEdit");
 
     return (
         <TargetUserContext.Provider value={{targetUserId, setTargetUserId, targetUsername, setTargetUsername}}>

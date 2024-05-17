@@ -51,7 +51,7 @@ function ProductPagination({
         handlePagination(pageNumber);
         setActivePage(pageNumber);
         
-        let newUrl = '/productList';
+        let newUrl = '/product';
         if (location.search && !searchParams.get("page")) {
             newUrl += `${location.search}&page=${pageNumber}`;
         } else {

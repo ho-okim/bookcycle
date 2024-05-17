@@ -11,7 +11,7 @@ function ProductSorting() {
   
   const navigate = useNavigate();
 
-  let newUrl = '/productList';
+  let newUrl = '/product';
   if (location.search && !searchParams.get("page")) {
       newUrl += location.search;
   }

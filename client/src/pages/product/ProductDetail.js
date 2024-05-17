@@ -8,6 +8,7 @@ import Report from "../../components/Report";
 import {productDetail} from "../../api/product";
 import { getCategory } from '../../api/product.js';
 import OtherProduct from "../../components/product/OtherProduct.js";
+import { getReportedOrNot } from "../../api/report.js";
 
 
 function ProductDetail() {
@@ -18,6 +19,7 @@ function ProductDetail() {
 
   const { none_like } = useState(0);
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+  const [isReported, setIsReported] = useState(true); // 신고 여부
 
   const handleClose = () => { // modal 닫기/숨기기 처리
     if (modalShow) setModalShow(false);
@@ -31,6 +33,12 @@ function ProductDetail() {
     const data = await productDetail(id);
     setProductList(data);
   } //카테고리 데이터 가져오기
+
+  async function getReported() { // 신고 여부 확인
+    const res = await getReportedOrNot('user', productList.product_id);
+    console.log(res)
+    setIsReported((isReported)=>((res === 0) ? false : true));
+  }
 
   async function productcate(){
     const data = await getCategory();
@@ -55,11 +63,15 @@ function ProductDetail() {
     test()
   },[])
 
-
+  useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
+    if (user) { // 로그인을 했을 때만 호출
+      getReported();
+    }
+  }, [user]);
 
   function renderReportBtn() { // 신고 버튼 렌더링 처리
     if (user) {
-      if (user.id == 1) { // user.id == 상품소유자id
+      if (user.id != productList.seller_id) { // user.id == 상품소유자id
         // ownerId = 상품소유자id
         return (
           <>

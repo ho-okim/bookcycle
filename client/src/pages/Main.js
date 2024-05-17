@@ -13,7 +13,7 @@ function Main(){
   }
 
   const navigateToProduct = () => {
-    navigate('/productList')
+    navigate('/product')
   }
   
   return(

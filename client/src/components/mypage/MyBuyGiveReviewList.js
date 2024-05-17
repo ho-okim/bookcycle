@@ -9,7 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import styles from '../../styles/mypage.module.css';
 
 
-function BuyGiveReviewList() {
+function MyBuyGiveReviewList() {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   console.log(reviews)
@@ -47,15 +47,15 @@ function BuyGiveReviewList() {
 
   return (
     <div className={styles.content}>
-      <p>총 {reviews.length}개의 구매 후 남긴후기</p>
+      <p className={styles.conTitle}> &gt; 총 {reviews.length}개의 판매자에게 남긴후기</p>
       {reviews.length === 0 ? (
-        <div>아직 남긴 후기가 없어요 😥</div>
+        <div className={styles.empty}>판매자에게 남긴 후기가 없습니다.</div>
       ) : (
         <>
           <div className="rev-list">
             {reviews.slice(offset, offset + limit).map((review, index) => (
               <div key={index} className={`row ${styles.revWrap}`}>
-                <div className="rating col col-2">{starRating(review.score)}</div>
+                <div className="col col-2">{starRating(review.score)}</div>
                 <div className="col col-6">{review.content}</div>
                 <div className="col col-1">{review.buyer_nickname}</div>
                 <div className="col-2">{dateProcessing(review.createdAt)}</div>
@@ -64,7 +64,7 @@ function BuyGiveReviewList() {
                     ⁝
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item href={`/user/${review.seller_id}/reviewEdit?productId=${review.product_id}`}>
+                    <Dropdown.Item href={`/user/${review.seller_id}/sellerReviewEdit?productId=${review.product_id}`}>
                       수정
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
@@ -81,4 +81,4 @@ function BuyGiveReviewList() {
   );
 }
 
-export default BuyGiveReviewList;
+export default MyBuyGiveReviewList;

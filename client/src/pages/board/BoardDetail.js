@@ -7,6 +7,9 @@ import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
+import { getReportedOrNot } from '../../api/report.js';
+import { MegaphoneFill } from 'react-bootstrap-icons';
+import Report from '../../components/Report.js';
 
 
 function BoardDetail(){
@@ -18,6 +21,8 @@ function BoardDetail(){
   // console.log("로그인한 회원 닉네임: ", user?.nickname)
   
 	const navigate = useNavigate();
+
+  const [isReported, setIsReported] = useState(true); // 신고 여부
 
 	// 데이터 조회
   // api > board.js에서 특정 사용자 글 받아오기
@@ -33,6 +38,11 @@ function BoardDetail(){
 
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
+  async function getReported() { // 신고 여부 확인
+    const res = await getReportedOrNot('user', id);
+    setIsReported((isReported)=>((res === 0) ? false : true));
+  }
+
   useEffect(()=>{
     let boardDetail
     const test = async () => {
@@ -41,6 +51,12 @@ function BoardDetail(){
     }
     test()
   }, [])
+
+  useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
+    if (user) { // 로그인을 했을 때만 호출
+        getReported();
+    }
+  }, [user]);
 
   // 사진 파일 받아오기
   async function getFiles(){
@@ -68,7 +84,6 @@ function BoardDetail(){
 		}
 	}
 
-
   const handleClose = () => { // modal 닫기/숨기기 처리
     if (modalShow) setModalShow(false);
   };
@@ -77,14 +92,12 @@ function BoardDetail(){
     if (!modalShow) setModalShow(true);
   };
 
-  
   // 신고하기 기능
   function onSpam(){
     if(!user){
       alert("로그인 후 이용하실 수 있습니다.")
     }
   }
-
 
   // 날짜 yyyy-mm-dd 시:분
   function DateProcessing(date){
@@ -125,6 +138,16 @@ function BoardDetail(){
                   <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                 </div>
                 <div className={`${styles.spamBtn} medium`} onClick={onSpam}>신고하기</div>
+                {
+                    (!isReported) ?
+                    <>
+                        <Button className={''} 
+                        variant='outline-danger' onClick={()=>{handleOpen()}}
+                        ><MegaphoneFill/> 신고</Button>
+                        <Report show={modalShow} handleClose={handleClose} ownerId={user.id}/>
+                    </>
+                    : null
+                }
 							</div>
 							<div className={styles.detailContentWrap}>
                 <div className={`${styles.detailImage} d-flex flex-column align-items-center`}>

@@ -25,7 +25,7 @@ function ProductCategory() {
         const id = e.currentTarget.id;
         setFilter((filter)=>({...filter, category_id : parseInt(id)}));
 
-        let newUrl = '/productList';
+        let newUrl = '/product';
         if (location.search && !searchParams.get("page")) {
             newUrl += location.search;
         }

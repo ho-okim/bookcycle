@@ -7,7 +7,7 @@ import Pagination from './Pagination.js';
 import { PersonFill } from "react-bootstrap-icons";
 import styles from "../../styles/mypage.module.css";
 
-function HeartList() {
+function MyHeartList() {
 
   const [hearts, setHearts] = useState([]);
   const [sortOption, setSortOption] = useState("최근담은순")
@@ -40,7 +40,7 @@ function HeartList() {
     let sortedHearts = [...hearts];
     switch (sortOption) {
       case "최근담은순":
-        sortedHearts.sort((a, b) => b.date - a.date);
+        sortedHearts.sort((a, b) => new Date(a.liked_date).getTime() - new Date(b.liked_date).getTime())
         break;
       case "상품명순":
         sortedHearts.sort((a, b) => a.product_name.localeCompare(b.product_name));
@@ -63,8 +63,8 @@ function HeartList() {
   return (
     <>
       <div className={styles.content}>
-        <div className={styles.heartTop}>
-        <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
+        <div className={styles.conTitle}>
+          <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
           <select value={sortOption} onChange={handleChange}>
             <option>최근담은순</option>
             <option>상품명순</option>
@@ -75,25 +75,25 @@ function HeartList() {
         </div>
         <div className={styles.heartList}>
           {hearts.length === 0 ? (
-            <div style={{textAlign:"center", marginTop:'auto'}}>아직 찜한책이 없습니다! 사이트를 둘러보세요😉</div>
+            <div className={styles.empty}>아직 찜한책이 없습니다! 사이트를 둘러보세요😉</div>
           ) : (
             getSortedHearts().slice(offset, offset + limit).map((heart, index) => (
               // soldDate가 null인 경우에만 하트 리스트에 표시
               heart.soldDate === null && (
-                <div key={index} className={styles.heartWrap}>
-                  <img className={styles.heartImg} src="" />
-                  <Link to={`/productDetail`} className={styles.heartInfo}>
-                    <p className={styles.heartTitle}>{heart.product_name}</p>
-                    <p className={styles.heartContent}>
+                <div key={index} className={styles.productWrap}>
+                  <img className={styles.productImg} src="" />
+                  <Link to={`/product/detail/${heart.product_id}`} className={styles.productInfo}>
+                    <p className={styles.productTitle}>{heart.product_name}</p>
+                    <p className={styles.productContent}>
                       <span>저자 {heart.writer}</span>
                       <span>출판사 {heart.publisher}</span>
                       <span>출간일 {dateProcessing(heart.publish_date)}</span>
                     </p>
-                    <p className={styles.heartPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
+                    <p className={styles.productPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
                   </Link>
-                  <Link to={`/user/${heart.seller_id}`} className={styles.heartSeller}>
+                  <Link to={`/user/${heart.seller_id}`} className={styles.productSeller}>
                     <PersonFill className={styles.person} />
-                    <p>{heart.nickname}</p>
+                    <p>{heart.seller_nickname}</p>
                   </Link>
                 </div>
               )
@@ -105,4 +105,4 @@ function HeartList() {
   );
 }
 
-export default HeartList;
+export default MyHeartList;

@@ -25,7 +25,7 @@ function ProductSearchInput() {
     }
 
     function handleSubmit() { // 검색
-        navigate(`/productList?search=${searchKeyword.keyword}&stype=${searchKeyword.type}`);
+        navigate(`/product?search=${searchKeyword.keyword}&stype=${searchKeyword.type}`);
     }
 
     function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
