@@ -1,7 +1,7 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
@@ -10,14 +10,14 @@ import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import UserProductContext from '../../contexts/UserProductContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
-import Filtering from './Filtering.js';
-import ProductSorting from './ProductSorting.js';
-
+import UserProductFiltering from './UserProductFiltering.js';
+import UserProductSorting from './UserProductSorting.js';
 
 function UserProduct() {
 
     const currentUrl = window.location.href; // 현재 url
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
+    const location = useLocation(); // location 객체
 
     const { targetUserId } = useTargetUser(); // 대상 id
     
@@ -28,12 +28,12 @@ function UserProduct() {
     const [totalData, setTotalData] = useState(0); // 전체 데이터 수
     const [category, setCategory] = useState([]); // 상품 카테고리
     const [order, setOrder] = useState({ // 정렬기준
-        name : searchParams.get("order") ?? 'createdAt', 
-        ascend : searchParams.get("ascend") ?? false 
+        name : location.state?.order?.name ?? 'createdAt', 
+        ascend : location.state?.order?.ascend ?? false 
     }); 
     const [filter, setFilter] = useState({ // 필터링
-        sold : (!searchParams.get("sold") || searchParams.get("sold") === 'null') ? null : searchParams.get("sold"), 
-        category_id : searchParams.get("category_id") ?? 0
+        sold : location.state?.filter?.sold ?? null, 
+        category_id : location.state?.filter?.category_id ?? 0
     });
     
     let limit = 10;
@@ -87,16 +87,16 @@ function UserProduct() {
 
         getTotal();
         pageOffset();
-    }, [totalData, searchParams]);
+    }, [totalData, searchParams, location.state]);
 
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
         setLoading(true);
         getProductList();
-    }, [targetUserId, offset, searchParams]);
+    }, [targetUserId, offset, order, location.state]);
     
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
-            navigate(`/user/${targetUserId}/product?category_id=0&page=1`);
+            navigate(`/user/${targetUserId}/product`);
         }
     }
 
@@ -115,23 +115,6 @@ function UserProduct() {
     `${styles.sold} ${styles.box} d-flex justify-content-center`
     : `${styles.sold} ${styles.box} d-flex justify-content-around row-cols-5 flex-wrap`;
 
-    // 로딩 상태일 때 출력
-    if (loading) {
-        return (
-            <Container className={styles.section_sub_box}>
-                <div className='inner'>
-                    <div className={styles.title}>
-                        <h4 className={styles.title_font}>판매목록</h4>
-                    </div>
-                    <div className={databox_css}>
-                        <LoadingSpinner/>
-                    </div>
-                </div>
-            </Container>
-        )
-    } 
-
-    // 일반 출력
     return(
     <UserProductContext.Provider value={productOption}>
         <Container className={styles.section_sub_box}>
@@ -139,7 +122,7 @@ function UserProduct() {
                     <div className={styles.title}>
                         <h4 className={styles.title_font}>판매목록</h4>
                         {
-                            (isProductUrl || !productList || productList.length == 0 || totalData <= showLimit) ? 
+                            (isProductUrl || !productList || productList.length == 0) ? 
                             null
                             : <Button 
                             variant='outline-primary' 
@@ -150,21 +133,27 @@ function UserProduct() {
                         {
                             (isProductUrl) ? 
                             <div className={styles.option_box}>
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'product_name'} 
                                 typeAscend={order.name === 'product_name' && order.ascend}/>
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'price'} 
                                 typeAscend={order.name === 'price' && order.ascend} />
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'createdAt'} 
                                 typeAscend={order.name === 'createdAt' && order.ascend}/>
-                                <Filtering category={category} 
-                                searchParams={searchParams}/>
+                                <UserProductFiltering category={category}/>
                             </div> 
                             : null
                         }
                     </div>
+                    {
+                        (loading) ?
+                        <div className={databox_css}>
+                            <LoadingSpinner/>
+                        </div>
+                        : null
+                    }
                     <div className={databox_css}>
                         {
                             (productList && productList.length > 0) ?
@@ -183,10 +172,7 @@ function UserProduct() {
                             <DataPagination
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
-                            handlePagination={handlePagination}
-                            order={order}
-                            filter={filter}
-                            />
+                            handlePagination={handlePagination}/>
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}

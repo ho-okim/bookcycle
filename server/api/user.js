@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
 const { CHAR_REG } = require('../lib/regex_server.js');
 
@@ -11,7 +12,8 @@ router.get('/user/:userId', async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const result = await pool.query(sql, [parseInt(userId)]); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
+        const query = mysql.format(sql, [parseInt(userId)]);
+        const result = await pool.query(query); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
         const { nickname, profile_image, manner_score } = result[0];
         // client로 보낼 데이터
         const body = { userId, nickname, profile_image, manner_score };
@@ -41,7 +43,8 @@ router.get('/user/:userId/productAll', async (req, res) => {
 
     try {
         // 상품 전체 수 조회
-        const body = await pool.query(sql, variables );
+        const query = mysql.format(sql, variables);
+        const body = await pool.query(query);
         res.send(body);
     } catch (error) {
         console.error(error);
@@ -75,7 +78,8 @@ router.get('/user/:userId/product', async (req, res) => {
         variables.push(parseInt(limit), parseInt(offset));
 
         // 상품 목록 조회
-        const body = await pool.query(sql+order_sql, variables);
+        const query = mysql.format(sql+order_sql, variables);
+        const body = await pool.query(query);
         res.send(body);
     } catch (error) {
         console.error(error);
@@ -93,7 +97,7 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
     let variables = [parseInt(userId)];
 
     // query문
-    let sql = 'SELECT COUNT(*) AS total FROM trade_review WHERE writer_id = ?';
+    let sql = 'SELECT COUNT(*) AS total FROM trade_review WHERE writer_id != ?';
 
     if (tradeType === 'buy') {
         sql += ' AND buyer_id = ?';
@@ -105,7 +109,8 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
 
     try {
         // 상품 전체 수 조회
-        const [result] = await pool.query(sql, variables);
+        const query = mysql.format(sql, variables);
+        const [result] = await pool.query(query);
 
         res.send(result);
     } catch (error) {
@@ -127,7 +132,7 @@ router.get('/user/:userId/review', async (req, res) => {
     let variables = [parseInt(userId)];
 
     // query문 설정
-    let sql = 'SELECT * FROM trade_review WHERE writer_id = ?';
+    let sql = 'SELECT * FROM trade_review WHERE writer_id != ?';
 
     let order_sql = ` ORDER BY ${newName} ${updown} LIMIT ? OFFSET ?`;
 
@@ -143,7 +148,8 @@ router.get('/user/:userId/review', async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const result = await pool.query(sql+order_sql, variables);
+        const query = mysql.format(sql+order_sql, variables);
+        const result = await pool.query(query);
 
         res.send(result);
     } catch (error) {
@@ -161,7 +167,8 @@ router.get('/user/:userId/reviewTagTotal', async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const [result] = await pool.query(sql, [userId]);
+        const query = mysql.format(sql, [userId]);
+        const [result] = await pool.query(query);
         res.send(result);
     } catch (error) {
         console.error(error);
@@ -179,7 +186,8 @@ router.get('/user/:userId/reviewtag', async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const result = await pool.query(sql, [userId, parseInt(limit), parseInt(offset)]); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
+        const query = mysql.format(sql, [userId, parseInt(limit), parseInt(offset)]);
+        const result = await pool.query(query); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
         res.send(result);
     } catch (error) {
         console.error(error);

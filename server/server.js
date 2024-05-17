@@ -31,6 +31,7 @@ const MySQLStore = require("express-mysql-session")(session);
 
 // db
 const dbConfig = require("../db_config.json");
+const mysql = require('mysql2');
 const pool = require("./db.js");
 
 // session 설정
@@ -74,10 +75,10 @@ passport.use(new LocalStrategy( // 로그인 방법
     {usernameField : "email", passwordField : "password"}, // 사용자이메일, 비번
     async (email, password, done) => { // 로그인 처리
         try {
-            // sql injection 대비 코드 추가 필요-----------------------------------------------
             // db에서 email 조회
-            let sql = `SELECT * FROM users WHERE email = ?`;
-            let [data] = await pool.query(sql, [email])
+            let sql = 'SELECT id, email, password, username, nickname FROM users WHERE email = ?';
+            const query = mysql.format(sql, [email]);
+            let [data] = await pool.query(query);
 
             // 아이디 없음 처리
             if (!data || data.length === 0) {
@@ -87,7 +88,7 @@ passport.use(new LocalStrategy( // 로그인 방법
             }
 
             // 비밀번호 비교 처리
-            const res = await bcrypt.compare(password, data.password)
+            const res = await bcrypt.compare(password, data.password);
 
             if (res) {
                 return done(null, data);
@@ -145,7 +146,6 @@ if (pool) {
     });
 }
 
-
 // router --------------------------------------------------------
 app.use("/", require('./api/main.js'));
 app.use("/", require('./api/login.js'));
@@ -156,6 +156,8 @@ app.use("/", require('./api/user.js'));
 app.use("/", require('./api/board.js'));
 app.use("/", require('./api/report.js'));
 app.use("/", require('./api/chat.js'));
+app.use("/", require('./api/search.js'));
+app.use("/", require('./api/alert.js'));
 
 const sessionMiddleware = session(sessionOption)
 

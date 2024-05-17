@@ -2,10 +2,10 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/esm/Container.js';
-import { Button } from 'react-bootstrap';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import { getUserReviewTag, getUserReviewTagTotal } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
+import UserReviewTagTable from './UserReviewTagTable.js';
 
 function UserReviewTag() {
 
@@ -69,21 +69,6 @@ function UserReviewTag() {
         }
     }, [offset]);
 
-    if (loading) {
-        return(
-            <Container className={styles.section_sub_box}>
-                <div className="inner">
-                    <div className={styles.title}>
-                        <h4 className={styles.title_font}>이런 점이 좋았어요</h4>
-                    </div>
-                    <div className={`${styles.box} d-flex justify-content-center`}>
-                        <LoadingSpinner/>
-                    </div>
-                </div>
-            </Container>
-        )
-    }
-
     return(
         <Container className={styles.section_sub_box}>
             <div className="inner">
@@ -91,11 +76,16 @@ function UserReviewTag() {
                     <h4 className={styles.title_font}>이런 점이 좋았어요</h4>
                 </div>
                 {
-                    reviewTagList.length == 0 ?
+                    (loading) ? 
+                    <div className={`${styles.box} d-flex justify-content-center`}>
+                        <LoadingSpinner/>
+                    </div>
+                    :
+                    (reviewTagList.length == 0) ?
                     <div className={`${styles.box} d-flex justify-content-center`}>
                         <p>아직 등록된 평가가 없어요!</p>
                     </div>
-                    : <ReviewTable 
+                    : <UserReviewTagTable 
                         reviewTagList={reviewTagList}
                         handleMoreView={handleMoreView}
                         reviewTagTotal={reviewTagTotal}
@@ -104,59 +94,6 @@ function UserReviewTag() {
                 }
             </div>
         </Container>
-    )
-}
-
-// 리뷰 출력 테이블
-function ReviewTable({
-    reviewTagList, 
-    handleMoreView,
-    reviewTagTotal,
-    limit
-    }) {
-    return(
-        <table>
-            <tbody>
-                {
-                    reviewTagList.map((el, i)=>{
-                        return (
-                            <ReviewTag key={i} reviewTag={el}/>
-                        )
-                    })
-                }
-                <tr>
-                    <td className={styles.liked}></td>
-                    <td className={styles.tag}>
-                        {
-                            (reviewTagList.length < limit)
-                            || (reviewTagList.length == reviewTagTotal)
-                            ?
-                            null
-                            :
-                            <Button 
-                            variant='outline-primary' 
-                            className={styles.arrow_more_btn}
-                            onClick={handleMoreView}
-                            >▼</Button>
-                        }
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    )
-}
-
-// 리뷰 행
-function ReviewTag({reviewTag}) {
-    return(
-        <tr>
-            <td className={styles.liked}>
-                <p className={styles.box}>{reviewTag.size} 명</p>
-            </td>
-            <td className={styles.tag}>
-                <p className={styles.box}>{reviewTag.tag_name}</p>
-            </td>
-        </tr>
     )
 }
 

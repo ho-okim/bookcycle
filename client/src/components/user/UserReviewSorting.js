@@ -4,7 +4,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
 import { useHref, useNavigate } from 'react-router-dom';
 
-function ReviewSorting({ sortType, typeAscend, order, setOrder }) {
+function UserReviewSorting({ sortType, typeAscend, order, setOrder }) {
     
     const url = useHref();
 
@@ -13,7 +13,9 @@ function ReviewSorting({ sortType, typeAscend, order, setOrder }) {
     function handleSort(e) { // 정렬 처리
         let order_id = e.currentTarget.id;
         setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
-        navigate(`${url}?order=${order_id}&ascend=${!typeAscend}`);
+        
+        // setOrder만으로도 잘 작동한다면 제거해도 됨
+        //navigate(url);
     }
     
     return(
@@ -31,4 +33,4 @@ function ReviewSorting({ sortType, typeAscend, order, setOrder }) {
     )
 }
 
-export default ReviewSorting;
+export default UserReviewSorting;

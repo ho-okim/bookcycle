@@ -1,15 +1,83 @@
 const router = require('express').Router();
+const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
 const { isLoggedIn } = require("../lib/auth.js");
 const mysql = require("mysql2")
+const { CHAR_REG } = require('../lib/regex_server.js');
 
-router.get('/productList', async (req, res) => {
-    // query문 설정
-    let sql = "SELECT * FROM product ORDER BY createdAt DESC LIMIT 5";
+// 상품 전체 수 조회
+router.get('/productList/all', async (req, res) => {
+    const { category_id, condition, stype } = req.query;
+    let { search } = req.query;
 
-    // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql);
-    res.send(result);
+    // query문
+    let sql = 'SELECT COUNT(*) AS total FROM product_detail WHERE soldDate IS NULL AND blocked != 1';
+    let variables = [];
+
+    if (search !== 'null') {
+        search = search.toLocaleLowerCase();
+        sql += ` AND LOWER(${stype}) LIKE CONCAT('%', LOWER(?), '%')`;
+        variables.push(search);
+    }
+    if (parseInt(category_id) !== 0) {
+        sql += ' AND category_id = ?';
+        variables.push(parseInt(category_id));
+    }
+    if (condition !== 'all') {
+        sql += ' AND `condition` LIKE ?';
+        variables.push(condition);
+    }
+
+    try {
+        // 상품 전체 수 조회
+        const query = mysql.format(sql, variables);
+        const result = await pool.query(query);
+
+        res.send(result);
+    } catch (error) {
+        console.error(error);
+        res.send('error');
+    }
+});
+
+// 상품 목록 조회
+router.get('/productList/product', async (req, res) => {
+    const { limit, offset, name, ascend, category_id, condition, stype } = req.query;
+    let { search } = req.query;
+
+    let newName = CHAR_REG.test(name) ? name.trim() : 'createdAt';
+
+    // query문
+    let sql = 'SELECT * FROM product_detail WHERE soldDate IS NULL AND blocked != 1';
+    let variables = [];
+
+    if (search !== 'null') {
+        search = search.toLocaleLowerCase();
+        sql += ` AND LOWER(${stype}) LIKE CONCAT('%', LOWER(?), '%')`;
+        variables.push(`%${search}%`);
+    }
+    if (parseInt(category_id) !== 0) {
+        sql += ' AND category_id = ?';
+        variables.push(parseInt(category_id));
+    }
+    if (condition !== 'all') {
+        sql += ' AND `condition` LIKE ?';
+        variables.push(condition);
+    }
+    
+    let order_sql = ` ORDER BY ${newName} ${ascend} LIMIT ? OFFSET ?`;
+    variables.push(parseInt(limit), parseInt(offset));
+    
+    try {
+        // 상품 목록 조회
+        const query = mysql.format(sql+order_sql, variables);
+        const body = await pool.query(query);
+
+        res.send(body);
+    } catch (error) {
+        console.error(error);
+        res.send('error');
+    }
 });
 
 router.get('/productDetail/:id', async (req, res) => {
@@ -24,10 +92,10 @@ router.get('/productDetail/:id', async (req, res) => {
 // 상품 카테고리 조회
 router.get('/product/category', async (req, res) => {
     // query문 설정
-    let sql = "SELECT * FROM product_category";
+    const sql = "SELECT * FROM product_category";
 
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql);
+    const result = await pool.query(sql);
     res.send(result);
 });
 

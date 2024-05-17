@@ -1,0 +1,180 @@
+.title_box{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.result_box{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.result_box h2{
+  margin:0;
+}
+
+.result_count{
+  margin: 0 10px;
+  font-size: 20px;
+}
+
+/* 상품 */
+.product{
+  margin-top:10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product .product_box{
+  padding:10px;
+  width: calc((100% - 10px) / 2);
+}
+
+.product .box_content{
+  padding:10px;
+  display: flex;
+  justify-content: flex-start;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.product .box_content:hover{
+  box-shadow: 0 0 5px #cecece;
+}
+
+.product .writer:after,
+.product .publisher:after,
+.product .view_count:after{
+  content:'|';
+  margin: 5px;
+}
+
+.product .bookpicbox{
+  margin: 1vw 2vw;
+  width: 25%;
+}
+
+.product .bookpic, .product .no_bookpic{
+  width: 100%;
+  aspect-ratio: 1/1.65;
+  border-radius: 5px;
+}
+
+.product .bookinfoabout{
+  margin: 1vw 2vw;
+}
+
+.product .book_title{
+  font-size: 18px;
+}
+
+.product .book_info{
+  line-height: 2;
+  color:#555555;
+}
+
+/* 게시판 */
+.board .onPostBtn {
+  background-color: #4D91B6; border: none;
+}
+
+.board .boardHeader {
+  margin-top: 40px
+}
+
+.board .listHeader {
+  padding: 20px 0 17px; border-bottom: 1px solid #171717;
+}
+
+.board .board_box:hover{
+  color: blue;
+}
+
+.board .list {
+  padding: 32px; border-bottom: 1px solid #e8e8e8; cursor: pointer;
+}
+
+.board .listTitle {
+  font-size: 18px;
+}
+
+.board .listContent {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    margin-bottom: 10px;
+    color: #6A6A6A;
+}
+
+.board .listInfo .userid:after{
+  content:'|';
+  margin: 5px;
+}
+
+/* 사용자 */
+.user{
+  margin-top:10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.user .user_box{
+  padding:10px;
+  width: calc((100% - 10px) / 3);
+}
+
+.user .user_content{
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.user .user_content:hover{
+  box-shadow: 0 0 5px #cecece;
+}
+
+.user .image_box{
+  margin: 1vw;
+  width: 25%;
+  border-radius: 100%;
+}
+
+.user .profile_image{
+  width: 5vw; min-width: 90px;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+}
+
+.user .profile_default{
+  font-size: 5vw;
+  text-align: center;
+}
+
+.user .info_box{
+  width: 75%;
+}
+
+.user .score_box{
+  margin-bottom: 1vw;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.user .manner_score_star{
+  margin-right: 5px;
+  color: #FFC100;
+  font-size: 20px;
+}

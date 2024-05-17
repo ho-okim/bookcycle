@@ -1,6 +1,7 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const router = require('express').Router();
+const mysql = require('mysql2');
 const pool = require("../db.js");
 const bcrypt = require("bcrypt");
 const { isNotLoggedIn } = require('../lib/auth.js');
@@ -17,7 +18,8 @@ router.get('/email', isNotLoggedIn, async (req, res) => {
   let sql = 'SELECT COUNT(*) AS size FROM users WHERE email = ?';
 
   try {
-    const result = await pool.query(sql, [decodedEmail]);
+    const query = mysql.format(sql, [decodedEmail]);
+    const result = await pool.query(query);
     res.send(result);
   } catch (error) {
     console.error(error);
@@ -95,15 +97,17 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
   //console.log(req.body)
   try {
     // 회원 등록
-    const result = await pool.query(user_sql, [
+    const user_query = mysql.format(user_sql, [
       email, 
       await bcrypt.hash(password, 10),
       username, 
       nickname, 
       phone_number
     ]);
+    const result = await pool.query(user_query);
     
-    const verify_result = await pool.query(verify_sql, [result.insertId, token, date_expired])
+    const verify_query = mysql.format(verify_sql, [result.insertId, token, date_expired]);
+    const verify_result = await pool.query(verify_query);
     
     if (result.affectedRows === 1 && verify_result.affectedRows === 1) {
       res.send('success');
@@ -112,7 +116,8 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
       if (result) {
         let userDel_sql = 'DELETE FROM users WHERE id = ?';
         try {
-          await pool.query(userDel_sql, [result.insertId]);
+          const userDel_query = mysql.format(userDel_sql, [result.insertId]);
+          await pool.query(userDel_query);
           console.log('success deleting registered user info');
         } catch (error) {
           console.error(error);
@@ -137,7 +142,8 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
 
   try {
     // 쿼리스트링으로 들어온 securedKey로 테이블에 조회
-    let [result] = await pool.query(verify_sql, [decodedToken]);
+    const verify_query = mysql.format(verify_sql, [decodedToken]);
+    let [result] = await pool.query(verify_query);
     let dateNow = new Date();
 
     if (!result) {
@@ -151,8 +157,11 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
       let verifyRM_sql = 'DELETE FROM verification WHERE secured_key = ?';
 
         try {
-          const user_result = await pool.query(user_sql, [result.user_id]);
-          const verifyRM_result = await pool.query(verifyRM_sql, [decodedToken]);
+          const user_query = mysql.format(user_sql, [result.user_id]);
+          const user_result = await pool.query(user_query);
+
+          const verifyRM_query = mysql.format(verifyRM_sql, [decodedToken]);
+          const verifyRM_result = await pool.query(verifyRM_query);
 
           if (user_result.affectedRows === 1 && verifyRM_result.affectedRows === 1) {
             res.redirect("http://localhost:3000/verify/confirmed");

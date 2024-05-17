@@ -6,9 +6,10 @@ export async function getUserInfo(userId) {
     const res = await axios.get(`/user/${userId}`);
     
     if (res.statusText !== "OK") {
-        throw new Error("사용자정보 조회 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
+
     return body;
 }
 
@@ -27,7 +28,7 @@ export async function getUserProductAll(userId, filter) {
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
-        throw new Error("판매목록 조회 실패");
+        window.location.href = '/error/500';
     }
     // res.data는 배열
     const body = res.data[0].total;
@@ -54,7 +55,7 @@ export async function getUserProductList(userId, limit, offset, order, filter) {
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
-        throw new Error("판매목록 조회 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
 
@@ -67,7 +68,7 @@ export async function getUserReviewAll(userId, buyOrSell) {
     const res = await axios.get(url);
 
     if (res.statusText !== "OK") {
-        throw new Error("구매후기 조회 실패");
+        window.location.href = '/error/500';
     }
     
     const body = res.data.total;
@@ -84,7 +85,7 @@ export async function getUserReviewList(userId, buyOrSell, limit, offset, order)
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {
-        throw new Error("구매후기 조회 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
@@ -96,7 +97,7 @@ export async function getUserReviewTagTotal(userId) {
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {
-        throw new Error("리뷰 조회 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
@@ -109,7 +110,7 @@ export async function getUserReviewTag(userId, limit, offset) {
     const res = await axios.get(url);
     
     if (res.statusText !== "OK") {
-        throw new Error("리뷰 조회 실패");
+        window.location.href = '/error/500';
     }
     const body = res.data;
     return body;

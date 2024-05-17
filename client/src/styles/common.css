@@ -43,7 +43,7 @@ body{font-family: 'Pretendard-SemiBold';}
 /* common setting */
 *{margin: 0; padding: 0; box-sizing: border-box;}
 ul, ol, li{list-style: none;}
-a{text-decoration: none;}
+a{text-decoration: none; color:black;}
 .inner{max-width: 1320px;}
 
 input{
@@ -69,3 +69,21 @@ textarea:focus{outline: none;}
 
 input::placeholder{color: #979797; font-family: 'Pretendard-Regular';}
 textarea::placeholder{color: #979797; font-family: 'Pretendard-Regular';}
+textarea:focus{}
+
+/* 빈 데이터 박스 또는 로딩 박스 */
+.blank_box{
+  margin: 40px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.blank_message{
+  padding: 7px 15px;
+  background-color: rgb(77, 145, 182);
+  color: white;
+  border-radius: 50px;
+}

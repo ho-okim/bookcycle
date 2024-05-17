@@ -1,19 +1,33 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect } from "react";
 import { getLoginUser, login, logout } from "../api/login";
+import { getNotification } from "../api/alert";
 
 const LoginUserContext = createContext();
 
 function AuthProvider({children}) {
     
     const [user, setUser] = useState(null); // 로그인 한 사용자
+    const [notification, setNotification] = useState([]); // 현재 사용자의 알림 목록
+
+    async function getUser() { // 현재 로그인 한 사용자 가져오기(req.user)
+        const res = await getLoginUser();
+        setUser(res);
+    }
+
+    async function getUserNotification() { // 현재 로그인 한 사용자의 알림 목록 가져오기
+        const res = await getNotification();
+        setNotification(res);
+    }
 
     useEffect(()=>{
-        async function getUser() { // 현재 로그인 한 사용자 가져오기(req.user)
-            const res = await getLoginUser();
-            setUser(res);
-        }
         getUser();
     }, []);
+
+    useEffect(()=>{
+        if (user) { // 로그인 해야만 알림 가져옴
+            getUserNotification();
+        }
+    }, [user]);
 
     // 로그인 처리
     const handleLogin = useCallback(async (email, password)=> {

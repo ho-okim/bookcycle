@@ -58,11 +58,16 @@ router.get('/board/:id', async (req, res) => {
   let sql = "SELECT * FROM board_user WHERE id = ?";
   const query = mysql.format(sql, [id]);
 
+  let count_sql = 'UPDATE board SET view_count = view_count + 1 WHERE id =? '
+  const result_query = mysql.format(count_sql, [id]);
+  
   try {
     // db connection pool을 가져오고, query문 수행
+    
     let result = await pool.query(query);
-    res.send(result);
+    await pool.query(result_query); // 조회수 업데이트
 
+    res.send(result);
   } catch (error) {
     console.error(error);
     res.send('error');

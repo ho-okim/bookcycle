@@ -4,19 +4,15 @@ import { useState } from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import { FunnelFill } from 'react-bootstrap-icons';
 import { useUserProduct } from '../../contexts/UserProductContext';
-import { useNavigate } from 'react-router-dom';
-import { useTargetUser } from '../../contexts/TargetUserContext';
+import { useHref, useNavigate } from 'react-router-dom';
 
 // 필터링 버튼과 오버레이
-function Filtering({
-    category,
-    searchParams
-    }) {
+function UserProductFiltering({category}) {
 
-    const { targetUserId } = useTargetUser(); // 대상 id
+    const url = useHref();
 
-    const { order, setOrder, filter, setFilter } = useUserProduct();
-    const [currentCategory, setCurrentCategory] = useState(searchParams.get("category_id")-1); // 현재 선택된 카테고리
+    const { filter, setFilter } = useUserProduct();
+    const [currentCategory, setCurrentCategory] = useState(filter.category_id-1); // 현재 선택된 카테고리
     
     const navigate = useNavigate();
 
@@ -26,7 +22,8 @@ function Filtering({
             setCurrentCategory(-1);
             return;
         }
-        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order.name}&ascend=${order.ascend}`);
+
+        navigate(url, { state : { filter : filter }});
     }
 
     function handleSoldChange(event) { // 판매여부 선택 수정
@@ -99,4 +96,4 @@ function Filtering({
     )
 }
 
-export default Filtering;
+export default UserProductFiltering;

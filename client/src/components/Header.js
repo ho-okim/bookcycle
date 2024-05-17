@@ -3,21 +3,20 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/LoginUserContext.js';
-import { ChatDotsFill } from 'react-bootstrap-icons';
-import { useEffect } from 'react';
+import { ChatDotsFill, Search } from 'react-bootstrap-icons';
 
 function Header() {
 
   const { user, handleLogout } = useAuth(); // 로그인 한 사용자
+  let search = '';
 
   const navigate = useNavigate();
 
   const navigateToChat = () => {
-    navigate('/chat')
+    navigate('/chat');
   }
 
   async function handleLogoutClick() { // 로그아웃 처리
@@ -25,8 +24,26 @@ function Header() {
     navigate(0);
   }
 
+  function handleKeyword(e) { // 검색어 설정
+    search = e.target.value;
+  }
+
+  function handleSubmit() {
+    if (!search) {
+      return;
+    }
+    navigate(`/search?keyword=${search}`);
+  }
+
+  function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
+    if (e.keyCode == 13) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  }
+
   // 현재 페이지가 chat 이라면 채팅 바로가기 버튼 안 보이도록 설정하기 위함
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <>
@@ -76,11 +93,18 @@ function Header() {
                 <Form className="d-flex">
                   <Form.Control
                     type="search"
-                    placeholder="Search"
+                    placeholder="전체 검색"
                     className="me-2"
                     aria-label="Search"
+                    onChange={(e)=>{handleKeyword(e)}}
+                    onKeyDown={(e)=>{handleEnter(e)}}
+                    maxLength={50}
                   />
-                  <Button variant="outline-success">Search</Button>
+                  <Button 
+                  variant="outline-success" 
+                  onClick={handleSubmit}>
+                    <Search/>
+                  </Button>
                 </Form>
               </Offcanvas.Body>
             </Navbar.Offcanvas>

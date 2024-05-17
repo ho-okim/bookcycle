@@ -6,17 +6,39 @@ export async function getReport() {
         const res = await axios.get(`/report/myreport/`);
 
         if (res.statusText !== "OK") {
-            throw new Error("신고내역 조회 실패");
+            window.location.href = '/error/500';
         }
         const body = res.data;
         return body;
     } catch (error) {
         if (error.response.status == 403) {
-            throw new Error("login needed");
+            window.location.href = '/login';
         } else if (error.response.status == 401) {
-            throw new Error("not allowed");
+            window.location.href = '/error/401';
         } else {
-            throw error;
+            window.location.href = '/error/500';
+        }
+    }
+}
+
+// 신고 여부 확인
+export async function getReportedOrNot(category, target_id) {
+    try {
+        let url = `/report/reported?category=${category}&target_id=${target_id}`;
+        const res = await axios.get(url);
+
+        if (res.statusText !== "OK") {
+            window.location.href = '/error/500';
+        }
+        const body = res.data[0].size;
+        return body;
+    } catch (error) {
+        if (error.response.status == 403) {
+            window.location.href = '/login';
+        } else if (error.response.status == 401) {
+            window.location.href = '/error/401';
+        } else {
+            window.location.href = '/error/500';
         }
     }
 }
@@ -31,39 +53,39 @@ export async function addReport(reportForm) {
         });
     
         if (res.statusText !== "OK") {
-            throw new Error("신고내역 추가 실패");
+            window.location.href = '/error/500';
         }
     
         const body = res.data;
         return body;
     } catch (error) {
         if (error.response.status == 403) {
-            throw new Error("login needed");
+            window.location.href = '/login';
         } else {
-            throw error;
+            window.location.href = '/error/500';
         }
     }
 }
 
-// 신고내역 해결 처리
+// 신고내역 해결 처리 -- 관리자 구현x
 export async function editReport(id) {
     try {
         let url = `/report/${id}`;
         const res = await axios.get(url);
     
         if (res.statusText !== "OK") {
-            throw new Error("신고내역 수정 실패");
+            window.location.href = '/error/500';
         }
         
         const body = res.data;
         return body;
     } catch (error) {
         if (error.response.status == 403) {
-            throw new Error("login needed");
+            window.location.href = '/login';
         } else if (error.response.status == 401) {
-            throw new Error("not allowed");
+            window.location.href = '/error/401';
         } else {
-            throw error;
+            window.location.href = '/error/500';
         }
     }
 }

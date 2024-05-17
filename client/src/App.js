@@ -39,8 +39,9 @@ import VerifyError from './components/verify/VerifyError.js';
 import VerifyExpired from './components/verify/VerifyExpired.js';
 import VerifyNotFound from './components/verify/VerifyNotFound.js';
 import Error from './pages/Error.js';
-import UserReview from './components/user/UserReview.js';
 import UserReviewList from './components/user/UserReviewList.js';
+import Search from './pages/Search.js';
+import SearchUser from './components/search/SearchUser.js';
 
 function App() {
   return (
@@ -59,6 +60,9 @@ function App() {
             <Route path='error' element={<VerifyError/>}/>
             <Route path='expired' element={<VerifyExpired/>}/>
             <Route path='notfound' element={<VerifyNotFound/>}/>
+          </Route>
+          <Route path='/search' element={<Search/>}>
+            <Route path='user' element={<SearchUser/>}/>
           </Route>
           <Route path="/mypage">
             <Route path="buyList" element={<MyBuyList/>}/>
@@ -79,8 +83,8 @@ function App() {
           </Route>
           <Route path="/user/:id/*" element={<User/>}>
             <Route path="product" element={<UserProduct/>}/>
-            <Route path="review" element={<UserReviewList/>}>
-              <Route path="*" element={<UserReview/>}/>
+            <Route path="review">
+              <Route path="*" element={<UserReviewList/>}/>
             </Route>
             <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
             <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
@@ -92,7 +96,6 @@ function App() {
           </Route>
           {/* 합칠 때 수정하기 */}
           <Route path="/productList" element={<ProductList/>}/>
-          <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
           <Route path="/product/write" element={<ProductWrite/>}/>
           <Route path="/product/edit/:id" element={<ProductEdit/>}/>

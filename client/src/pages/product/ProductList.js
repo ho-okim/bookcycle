@@ -1,64 +1,142 @@
-import { Button, Navbar, Container, Nav, useNavigate } from "react-bootstrap";
-import React, { useState, useEffect, Component } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../../styles/common.css";
-import style from "../../styles/productList.module.css";
-import ProductDetail from "./ProductDetail.js";
-import List from "../../components/product/List.js";
+import styles from "../../styles/productList.module.css";
+import { Button, Container } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import ProductBox from "../../components/product/ProductBox.js";
 import ProductCategory from "../../components/product/ProductCategory.js";
-
+import ProductSorting from "../../components/product/ProductSorting.js";
+import ProductPagination from '../../components/product/ProductPagination.js';
+import ProductOptionContext from '../../contexts/ProductOptionContext.js';
+import LoadingSpinner from '../../components/LoadingSpinner.js';
+import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { getProductAll, getProductList } from '../../api/product.js';
+import ProductSearchInput from '../../components/product/ProductSearchInput.js';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function ProductList() {
 
-    /* 페이징 구현 중
-        const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams(); // query string
+  const url = useHref();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-        const [page, setPage] = useState(1); //페이지
-        const limit = 5; // posts가 보일 최대한의 갯수
-        const offset = (page-1)*limit; // 시작점과 끝점을 구하는 offset
+  const { user } = useAuth(); // 로그인 한 사용자
 
-        const postsData = (posts) => {
-        if(posts){
-            let result = posts.slice(offset, offset + limit);
-            return result;
-        }
-    }
-    */
-    function onSelected(){};
+  const [loading, setLoading] = useState(false); // 데이터 로딩 처리
+  const [productList, setProductList] = useState([]); // 상품목록
+  const [offset, setOffset] =  useState(0); // 데이터 가져오는 시작점
+  const [totalData, setTotalData] = useState(0); // 전체 데이터 수
+  const [filter, setFilter] = useState({ // 필터
+    category_id : location.state?.filter?.category_id ?? 0,
+    condition : location.state?.filter?.condition ?? 'all'
+  }); 
+  const [order, setOrder] = useState({ // 정렬기준
+    name : location.state?.order?.name ?? 'createdAt', 
+    ascend : location.state?.order?.ascend ?? 'DESC' 
+  });
+  const [searchKeyword, setSearchKeyword] = useState({ // 검색
+    type : searchParams.get("stype") ?? 'product_name', 
+    keyword : searchParams.get("search") ?? ''
+  });
 
-    
+  const limit = 15;
+
+    // 전체 상품 수 조회 - 페이징 처리 위함
+  async function getTotal() { 
+    const res = await getProductAll(filter, searchKeyword);
+    setTotalData(res);
+  }
+
+  // 상품 목록 가져오기
+  async function getProducts() {
+    let res;
+    res = await getProductList(limit, offset, order, filter, searchKeyword);
+    setProductList(res);
+    setLoading(false);
+  }
+
+  useEffect(()=>{
+      async function pageOffset() { // 페이지 시작점 처리
+          if (!searchParams.get("page") 
+          || searchParams.get("page") < 0 
+          || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
+          {
+              setOffset(0);
+          } else {
+              setOffset((searchParams.get("page")-1)*limit);
+          }
+      }
+
+      getTotal();
+      pageOffset();
+  }, [totalData, searchParams, filter]);
+
+  useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
+      setLoading(true);
+      getProducts();
+  }, [offset, searchParams, order, filter, url]);
+
+  function handlePagination(pageNumber) { // pagination에서 offset 변경
+      setOffset((pageNumber-1)*limit);
+  }
+
+  function handleClick() {
+    navigate("/product/write");
+  }
+
     return (
-      <Container>
-        <div className={`${style.inner}`}>
-          <div className={`${style.buttonList}`}>
-            <span>1 2 3 4 5 &gt; </span>
-            <div className={`${style.productcondition}`}>
-              {<select id="sort" className=" outline-none" onChange={onSelected}>
-                  <option value="condition">상품상태</option>
-                  <option value="conditiontop">상</option>
-                  <option value="conditionmid">중</option>
-                  <option value="conditionbo">하</option>
-                </select>
-              }
+      <ProductOptionContext.Provider value={{order, setOrder, filter, setFilter, searchKeyword, setSearchKeyword}}>
+        <Container>
+          <div className={`${styles.list_box} inner`}>
+              <ProductCategory filter={filter} setFilter={setFilter}/>
+              <div className={styles.productList}>
+                {
+                  (user) ?
+                  <div className={styles.add_box}>
+                    <Button className={styles.add_btn}
+                    onClick={handleClick}>책 등록하기</Button>
+                  </div>
+                  : null
+                }
+                <div className={styles.search_box}>
+                  <ProductSearchInput/>
+                </div>
+                <div className={styles.option_box}>
+                  <ProductPagination     
+                  totalData={totalData}
+                  limit={limit}
+                  blockPerPage={5}
+                  handlePagination={handlePagination}/>
+                  <ProductSorting order={order} setOrder={setOrder}/>
+                </div>
+                {
+                  loading ? 
+                  <div className='blank_box'>
+                    <p className='blank_message'>데이터를 불러오는 중입니다</p>
+                    <LoadingSpinner/>
+                  </div>
+                  :
+                  <div className={styles.product_box}>
+                  {
+                    (productList && productList.length > 0) ?
+                    productList.map((el, i)=>{
+                      return(
+                        <ProductBox key={i} product={el}/>
+                      )
+                    })
+                    :
+                    <div className='blank_box'>
+                      <p className='blank_message'>
+                          검색된 상품이 없어요!
+                      </p>
+                    </div>
+                  }
+                  </div>
+                }
+              </div>
             </div>
-            <div className={`${style.order}`}>
-              {<select id="sort" className=" outline-none" onChange={onSelected}>
-                  <option value="createdAt">최신순</option>
-                  <option value="likeOrder">좋아요 순</option>
-                </select>
-              }
-            </div>
-          </div> 
-
-          <div className={`${style.productLists}`}>
-          <ProductCategory/>
-            <div className={`${style.productDetailList}`}>
-            <List/>
-            </div>
-          </div>
-        </div>
-      </Container>
+        </Container>
+      </ProductOptionContext.Provider>
     );
 }
 

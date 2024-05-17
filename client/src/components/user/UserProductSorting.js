@@ -2,18 +2,16 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, CurrencyDollar } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
+import { useHref, useNavigate } from 'react-router-dom';
 import { useUserProduct } from '../../contexts/UserProductContext';
-import { useTargetUser } from '../../contexts/TargetUserContext';
 
 // 정렬 버튼
-function ProductSorting({ sortType, typeAscend }) {
+function UserProductSorting({ sortType, typeAscend }) {
 
-    const {targetUserId} = useTargetUser(); // 대상 id
-
+    const url = useHref();
     const navigate = useNavigate();
 
-    const {order, filter, setOrder} = useUserProduct();
+    const {order, setOrder} = useUserProduct();
 
     let tooltipName;
     let sortIcon;
@@ -36,7 +34,8 @@ function ProductSorting({ sortType, typeAscend }) {
         let order_id = e.currentTarget.id;
         setOrder((order)=>({...order, name : order_id, ascend : !typeAscend}));
         
-        navigate(`/user/${targetUserId}/product?sold=${filter.sold}&category_id=${filter.category_id}&order=${order_id}&ascend=${!typeAscend}`);
+        // setOrder만으로도 잘 작동한다면 제거해도 됨
+        //navigate(url, { state : {order : order} });
     }
     
     return(
@@ -54,4 +53,4 @@ function ProductSorting({ sortType, typeAscend }) {
     )
 }
 
-export default ProductSorting;
+export default UserProductSorting;
