@@ -159,7 +159,6 @@ export async function replyWrite(id, reply){
   }
 }
 
-
 // 댓글 조회
 export async function replyList(id){
 

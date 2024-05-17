@@ -52,9 +52,12 @@ router.get('/board/:id', async (req, res) => {
   // query문 설정
   let sql = "SELECT * FROM board_user WHERE id = ?";
 
+  const count_sql = 'UPDATE board SET view_count = view_count + 1 WHERE id =? '
   try {
     // db connection pool을 가져오고, query문 수행
+    
     let result = await pool.query(sql, [id]);
+    let count_result = await pool.query(count_sql, [id]);
     res.send(result);
 
   } catch (error) {

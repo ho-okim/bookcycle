@@ -157,6 +157,7 @@ app.use("/", require('./api/board.js'));
 app.use("/", require('./api/report.js'));
 app.use("/", require('./api/chat.js'));
 app.use("/", require('./api/search.js'));
+app.use("/", require('./api/alert.js'));
 
 const sessionMiddleware = session(sessionOption)
 

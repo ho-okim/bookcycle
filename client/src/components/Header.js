@@ -37,6 +37,7 @@ function Header() {
 
   function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
     if (e.keyCode == 13) {
+      e.preventDefault();
       handleSubmit();
     }
   }
@@ -96,7 +97,7 @@ function Header() {
                     className="me-2"
                     aria-label="Search"
                     onChange={(e)=>{handleKeyword(e)}}
-                    onKeyUp={(e)=>{handleEnter(e)}}
+                    onKeyDown={(e)=>{handleEnter(e)}}
                     maxLength={50}
                   />
                   <Button 

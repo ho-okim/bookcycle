@@ -152,7 +152,9 @@
 }
 
 .user .profile_image{
-  width: 5vw;
+  width: 5vw; min-width: 90px;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
 }
 
 .user .profile_default{

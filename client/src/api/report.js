@@ -67,7 +67,7 @@ export async function addReport(reportForm) {
     }
 }
 
-// 신고내역 해결 처리
+// 신고내역 해결 처리 -- 관리자 구현x
 export async function editReport(id) {
     try {
         let url = `/report/${id}`;

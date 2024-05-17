@@ -30,7 +30,8 @@ function ProductSearchInput() {
 
     function handleEnter(e) { // 검색하고 엔터 눌러도 검색되도록 설정
         if (e.keyCode == 13) {
-        handleSubmit();
+            e.preventDefault();
+            handleSubmit();
         }
     }
 
@@ -51,7 +52,7 @@ function ProductSearchInput() {
             </Dropdown>
             <Form.Control type="search" id='searchKeyword' 
             maxLength={50} onChange={(e)=>{handleKeyword(e)}} 
-            onKeyUp={(e)=>{handleEnter(e)}}
+            onKeyDown={(e)=>{handleEnter(e)}}
             value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/>검색</Button>
         </InputGroup>
