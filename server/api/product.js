@@ -81,11 +81,14 @@ router.get('/productList/product', async (req, res) => {
 });
 
 router.get('/productDetail/:id', async (req, res) => {
+    const { id } = req.params;
+    
     // query문 설정
-    let sql = "SELECT * FROM product ORDER BY createdAt DESC LIMIT 5";
+    let sql = "SELECT * FROM product_detail WHERE product_id = ?";
 
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql);
+    const query = mysql.format(sql, [id]);
+    let [result] = await pool.query(query); //보안상을 위하여 query 문 작성하게 될 때 이런 식으로 할 것
     res.send(result);
 });
 

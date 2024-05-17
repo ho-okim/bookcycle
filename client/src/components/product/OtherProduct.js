@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { getUserProductList } from '../../api/user.js';
 
-function OtherProduct(id) {
+
+function OtherProduct({id}) {
 
     const [otherProductList, setOtherProductList] = useState([]); // 상품목록
 

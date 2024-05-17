@@ -56,8 +56,8 @@ export async function getProductList(limit, offset, order, filter, searchKeyword
   return body;
 }
 
-export async function productDetail(){
-  const res = await axios.get('/productDetail/:id');
+export async function productDetail(id) {
+  const res = await axios.get(`/productDetail/${id}`);
   
   if (res.statusText != "OK") {
     throw new Error("product 데이터 로딩 실패");
