@@ -80,7 +80,8 @@ function App() {
             <Route path="review" element={<UserReviewList/>}>
               <Route path="*" element={<UserReview/>}/>
             </Route>
-            <Route path="reviewWrite" element={<ReviewWrite/>}/>
+            <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
+            <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
             <Route path="reviewEdit" element={<ReviewEdit/>}/>
           </Route>
           <Route path="/chat">
@@ -88,7 +89,6 @@ function App() {
             <Route path=":id" element={<Chat/>}/>
           </Route>
           <Route path="/productList" element={<ProductList/>}/>
-          <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
           <Route path="/error">
             <Route path=":errorCode" element={<Error/>}/>
