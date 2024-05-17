@@ -1,9 +1,10 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { getUserProductList } from '../../api/user.js';
+import { Button } from 'react-bootstrap';
 
 
 function OtherProduct({id}) {
@@ -19,10 +20,16 @@ function OtherProduct({id}) {
         category_id : 0
     };
 
+    const navigate = useNavigate();
+
     // 상품 목록 가져오기
     async function getOtherProducts() {
         const res = await getUserProductList(id, 5, 0, order, filter);
         setOtherProductList(res);
+    }
+
+    function handleClick() {
+        navigate(`/user/${id}/product`);
     }
 
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
@@ -39,6 +46,7 @@ function OtherProduct({id}) {
             <div className='inner'>
                 <div className={styles.title}>
                     <h4 className={styles.title_font}>판매목록</h4>
+                    <Button onClick={handleClick}>더보기</Button>
                 </div>
                 <div className={databox_css}>
                     {

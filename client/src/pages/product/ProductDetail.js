@@ -12,10 +12,12 @@ import { getReportedOrNot } from "../../api/report.js";
 
 
 function ProductDetail() {
+  const { id } = useParams();
+
+  const { user } = useAuth(); // 로그인한 사용자
+
   const [productList, setProductList] = useState({});
   const [category, setCategory] = useState([]);
-  const { id } = useParams();
-  const { user } = useAuth(); // 로그인한 사용자
 
   const { none_like } = useState(0);
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
@@ -29,18 +31,17 @@ function ProductDetail() {
     if (!modalShow) setModalShow(true);
   };
 
-  async function getDetail() {
+  async function getDetail() { // 상품 정보 가져오기
     const data = await productDetail(id);
     setProductList(data);
-  } //카테고리 데이터 가져오기
+  } 
 
   async function getReported() { // 신고 여부 확인
-    const res = await getReportedOrNot('user', productList.product_id);
-    console.log(res)
+    const res = await getReportedOrNot('product', id);
     setIsReported((isReported)=>((res === 0) ? false : true));
   }
 
-  async function productcate(){
+  async function productcate() { //카테고리 데이터 가져오기
     const data = await getCategory();
     setCategory(data);
   }
@@ -50,18 +51,12 @@ function ProductDetail() {
   let [detail, setDetail] = useState([])
 
   useEffect(()=>{
-    const test = async()=>{{
-      await getDetail()
-    }}
-    test()
+    getDetail();
   },[id])
 
   useEffect(()=>{
-    const test = async()=>{{
-      await productcate()
-    }}
-    test()
-  },[])
+    productcate(); // 최초 렌더링때만 카테고리 가져옴
+  },[]);
 
   useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
     if (user) { // 로그인을 했을 때만 호출
@@ -71,13 +66,17 @@ function ProductDetail() {
 
   function renderReportBtn() { // 신고 버튼 렌더링 처리
     if (user) {
-      if (user.id != productList.seller_id) { // user.id == 상품소유자id
+      if (user.id != productList.seller_id && !isReported) { // user.id == 상품소유자id
         // ownerId = 상품소유자id
         return (
           <>
             <Button variant='danger' size="sm" onClick={handleOpen}><MegaphoneFill/> 신고</Button>
-            <Report show={modalShow} handleClose={handleClose} ownerId={1}/>
+            <Report show={modalShow} handleClose={handleClose} targetId={productList.product_id} category={'product'}/>
           </>
+        )
+      } else if (user.id != productList.seller_id && isReported) {
+        return(
+          <div>이미 신고했어요</div>
         )
       }
     }
@@ -173,7 +172,7 @@ function ProductDetail() {
                     </div>
                     <div className ={`${style.info0405}`}>
                       <div className ='info4'>
-                        <span>{productList.nickname}</span>
+                        <span><Link to={`/user/${productList.seller_id}`}>{productList.nickname}</Link></span>
                       </div>
                     <div className= 'info05'>
                       <Link to={'/chat'} style={{ textDecoration: "none", color: "black"}}>판매자와 채팅하기</Link>

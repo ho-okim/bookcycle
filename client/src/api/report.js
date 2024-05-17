@@ -46,10 +46,10 @@ export async function getReportedOrNot(category, target_id) {
 // 신고내역 추가
 export async function addReport(reportForm) {
     try {
-        const { category, user_id, target_id, content, ownerId } = reportForm;
+        const { category, user_id, target_id, content } = reportForm;
 
         const res = await axios.post('/report', {
-            category, user_id, target_id, content, ownerId
+            category, user_id, target_id, content
         });
     
         if (res.statusText !== "OK") {

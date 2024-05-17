@@ -9,13 +9,17 @@ export async function login(email, password) {
     // let newEmail = REGEX.EMAIL_REG.test(email) ? email : null;
     // let newPwd = REGEX.PASSWORD_REG.test(password) ? password : null;
 
-    const res = await axios.post('/login', { email, password });
+    try {
+        const res = await axios.post('/login', { email, password });
     
-    if (res.statusText !== "OK") {
+        if (res.statusText !== "OK") {
+            window.location.href = '/error/500';
+        }
+        const body = res.data;
+        return body;
+    } catch (error) {
         window.location.href = '/error/500';
     }
-    const body = res.data;
-    return body;
 }
 
 // 현재 로그인한 사용자 가져오기

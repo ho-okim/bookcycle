@@ -84,10 +84,13 @@ router.get('/productDetail/:id', async (req, res) => {
     
     // query문 설정
     let sql = "SELECT * FROM product_detail WHERE product_id = ?";
+    let count_sql = "UPDATE product SET view_count = view_count + 1 WHERE id = ?";
 
     // db connection pool을 가져오고, query문 수행
     const query = mysql.format(sql, [id]);
+    const count_query = mysql.format(count_sql, [id]);
     let [result] = await pool.query(query); //보안상을 위하여 query 문 작성하게 될 때 이런 식으로 할 것
+    await pool.query(count_query);
     res.send(result);
 });
 
@@ -131,7 +134,8 @@ const path = require('path')
 const multer = require('multer')
 const uuid4 = require('uuid4')
 // 파일 시스템 함수 require
-const fs = require('fs')
+const fs = require('fs');
+const { count } = require('console');
 
 // 미들웨어 설정
 const upload = multer({

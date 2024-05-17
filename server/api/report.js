@@ -22,7 +22,7 @@ router.get('/report/myreport/', isLoggedIn, async (req, res) => {
 });
 
 // 신고 했는지 여부 확인
-router.get('/report/reported/', isLoggedIn, async (req, res) => {
+router.get('/report/reported', isLoggedIn, async (req, res) => {
     const id = req.user.id;
     const { category, target_id } = req.query;
 
@@ -31,7 +31,7 @@ router.get('/report/reported/', isLoggedIn, async (req, res) => {
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const query = mysql.format(sql, [id, category, parseInt(target_id)]);
+        const query = mysql.format(sql, [id, category, target_id]);
         const result = await pool.query(query);
 
         res.send(result);
@@ -44,12 +44,7 @@ router.get('/report/reported/', isLoggedIn, async (req, res) => {
 // 신고내역 추가
 router.post('/report', isLoggedIn, async (req, res) => {
 
-    const {category, user_id, target_id, content, ownerId} = req.body;
-
-    if (user_id == ownerId) {
-        res.send('not allowed');
-        return;
-    }
+    const {category, user_id, target_id, content} = req.body;
 
     // query문 설정
     let sql = 'INSERT INTO report (category, user_id, target_id, content) VALUES (?, ?, ?, ?)';

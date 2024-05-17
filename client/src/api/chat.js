@@ -7,15 +7,16 @@ export async function chatList(){
     const ron = result.data.readOrNot[0]
   
     if (result.statusText != "OK") {
-      throw new Error("chatList GET fails");
+      //console.error("chatList GET fails");
+      window.location.href = '/error/500';
     } 
     const body = {res, ron}
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -25,7 +26,8 @@ export async function newChatroom() {
     const res = await axios.post('/newChatroom');
   
     if (res.statusText != "OK") {
-      throw new Error("creating new chatroom failed");
+      //console.error("creating new chatroom failed");
+      window.location.href = '/error/500';
     } 
     const body = res.data;
     body.message = 'success'
@@ -33,9 +35,9 @@ export async function newChatroom() {
     return body.insertId;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -47,16 +49,17 @@ export async function getChatMsg(roomId) {
     const res = result.data
     
     if (result.statusText != "OK") {
-      throw new Error("GET chat message failed");
+      //console.error("GET chat message failed");
+      window.location.href = '/error/500';
     } 
     const body = res;
     
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -68,16 +71,17 @@ export async function setBuyerId(targetId, productId) {
     const res = result.data
     
     if (result.statusText != "OK") {
-      throw new Error("PUT buyer id failed");
+      //console.error("PUT buyer id failed");
+      window.location.href = '/error/500';
     } 
     const body = res;
     
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }

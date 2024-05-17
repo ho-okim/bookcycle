@@ -1,41 +1,22 @@
 import styles from '../styles/report.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import report_reason from '../lib/report_reason.js';
 import { Modal, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import { addReport } from '../api/report.js';
 
-function Report({show, handleClose, ownerId}) {
+function Report({show, handleClose, targetId, category}) {
 
     const { user } = useAuth();
-
-    const currentUrl = window.location.href; // 현재 url
-    const { id } = useParams(); // url에서 가져온 id param
     
-    let reasonList = []; // 신고 사유 목록 가져오기
-    let category = ''; // 신고 카테고리
-    if (currentUrl.includes("user")) {
-        reasonList = report_reason.user;
-        category = "user";
-    } else if (currentUrl.includes("board")) {
-        reasonList = report_reason.board;
-        category = "board";
-    } else if (currentUrl.includes("reply")) {
-        reasonList = report_reason.reply;
-        category = "reply";
-    } else if (currentUrl.includes("product")) {
-        reasonList = report_reason.product;
-        category = "product";
-    }
+    let reasonList = report_reason[category]; // 신고 사유 목록 가져오기
 
     const [reportForm, setReportForm] = useState({ // 신고 데이터
         category : category,
         user_id : 0,
-        target_id : parseInt(id), 
+        target_id : parseInt(targetId), 
         content : '',
-        ownerId : parseInt(ownerId)
     });
 
     const [currentIndex, setCurrentIndex] = useState(-1); // 현재 선택된 checkbox
@@ -72,8 +53,8 @@ function Report({show, handleClose, ownerId}) {
     }
 
     useEffect(()=>{ // 신고 양식에 사용자 id 수정
-        setReportForm((reportForm) => ({...reportForm, user_id : user?.id || 0}));
-    }, [user]);
+        setReportForm((reportForm) => ({...reportForm, user_id : user?.id || 0, target_id : targetId}));
+    }, [user, targetId]);
 
     return(
         <Modal show={show} onHide={handleHide}

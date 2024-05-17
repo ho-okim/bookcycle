@@ -6,17 +6,18 @@ export async function buyList() {
     const res = await axios.get('/mypage/buyList');
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -26,17 +27,18 @@ export async function buyGiveReviewList() {
   try {
     const res = await axios.get('/mypage/buyGiveReviewList');
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -46,17 +48,18 @@ export async function buyGetReviewList() {
   try {
     const res = await axios.get('/mypage/buyGetReviewList');
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -67,17 +70,18 @@ export async function heartList() {
     const res = await axios.get('/mypage/heartList');
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -87,7 +91,8 @@ export async function sellList() {
   const res = await axios.get('/mypage/sellList');
 
   if (res.statusText !== "OK") {
-    throw new Error("mypage 로딩 실패");
+    //console.error("mypage 로딩 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
   return body;
@@ -99,17 +104,18 @@ export async function sellGiveReviewList() {
     const res = await axios.get('/mypage/sellGiveReviewList');
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -120,17 +126,18 @@ export async function sellGetReviewList() {
     const res = await axios.get('/mypage/sellGetReviewList');
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -140,17 +147,18 @@ export async function postList() {
     const res = await axios.get('/mypage/postList');
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -161,17 +169,18 @@ export async function confirmPassword(password) {
     const res = await axios.post('/mypage/confirmPassword', { password });
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -182,19 +191,20 @@ export async function mypage() {
     const res = await axios.get('/mypage/edit');
   
     if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    } else if (error.response.status == 404) {
-      throw new Error("user not found");
+      window.location.href = '/error/401';
+    } else if (error.response.status == 400) {
+      window.location.href = '/error/400';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -206,17 +216,18 @@ export async function mypageEdit(formData) {
     console.log("클라이언트 :", formData)
   
     if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    }  else {
-      throw error;
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
     }
   }
 }
@@ -227,17 +238,18 @@ export async function sellerReviewWrite(id) {
     const res = await axios.get(`/user/${id}/sellerReviewWrite`);
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -248,7 +260,8 @@ export async function sellerReviewWritePost(id, score, tagIndex, reviewContent, 
     const res = await axios.post(`/user/${id}/sellerReviewWrite`, {score, tagIndex, reviewContent, productId});
     console.log('요청결과',res)
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
@@ -264,17 +277,18 @@ export async function buyerReviewWrite(id) {
     const res = await axios.get(`/user/${id}/buyerReviewWrite`);
 
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }
@@ -285,7 +299,8 @@ export async function buyerReviewWritePost(id, score, tagIndex, reviewContent, p
     const res = await axios.post(`/user/${id}/buyerReviewWrite`, {score, tagIndex, reviewContent, productId});
     console.log('요청결과',res)
     if (res.statusText !== "OK") {
-      throw new Error("mypage 로딩 실패");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     }
     const body = res.data;
     return body;
@@ -300,17 +315,18 @@ export async function sellerReviewEditData(id, productId) {
   try{
     const res = await axios.get(`/user/${id}/sellerReviewEdit?productId=${productId}`);
       if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
+        //console.error("mypage 로딩 실패");
+        window.location.href = '/error/500';
       }
       const body = res.data;
       return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
-    } else if (error.response.status == 400) {
-      throw new Error("required data missing");
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
     }
   }
 }
@@ -320,7 +336,8 @@ export async function sellerReviewEdit(id, score, tagIndex, reviewContent, produ
   const res = await axios.put(`/user/${id}/sellerReviewEdit`, {score, tagIndex, reviewContent, productId});
 
   if (res.statusText !== "OK") {
-    throw new Error("mypage 로딩 실패");
+    //console.error("mypage 로딩 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
   return body;
@@ -331,18 +348,21 @@ export async function buyerReviewEditData(id, productId) {
   try{
     const res = await axios.get(`/user/${id}/buyerReviewEdit?productId=${productId}`);
       if (res.statusText !== "OK") {
-        throw new Error("mypage 로딩 실패");
+        //console.error("mypage 로딩 실패");
+        window.location.href = '/error/500';
       }
       const body = res.data;
       return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else if (error.response.status == 401) {
-      throw new Error("not allowed");
+      window.location.href = '/error/401';
     } else if (error.response.status == 400) {
       throw new Error("required data missing");
-    }
+    } else {
+      window.location.href = '/error/500';
+    } 
   }
 }
 
@@ -351,7 +371,8 @@ export async function buyerReviewEdit(id, score, tagIndex, reviewContent, produc
   const res = await axios.put(`/user/${id}/buyerReviewEdit`, {score, tagIndex, reviewContent, productId});
 
   if (res.statusText !== "OK") {
-    throw new Error("mypage 로딩 실패");
+    //console.error("mypage 로딩 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
   return body;
@@ -362,7 +383,8 @@ export async function reviewDelete(id) {
   const res = await axios.delete(`/reviewDelete/${id}`);
 
   if (res.statusText !== "OK") {
-    throw new Error("mypage 로딩 실패");
+    //console.error("mypage 로딩 실패");
+    window.location.href = '/error/500';
   }
   const body = res.data;
   return body;
@@ -378,15 +400,16 @@ export async function profileupload(formData) {
     })
     
     if (res.statusText != "OK") {
-      throw new Error("file upload fails");
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
     } 
     
     return res.statusText;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }

@@ -60,7 +60,7 @@ export async function productDetail(id) {
   const res = await axios.get(`/productDetail/${id}`);
   
   if (res.statusText != "OK") {
-    throw new Error("product 데이터 로딩 실패");
+    window.location.href = '/error/500';
   }
   // 서버측에서 어떤 이름으로 넘겨주는지와 관계 없이 res.data로 데이터가 들어옴에 주의
   const product = res.data;
@@ -74,16 +74,17 @@ export async function productWrite(sql, data) {
     const res = await axios.post('/productWrite', {sql, data});
   
     if (res.statusText != "OK") {
-      throw new Error("creating new product failed");
+      //console.error("creating new product failed");
+      window.location.href = '/error/500';
     } 
     const body = res.data;
     body.message = 'success'
     
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      window.location.href = '/login';
     } else {
-      throw error;
+      window.location.href = '/error/500';
     }
   }
 }

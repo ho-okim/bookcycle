@@ -7,18 +7,19 @@ import { Heart } from 'react-bootstrap-icons';
 import { HeartFill } from 'react-bootstrap-icons';
 import { BalloonHeart } from 'react-bootstrap-icons';
 import { BalloonHeartFill } from 'react-bootstrap-icons';
-import { replyWrite, replyList, replyDelete, likeCount, hitLike, unLike, likeState } from '../../api/board';
+import { replyWrite, replyList, replyDelete, hitLike, unLike, likeState } from '../../api/board';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext';
 import { Link } from 'react-router-dom'
+import { getReportedOrNot } from '../../api/report';
+import Report from '../Report';
 
 
 // 댓글 작성 폼 ---------------------------------------------
 function ReplyForm(props){
   // id = boardDetail이 내려준 게시글 id 
-  const { id } = props; 
+  const { id, likehits } = props; 
   const { user } = useAuth(); 
-
 
   const navigate = useNavigate();
 
@@ -52,7 +53,7 @@ function ReplyForm(props){
 
   return(
     <>
-      <ReplyList boardId={id}/>
+      <ReplyList boardId={id} likehits={likehits}/>
       {user ? (
         <form className={styles.replyForm} onSubmit={(e)=>{e.preventDefault();}}>
           <div className={styles.replyId}>{user?.nickname}</div>
@@ -74,8 +75,7 @@ function ReplyForm(props){
 // 댓글 목록 및 좋아요---------------------------------------------
 function ReplyList(props){
   const { user } = useAuth();
-  const {boardId} = props;
-
+  const {boardId, likehits} = props;
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
@@ -84,12 +84,6 @@ function ReplyList(props){
   // 댓글 조회
   async function getReply(){
     const data = await replyList(boardId);
-    return data;
-  }
-
-  // 좋아요 개수 조회
-  async function getLikeCount(){
-    const data = likeCount(boardId);
     return data;
   }
 
@@ -103,25 +97,40 @@ function ReplyList(props){
   let [replies, setReplies] = useState([]);
   let [likeCounts, setLikeCounts] = useState(0);
   let [likeStates, setLikeStates] = useState([])
-
+  const [reportedReplies, setReportedReplies] = useState([]); // 댓글 신고 여부
+  const [reportReplyId, setReportReplyId] = useState(0);
+  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
   // 화면 최초로 rendering 될 때만 reply/likeCount/likeState 요청
   useEffect(()=>{
     let reply;
-    let likeCount;
     let likeState;
 
     const test = async () => {
       reply = await getReply();
-      likeCount = await getLikeCount();
       likeState = await getLikeState();
 
       setReplies(reply)
-      setLikeCounts(likeCount)
       setLikeStates(likeState)
+
     }
     test();
+    setLikeCounts(likehits);
   }, [])
+
+   // 로그인한 사용자의 댓글 신고 여부 목록 가져오기
+  async function getReportedRepliesList() {
+    const reportedResults = await Promise.all(
+      replies.map((r) => getReportedOrNot('reply', r.id))
+    );
+    setReportedReplies(reportedResults.map(res=>res !== 0));
+}
+
+  useEffect(()=>{
+    if (user) { // 사용자와 댓글 변경때마다 새로 업데이트
+      getReportedRepliesList();
+    }
+  }, [user, replies]);
 
   console.log("좋아요 개수: ", likeCounts)
   console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates)
@@ -166,7 +175,6 @@ function ReplyList(props){
     alert("로그인 후 이용하실 수 있습니다.")
   }
 
-
   // 댓글 삭제
   // id = reply.id(삭제할 댓글의 id) 
   async function onDelete(id){
@@ -182,11 +190,21 @@ function ReplyList(props){
     }
   }
 
+  const handleClose = () => { // modal 닫기/숨기기 처리
+    if (modalShow) setModalShow(false);
+  };
+
+  const handleOpen = () => { // modal 열기 처리
+    if (!modalShow) setModalShow(true);
+  };
 
   // 신고하기 기능
-  async function onSpam(){
+  function onSpam(reply_id) {
     if(!user){
       alert("로그인 후 이용하실 수 있습니다.")
+    } else {
+      setReportReplyId(reply_id);
+      handleOpen();
     }
   }
 
@@ -218,7 +236,7 @@ function ReplyList(props){
               <div className={styles.heartCount}>
                 <BalloonHeart size="20" className={styles.heartIcon} onClick={() => noUserLike()}/>
                 <span>좋아요 </span>
-                <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
+                <span className={styles.likeCounts}>{likeCounts}</span>개
               </div>
             ) : (
               <div className={styles.heartCount}>
@@ -228,7 +246,7 @@ function ReplyList(props){
                   : <BalloonHeart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
                 }
                 <span>좋아요 </span>
-                <span className={styles.likeCounts}>{likeCounts.likehit}</span>개
+                <span className={styles.likeCounts}>{likeCounts}</span>개
               </div>
             )
           }
@@ -236,7 +254,8 @@ function ReplyList(props){
         <Button variant="outline-secondary" className={`${styles.goBoard}`} onClick={()=>{navigate('/board')}}>목록으로</Button>
       </div>
       {
-        replies.map((reply) => {
+        replies.map((reply, index) => {
+          const is_reported = reportedReplies[index];
           return(
             <div key={reply.id} className={styles.replyList}>
               <div className={`${styles.replyInfo} d-flex justify-content-between regular`}>
@@ -245,11 +264,16 @@ function ReplyList(props){
                   <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
                 </div>
                 {user?.nickname == reply.nickname ? (
-                  <Button variant="outline-secondary" className={styles.deleteBtn} onClick={()=>onDelete(reply.id)}>삭제</Button>
+                  <Button variant="outline-secondary" className={styles.deleteBtn} onClick={()=>onDelete(reply.user_id)}>삭제</Button>
                 ) : null}
-                {user?.nickname !== reply.nickname ? (
-                  <Button variant="outline-secondary" className={styles.alertBtn} onClick={onSpam}>신고하기</Button>
-                ) : null}
+                {
+                (user && user?.nickname !== reply.nickname) ? 
+                  (!is_reported) ? (
+                    <Button variant="outline-secondary" className={styles.alertBtn} 
+                    onClick={()=>{onSpam(reply.id)}}>신고하기</Button>
+                  ) : <div>이미 신고했어요</div>
+                  : null
+                }
               </div>
               <div className={styles.commentContent}>
                 {reply.content}
@@ -258,6 +282,8 @@ function ReplyList(props){
           )
         })
       }
+      <Report show={modalShow} handleClose={handleClose} 
+      targetId={reportReplyId} category={'reply'}/>
     </>
   )
 }

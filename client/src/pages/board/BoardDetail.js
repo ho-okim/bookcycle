@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { getReportedOrNot } from '../../api/report.js';
-import { MegaphoneFill } from 'react-bootstrap-icons';
 import Report from '../../components/Report.js';
 
 
@@ -39,7 +38,7 @@ function BoardDetail(){
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
   async function getReported() { // 신고 여부 확인
-    const res = await getReportedOrNot('user', id);
+    const res = await getReportedOrNot('board', id);
     setIsReported((isReported)=>((res === 0) ? false : true));
   }
 
@@ -93,9 +92,11 @@ function BoardDetail(){
   };
 
   // 신고하기 기능
-  function onSpam(){
-    if(!user){
+  function onSpam() {
+    if(!user) {
       alert("로그인 후 이용하실 수 있습니다.")
+    } else {
+      handleOpen();
     }
   }
 
@@ -137,16 +138,15 @@ function BoardDetail(){
                   <span className={`${styles.userid} medium`}>{content.nickname}</span>
                   <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                 </div>
-                <div className={`${styles.spamBtn} medium`} onClick={onSpam}>신고하기</div>
                 {
-                    (!isReported) ?
+                    (user && user?.id != content.user_id) ?
+                    (!isReported ) ?
                     <>
-                        <Button className={''} 
-                        variant='outline-danger' onClick={()=>{handleOpen()}}
-                        ><MegaphoneFill/> 신고</Button>
-                        <Report show={modalShow} handleClose={handleClose} ownerId={user.id}/>
+                        <div className={`${styles.spamBtn} medium`} onClick={onSpam}>신고하기</div>
+                        <Report show={modalShow} handleClose={handleClose} targetId={id} category={'board'}/>
                     </>
-                    : null
+                    :<div>이미 신고했어요</div>
+                    :null
                 }
 							</div>
 							<div className={styles.detailContentWrap}>
@@ -167,7 +167,7 @@ function BoardDetail(){
               </div>
 						</div>
 
-            <ReplyForm id={id}/>
+            <ReplyForm id={id} likehits={content.likehit}/>
           </div>
         </div>
       </Container>

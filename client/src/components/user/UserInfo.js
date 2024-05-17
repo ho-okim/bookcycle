@@ -98,7 +98,7 @@ function UserInfo() {
                                 <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
                                 variant='outline-danger' onClick={()=>{handleOpen()}}
                                 ><MegaphoneFill/> 신고</Button>
-                                <Report show={modalShow} handleClose={handleClose} ownerId={targetUserId}/>
+                                <Report show={modalShow} handleClose={handleClose} targetId={targetUserId} category={'user'}/>
                             </>
                             : null
                         }
