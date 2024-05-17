@@ -1,8 +1,15 @@
 import axios from '../lib/axios.js';
+import REGEX from '../lib/regex.js';
 
 // 상위 10개 게시글 조회
-export async function board(){
-  const res = await axios.get('/board')
+export async function board(order){
+
+  const { sortBy, updown } = order; // order 초기값 없음 -> 아래 조건에 따라 sortBy는 'createdAt' 으로 지정됨
+
+  let newSortBy = REGEX.CHAR_REG.test(sortBy) ? sortBy.trim() : 'createdAt';
+
+  let url = `/board?sortBy=${newSortBy}&updown=${updown}`;
+  const res = await axios.get(url)
 
   if (res.statusText != "OK") {
     throw new Error("get fails");
@@ -178,27 +185,11 @@ export async function replyList(id){
 export async function replyDelete(id){
   const res = await axios.post(`/replyDelete/${id}`)
 
-  console.log("삭제 댓글: ", id)
-
   if (res.statusText != "OK") {
     throw new Error("boardDelete fails");
   } 
   const body = res.data;
   body.message = 'success'
-
-  return body;
-}
-
-
-// 좋아요 개수 조회
-export async function likeCount(id){
-  const res = await axios.get(`/likeCount/${id}`)
-
-  if (res.statusText != "OK"){
-    throw new Error("get likeCount fails");
-  }
-
-  const body = res.data[0];
 
   return body;
 }
@@ -217,14 +208,25 @@ export async function filesList(id){
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
-      throw new Error("login needed");
-    } else {
       throw error;
     }
+}
+
+
+// 좋아요 개수 조회
+export async function likeCount(id){
+  const res = await axios.get(`/likeCount/${id}`)
+
+  if (res.statusText != "OK"){
+    throw new Error("get likeCount fails");
   }
+
+  const body = res.data[0];
+
+  return body;
 }
   
+
 // 좋아요 등록 - 🤍 unliked 상태일 때, 하트 누를 경우 -> 좋아요 등록
 export async function hitLike(id){
 
@@ -240,7 +242,7 @@ export async function hitLike(id){
     return body;
   } catch (error) {
     if (error.response.status == 403) {
-      throw new Error("login needed");
+      throw new Error("login needed"); // 여기서 alert되면 띄우고 또는 error 메시지 throw 하고 나서 client pages에서 그 메시지 받으면 alert 띄울 수 있게
     } else {
       throw error;
     }
