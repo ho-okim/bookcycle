@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTargetUser } from '../../contexts/TargetUserContext';
 
 // 필터링 버튼과 오버레이
-function Filtering({
+function UserProductFiltering({
     category,
     searchParams
     }) {
@@ -99,4 +99,4 @@ function Filtering({
     )
 }
 
-export default Filtering;
+export default UserProductFiltering;

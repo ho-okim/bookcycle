@@ -10,9 +10,8 @@ import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import UserProductContext from '../../contexts/UserProductContext.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
-import Filtering from './Filtering.js';
-import ProductSorting from './ProductSorting.js';
-
+import UserProductFiltering from './UserProductFiltering.js';
+import UserProductSorting from './UserProductSorting.js';
 
 function UserProduct() {
 
@@ -150,16 +149,16 @@ function UserProduct() {
                         {
                             (isProductUrl) ? 
                             <div className={styles.option_box}>
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'product_name'} 
                                 typeAscend={order.name === 'product_name' && order.ascend}/>
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'price'} 
                                 typeAscend={order.name === 'price' && order.ascend} />
-                                <ProductSorting
+                                <UserProductSorting
                                 sortType={'createdAt'} 
                                 typeAscend={order.name === 'createdAt' && order.ascend}/>
-                                <Filtering category={category} 
+                                <UserProductFiltering category={category} 
                                 searchParams={searchParams}/>
                             </div> 
                             : null

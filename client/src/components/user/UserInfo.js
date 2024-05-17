@@ -11,7 +11,7 @@ import { useTargetUser } from '../../contexts/TargetUserContext.js';
 
 function UserInfo() {
 
-    const {targetUserId} = useTargetUser(); // 대상 id
+    const {targetUserId, setTargetUsername} = useTargetUser(); // 대상 id
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
@@ -33,6 +33,7 @@ function UserInfo() {
                 navigate("/");
             }
             setUserInfo(res);
+            setTargetUsername(res.nickname);
         }
         getUser();
 

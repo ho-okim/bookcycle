@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { sellGiveReviewList } from '../../api/mypage';
+import { useNavigate } from 'react-router-dom';
+import { buyGetReviewList } from '../../api/mypage';
 import dateProcessing from '../../lib/dateProcessing.js';
 import starRating from '../../lib/starRating.js';
 import Pagination from './Pagination.js';
 
 import styles from '../../styles/mypage.module.css';
 
-
-function SellGiveReviewList() {
-
+// 구매 후 받은 후기
+function MyBuyGetReviewList() {
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
-
+  
   let total = reviews.length; // 전체 게시물 수
   let limit = 10; // 페이지 당 게시물 수
   let [page, setPage] = useState(1); // 현재 페이지 번호
@@ -20,21 +20,23 @@ function SellGiveReviewList() {
   useEffect(() => {
     async function getReviews(){
       try {
-        const data = await sellGiveReviewList();
+        const data = await buyGetReviewList();
         setReviews(data);
       } catch (error) {
-        console.error('sellReviewList 데이터를 가져오는 중 에러 발생: ', error);
+        console.error('구매 후 받은 후기 가져오는 중 에러 발생: ', error);
         setReviews([]); 
       }
     }
     getReviews();
   }, []);
+  
+  console.log(reviews)
 
   return (
     <div className={styles.content}>
-      <p>총 {reviews.length}개의 판매 후 남긴후기</p>
+      <p className={styles.conTitle}> &gt; 총 {reviews.length}개의 구매 후 받은 후기</p>
       {reviews.length === 0 ? (
-        <div>아직 남긴 후기가 없어요 😥</div>
+        <div className={styles.empty}>판매자에게 받은 후기가 없습니다.</div>
       ) : (
         <>
           <div className="rev-list">
@@ -42,9 +44,7 @@ function SellGiveReviewList() {
               <div key={index} className={`row ${styles.revWrap}`}>
                 <div className="rating col col-2">{starRating(review.score)}</div>
                 <div className="col col-6">{review.content}</div>
-                <div className="col col-2">
-                  <Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link>
-                </div>
+                <div className="col col-1">{review.buyer_nickname}</div>
                 <div className="col-2">{dateProcessing(review.createdAt)}</div>
               </div>
             ))}
@@ -56,4 +56,4 @@ function SellGiveReviewList() {
   );
 }
 
-export default SellGiveReviewList;
+export default MyBuyGetReviewList;

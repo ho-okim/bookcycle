@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { Navigate, Outlet, useHref, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import UserMenu from '../components/user/UserMenu.js';
 import UserReviewTag from '../components/user/UserReviewTag.js';
 import UserProduct from '../components/user/UserProduct.js';
 import TargetUserContext from '../contexts/TargetUserContext.js';
@@ -16,7 +15,8 @@ function User() {
     const { id } = useParams(); // url에서 가져온 params
     const { user } = useAuth(); // 현재 로그인 한 사용자
     const [targetUserId, setTargetUserId] = useState(id); // 대상 id
-
+    const [targetUsername, setTargetUsername] = useState('');
+    
     if (user && user.id == id) { // 로그인 한 사용자는 내 페이지로 이동시킴
         return(
             <Navigate to={'/mypage/buyList'}/>
@@ -24,22 +24,14 @@ function User() {
     }
 
     // 하위 url인지 확인
-    let subUrl = currentUrl.includes("product") || currentUrl.includes("review");
-
-    let boxStyle = (subUrl || !user) ? 'd-flex justify-content-center' : 'd-flex justify-content-between';
+    let subUrl = currentUrl.includes("product") || currentUrl.includes("review") || currentUrl.includes("sellerReviewWrite") || currentUrl.includes("buyerReviewWrite") || currentUrl.includes("sellerReviewEdit") || currentUrl.includes("buyerReviewEdit");
 
     // 로그인 한 유저 상태에 따른 박스 스타일
     let otherUserStyle = user ? styles.other_user : styles.other_user_nologin;
 
     return (
-        <TargetUserContext.Provider value={{targetUserId, setTargetUserId}}>
-            <Container className={`${boxStyle} ${styles.undrag}`}>
-                {
-                    !user ? null : 
-                    <section className={styles.user_menu}>
-                        <UserMenu/>
-                    </section>
-                }
+        <TargetUserContext.Provider value={{targetUserId, setTargetUserId, targetUsername, setTargetUsername}}>
+            <Container className={`d-flex justify-content-center ${styles.undrag}`}>
                 <section className={otherUserStyle}>
                     {
                         (subUrl) ?

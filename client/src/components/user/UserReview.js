@@ -1,22 +1,20 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
-import { useHref, useNavigate, useSearchParams } from 'react-router-dom';
+import { useHref, useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
 import { Button } from 'react-bootstrap';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
 import DataPagination from './DataPagination.js';
-import ReviewSorting from './ReviewSorting.js';
+import UserReviewSorting from './UserReviewSorting.js';
 import UserReviewBox from './UserReviewBox.js';
 
 function UserReview({tradeType}) {
-
     const url = useHref(); // 현재 url
     const isReviewUrl = url.includes("review"); // 리뷰 목록 페이지 여부
-
-    const {targetUserId, setTargetUserId} = useTargetUser(); // 대상 id
+    const {targetUserId, setTargetUserId, targetUsername} = useTargetUser(); // 대상 id
     
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -102,9 +100,9 @@ function UserReview({tradeType}) {
                         <h4 className={styles.title_font}>
                             {
                                 tradeType === 'buy' ?
-                                '구매후기'
+                                `${targetUsername}님의 상품을 구매했어요`
                                 : tradeType === 'sell' ?
-                                '판매후기'
+                                `${targetUsername}님에게 상품을 판매했어요`
                                 :null
                             }
                         </h4>
@@ -124,27 +122,25 @@ function UserReview({tradeType}) {
                     <h4 className={styles.title_font}>
                         {
                             tradeType === 'buy' ?
-                            '구매후기'
+                            `${targetUsername}님의 상품을 구매했어요`
                             : tradeType === 'sell' ?
-                            '판매후기'
+                            `${targetUsername}님에게 상품을 판매했어요`
                             :null
                         }
                     </h4>
                     {
                         (isReviewUrl) ? 
                         <div>
-                            <ReviewSorting
+                            <UserReviewSorting
                             sortType={'score'} 
                             typeAscend={order.name === 'score' && order.ascend} 
                             order={order} setOrder={setOrder}/>
-                            <ReviewSorting 
+                            <UserReviewSorting 
                             sortType={'createdAt'} 
                             typeAscend={order.name === 'createdAt' && order.ascend}
                             order={order} setOrder={setOrder}/>
                         </div> 
-                        : (reviewList.length == 0 || totalData <= showLimit) ?
-                            null 
-                            : <Button 
+                        : <Button 
                             variant='outline-primary' 
                             className={styles.more_btn}
                             onClick={handleMoreView}

@@ -93,7 +93,7 @@ router.get('/user/:userId/reviewAll', async (req, res) => {
     let variables = [parseInt(userId)];
 
     // query문
-    let sql = 'SELECT COUNT(*) AS total FROM trade_review WHERE writer_id = ?';
+    let sql = 'SELECT COUNT(*) AS total FROM trade_review WHERE writer_id != ?';
 
     if (tradeType === 'buy') {
         sql += ' AND buyer_id = ?';
@@ -127,7 +127,7 @@ router.get('/user/:userId/review', async (req, res) => {
     let variables = [parseInt(userId)];
 
     // query문 설정
-    let sql = 'SELECT * FROM trade_review WHERE writer_id = ?';
+    let sql = 'SELECT * FROM trade_review WHERE writer_id != ?';
 
     let order_sql = ` ORDER BY ${newName} ${updown} LIMIT ? OFFSET ?`;
 

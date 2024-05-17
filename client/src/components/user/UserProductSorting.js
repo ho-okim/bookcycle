@@ -7,7 +7,7 @@ import { useUserProduct } from '../../contexts/UserProductContext';
 import { useTargetUser } from '../../contexts/TargetUserContext';
 
 // 정렬 버튼
-function ProductSorting({ sortType, typeAscend }) {
+function UserProductSorting({ sortType, typeAscend }) {
 
     const {targetUserId} = useTargetUser(); // 대상 id
 
@@ -54,4 +54,4 @@ function ProductSorting({ sortType, typeAscend }) {
     )
 }
 
-export default ProductSorting;
+export default UserProductSorting;

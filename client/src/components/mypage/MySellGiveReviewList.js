@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { sellGetReviewList } from '../../api/mypage';
+import { Link, useNavigate } from 'react-router-dom';
+import { sellGiveReviewList, reviewDelete } from '../../api/mypage';
 import dateProcessing from '../../lib/dateProcessing.js';
 import starRating from '../../lib/starRating.js';
 import Pagination from './Pagination.js';
 
+import Dropdown from 'react-bootstrap/Dropdown';
 import styles from '../../styles/mypage.module.css';
 
 
-function SellGetReviewList() {
+function MySellGiveReviewList() {
 
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
 
   let total = reviews.length; // 전체 게시물 수
@@ -20,7 +22,7 @@ function SellGetReviewList() {
   useEffect(() => {
     async function getReviews(){
       try {
-        const data = await sellGetReviewList();
+        const data = await sellGiveReviewList();
         setReviews(data);
       } catch (error) {
         console.error('sellReviewList 데이터를 가져오는 중 에러 발생: ', error);
@@ -30,11 +32,22 @@ function SellGetReviewList() {
     getReviews();
   }, []);
 
+    // 데이터 삭제
+	async function onDelete(id) {
+		try {
+			await reviewDelete(id); 
+			document.location.href = `/reviewDelete/${id}`
+      navigate(0)
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
   return (
     <div className={styles.content}>
-      <p>총 {reviews.length}개의 판매 후 받은후기</p>
+      <p className={styles.conTitle}> &gt; 총 {reviews.length}개의 구매자에게 남긴후기</p>
       {reviews.length === 0 ? (
-        <div>아직 받은 후기가 없어요 😥</div>
+        <div className={styles.empty}>구매자에게 남긴 후기가 없습니다.</div>
       ) : (
         <>
           <div className="rev-list">
@@ -42,10 +55,21 @@ function SellGetReviewList() {
               <div key={index} className={`row ${styles.revWrap}`}>
                 <div className="rating col col-2">{starRating(review.score)}</div>
                 <div className="col col-6">{review.content}</div>
-                <div className="col col-2">
+                <div className="col col-1">
                   <Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link>
                 </div>
                 <div className="col-2">{dateProcessing(review.createdAt)}</div>
+                <Dropdown className="col col-1">
+                  <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
+                    ⁝
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href={`/user/${review.buyer_id}/buyerReviewEdit?productId=${review.product_id}`}>
+                      수정
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             ))}
           </div>
@@ -56,4 +80,4 @@ function SellGetReviewList() {
   );
 }
 
-export default SellGetReviewList;
+export default MySellGiveReviewList;
