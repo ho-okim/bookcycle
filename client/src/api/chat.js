@@ -3,8 +3,8 @@ import axios from '../lib/axios.js';
 export async function chatList(){
   try {
     const result = await axios.get('/chatlist')
-    const res = result.data.result
-    const ron = result.data.readOrNot
+    const res = result.data.result[0]
+    const ron = result.data.readOrNot[0]
   
     if (result.statusText != "OK") {
       throw new Error("chatList GET fails");

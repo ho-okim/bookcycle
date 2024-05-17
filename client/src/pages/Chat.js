@@ -340,7 +340,7 @@ function Chat() {
                   </div>
                 </div>
                 <div className={`${styles.chatForm} d-flex`}>
-                  <textarea className={`${styles.chatText} regular`} ref={textRef} onInput={handleResizeHeight}></textarea>
+                  <textarea className={`${styles.chatText} regular`} ref={textRef} onInput={handleResizeHeight} placeholder='메시지를 입력하세요'></textarea>
                   <span className={`${styles.chatBtn} d-flex align-items-center`} onClick={handleMsgClick}><SendFill/></span>
                 </div>
               </div>
