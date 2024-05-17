@@ -22,6 +22,8 @@ import BoardEdit from './pages/board/BoardEdit.js';
 import User from './pages/User.js';
 import ProductList from './pages/product/ProductList.js';
 import ProductDetail from './pages/product/ProductDetail.js';
+import ProductWrite from './pages/product/ProductWrite.js'
+import ProductEdit from './pages/product/ProductEdit.js'
 import UserProduct from './components/user/UserProduct.js';
 import Chat from './pages/Chat.js';
 import SellerReviewWrite from './components/user/SellerReviewWrite.js';
@@ -88,9 +90,12 @@ function App() {
             <Route path="" element={<Chat/>}/>
             <Route path=":id" element={<Chat/>}/>
           </Route>
+          {/* 합칠 때 수정하기 */}
           <Route path="/productList" element={<ProductList/>}/>
           <Route path="/productDetail" element={<ProductDetail/>}/>
           <Route path="/productDetail/:id" element={<ProductDetail/>}/>
+          <Route path="/product/write" element={<ProductWrite/>}/>
+          <Route path="/product/edit/:id" element={<ProductEdit/>}/>
           <Route path="/error">
             <Route path=":errorCode" element={<Error/>}/>
           </Route>

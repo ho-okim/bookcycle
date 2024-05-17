@@ -35,3 +35,23 @@ export async function productDetail(){
   return product;
 
 }
+
+// 상품 게시글 작성
+export async function productWrite(sql, data) {
+  try {
+    const res = await axios.post('/productWrite', {sql, data});
+  
+    if (res.statusText != "OK") {
+      throw new Error("creating new product failed");
+    } 
+    const body = res.data;
+    body.message = 'success'
+    
+  } catch (error) {
+    if (error.response.status == 403) {
+      throw new Error("login needed");
+    } else {
+      throw error;
+    }
+  }
+}
