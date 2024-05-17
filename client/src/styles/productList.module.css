@@ -11,6 +11,19 @@
     padding: 0 10px;
 }
 
+.add_box{
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.add_btn, .add_btn:hover, .add_btn:active{
+    color:#fff;
+    background-color: rgb(77, 145, 182);
+    border:1px solid rgb(77, 145, 182);
+}
+
 .product_box{
     width:100%;
     display: flex;
