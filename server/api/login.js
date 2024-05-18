@@ -207,17 +207,31 @@ router.post('/password/reset', isNotLoggedIn, async (req, res) => {
   const newPassword = await bcrypt.hash(password, 10);
   const decodedEmail = decodeURIComponent(email);
 
+  // 기존 비밀번호와 같은지 확인
+  let check_sql = 'SELECT password FROM users WHERE email = ?';
+
   // 비밀번호 업데이트
   let sql = 'UPDATE users SET password = ? WHERE email = ?';
 
   try {
-    const query = mysql.format(sql, [newPassword, decodedEmail]);
-    const result = await pool.query(query);
+    // 기존 비밀번호 가져오기
+    const check_query = mysql.format(check_sql, [decodedEmail]);
+    const [check_result] = await pool.query(check_query);
 
-    if (result.affectedRows == 0) {
-      res.status(400).send('error');
-    } else if (result.affectedRows == 1) {
-      res.status(200).send('success');
+    // 비밀번호 일치 여부
+    const password_compare = await bcrypt.compare(password, check_result.password);
+
+    if (password_compare) { // 같은 비번이라면 업데이트 취소
+      res.status(200).send('same password');
+    } else { // 다른 비번이라면 새로 업데이트
+      const query = mysql.format(sql, [newPassword, decodedEmail]);
+      const result = await pool.query(query);
+  
+      if (result.affectedRows == 0) {
+        res.status(500).send('error');
+      } else if (result.affectedRows == 1) {
+        res.status(200).send('success');
+      }
     }
   } catch (error) {
     console.error(error);

@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import REGEX from '../lib/regex.js';
 import { resetpwd } from '../api/login.js';
+import { Eye, EyeSlash } from 'react-bootstrap-icons';
 
 function Reset() {
     const { user } = useAuth();
@@ -20,6 +21,7 @@ function Reset() {
         is_confirmed : false
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const [pwdVisible, setPwdVisible] = useState(false); // password 보이기 여부
     const defaultError = '비밀번호를 8~13자로 입력해주세요';
 
     const navigate = useNavigate();
@@ -102,12 +104,19 @@ function Reset() {
         if (res === 'success') {
             alert('비밀번호가 성공적으로 수정되었습니다!');
             navigate("/login");
+        } else if (res === 'same password') {
+            alert('기존 비밀번호와 동일합니다! 다른 비밀번호로 변경해주세요');
+            return;
         } else {
             alert('비밀번호 수정을 실패했습니다. 다시 시도해주세요');
             return;
         }
     }
     
+    function handlePasswordVisible() { // 비밀번호 보임 처리
+        setPwdVisible((pwdVisible)=>(!pwdVisible));
+    }
+
     return(
         <Container>
             <div className='inner text-center'>
@@ -115,11 +124,21 @@ function Reset() {
                 <div className={styles.form_box}>
                     <div className={styles.input_box}>
                         <label htmlFor='new-password'>새 비밀번호 : </label>
-                        <input type="password" id="new-password"
-                        className={styles.input_form}
-                        onChange={(e)=>{handleInputChange(e)}} 
-                        maxLength={50}
-                        autoFocus/>
+                        <div className={styles.password_box}>
+                            <input type={(pwdVisible) ? "text" : "password"} 
+                            id="new-password"
+                            className={styles.input_form}
+                            onChange={(e)=>{handleInputChange(e)}} 
+                            maxLength={50}
+                            autoFocus/>
+                            <span className={styles.password_eye} 
+                            onClick={handlePasswordVisible}>
+                            {
+                                (pwdVisible) ? 
+                                <EyeSlash/>:<Eye/>
+                            }
+                            </span>
+                        </div>
                         <label htmlFor='confirm-password'>비밀번호 확인 : </label>
                         <input type="password" id="confirm-password"
                         className={styles.input_form}

@@ -9,6 +9,7 @@ export async function getNotification() {
         if (res.statusText !== "OK") {
             window.location.href = '/error/500';
         }
+
         const body = res.data;
         return body;
     }  catch (error) {

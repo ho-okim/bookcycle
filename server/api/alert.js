@@ -8,7 +8,7 @@ router.get('/alert', isLoggedIn, async (req, res) => {
     const {id} = req.user;
 
     // query문 설정
-    let sql = 'SELECT * FROM alert WHERE user_id = ?';
+    let sql = 'SELECT * FROM user_alerts WHERE user_id = ? ORDER BY createdAt DESC';
 
     try {
         // db connection pool을 가져오고, query문 수행

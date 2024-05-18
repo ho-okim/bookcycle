@@ -52,8 +52,10 @@ function AuthProvider({children}) {
         user,
         setUser,
         handleLogin,
-        handleLogout
-    }), [user, setUser, handleLogin, handleLogout]);
+        handleLogout,
+        notification,
+        setNotification
+    }), [user, setUser, handleLogin, handleLogout, notification, setNotification]);
 
     return (
         <LoginUserContext.Provider value={userContextValue}>

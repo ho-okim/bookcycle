@@ -4,18 +4,23 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/LoginUserContext.js';
-import { ChatDotsFill, Search } from 'react-bootstrap-icons';
+import { BellFill, ChatDotsFill, Search } from 'react-bootstrap-icons';
+import Notification from './Notification.js';
 
 function Header() {
 
   const { user, handleLogout } = useAuth(); // 로그인 한 사용자
-  let search = '';
+  let search = ''; // 검색어
+
+  const [showToast, setShowToast] = useState(false); // 알림창 표시 여부
+  const toggleToast = () => setShowToast(!showToast); // 알림창 온오프
 
   const navigate = useNavigate();
 
-  const navigateToChat = () => {
+  const navigateToChat = () => { // 채팅방 이동
     navigate('/chat');
   }
 
@@ -28,7 +33,7 @@ function Header() {
     search = e.target.value;
   }
 
-  function handleSubmit() {
+  function handleSubmit() { // 검색 페이지 이동
     if (!search) {
       return;
     }
@@ -47,6 +52,15 @@ function Header() {
 
   return (
     <>
+      {
+        !user ? null : 
+          <div className='notify_btn_wrap'>
+            <Notification showToast={showToast} toggleToast={toggleToast}/>
+            <button className='notification_btn' onClick={toggleToast}>
+              <BellFill className='notification'/>
+            </button>
+          </div>
+      }
       {
         location.pathname == '/chat' ? null :
         <div className="chatBtnWrap">

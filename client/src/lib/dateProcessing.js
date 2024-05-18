@@ -20,4 +20,20 @@ export function dateProcessingYear(date){
   return year
 }
 
+export function dateTimeProcessing(date){
+  // 데이터의 createdAt이 date 객체로 들어오는 게 아니라 string으로 들어옴에 주의
+  let newDate = new Date(date)
+  let options = {
+    weekday : "short",
+    year : "numeric",
+    month : "short",
+    day : "numeric",
+    hour : "2-digit",
+    minute : "2-digit",
+  }
+  newDate = newDate.toLocaleString("ko-kr", options)
+
+  return newDate
+}
+
 export default dateProcessing;
