@@ -131,3 +131,45 @@ ul, ol, li { list-style: none; }
 }
 
 .btnWrap { text-align: end; }
+
+
+/* notifications */
+.notification_info{
+  width: 100%;
+  border-bottom: 1px solid #666;
+}
+
+.notification_info td{
+  padding-bottom: 10px;
+}
+
+
+.notifications{
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #427D9D;
+  color:white;
+  border-radius: 10px;
+}
+
+.notification_content{
+  margin: 10px;
+  padding: 10px;
+  display: flex; justify-content: space-between;
+  border-bottom: 1px solid rgb(185, 185, 185);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.notification_content:hover{
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+.notification_content:first-of-type{
+  margin-top: 0;
+}
+
+.notification_read{
+  color:#979797;
+}

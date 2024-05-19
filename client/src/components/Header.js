@@ -55,7 +55,7 @@ function Header() {
       {
         !user ? null : 
           <div className='notify_btn_wrap'>
-            <Notification showToast={showToast} toggleToast={toggleToast}/>
+            <Notification showToast={showToast} setShowToast={setShowToast} toggleToast={toggleToast}/>
             <button className='notification_btn' onClick={toggleToast}>
               <BellFill className='notification'/>
             </button>

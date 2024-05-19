@@ -46,6 +46,7 @@ import Error from './pages/Error.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Search from './pages/Search.js';
 import SearchUser from './components/search/SearchUser.js';
+import MyNotifications from './components/mypage/MyNotifications.js';
 
 function App() {
   return (
@@ -79,6 +80,7 @@ function App() {
             <Route path="postList" element={<MyPostList/>}/>
             <Route path="reportList" element={<MyReportList/>}/>
             <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
+            <Route path="notifications" element={<MyNotifications/>}/>
           </Route>
           <Route path="/board">
             <Route path="" element={<Board/>}/>

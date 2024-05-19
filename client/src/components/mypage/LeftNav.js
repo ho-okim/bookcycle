@@ -40,9 +40,8 @@ function LeftNav() {
             </ul>
           </li>
           <li className="pt-2"><Link to={'/mypage/postList'}>게시글 목록</Link></li>
-          <li>
-            <Link to={'/mypage/reportList'}>신고 내역</Link>
-          </li>
+          <li><Link to={'/mypage/notifications'}>알림 목록</Link></li>
+          <li><Link to={'/mypage/reportList'}>신고 내역</Link></li>
           <li>
             <Link to={'/mypage/edit'}>회원 정보 관리</Link>
           </li>

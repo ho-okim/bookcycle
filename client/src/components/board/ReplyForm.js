@@ -95,7 +95,7 @@ function ReplyList(props){
 
   // api에서 받아온 reply/likeCount/likeState - useState 삽입
   let [replies, setReplies] = useState([]);
-  let [likeCounts, setLikeCounts] = useState(0);
+  let [likeCounts, setLikeCounts] = useState(0); // 현재 의존성 문제로 인해 값 업데이트가 잘 안됨
   let [likeStates, setLikeStates] = useState([])
   const [reportedReplies, setReportedReplies] = useState([]); // 댓글 신고 여부
   const [reportReplyId, setReportReplyId] = useState(0);

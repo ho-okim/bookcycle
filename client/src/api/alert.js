@@ -1,6 +1,6 @@
 import axios from '../lib/axios.js';
 
-// 내 알림 가져오기
+// 내 알림 전체 가져오기
 export async function getNotification() {
 
     try {
@@ -13,7 +13,32 @@ export async function getNotification() {
         const body = res.data;
         return body;
     }  catch (error) {
-        if (error.response.status == 401) {
+        if (error.response.status == 403) {
+            window.location.href = '/login';
+        } else if (error.response.status == 401) {
+            window.location.href = '/error/401';
+        } else {
+            window.location.href = '/error/500';
+        }
+    }
+}
+
+// 내 알림 최신순 10개 가져오기
+export async function getShortNotification() {
+
+    try {
+        const res = await axios.get('/alert/short');
+    
+        if (res.statusText !== "OK") {
+            window.location.href = '/error/500';
+        }
+
+        const body = res.data;
+        return body;
+    }  catch (error) {
+        if (error.response.status == 403) {
+            window.location.href = '/login';
+        } else if (error.response.status == 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -26,17 +51,20 @@ export async function readNotification(id) {
 
     try {
         const res = await axios.put(`/alert/read/${id}`);
-    
+
         if (res.statusText !== "OK") {
             window.location.href = '/error/500';
         }
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 401) {
+        if (error.response.status == 403) {
+            window.location.href = '/login';
+        } else if (error.response.status == 401) {
             window.location.href = '/error/401';
         } else {
-            window.location.href = '/error/500';
+            throw Error(error)
+            //window.location.href = '/error/500';
         }
     }
 }

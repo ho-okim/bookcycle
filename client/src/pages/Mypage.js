@@ -15,6 +15,7 @@ import MyPostList from "../components/mypage/MyPostList";
 import MyReportList from "../components/mypage/MyReportList";
 import ConfirmPassword from '../components/mypage/ConfirmPassword';
 import MyInfoEdit from '../components/mypage/MyInfoEdit';
+import MyNotifications from '../components/mypage/MyNotifications';
 
 function MyPage() {
 
@@ -42,6 +43,7 @@ function MyPage() {
             url.includes('sellGiveReviewList') ? (<MySellGiveReviewList/>) :
             url.includes('sellGetReviewList') ? (<MySellGetReviewList/>) :
             url.includes('postList') ? (<MyPostList/>) :
+            url.includes('notifications') ? (<MyNotifications/>) :
             url.includes('reportList') ? (<MyReportList/>) :
             url.includes('edit') ? (
               isPasswordConfirmed ? <MyInfoEdit password={password}/> : 

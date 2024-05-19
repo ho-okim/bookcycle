@@ -1,21 +1,21 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect } from "react";
 import { getLoginUser, login, logout } from "../api/login";
-import { getNotification } from "../api/alert";
+import { getShortNotification } from "../api/alert";
 
 const LoginUserContext = createContext();
 
 function AuthProvider({children}) {
     
     const [user, setUser] = useState(null); // 로그인 한 사용자
-    const [notification, setNotification] = useState([]); // 현재 사용자의 알림 목록
+    const [notification, setNotification] = useState([]); // 현재 사용자의 알림 목록 최신순 10개
 
     async function getUser() { // 현재 로그인 한 사용자 가져오기(req.user)
         const res = await getLoginUser();
         setUser(res);
     }
 
-    async function getUserNotification() { // 현재 로그인 한 사용자의 알림 목록 가져오기
-        const res = await getNotification();
+    async function getUserNotification() { // 현재 로그인 한 사용자의 알림 최신순 10개만 가져오기
+        const res = await getShortNotification();
         setNotification(res);
     }
 
@@ -54,8 +54,9 @@ function AuthProvider({children}) {
         handleLogin,
         handleLogout,
         notification,
-        setNotification
-    }), [user, setUser, handleLogin, handleLogout, notification, setNotification]);
+        setNotification,
+        getUserNotification
+    }), [user, setUser, handleLogin, handleLogout, notification, setNotification, getUserNotification]);
 
     return (
         <LoginUserContext.Provider value={userContextValue}>
