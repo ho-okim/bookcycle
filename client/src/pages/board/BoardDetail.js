@@ -44,12 +44,19 @@ function BoardDetail(){
 
   useEffect(()=>{
     let boardDetail
-    const test = async () => {
+    const getBoardData = async () => {
       boardDetail = await getBoardDetail()
       setContent(boardDetail)
     }
-    test()
-  }, [])
+
+    const getBoardFile = async () => {
+      let res = await getFiles()
+      setFiles(res)
+    }
+
+    getBoardData()
+    getBoardFile()
+  }, [id])
 
   useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
     if (user) { // 로그인을 했을 때만 호출
@@ -62,15 +69,6 @@ function BoardDetail(){
     const data = await filesList(id)
     return data;
   }
-  // 화면 최초로 rendering 될 때만 데이터 GET 요청
-  useEffect(()=>{
-    const test = async () => {
-      let res = await getFiles()
-      setFiles(res)
-    }
-    test()
-  }, [])
-
 
 	// 데이터 삭제
 	async function onDelete() {

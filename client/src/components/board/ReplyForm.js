@@ -116,7 +116,7 @@ function ReplyList(props){
     }
     test();
     setLikeCounts(likehits);
-  }, [])
+  }, [boardId, likehits])
 
    // 로그인한 사용자의 댓글 신고 여부 목록 가져오기
   async function getReportedRepliesList() {
