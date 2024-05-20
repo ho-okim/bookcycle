@@ -7,7 +7,7 @@ router.get('/search/product', async (req, res) => {
     const { keyword } = req.query;
 
     // query문
-    let sql = 'CALL product_search(?)';
+    let sql = 'CALL product_search(?, 0)';
 
     try {
         // 상품에서 조회
