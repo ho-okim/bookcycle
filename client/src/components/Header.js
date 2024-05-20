@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import { BellFill, ChatDotsFill, Search } from 'react-bootstrap-icons';
@@ -13,7 +13,7 @@ import Notification from './Notification.js';
 function Header() {
 
   const { user, handleLogout } = useAuth(); // 로그인 한 사용자
-  let search = ''; // 검색어
+  const [search, setSearch] = useState(''); // 검색어
 
   const [showToast, setShowToast] = useState(false); // 알림창 표시 여부
   const toggleToast = () => setShowToast(!showToast); // 알림창 온오프
@@ -30,7 +30,7 @@ function Header() {
   }
 
   function handleKeyword(e) { // 검색어 설정
-    search = e.target.value;
+    setSearch(e.target.value);
   }
 
   function handleSubmit() { // 검색 페이지 이동
@@ -49,6 +49,13 @@ function Header() {
 
   // 현재 페이지가 chat 이라면 채팅 바로가기 버튼 안 보이도록 설정하기 위함
   const location = useLocation();
+
+  useEffect(()=>{
+    console.log(location.pathname)
+    if (!location.pathname.includes('search')) {
+      setSearch('');
+    }
+  }, [location]);
 
   return (
     <>
@@ -113,6 +120,7 @@ function Header() {
                     onChange={(e)=>{handleKeyword(e)}}
                     onKeyDown={(e)=>{handleEnter(e)}}
                     maxLength={50}
+                    value={search}
                   />
                   <Button 
                   variant="outline-success" 

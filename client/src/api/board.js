@@ -267,7 +267,8 @@ export async function unLike(id){
     const res = await axios.post(`/unLike/${id}`);
 
     if (res.statusText != "OK") {
-      throw new Error("unlike fails");
+      //console.error("unlike fails");
+      window.location.href = '/error/500';
     } 
     const body = res.data;
     body.message = 'success'
@@ -285,7 +286,8 @@ export async function likeState(id){
     const res = await axios.get(`/likeState/${id}`)
 
     if (res.statusText != "OK") {
-      throw new Error("getLikeState fails");
+      //console.error("getLikeState fails");
+      window.location.href = '/error/500';
     } 
     const body = res.data;
   

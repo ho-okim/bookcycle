@@ -3,13 +3,22 @@ import { useAuth } from '../../contexts/LoginUserContext.js';
 
 import styles from '../../styles/mypage.module.css';
 import { StarFill } from "react-bootstrap-icons";
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
 
 function LeftNav() {
   const { user } = useAuth();
 
+  const [nickname, setNickname] = useState('unknown');
+  const [mannerScore, setMannerScore] = useState(0);
+
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if (user) {
+      setNickname(user.nickname);
+      setMannerScore(user.manner_score);
+    }
+  }, [user]);
 
   if (!user) {
     navigate('/login');
@@ -20,8 +29,8 @@ function LeftNav() {
       <div className={styles.leftNav}>
         <div className={`py-2 ${styles.navProfile}`}>
           <img src="" style={{width:'20px', height:'20px', backgroundColor:'#ddd',  borderRadius:'100%'}}/>
-          <div>{user.nickname}</div>
-          <div><StarFill style={{color: '#FFC100'}}/>{user.manner_score.toFixed(1)}</div>
+          <div>{nickname}</div>
+          <div><StarFill style={{color: '#FFC100'}}/>{mannerScore.toFixed(1)}</div>
         </div>
         <ul className="p-0">
           <li className="border-bottom py-2">

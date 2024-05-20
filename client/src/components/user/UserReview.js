@@ -109,7 +109,7 @@ function UserReview({tradeType}) {
                     </h4>
                     {
                         (isReviewUrl) ? 
-                        <div>
+                        <div className={styles.option_box}>
                             <UserReviewSorting
                             sortType={'score'} 
                             typeAscend={order.name === 'score' && order.ascend} 

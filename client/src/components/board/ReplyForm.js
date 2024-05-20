@@ -16,7 +16,7 @@ import Report from '../Report';
 
 
 // 댓글 작성 폼 ---------------------------------------------
-function ReplyForm(props){
+function ReplyForm(props) {
   // id = boardDetail이 내려준 게시글 id 
   const { id, likehits } = props; 
   const { user } = useAuth(); 

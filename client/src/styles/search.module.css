@@ -20,6 +20,18 @@
   font-size: 20px;
 }
 
+.more_btn{
+  width: 70px; height: 90%;
+  padding: 7px;
+  border-radius: 5px;
+  background-color: rgb(77, 145, 182);
+  border: none;
+}
+
+.more_btn:hover, .more_btn:active, .more_btn:focus{
+  background-color: rgb(22, 72, 99) !important;
+}
+
 /* 상품 */
 .product{
   margin-top:10px;
@@ -80,7 +92,7 @@
 
 /* 게시판 */
 .board .onPostBtn {
-  background-color: #4D91B6; border: none;
+  background-color: #4d91b6; border: none;
 }
 
 .board .boardHeader {

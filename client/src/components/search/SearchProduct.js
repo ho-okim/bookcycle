@@ -15,7 +15,7 @@ function SearchProduct() {
                     <h2>"{keyword}" 상품 검색 결과</h2>
                     <p className={styles.result_count}>총 {productResult?.length ?? 0}건</p>
                 </div>
-                <Button onClick={handleMoreView}>상세 검색</Button>
+                <Button className={styles.more_btn} onClick={handleMoreView}>상세 검색</Button>
             </div>
             <div className={styles.product}>
             {

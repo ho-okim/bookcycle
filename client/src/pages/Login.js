@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import Button from 'react-bootstrap/Button';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import REGEX from '../lib/regex.js';
 import { Eye, EyeSlash } from 'react-bootstrap-icons';
@@ -110,8 +109,8 @@ function Login() {
             : null
           }
           <div>
-            <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
-            <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
+            <button className={styles.login_btn} type="submit" onClick={()=>{check()}}>확인</button>
+            <button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/")}}>취소</button>
           </div>
           <div className={styles.more_info}>
             <div>

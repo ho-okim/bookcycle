@@ -15,7 +15,7 @@ function UserInfo() {
 
     const { user } = useAuth();
 
-    const {targetUserId, setTargetUsername} = useTargetUser(); // 대상 id
+    const {targetUserId, setTargetUsername, isBlocked, setIsBlocked} = useTargetUser(); // 대상 id
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [modalShow, setModalShow] = useState(false); // modal 표시 여부
     const [isReported, setIsReported] = useState(true); // 신고 여부
@@ -31,23 +31,23 @@ function UserInfo() {
         if (!modalShow) setModalShow(true);
     };
 
-    async function getUser() { // 대상 사용자 정보 가져오기
+    async function getTargetUser() { // 대상 사용자 정보 가져오기
         const res = await getUserInfo(targetUserId);
         if (res == 'error') {
             //navigate("/error/400");
         }
         setUserInfo(res);
+        setIsBlocked(res.blocked === 1 ? true : false);
         setTargetUsername(res.nickname);
     }
 
     async function getReported() { // 신고 여부 확인
         const res = await getReportedOrNot('user', targetUserId);
-        console.log(res)
         setIsReported((isReported)=>((res === 0) ? false : true));
     }
 
     useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
-        getUser();
+        getTargetUser();
     }, [targetUserId]);
 
     useEffect(()=>{ // 로그인 한 사용자가 신고 했었는지 확인
@@ -78,7 +78,7 @@ function UserInfo() {
                 )
             } else {
                 return(
-                    <div>이미 신고했어요</div>
+                    <div className={styles.alread_reported}>신고했어요</div>
                 )
             }
         }
@@ -114,6 +114,11 @@ function UserInfo() {
                     <div className={styles.report_box}>
                         {
                             renderReport()
+                        }
+                        {
+                            (isBlocked === true) ? 
+                            <div className={styles.blocked}>차단된 사용자</div>
+                            : null
                         }
                     </div>
                 </div>

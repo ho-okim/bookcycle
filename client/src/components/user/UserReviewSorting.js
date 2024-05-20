@@ -25,10 +25,10 @@ function UserReviewSorting({ sortType, typeAscend, order, setOrder }) {
             <Tooltip>{sortType === 'score' ? '평점' : '작성일'} {typeAscend ? '내림차순 보기' : '오름차순 보기'}</Tooltip>
         }
         >
-            <span className={styles.sort_box} id={sortType} onClick={(e)=>{handleSort(e)}}>
+            <div className={styles.sort_box} id={sortType} onClick={(e)=>{handleSort(e)}}>
                 {typeAscend ? <ArrowDown/> : <ArrowUp/>}
                 {sortType === 'score' ? <Star/> : <Clock/>}
-            </span>
+            </div>
         </OverlayTrigger>
     )
 }

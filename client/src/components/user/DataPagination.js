@@ -1,3 +1,5 @@
+import styles from '../../styles/user.module.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
 import { useHref, useNavigate, useSearchParams } from "react-router-dom";
@@ -98,7 +100,7 @@ function DataPagination({
     }
 
     return(
-        <Pagination>
+        <Pagination className={styles.pagination}>
             <Pagination.First onClick={()=>{setOffset(1)}}/>
             <Pagination.Prev onClick={handlePrev}/>
 

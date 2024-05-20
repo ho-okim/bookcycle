@@ -15,7 +15,7 @@ function SearchBoard() {
                     <h2>"{keyword}" 게시글 검색 결과</h2>
                     <p className={styles.result_count}>총 {boardResult?.length ?? 0}건</p>
                 </div>
-                <Button onClick={handleMoreView}>더보기</Button>
+                <Button className={styles.more_btn} onClick={handleMoreView}>더보기</Button>
             </div>
             <div className={styles.board}>
             {

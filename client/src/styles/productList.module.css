@@ -18,10 +18,15 @@
     align-items: center;
 }
 
-.add_btn, .add_btn:hover, .add_btn:active{
+.add_btn{
     color:#fff;
-    background-color: rgb(77, 145, 182);
-    border:1px solid rgb(77, 145, 182);
+    background-color: rgb(77, 145, 182) !important;
+    border:1px solid rgb(77, 145, 182) !important;
+}
+
+.add_btn:hover, .add_btn:active{
+    background-color: rgb(22, 72, 99) !important;
+    border:1px solid rgb(22, 72, 99) !important;
 }
 
 .product_box{
@@ -40,16 +45,26 @@
     text-decoration: none;
 }
 
-.search_option_btn, .search_option_btn:hover, .search_option_btn:enabled{
+.search_option_btn {
     color:#fff;
-    background-color: rgb(77, 145, 182);
-    border:1px solid rgb(77, 145, 182);
+    background-color: rgb(77, 145, 182) !important;
+    border:1px solid rgb(77, 145, 182) !important;
 }
 
-.search_confirm_btn, .search_confirm_btn:hover, .search_confirm_btn:active{
+.search_option_btn:hover{
+    background-color: rgb(22, 72, 99) !important;
+    border:1px solid rgb(22, 72, 99) !important;
+}
+
+.search_confirm_btn{
     color:#fff;
-    background-color: rgb(77, 145, 182);
-    border:1px solid rgb(77, 145, 182);
+    background-color: rgb(77, 145, 182) !important;
+    border:1px solid rgb(77, 145, 182) !important;
+}
+
+.search_confirm_btn:hover{
+    background-color: rgb(22, 72, 99) !important;
+    border:1px solid rgb(22, 72, 99) !important;
 }
 
 .product{
@@ -121,6 +136,19 @@
 
 .pagination{
     margin: 0;
+}
+
+.pagination *{
+    border:none;
+}
+
+.pagination{
+    --bs-pagination-color: rgb(77, 145, 182) !important;
+    --bs-pagination-active-border-color: rgb(77, 145, 182) !important;
+    --bs-pagination-active-bg: rgb(77, 145, 182) !important;
+    --bs-pagination-hover-color: rgb(77, 145, 182) !important;
+    --bs-pagination-focus-color: rgb(77, 145, 182) !important;
+    --bs-pagination-focus-box-shadow: none !important;
 }
 
 .buttonList{
