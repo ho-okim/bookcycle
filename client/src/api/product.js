@@ -68,6 +68,64 @@ export async function productDetail(id) {
 
 }
 
+// 좋아요 등록
+export async function productLike(id){
+
+  try {
+    const res = await axios.post(`/product/like/${id}`)
+  
+    if (res.statusText != "OK") {
+      window.location.href = '/error/500';
+    } 
+    const body = res.data;
+    body.message = 'success'
+    
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+// 좋아요 삭제(취소)
+export async function productUnLike(id){
+  try {
+    const res = await axios.post(`/product/unLike/${id}`);
+
+    if (res.statusText != "OK") {
+      //console.error("unlike fails");
+      window.location.href = '/error/500';
+    } 
+    const body = res.data;
+    body.message = 'success'
+  
+    return body;
+  } catch (error) {
+    window.location.href = '/error/500';
+  }
+}
+
+// 좋아요 조회
+export async function productLikeState(id){
+  try {
+    const res = await axios.get(`/product/likeState/${id}`)
+
+    if (res.statusText != "OK") {
+      window.location.href = '/error/500';
+    } 
+    const body = res.data;
+  
+    return body;
+  } catch (error) {
+    window.location.href = '/error/500';
+  }
+}
+
+
+
 // 상품 게시글 작성
 export async function productWrite(sql, data) {
   try {

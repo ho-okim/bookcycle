@@ -94,6 +94,59 @@ router.get('/productDetail/:id', async (req, res) => {
     res.send(result);
 });
 
+// 좋아요 등록
+router.post('/product/like/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = 'INSERT INTO liked (user_id, product_id) VALUES (?, ?)';
+
+  try {
+    const query = mysql.format(sql, [req.user.id, id]);
+    const result = await pool.query(query);
+    res.send(result);
+
+  } catch (error){
+    console.error(error);
+    res.send('error')
+  }
+})
+
+// 좋아요 삭제(취소)
+router.post('/product/unLike/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  let sql = 'DELETE FROM liked WHERE user_id = ? AND product_id = ?';
+
+  try{
+    const query = mysql.format(sql, [req.user.id, id]);
+    const result = await pool.query(query);
+    res.send(result);
+
+  } catch(error){
+    console.error(error);
+    res.send('error');
+  }
+})
+
+// 좋아요 조회
+router.get('/product/likeState/:id', isLoggedIn, async(req, res)=>{
+  let { id } = req.params;
+
+  try{
+      let sql = 'SELECT user_id, product_id FROM liked WHERE user_id = ?';
+      const query = mysql.format(sql, [req.user.id]);
+      const result = await pool.query(query);
+
+      res.send(result);
+    } catch(error){
+      console.error(error);
+      res.send('error');
+    }
+})
+
+
+
+
 // 상품 카테고리 조회
 router.get('/product/category', async (req, res) => {
     // query문 설정
@@ -235,5 +288,12 @@ router.post('/product/fileupdate', isLoggedIn, upload.array('files', 5), async(r
     console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
   }
 })
+
+
+
+
+
+
+
 
 module.exports = router;
