@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-style: normal;
+}
+
 .title{margin-bottom: 20px;}
 
 .boardForm .col{margin: 20px 0; padding: 0 10px;}
@@ -11,9 +17,11 @@
 
 .boardForm .reset{margin-right: 10px;}
 
-.essentialInput::after{content: "*"; margin-left: 2px; color: #427D9D}
+.essentialInput::after{content: "*"; margin-left: 2px; color: #427D9D;}
 .category{margin-right: 20px;}
 .radioWrap{padding: 5px 10px;}
+
+.selectedDay{background-color: #427D9D; border-radius: 50%!important; border: none;}
 
 
 /* image upload */
@@ -36,11 +44,12 @@
 }
 .uploadedImgBox{
   display: flex; align-items: center; justify-content: center;
+  height: 170px;
   overflow: hidden; position: relative;
   border: 1px solid #979797; border-radius: 5px;
 }
 .previewImg{
-  display: block; width: auto; height: 180px;
+  display: block; width: auto; height: 170px;
   object-fit: cover; object-position: center;}
 .previewImgDelBtn{
   position: absolute; top: 7px; right: 7px; margin: 0; padding: 0; font-size: 20px; color: #979797; line-height: 1;

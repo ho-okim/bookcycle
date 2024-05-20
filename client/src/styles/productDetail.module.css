@@ -1,3 +1,8 @@
+.updateBtn, .deleteBtn, .alertBtn, .goBoard {
+  border: 1px solid #e8e8e8;
+  font-size: 13px;
+}
+
 .inner{
     margin-top: 70px;
     font-size: 25px;
