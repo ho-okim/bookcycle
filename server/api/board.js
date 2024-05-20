@@ -94,7 +94,6 @@ router.post('/delete/:id', isLoggedIn, async (req, res) => {
       let sql1_result = await pool.query(query1);
 
       console.log("Deleted board:", sql1_result);
-
       res.status(200).json({ message: "Board, related images and liked deleted successfully", deletedId: id });
   } catch (error) {
       console.error(error);

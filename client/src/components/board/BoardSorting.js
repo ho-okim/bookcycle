@@ -20,9 +20,10 @@ function BoardSorting({order, setOrder}){
 
 
   return(
-    <Form.Select onChange={(e)=>handleSort(e)}>
-      <option id="createdAt" value="createdAt">최신순</option>
-      <option id="likehit" value="likehit">좋아요 순</option>
+    <Form.Select className={styles.boardSort} onChange={(e)=>handleSort(e)}>
+      <option value="createdAt">최신순</option>
+      <option value="likehit">좋아요 순</option>
+      <option value="view_count">조회수 순</option>
     </Form.Select>
   )
 }

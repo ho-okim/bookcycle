@@ -6,7 +6,9 @@ import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Form from 'react-bootstrap/Form';
+import {ChatLeftDots} from 'react-bootstrap-icons';
+import { Eye } from 'react-bootstrap-icons';
+import { Heart } from 'react-bootstrap-icons';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function Board() {
@@ -44,13 +46,12 @@ function Board() {
   // 요청 url이 바뀔때마다 board 정보 다시 가져옴
   useEffect(()=>{
     let board
-    const test = async () => {
+    const getBoardData = async () => {
       board = await getBoard()
       setContents(board)
     }
-    test()
+    getBoardData()
   }, [searchParams])
-
 
 
   async function onPost(){
@@ -99,9 +100,17 @@ function Board() {
               return(
                 <div key={content.id} className={`col ${styles.list}`} onClick={()=>{navigate(`/board/${content.id}`)}}>
                   <div className={styles.listTitle}>{content.title}</div>
-                  <div className={`${styles.listInfo} regular`}>
-                    <span className={styles.userid}>{content.nickname}</span>
-                    <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
+                  <div className={`${styles.listContent} regular`}>{content.content}</div>
+                  <div className={`${styles.listInfo} d-flex justify-content-between regular`}>
+                    <div className='userInfo'>
+                      <span className={`${styles.userid} medium`}>{content.nickname}</span>
+                      <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
+                    </div>
+                    <div className='boardInfo'>
+                      <ChatLeftDots/> {content.reply_numbers}
+                      <Eye className='ms-3'/> {content.view_count}
+                      <Heart className='ms-3'/> {content.likehit}
+                    </div>
                   </div>
                 </div>
               )
