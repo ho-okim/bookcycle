@@ -53,6 +53,7 @@ function ProductSearchInput() {
             <Form.Control type="search" id='searchKeyword' 
             maxLength={50} onChange={(e)=>{handleKeyword(e)}} 
             onKeyDown={(e)=>{handleEnter(e)}}
+            autoFocus
             value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/>검색</Button>
         </InputGroup>

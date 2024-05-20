@@ -21,9 +21,18 @@
 }
 
 .login_btn {
-    width: 60px;
+    width: 60px; padding: 6px 10px;
     margin: 0 10px;
+    background-color: rgb(77, 145, 182);
     border: none;
+    border-radius: 7px;
+    color:#fff;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.login_btn:hover{
+    background-color: rgb(22, 72, 99);
 }
 
 .password_box{
@@ -58,8 +67,16 @@
 }
 
 .back_btn {
-    width: 60px;
+    width: 60px; padding: 6px 10px;
     margin: 0 10px;
     border: none;
     background-color: #979797;
+    border-radius: 7px;
+    color:#fff;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.back_btn:hover{
+    background-color: #6d6d6d;
 }

@@ -10,11 +10,30 @@ import UserReviewTagTable from './UserReviewTagTable.js';
 function UserReviewTag() {
 
     const {targetUserId} = useTargetUser(); // 대상 id
-    const [reviewTagTotal, setReveiwTagTotal] = useState(null);
+    const [reviewTagTotal, setReveiwTagTotal] = useState(null); // 전체 태그 수
     const [reviewTagList, setReviewTagList] = useState([]); // 리뷰태그 목록
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점
     const limit = 10; // 가져올 데이터 수
+
+    function handleMoreView() { // 더보기 버튼 처리
+        if (reviewTagTotal !== null && reviewTagList.length < reviewTagTotal) {
+            setOffset(offset+limit);
+        }
+        return;
+    }
+
+    async function getMoreReview(newOffset) { // 리뷰 더 가져오기
+        const res = await getUserReviewTag(targetUserId, limit, newOffset);
+
+        if (res === 'error') {
+            setReviewTagList([]);
+            return;
+        }
+
+        setReviewTagList((reviewTagList) => ([...reviewTagList, ...res]));
+        setLoading(false);
+    }
 
     useEffect(()=>{
         async function getTotal() { // 리뷰 총 개수 가져오기
@@ -43,25 +62,6 @@ function UserReviewTag() {
             getReviewTagList();
         }
     }, [targetUserId, reviewTagTotal]);
-
-    function handleMoreView() { // 더보기 버튼 처리
-        if (reviewTagTotal !== null && reviewTagList.length < reviewTagTotal) {
-            setOffset(offset+limit);
-        }
-        return;
-    }
-
-    async function getMoreReview(newOffset) { // 리뷰 더 가져오기
-        const res = await getUserReviewTag(targetUserId, limit, newOffset);
-
-        if (res === 'error') {
-            setReviewTagList([]);
-            return;
-        }
-
-        setReviewTagList((reviewTagList) => ([...reviewTagList, ...res]));
-        setLoading(false);
-    }
 
     useEffect(()=>{ // 시작점 바뀔때마다 정보 추가
         if (offset > 0) {

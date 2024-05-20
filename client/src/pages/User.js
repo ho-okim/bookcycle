@@ -15,8 +15,9 @@ function User() {
     const { id } = useParams(); // url에서 가져온 params
     const { user } = useAuth(); // 현재 로그인 한 사용자
     const [targetUserId, setTargetUserId] = useState(id); // 대상 id
-    const [targetUsername, setTargetUsername] = useState('');
-    
+    const [targetUsername, setTargetUsername] = useState(''); // 대상 닉네임
+    const [isBlocked, setIsBlocked] = useState(false);
+
     if (user && user.id == id) { // 로그인 한 사용자는 내 페이지로 이동시킴
         return(
             <Navigate to={'/mypage/buyList'}/>
@@ -27,22 +28,25 @@ function User() {
     let subUrl = currentUrl.includes("product") || currentUrl.includes("review") || currentUrl.includes("sellerReviewWrite") || currentUrl.includes("buyerReviewWrite") || currentUrl.includes("sellerReviewEdit") || currentUrl.includes("buyerReviewEdit");
 
     return (
-        <TargetUserContext.Provider value={{targetUserId, setTargetUserId, targetUsername, setTargetUsername}}>
+        <TargetUserContext.Provider 
+        value={{targetUserId, setTargetUserId, targetUsername, setTargetUsername, isBlocked, setIsBlocked}}>
             <Container className={`d-flex justify-content-center ${styles.undrag}`}>
                 <section className={styles.user_content}>
                     {
-                        (subUrl) ?
-                        <>
-                            <UserInfo/>
-                            <Outlet/>
-                        </>
-                        :
-                        <>
-                            <UserInfo/>
-                            <UserReviewTag/>
-                            <UserReviewList/>
-                            <UserProduct/>
-                        </>
+                        (!isBlocked) ?
+                            (subUrl) ?
+                            <>
+                                <UserInfo/>
+                                <Outlet/>
+                            </>
+                            :
+                            <>
+                                <UserInfo/>
+                                <UserReviewTag/>
+                                <UserReviewList/>
+                                <UserProduct/>
+                            </>
+                        : <UserInfo/>
                     }
                 </section>
             </Container>

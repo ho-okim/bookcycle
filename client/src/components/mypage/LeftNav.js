@@ -12,7 +12,7 @@ function LeftNav() {
 
   const [nickname, setNickname] = useState('unknown');
   const [mannerScore, setMannerScore] = useState(0);
-  
+
   useEffect(()=>{
     if (user) {
       setNickname(user.nickname);

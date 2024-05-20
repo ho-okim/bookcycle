@@ -43,8 +43,6 @@ function Search() {
     function handleMoreView() { // 더보기 이동
         if (category === 'product') {
             navigate(`/product?search=${keyword}`);
-        } else if (category === 'user') {
-            navigate(`/search/user?keyword=${keyword}`);
         } else if (category === 'board') {
             navigate(`/board?search=${keyword}`);
         }
@@ -80,13 +78,13 @@ function Search() {
                             </div>
                             : null
                         }
-                        <Tab eventKey="product" title="상품">
+                        <Tab className={styles.tab} eventKey="product" title="상품">
                             <SearchProduct/>
                         </Tab>
-                        <Tab eventKey="user" title="사용자">
+                        <Tab  className={styles.tab} eventKey="user" title="사용자">
                             <SearchUser/>
                         </Tab>
-                        <Tab eventKey="board" title="게시글">
+                        <Tab  className={styles.tab} eventKey="board" title="게시글">
                             <SearchBoard/>
                         </Tab>
                     </Tabs>

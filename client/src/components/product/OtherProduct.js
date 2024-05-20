@@ -46,7 +46,7 @@ function OtherProduct({id}) {
             <div className='inner'>
                 <div className={styles.title}>
                     <h4 className={styles.title_font}>판매목록</h4>
-                    <Button onClick={handleClick}>더보기</Button>
+                    <Button variant='outline-primary' className={styles.more_btn} onClick={handleClick}>더보기</Button>
                 </div>
                 <div className={databox_css}>
                     {
