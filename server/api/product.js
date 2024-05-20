@@ -348,4 +348,11 @@ router.post('/product/file/update', isLoggedIn, upload.array('files', 5), async(
   }
 })
 
+
+
+
+
+
+
+
 module.exports = router;

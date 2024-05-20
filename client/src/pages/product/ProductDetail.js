@@ -1,14 +1,16 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, react } from 'react';
 import { useAuth } from "../../contexts/LoginUserContext";
 import { MegaphoneFill } from "react-bootstrap-icons";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
 import { getCategory } from '../../api/product.js';
 import OtherProduct from "../../components/product/OtherProduct.js";
+import Favorite from "../../components/product/Favorite.js";
 import { getReportedOrNot } from "../../api/report.js";
+import ProductDetailContext from "../../contexts/ProductDetailContext.js";
 
 
 function ProductDetail() {
@@ -19,8 +21,8 @@ function ProductDetail() {
 
   const [productList, setProductList] = useState({});
   const [category, setCategory] = useState([]);
+  const [likehit, setLikehit] = useState(0);
 
-  const { none_like } = useState(0);
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
   const [isReported, setIsReported] = useState(true); // 신고 여부
   // 파일의 배열
@@ -37,6 +39,7 @@ function ProductDetail() {
   async function getDetail() { // 상품 정보 가져오기
     const data = await productDetail(id);
     setProductList(data);
+    setLikehit(data.liked);
   } 
 
   async function getProductFile(){
@@ -102,7 +105,10 @@ function ProductDetail() {
     return null;
   }
 
+
+
     return(
+      <ProductDetailContext.Provider value={{id, likehit}}>
       <Container>
         <div className={`${style.inner}`}>
           {
@@ -138,9 +144,6 @@ function ProductDetail() {
         </div>
 {/* 
 {
-            (productList && productList.length > 0) ?
-            productList.map((el, i) => {
-                return(
 
 
 
@@ -167,6 +170,9 @@ function ProductDetail() {
                       {
                         renderReportBtn()
                       }
+                      </div>
+                      <div>
+                      <Favorite/>
                       </div>
                     </>
               : <p>아직 등록한 상품이 없어요!</p>
@@ -215,6 +221,7 @@ function ProductDetail() {
 
         <OtherProduct id={productList.seller_id}/>
       </Container>
+      </ProductDetailContext.Provider>
     );
 
   }
