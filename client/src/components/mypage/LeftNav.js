@@ -1,25 +1,46 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate, } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 
 import styles from '../../styles/mypage.module.css';
-import { StarFill } from "react-bootstrap-icons";
+import { PersonCircle, StarFill } from "react-bootstrap-icons";
+import { useEffect, useState } from 'react';
 
 
 function LeftNav() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [nickname, setNickname] = useState('unknown');
+  const [mannerScore, setMannerScore] = useState(0);
+  
+  useEffect(()=>{
+    if (user) {
+      setNickname(user.nickname);
+      setMannerScore(user.manner_score);
+    }
+  }, [user]);
 
   if (!user) {
-    return <div>Loading..</div>
-    // return <Navigate to="/login" />
+    navigate('/login')
+    return null; // navigate 후에는 컴포넌트를 렌더링하지 않음  
+  }
+
+  function profileImageBox() { // 프로필 이미지 처리
+    if(user.profile_image) {
+      if (user.profile_image.length != 0) {
+        return <img className={styles.profile_image} src={`${process.env.PUBLIC_URL}/img/profile/${user.profile_image}`} alt='프로필'/>;
+      }
+    }
+    return <PersonCircle className={styles.profile_default}/>;
   }
 
   return (
     <>
       <div className={styles.leftNav}>
         <div className={`py-2 ${styles.navProfile}`}>
-          <img src="" style={{width:'20px', height:'20px', backgroundColor:'#ddd',  borderRadius:'100%'}}/>
-          <div>{user.nickname}</div>
-          <div><StarFill style={{color: '#FFC100'}}/>{user.manner_score.toFixed(1)}</div>
+          { profileImageBox() }
+          <div>{nickname}</div>
+          <div><StarFill style={{color: '#FFC100'}}/>{mannerScore.toFixed(1)}</div>
         </div>
         <ul className="p-0">
           <li className="border-bottom py-2">

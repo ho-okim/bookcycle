@@ -20,7 +20,6 @@ function ConfirmPassword({ onConfirm }) {
       }
 
       const res = await confirmPassword(password);
-      console.log(res)
 
       if (res.message === "success") {
         onConfirm(password);

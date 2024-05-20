@@ -30,7 +30,6 @@ function MyBuyGetReviewList() {
     getReviews();
   }, []);
   
-  console.log(reviews)
 
   return (
     <div className={styles.content}>

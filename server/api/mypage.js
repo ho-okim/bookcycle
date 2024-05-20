@@ -121,8 +121,8 @@ router.get("/mypage/sellGetReviewList", isLoggedIn, async (req, res) => {
 router.get("/mypage/postList", isLoggedIn, async (req,res) => {
   const { id } = req.user;
 
-  let productPostSql = "SELECT * FROM product WHERE seller_id = ? AND buyer_id = ?";
-  let boardPostSql = "SELECT * FROM board WHERE user_id = ?";
+  let productPostSql = "SELECT * FROM product WHERE seller_id = ? AND buyer_id = ? ORDER BY createdAt DESC";
+  let boardPostSql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? GROUP BY B.id ORDER BY createdAt DESC";
 
   try {
     const productPostQuery = mysql.format(productPostSql, [id, id]);
@@ -193,9 +193,6 @@ router.get("/mypage/edit", isLoggedIn, async (req, res) => {
 router.put("/mypage/edit", isLoggedIn, async(req, res) => { 
   const { id } = req.user;
   let { formData } = req.body;
-  // console.log("서버 - formData :", formData)
-
-  // 비밀번호 bcrypt 해시해서 값 넣기
 
   let sql = "UPDATE users SET username = ?, nickname = ?, password = ?, phone_number = ? WHERE id = ?";
 
@@ -304,7 +301,6 @@ router.post("/user/:id/buyerReviewWrite", isLoggedIn, async (req, res) => {
 // 리뷰 수정 페이지 - 내가 구매자일 때
 router.get("/user/:id/sellerReviewEdit", isLoggedIn, async(req, res) => {
   const { productId } = req.query;
-  console.log(productId)
 
   let sql = "SELECT R.score, R.content, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ?";
   const query = mysql.format(sql, [productId]);
@@ -351,7 +347,6 @@ router.put("/user/:id/sellerReviewEdit", isLoggedIn, async (req, res) => {
 // 리뷰 수정 페이지 - 내가 판매자일 때
 router.get("/user/:id/buyerReviewEdit", isLoggedIn, async(req, res) => {
   const { productId } = req.query;
-  // console.log(productId)
 
   let sql = "SELECT R.score, R.content, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ?";
 
@@ -449,14 +444,17 @@ router.post('/profileupload', isLoggedIn, upload.array('files', 1), async(req, r
   let result
   const files = req.files[0]
   const {delProfile} = req.body
-  console.log(delProfile)
 
   try {
     if(files){ // 새 파일로 데이터베이스 업데이트
       result = await pool.query(sql, [files.filename, req.user.id])
-    }
-    if(delProfile){ // 기존 프로필 존재하면 삭제
-      fs.unlink(`./client/public/img/profile/${delProfile}`, (err)=>{})
+      if(delProfile){ // 기존 프로필 존재하면 삭제
+        fs.unlink(`./client/public/img/profile/${delProfile}`, (err)=>{
+          if (err) console.error(err);
+        })
+      }
+    } else {
+      result = await pool.query(sql, [delProfile, req.user.randomID])
     }
   
     res.send(result);
