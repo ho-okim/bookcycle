@@ -3,6 +3,8 @@ const pool = require("../db.js"); // db connection pool
 const mysql = require('mysql2');
 const { CHAR_REG } = require('../lib/regex_server.js');
 const { isLoggedIn } = require("../lib/auth.js");
+// 파일 시스템 함수 require
+const fs = require('fs');
 
 // 상위 10개 게시글 조회
 router.get('/board', async (req, res) => {
@@ -77,29 +79,21 @@ router.get('/board/:id', async (req, res) => {
 router.post('/delete/:id', isLoggedIn, async (req, res) => {
   let { id } = req.params;
 
-  // board - board_image/board_liked/reply 제약조건 관계로
-  // 3개 테이블의 열 먼저 삭제 후 -> board 열 삭제 가능
   try {
-      let sql1 = "DELETE FROM board_image WHERE board_id = ?";
-      const query = mysql.format(sql1, [id]);
-      let sql1_result = await pool.query(query);
+      // 데이터베이스 삭제 전 로컬 파일 삭제 먼저 진행
+      let sql = "SELECT * FROM board_image WHERE board_id = ?"
+      const query = mysql.format(sql, [id]);
+      let result = await pool.query(query);
+      result.forEach((el)=>{
+        console.log(el.filename)
+        fs.unlink(`./client/public/img/board/${el.filename}`, (err)=>{})
+      })
 
-      let sql2 = "DELETE FROM board_liked WHERE board_id = ?";
-      const query2 = mysql.format(sql2, [id]);
-      let sql2_result = await pool.query(query2);
+      let sql1 = "DELETE FROM board WHERE id = ?";
+      const query1 = mysql.format(sql1, [id]);
+      let sql1_result = await pool.query(query1);
 
-      let sql3 = "DELETE FROM reply WHERE board_id = ?";
-      const query3 = mysql.format(sql3, [id]);
-      let sql3_result = await pool.query(query3);
-
-      let sql4 = "DELETE FROM board WHERE id = ?";
-      const query4 = mysql.format(sql4, [id]);
-      let sql4_result = await pool.query(query4);
-
-      console.log("Deleted image:", sql1_result);
-      console.log("Deleted board_liked:", sql2_result);
-      console.log("Deleted reply:", sql3_result);
-      console.log("Deleted board:", sql4_result);
+      console.log("Deleted board:", sql1_result);
 
       res.status(200).json({ message: "Board, related images and liked deleted successfully", deletedId: id });
   } catch (error) {
@@ -272,8 +266,6 @@ router.get('/board/file/:id', async(req, res)=>{
 const path = require('path')
 const multer = require('multer')
 const uuid4 = require('uuid4')
-// 파일 시스템 함수 require
-const fs = require('fs')
 
 // 미들웨어 설정
 const upload = multer({
