@@ -60,18 +60,35 @@ export async function productDetail(id) {
   const res = await axios.get(`/productDetail/${id}`);
   
   if (res.statusText != "OK") {
-    window.location.href = '/error/500';
+    // window.location.href = '/error/500';
   }
-  // 서버측에서 어떤 이름으로 넘겨주는지와 관계 없이 res.data로 데이터가 들어옴에 주의
   const product = res.data;
   return product;
 
 }
 
-// 상품 게시글 작성
-export async function productWrite(sql, data) {
+// 상품 사진 조회
+export async function filesList(id){
   try {
-    const res = await axios.post('/productWrite', {sql, data});
+    const result = await axios.get(`/product/file/${id}`)
+    const res = result.data
+
+    if (result.statusText != "OK") {
+      //console.error("GET board file failed");
+      // window.location.href = '/error/500';
+    } 
+    const body = res;
+    
+    return body;
+  } catch (error) {
+    window.location.href = '/error/500';
+    }
+}
+
+// 상품 게시글 작성
+export async function productWrite(data) {
+  try {
+    const res = await axios.post('/productWrite', {data});
   
     if (res.statusText != "OK") {
       //console.error("creating new product failed");
@@ -80,6 +97,102 @@ export async function productWrite(sql, data) {
     const body = res.data;
     body.message = 'success'
     
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+// 상품 게시글 수정
+export async function productEdit(id, data){
+
+  try {
+    const res = await axios.post(`/product/edit/${id}`, {data})
+    console.log(res)
+    console.log(data)
+
+    if (res.statusText != "OK") {
+      console.error("boardEdit fails");
+      window.location.href = '/error/500';
+    } 
+    const body = res.data;
+    body.message = 'success'
+    console.log(body)
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+// 상품 사진 파일 업로드
+export async function productFileupload(formData) {
+  try {
+    const res = await axios.post('/product/file/upload', formData, {
+      headers: {
+      "Content-Type": "multipart/form-data"
+      }
+    })
+    
+    if (res.statusText != "OK") {
+      //console.error("file upload fails");
+      window.location.href = '/error/500';
+    } 
+    
+    return res.statusText;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+
+// 상품 사진 파일 수정
+export async function productFileupdate(formData) {
+  try {
+    const res = await axios.post('/product/file/update', formData, {
+      headers: {
+      "Content-Type": "multipart/form-data"
+      }
+    })
+    
+    if (res.statusText != "OK") {
+      //console.error("file update fails");
+      window.location.href = '/error/500';
+    } 
+    
+    return res.statusText;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+
+// 상품 게시글 삭제
+export async function productDelete(id){
+  console.log(id)
+  try {
+    const res = await axios.post(`/product/delete/${id}`)
+    if (res.statusText != "OK") {
+      //console.error("boardDelete fails");
+      window.location.href = '/error/500';
+    } 
+    const body = res.data;
+    return body;
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';

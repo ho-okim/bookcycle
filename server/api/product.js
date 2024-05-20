@@ -3,6 +3,8 @@ const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
 const { isLoggedIn } = require("../lib/auth.js");
 const { CHAR_REG } = require('../lib/regex_server.js');
+// 파일 시스템 함수 require
+const fs = require('fs');
 
 // 상품 전체 수 조회
 router.get('/productList/all', async (req, res) => {
@@ -79,6 +81,7 @@ router.get('/productList/product', async (req, res) => {
     }
 });
 
+// 상품 정보 조회
 router.get('/productDetail/:id', async (req, res) => {
     const { id } = req.params;
     
@@ -104,37 +107,98 @@ router.get('/product/category', async (req, res) => {
     res.send(result);
 });
 
-router.delete('/', (req, res) => {
+// 상품 사진 조회
+router.get('/product/file/:id', async(req, res)=>{
+  let { id } = req.params;
+  let sql = "SELECT id, boardNo, filename FROM product_image WHERE product_id = ? ORDER BY boardNo";
+  const query = mysql.format(sql, [id]);
 
+  try {
+    let result = await pool.query(query);
+    res.send(result)
+
+  } catch(error) {
+    console.error(error);
+    res.send('error');
+  }
+})
+
+
+// 상품 게시글 삭제
+router.post('/product/delete/:id', isLoggedIn, async (req, res) => {
+  let { id } = req.params;
+
+  try {
+      // 파일 시스템에서 파일 삭제하기 위해 기존 파일 이름 가져오는 쿼리 실행
+      let sql = "SELECT * FROM product_image WHERE product_id = ?"
+      const query = mysql.format(sql, [id]);
+      let result = await pool.query(query);
+      result.forEach((el)=>{
+        console.log(el.filename)
+        fs.unlink(`./client/public/img/product/${el.filename}`, (err)=>{})
+      })
+
+      let sql2 = "DELETE FROM product_image WHERE product_id = ?";
+      const query2 = mysql.format(sql2, [id]);
+      await pool.query(query2);
+
+      let sql3 = "DELETE FROM product WHERE id = ?";
+      const query3 = mysql.format(sql3, [id]);
+      let result3 = await pool.query(query3);
+
+      res.send(result3);
+  } catch (error) {
+      console.error(error);
+
+      res.status(500).json({ error: "An error occurred while processing the request" });
+  }
 });
 
 // 상품 게시글 생성
 router.post('/productWrite', isLoggedIn, async(req, res)=>{
   let { id } = req.params;
-  const {data} = req.body;
+  const {seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13} = req.body.data;
 
-  console.log(data)
+  let sql = 'INSERT INTO product (seller_id, buyer_id, category_id, product_name, `condition`, description, price, writer, publisher, publish_date, isbn10, isbn13) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  // let sql = 'INSERT INTO product (seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  // const query = mysql.format(sql, data);
+  const query = mysql.format(sql, [seller_id, seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13]);
 
-  // try{
-  //   let result = await pool.query(query);
-  //   res.send(result);
+  try{
+    let result = await pool.query(query);
+    res.send(result);
 
-  // } catch(error){
-  //   console.error(error);
-  //   res.send('error');
-  // }
-})
+  } catch(error){
+    console.error(error);
+    res.send('error');
+  }
+});
+
+
+// 상품 게시글 수정
+router.post('/product/edit/:id', isLoggedIn, async(req, res) => {
+  let { id } = req.params;
+  const {category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13} = req.body.data;
+
+  let sql = "UPDATE product SET category_id = ?, product_name = ?, `condition` = ?, description = ?, price = ?, writer = ?, publisher = ?, publish_date = ?, isbn10 = ?, isbn13 = ? WHERE id = ?";
+  const query = mysql.format(sql, [category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13, id]);
+
+  try {
+    let result = await pool.query(query);
+    console.log("수정 결과: ", result)
+  
+    res.send(result);
+
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
 
 
 // 사진 업로드 위한 패키지 require
 const path = require('path')
 const multer = require('multer')
 const uuid4 = require('uuid4')
-// 파일 시스템 함수 require
-const fs = require('fs');
 const { count } = require('console');
 
 // 미들웨어 설정
@@ -154,38 +218,36 @@ const upload = multer({
 });
 
 // 파일 업로드
-router.post('/product/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
-  let sql = 'INSERT INTO product_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
+router.post('/product/file/upload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+  let sql = 'INSERT INTO product_image (product_id, boardNo, filename) VALUES (?, ?, ?)';
   const files = req.files
   let result
 
   try {
     files.forEach(async (el, i)=>{
-      const query = mysql.format(sql, [req.body.boardId, i, el.filename]);
+      const query = mysql.format(sql, [req.body.productId, i, el.filename]);
       result = await pool.query(query); 
     })
   
     res.send(result);
   } catch (error) {
-    console.log('fileupload POST 과정에서 오류 발생 : ', error)
+    console.log('productupload POST 과정에서 오류 발생 : ', error)
   }
 })
 
 // 파일 수정
-router.post('/product/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+router.post('/product/file/update', isLoggedIn, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO product_image (product_id, boardNo, filename) VALUES (?, ?, ?)';
   let sql2 = 'DELETE FROM product_image WHERE id = ?'
   let sql3 = 'DELETE FROM product_image WHERE product_id = ?'
   let sql4 = "UPDATE product_image SET boardNo = ? WHERE id = ?";
   let result
   const files = req.files
-  const {editBoardId, prevFiles, delFiles} = req.body
+  const {editProductId, prevFiles, delFiles} = req.body
   // 기존 파일들 데이터 받아옴
   const prevArray = JSON.parse(prevFiles)
   const delArray = JSON.parse(delFiles)
-  // console.log("prevArray ", prevArray)
-  // console.log("delArray: ", delArray)
-  const query = mysql.format(sql3, [editBoardId]);
+  const query = mysql.format(sql3, [editProductId]);
 
   try {
     if(prevArray.length == 0){ // prevArray.length가 0이면 기존 파일이 모두 지워졌다는 뜻
@@ -200,7 +262,7 @@ router.post('/product/fileupdate', isLoggedIn, upload.array('files', 5), async(r
 
       // 새로운 파일 DB에 저장
       files.forEach(async (el, i)=>{
-        const query2 = mysql.format(sql, [editBoardId, i, el.filename]);
+        const query2 = mysql.format(sql, [editProductId, i, el.filename]);
         result = await pool.query(query2); 
       })
     } else { // 기존 파일이 남아있을 때 진입
@@ -225,7 +287,7 @@ router.post('/product/fileupdate', isLoggedIn, upload.array('files', 5), async(r
       
       // 새로운 파일 DB에 저장
       files.forEach(async (el, i)=>{
-        const query5 = mysql.format(sql, [editBoardId, i + prevArray.length, el.filename]);
+        const query5 = mysql.format(sql, [editProductId, i + prevArray.length, el.filename]);
         result = await pool.query(query5); 
       })
     }

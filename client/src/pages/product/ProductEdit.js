@@ -1,50 +1,86 @@
-import styles from '../../styles/boardWrite.module.css';
-import { useState, useEffect } from 'react';
-import {boardEdit, boardDetail, boardWrite, fileupload, fileupdate} from '../../api/board.js';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Container from "react-bootstrap/Container";
-import Button from 'react-bootstrap/Button';
+import styles from '../../styles/product.module.css';
+import { productEdit, productFileupdate } from '../../api/product.js';
+import { useState, useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Container, Button, Form } from "react-bootstrap";
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
+import DatePicker from "react-datepicker";
+import { ko } from 'date-fns/locale';
+import { set } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz'
+import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from 'react-router-dom';
 
 // 버려진 기존 파일 이름 담을 배열
 var delFiles = []
 
-function BoardEdit() {
+function ProductEdit() {
   const {id} = useParams();
-
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
 
-  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
-  let location = useLocation()
-  const defaultData = location.state
-  const {files} = defaultData
+  // 카테고리 배열
+  const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
+  
+  const date = new Date();
+  const titleRef = useRef();
+  const writerRef = useRef();
+  const publisherRef = useRef();
+  const isbnRef = useRef();
+  const priceRef = useRef();
+  const contentRef = useRef()
+  const [pubDate, setPubDate] = useState(null);
 
-  // title, content 각각 useState로 defaultData.title / defaultData.content로 받고 
-  // -> handleTitle / handleContent 콜백 실행해 e.target.value(수정값) 꽂아주기 
-  const [title, setTitle] = useState(defaultData.title)
-  const [content, setContent] = useState(defaultData.content)
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
   // 이미지 미리보기 URL 담는 useState
   const [uploadImgUrl, setUploadImgUrl] = useState("");
+  // 카테고리 useState
+  const [cate, setCate] = useState();
+  // 상품 상태 useState
+  const [con, setCon] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // 최초 렌더링 때 이미지 초기값 useState에 담아주기
+  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
+  let location = useLocation()
+  const {product, files} = location.state
+  const {category_id, product_name, writer, publisher, isbn10, isbn13, publish_date, price, condition, description} = product
+
+  // 최초 렌더링 때 초기값 useState에 담아주기
   useEffect(()=>{
-    setUploadImg(files)
-    setUploadImgUrl(files)
+
+    setUploadImg(files);
+    setUploadImgUrl(files);
+    setCate(category_id - 1);
+    setCon(condition);
+    setPubDate(publish_date);
+    titleRef.current.value = product_name
+    writerRef.current.value = writer
+    publisherRef.current.value = publisher;
+    isbnRef.current.value = isbn10 ? isbn10 : isbn13
+    priceRef.current.value = price
+    contentRef.current.value = description;
+    
     return(()=>{
       delFiles = []
     })
+
   }, [])
 
-  function handleTitle(e) {
-      setTitle(e.target.value);
+  // 카테고리 라디오 버튼 핸들러
+  const cateHandler = (e, i) => {
+    setCate(i)
   }
-
-  function handleContent(e) {
-      setContent(e.target.value);
+  // 상품 상태 라디오 버튼 핸들러
+  const conditionHandler = (e, condition) => {
+    setCon(condition)
+  }
+  // 출간일 핸들러
+  const handleDateChange = (date) => {
+    if(date){
+      // 사용자 입력 날짜를 로컬 타임으로 설정
+      const localDate = set(date, { hours: 12 }); // 시간을 정오로 설정하여 오차를 줄임
+      setPubDate(toZonedTime(localDate, 'Asia/Seoul'))
+    }
   }
 
   // 이미지 미리보기 함수
@@ -87,66 +123,70 @@ function BoardEdit() {
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
+    const category_id = cate + 1
+    const title = titleRef.current.value
+    const price = Number(priceRef.current.value)
+    const description = contentRef.current.value
 
-    // title과 content의 값이 변경되지 않으면(onChange 이벤트 발생x) default data 그대로 제출 되도록 해야 함
-    // onChange 발생하지 않을 때의 값은 undefined -> undefined의 경우 default 값 받고, 아니면 수정값 받으면 됨
-    const finalTitle = title === undefined ? defaultData.title : title;
-    const finalContent = content === undefined ? defaultData.content : content;
-  
-    // 제목이나 내용 비어있으면 alert
-    if (!finalTitle || finalTitle === '') {
-      alert("제목을 입력해주세요");
-      return;
-    }
-    if (!finalContent || finalContent === '') {
-      alert('내용을 입력해주세요');
-      return;
-    }
+    if(!isNaN(cate) && title && price && con && description){
+      // 필수 항목들이 전부 값이 있을 때만 데이터 전송
 
-    const formData = new FormData()
-    let prevFiles = []
-    let lastIdx
-    uploadImg.forEach((el, i) => {
-      if(!el.id) {
-        formData.append('files', el)
-      } else {
-        console.log(el)
-        prevFiles.push({id: el.id, boardNo: el.boardNo})
-        lastIdx = i
+      // 서버에 보낼 데이터 배열
+      let data = {category_id, product_name: title, condition: con, description, price, writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
+      if(writerRef.current.value){
+        data.writer = writerRef.current.value
+      } if(publisherRef.current.value){
+        data.publisher = publisherRef.current.value
+      } if(pubDate){
+        data.publish_date =pubDate
+      } if(isbnRef.current.value.length == 10){
+        data.isbn10 = isbnRef.current.value
+      } if(isbnRef.current.value.length == 13){
+        data.isbn13 = isbnRef.current.value
       }
-    })
-    formData.delete('editBoardId')
-    formData.append('editBoardId', id)
-    formData.delete('prevFiles')
-    formData.append('prevFiles', JSON.stringify(prevFiles))
-    formData.delete('delFiles')
-    formData.append('delFiles', JSON.stringify(delFiles))
-    
-    // 제목, 내용 다 있으면 데이터를 서버에 전송하기 위해
-    // boardWrite 함수 호출
-    const res = await boardEdit(id, finalTitle, finalContent);
+      
+      // 사진 업데이트
+      const formData = new FormData()
+      let prevFiles = []
+      uploadImg.forEach((el, i) => {
+        if(!el.id) {
+          formData.append('files', el)
+        } else {
+          console.log(el)
+          prevFiles.push({id: el.id, boardNo: el.boardNo})
+        }
+      })
+      formData.delete('editProductId')
+      formData.append('editProductId', id)
+      formData.delete('prevFiles')
+      formData.append('prevFiles', JSON.stringify(prevFiles))
+      formData.delete('delFiles')
+      formData.append('delFiles', JSON.stringify(delFiles))
+      
+      // 데이터 서버에 전송
+      const res = await productEdit(id, data);
+      console.log(res)
+      const fileRes = await productFileupdate(formData)
 
-    formData.append('boardId', res.insertId)
-    const fileRes = await fileupdate(formData)
-
-    if(res.message == 'success' && fileRes == 'OK'){
-      navigate(`/board/${id}`);
-      // navigate로 이동 시 수정 사항이 제대로 반영되지 않아서 일단 새로고침 넣어봤음 추후 보완 필요
-      window.location.reload()
-    } else {
-      setErrorMessage("제목이나 내용을 다시 확인해주세요");
+      if(res.message == 'success'){
+        navigate(`/product/detail/${id}`);
+        window.location.reload()
+      } else {
+        setErrorMessage("제목이나 내용을 다시 확인해주세요");
+      }
     }
   }
 
-
   return (
     <>
-      <Container className="board-write sec">
+      <Container className={`board-write ${styles.sec} ${styles.container}`}>
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
           <div className={`inner ${styles.boardForm}`}>
-            <h3 className="title">게시글 수정</h3>
+            <h3 className={styles.title}>상품 수정</h3>
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
-              <div className='col-6 col-sm-4 col-lg-2'>
+              <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
+              <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
+              <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
                   <Camera className={`${styles.previewDefaultImg}`}/>
@@ -157,11 +197,11 @@ function BoardEdit() {
               { // uploadImgUrl이 존재할 때 요소 생성
                 uploadImgUrl && uploadImgUrl.map((img, id)=>{
                   return(
-                    <div className='col-6 col-sm-4 col-lg-2' key={id}>
+                    <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} key={id}>
                       <div className={`${styles.uploadedImgBox}`}>
                         { // img.id가 존재한다면 기존의 파일임
                           img.id ?
-                          <img className={`${styles.previewImg}`} alt='preview' src={process.env.PUBLIC_URL + `/img/board/${img.filename}`}/>
+                          <img className={`${styles.previewImg}`} alt='preview' src={process.env.PUBLIC_URL + `/img/product/${img.filename}`}/>
                           : <img className={`${styles.previewImg}`} alt='preview' src={img}/>
                         }
                         <button className={`${styles.previewImgDelBtn}`} type='button' onClick={() => handleDeleteImage(id)}><XCircleFill/></button>
@@ -171,17 +211,92 @@ function BoardEdit() {
                 })
               }
             </div>
-            <div className={`col ${styles.col} ${styles.titleBox} d-flex justify-content-between`}>
-              <label htmlFor="title">제목</label>
-              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" defaultValue={defaultData.title} onChange={(e)=>{handleTitle(e)}}></input>
-            </div>
-            <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
-              <label htmlFor="content">내용</label>
-              <textarea className={`${styles.contentInput}`} id="content" placeholder="내용을 입력하세요" defaultValue={defaultData.content} onChange={(e)=>{handleContent(e)}}></textarea>
-            </div>
-            <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
-              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
-              <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+            <div className={``}>
+              <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                <div>
+                  <p className={`${styles.essentialInput}`}>카테고리</p>
+                </div>
+                <div className={styles.radioWrap}>
+                    <div>
+                      <div key={`inline-radio`} className="d-flex flex-wrap">
+                        {category.map((category, i)=>{
+                          return(
+                            i == cate ?
+                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i} checked="checked"/> :
+                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                <div>
+                  <p className={`${styles.essentialInput}`}>제목</p>
+                </div>
+                <input className={`${styles.input}`} placeholder="제목을 입력하세요" maxLength={40} ref={titleRef}></input>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={``}>저자</p>
+                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={40} ref={writerRef}></input>
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={``}>출판사</p>
+                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={40} ref={publisherRef}></input>
+                </div>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={``}>isbn 10/13</p>
+                  <input className={`${styles.input}`} placeholder="10자리 혹은 13자리를 입력하세요" maxLength={40} ref={isbnRef}></input>
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={``}>출간일</p>
+                  <DatePicker className={`${styles.input} regular`} selected={pubDate}
+                    locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date}
+                    onChange={handleDateChange}
+                    dayClassName={(d) => (d.getDate() == pubDate ? styles.selectedDay : styles.unselectedDay)}
+                    />
+                </div>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={`${styles.essentialInput}`}>가격</p>
+                  <div className='d-flex'>
+                    <input className={`${styles.priceInput}`} placeholder="판매 가격을 입력하세요" type='number'min={0} max={1000000} ref={priceRef}></input>
+                    <div className='d-flex justify-content-center align-items-center'>
+                    <p>원</p>
+                    </div>
+                  </div>
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={`${styles.essentialInput}`}>상품의 상태</p>
+                  <div className={styles.radioWrap}>
+                    <Form>
+                      <div key={`inline-radio`} className="d-flex justify-content-between align-items-center">
+                        {['상', '중', '하'].map((condition, i)=>{
+                          return(
+                            condition == con ?
+                            <Form.Check inline label={condition} name="condition" type="radio"
+                            id={`condition${i}`} onChange={(e)=>conditionHandler(e, condition)} key={i} checked="checked"/> :
+                            <Form.Check inline label={condition} name="condition" type="radio"
+                            id={`condition${i}`} onChange={(e)=>conditionHandler(e, condition)} key={i}/>
+                          )
+                        })}
+                      </div>
+                    </Form>
+                  </div>
+                </div>
+              </div>
+              <div className={`col-12 ${styles.col} d-flex flex-column`}>
+                <p className={`${styles.essentialInput}`}>내용</p>
+                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요" ref={contentRef}></textarea>
+              </div>
+              <div className={`col ${styles.col} d-flex justify-content-end`}>
+                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
+                <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+              </div>
             </div>
           </div>
         </form>
@@ -190,4 +305,4 @@ function BoardEdit() {
   );
 }
 
-export default BoardEdit;
+export default ProductEdit;

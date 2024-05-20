@@ -9,7 +9,7 @@ import { ko } from 'date-fns/locale';
 import { set } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz'
 import "react-datepicker/dist/react-datepicker.css";
-import { productWrite } from '../../api/product.js';
+import { productFileupload, productWrite } from '../../api/product.js';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function BoardWrite() {
@@ -38,15 +38,15 @@ function BoardWrite() {
   // 카테고리 useState
   const [cate, setCate] = useState();
   // 상품 상태 useState
-  const [condition, setCondition] = useState();
+  const [con, setCon] = useState();
 
   // 카테고리 라디오 버튼 핸들러
   const cateHandler = (e, i) => {
     setCate(i)
   }
   // 상품 상태 라디오 버튼 핸들러
-  const conditionHandler = (e, i) => {
-    setCondition(i)
+  const conditionHandler = (e, condition) => {
+    setCon(condition)
   }
   // 출간일 핸들러
   const handleDateChange = (date) => {
@@ -92,61 +92,50 @@ function BoardWrite() {
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
+    const category_id = cate + 1
     const title = titleRef.current.value
     const price = priceRef.current.value
     const description = contentRef.current.value
 
 
-    if(user && !isNaN(cate) && title && price && !isNaN(condition) && description){
+    if(user && !isNaN(cate) && title && price && con && description){
       // 필수 항목들이 전부 값이 있을 때만 데이터 전송
 
-      // 존재하는 항목들만 쿼리문에 담기 위한 문자열
-      let columns = 'seller_id, category_id, product_name, condition, description, price'
-      let question = '?, ?, ?, ?, ?, ?'
       // 서버에 보낼 데이터 배열
-      let data = {seller_id: user.id, category_id: cate, product_name: title, condition, description, price: Number(price), writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
+      let data = {seller_id: user.id, category_id, product_name: title, condition: con, description, price: Number(price), writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
       if(writerRef.current.value){
-        columns += ', writer'
-        question += ', ?'
-        data.writer(writerRef.current.value)
+        data.writer = writerRef.current.value
       } if(publisherRef.current.value){
-        columns += ', publisher'
-        question += ', ?'
-        data.publisher(publisherRef.current.value)
+        data.publisher = publisherRef.current.value
       } if(pubDate){
-        columns += ', publish_date'
-        question += ', ?'
-        data.publish_date(pubDate)
+        data.publish_date =pubDate
       } if(isbnRef.current.value.length == 10){
-        columns += ', isbn10'
-        question += ', ?'
-        data.isbn10(isbnRef.current.value)
+        data.isbn10 = isbnRef.current.value
       } if(isbnRef.current.value.length == 13){
-        columns += ', isbn13'
-        question += ', ?'
-        data.isbn13(isbnRef.current.value)
+        data.isbn13 = isbnRef.current.value
       }
-      let sql = `INSERT INTO product (${columns}) VALUES (${question})`
       // setErrorMessage("필수 입력 항목입니다")
   
-      // const formData = new FormData()
-      // for(let i = 0; i < uploadImg.length; i++){
-      //   formData.append('files', uploadImg[i])
-      // }
+      const formData = new FormData()
+      for(let i = 0; i < uploadImg.length; i++){
+        formData.append('files', uploadImg[i])
+      }
       
       // 데이터 서버에 전송
-      const res = await productWrite(sql, data);
+      const res = await productWrite(data);
+      console.log(res)
+      if(res){
+        console.log("결과값 id: ", res.insertId)
+    
+        formData.append('productId', res.insertId)
+        const fileRes = await productFileupload(formData)
+      }
   
-      // formData.append('boardId', res.insertId)
-      // const fileRes = await fileupload(formData)
-  
-      // console.log(res.message, fileRes)
-      // if(res.message == 'success' && fileRes == 'OK'){
-      //   // product 경로 확인 후 수정 필요
-      //   navigate("/product");
-      // } else {
-      //   setErrorMessage("제목이나 내용을 다시 확인해주세요");
-      // }
+      if(res.message == 'success'){
+        navigate("/product");
+      } else {
+        setErrorMessage("제목이나 내용을 다시 확인해주세요");
+      }
     }
 
   }
@@ -158,7 +147,7 @@ function BoardWrite() {
           <div className={`inner ${styles.boardForm}`}>
             <h3 className={styles.title}>상품 등록</h3>
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
-              <p className={`${styles.essentialInput}`}>상품 사진 ({uploadImg.length}/5)</p>
+              <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
               <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
               <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`}>
                 <div className={`${styles.imageUploadBtn}`}>
@@ -242,7 +231,7 @@ function BoardWrite() {
                         {['상', '중', '하'].map((condition, i)=>{
                           return(
                             <Form.Check inline label={condition} name="condition" type="radio"
-                            id={`condition${i}`} onChange={(e)=>conditionHandler(e, i)} key={i}/>
+                            id={`condition${i}`} onChange={(e)=>conditionHandler(e, condition)} key={i}/>
                           )
                         })}
                       </div>

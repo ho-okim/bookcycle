@@ -1,11 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
 import { useEffect, useState } from 'react';
 import { useAuth } from "../../contexts/LoginUserContext";
 import { MegaphoneFill } from "react-bootstrap-icons";
 import Report from "../../components/Report";
-import {productDetail} from "../../api/product";
+import {filesList, productDelete, productDetail} from "../../api/product";
 import { getCategory } from '../../api/product.js';
 import OtherProduct from "../../components/product/OtherProduct.js";
 import { getReportedOrNot } from "../../api/report.js";
@@ -13,6 +13,7 @@ import { getReportedOrNot } from "../../api/report.js";
 
 function ProductDetail() {
   const { id } = useParams();
+	const navigate = useNavigate();
 
   const { user } = useAuth(); // 로그인한 사용자
 
@@ -22,6 +23,8 @@ function ProductDetail() {
   const { none_like } = useState(0);
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
   const [isReported, setIsReported] = useState(true); // 신고 여부
+  // 파일의 배열
+  const [files, setFiles] = useState()
 
   const handleClose = () => { // modal 닫기/숨기기 처리
     if (modalShow) setModalShow(false);
@@ -36,6 +39,11 @@ function ProductDetail() {
     setProductList(data);
   } 
 
+  async function getProductFile(){
+    const res = await filesList(id)
+    setFiles(res)
+  }
+
   async function getReported() { // 신고 여부 확인
     const res = await getReportedOrNot('product', id);
     setIsReported((isReported)=>((res === 0) ? false : true));
@@ -46,12 +54,23 @@ function ProductDetail() {
     setCategory(data);
   }
 
+	async function onDelete() { // 상품 데이터 삭제
+		try {
+				await productDelete(id);
+				document.location.href = `/product`
+				console.log("삭제id: ", id)
+		} catch (error) {
+				console.error(error);
+		}
+	}
+
   const [like, setLike] = useState(0, 0, 0) //좋아요 셋팅
 
   let [detail, setDetail] = useState([])
 
   useEffect(()=>{
     getDetail();
+    getProductFile();
   },[id])
 
   useEffect(()=>{
@@ -86,6 +105,16 @@ function ProductDetail() {
     return(
       <Container>
         <div className={`${style.inner}`}>
+          {
+            productList.seller_id == user?.id ?
+            <>
+              <Button variant="outline-secondary" className={style.updateBtn} onClick={()=>{navigate(`/product/edit/${productList.product_id}`,
+              {state: {product: productList, files}}
+              )}}>글 수정</Button>
+              <Button variant="outline-secondary" className={style.deleteBtn} id={id} onClick={onDelete}>글 삭제</Button>
+            </> : null
+          }
+          
         {
             (productList ) ?
                   <div className='book-info'>
