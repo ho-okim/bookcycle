@@ -213,7 +213,6 @@ export async function mypage() {
 export async function mypageEdit(formData) {
   try {
     const res = await axios.put('/mypage/edit', {formData});
-    console.log("클라이언트 :", formData)
   
     if (res.statusText !== "OK") {
       //console.error("mypage 로딩 실패");
@@ -258,9 +257,7 @@ export async function sellerReviewWrite(id) {
 export async function sellerReviewWritePost(id, score, tagIndex, reviewContent, productId) {
   try {
     const res = await axios.post(`/user/${id}/sellerReviewWrite`, {score, tagIndex, reviewContent, productId});
-    console.log('요청결과',res)
     if (res.statusText !== "OK") {
-      //console.error("mypage 로딩 실패");
       window.location.href = '/error/500';
     }
     const body = res.data;
@@ -297,9 +294,7 @@ export async function buyerReviewWrite(id) {
 export async function buyerReviewWritePost(id, score, tagIndex, reviewContent, productId) {
   try {
     const res = await axios.post(`/user/${id}/buyerReviewWrite`, {score, tagIndex, reviewContent, productId});
-    console.log('요청결과',res)
     if (res.statusText !== "OK") {
-      //console.error("mypage 로딩 실패");
       window.location.href = '/error/500';
     }
     const body = res.data;

@@ -11,8 +11,6 @@ import styles from '../../styles/mypage.module.css';
 function MyBuyList() {
   const [buyItems, setBuyItems] = useState([]);
 
-  console.log(buyItems)
-
   let total = buyItems.length; // 전체 게시물 수
   let limit = 10; // 페이지 당 게시물 수
   let [page, setPage] = useState(1); // 현재 페이지 번호
@@ -38,7 +36,7 @@ function MyBuyList() {
         <div className={styles.empty}>구매내역이 없습니다.</div>
         ) : (
           <>
-            <Table responsive>
+            <Table responsive className={styles.table}>
               <thead className={styles.tradeList}>
                 <tr>
                   <th>거래일</th>

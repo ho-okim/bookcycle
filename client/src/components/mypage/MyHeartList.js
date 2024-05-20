@@ -13,7 +13,7 @@ function MyHeartList() {
   const [sortOption, setSortOption] = useState("최근담은순")
   
   let total = hearts.length; // 전체 게시물 수
-  let limit = 10; // 페이지 당 게시물 수
+  let limit = 5; // 페이지 당 게시물 수
   let [page, setPage] = useState(1); // 현재 페이지 번호
   let offset = (page - 1) * limit; // 페이지당 첫 게시물 위치
 
@@ -29,7 +29,6 @@ function MyHeartList() {
     }
     getHeart();
   }, []);
-  console.log(hearts)
 
   const handleChange = (e) => {
     setSortOption(e.target.value);
@@ -63,9 +62,10 @@ function MyHeartList() {
   return (
     <>
       <div className={styles.content}>
-        <div className={styles.conTitle}>
+        <div className={`${styles.conTitle} ${styles.heartTop}`}>
+        <p> &gt; 찜한책 목록</p>
           <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
-          <select value={sortOption} onChange={handleChange}>
+          <select className={styles.select} value={sortOption} onChange={handleChange}>
             <option>최근담은순</option>
             <option>상품명순</option>
             <option>낮은가격순</option>
@@ -81,7 +81,11 @@ function MyHeartList() {
               // soldDate가 null인 경우에만 하트 리스트에 표시
               heart.soldDate === null && (
                 <div key={index} className={styles.productWrap}>
-                  <img className={styles.productImg} src="" />
+                  {
+                    heart.filename ? 
+                      <img src={process.env.PUBLIC_URL + `/img/product/${heart.filename}`} alt="" className={styles.productImg}/> :
+                      <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
+                  }
                   <Link to={`/product/detail/${heart.product_id}`} className={styles.productInfo}>
                     <p className={styles.productTitle}>{heart.product_name}</p>
                     <p className={styles.productContent}>

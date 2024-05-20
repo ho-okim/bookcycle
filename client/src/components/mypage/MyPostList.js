@@ -4,14 +4,13 @@ import { postList } from '../../api/mypage';
 import Pagination from './Pagination.js';
 import dateProcessing from '../../lib/dateProcessing.js';
 
+import { ChatLeftQuote } from 'react-bootstrap-icons';
 import styles from '../../styles/mypage.module.css';
 
 function MyPostList() {
 
   const [productPostItems, setProductPostItems] = useState([]);
   const [boardPostItems, setBoardPostItems] = useState([]);
-  console.log(productPostItems) 
-  console.log(boardPostItems) 
 
   let productTotal = productPostItems.length; // 전체 게시물 수
   let productLimit = 5; // 페이지 당 게시물 수
@@ -38,16 +37,22 @@ function MyPostList() {
     getItems();
   }, []);
 
+  console.log(boardPostItems)
+
   return (
     <div className={styles.content}>
-      <div className={`pb-5 ${styles.productListWrap}`}>
+      <div className={`${styles.productListWrap}`}>
         <p className={styles.conTitle}> &gt; 상품 등록 내역</p>
         {productPostItems.length === 0 ? (
           <div className={`pb-5 ${styles.empty}`}>판매중인 상품이 없습니다.</div>
         ) : (
           productPostItems.slice(productOffset, productOffset + productLimit).map((item, index) => (
             <div key={index} className={styles.productWrap}>
-              <img className={styles.productImg} src="" />
+              {
+                item.filename ? 
+                  <img src={process.env.PUBLIC_URL + `/img/product/${item.filename}`} alt="" className={styles.productImg}/> :
+                  <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
+              }
               <Link to={`/product/detail/${item.id}`} className={styles.productInfo}>
                 <p className={styles.productTitle}>{item.product_name}</p>
                 <p className={styles.productContent}>
@@ -62,26 +67,39 @@ function MyPostList() {
         )}
         <Pagination offset={productOffset} limit={productLimit} page={productPage} total={productTotal} setPage={setProductPage}/>
       </div>
-      <div className={`py-5 border-top ${styles.boardListWrap}`}>
+      <div className={`border-top ${styles.boardListWrap}`}>
         <p className={styles.conTitle}> &gt; 게시글 작성 내역</p>
         {boardPostItems.length === 0 ? (
           <div className={`pb-5 ${styles.empty}`}>작성한 게시글이 없습니다.</div>
         ) : (
           boardPostItems.slice(boardOffset, boardOffset + boardLimit).map((item, index) => (
             <div key={index} className={styles.boardWrap}>
-              <div >
+              <div style={{width:'90%'}} >
                 <Link to={`/board/${item.id}`}>
                   <p className={styles.boardTitle}>{item.title}</p>
                   <p className={styles.boardContent}>{item.content}</p>
                 </Link>
-              </div>
-              <div className="d-flex">
-                <div className="me-3">
-                  <p>❤{item.likehit}</p>
-                  <p>조회수: {item.view_count}</p>
+                <div className={styles.boardInfo}>
+                  <div>{dateProcessing(item.createdAt)}</div>
+                  <div className={styles.boardReaction}>
+                    <p>❤ <span className="ms-1">{item.likehit}</span></p>
+                    <p><ChatLeftQuote size="20" className={styles.chatIcon}/> <span className="ms-1">{item.reply_numbers}</span></p>
+                  </div>
                 </div>
-                <img className={styles.boardImg} src="" />
               </div>
+              {/* {
+                item.filename ?
+                  files.map((el)=>{
+                    return(
+                      <img 
+                        key={el.id}
+                        src={process.env.PUBLIC_URL + `/img/board/${el.filename}`}
+                        alt='board image' className={`${styles.boardImg}`}
+                      />
+                    )
+                  }) : null
+              } */}
+              <img className={styles.boardImg} src="" />
             </div>
           ))
         )}

@@ -10,7 +10,6 @@ import styles from '../../styles/mypage.module.css';
 function MySellList() {
 
   const [sellItems, setSellItems] = useState([]);
-  console.log(sellItems)
 
   let total = sellItems.length; // 전체 게시물 수
   let limit = 10; // 페이지 당 게시물 수
@@ -37,7 +36,7 @@ function MySellList() {
         <div className={styles.empty}>판매내역이 없습니다.</div>
         ) : (
           <>
-            <Table responsive>
+            <Table responsive className={styles.table}>
               <thead className={styles.tradeList}>
                 <tr>
                   <th>거래일</th>

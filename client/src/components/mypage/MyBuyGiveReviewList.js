@@ -12,7 +12,6 @@ import styles from '../../styles/mypage.module.css';
 function MyBuyGiveReviewList() {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
-  console.log(reviews)
   
   let total = reviews.length; // 전체 게시물 수
   let limit = 10; // 페이지 당 게시물 수
@@ -32,7 +31,6 @@ function MyBuyGiveReviewList() {
     getReviews();
   }, []);
   
-  console.log(reviews)
 
   // 데이터 삭제
 	async function onDelete(id) {

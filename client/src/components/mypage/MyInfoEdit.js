@@ -13,9 +13,9 @@ function MyInfoEdit({ password }) {
   const navigate = useNavigate();
 
   // 실제로 전송할 파일 변수
-  const [profileImg, serProfileImg] = useState()
+  const [profileImg, setProfileImg] = useState(null)
   // 파일의 URL 정보 담는 useState
-  const [profile, setProfile] = useState()
+  const [profile, setProfile] = useState(null)
 
   const [formData, setFormData] = useState({
     username: user.username,
@@ -45,7 +45,7 @@ function MyInfoEdit({ password }) {
   const onchangeImageUpload = (event) => {
     let img = event.target.files[0]
     if(img){
-      serProfileImg(img)
+      setProfileImg(img)
       setProfile(URL.createObjectURL(img))
     }
   };
@@ -107,19 +107,24 @@ function MyInfoEdit({ password }) {
       }));
     }
   }
-  console.log("formData :", formData)
 
   // 확인 버튼 누를 시 수정
   async function handleSubmit() {
 
     let editPass = Object.entries(formState).filter(([key, value]) => !value).map(([key]) => key);
 
-    const fileFormData = new FormData()
-    fileFormData.append('files', profileImg)
-    if(user.profile_image){
-      fileFormData.append('delProfile', user.profile_image)
+    if(profileImg) {
+      const fileFormData = new FormData()
+      fileFormData.append('files', profileImg)
+      if(user.profile_image){
+        fileFormData.append('delProfile', user.profile_image)
+      }
+      const fileRes = await profileupload(fileFormData)
+      if(fileRes !== "OK") {
+        console.error("프로필 이미지 업로드 실패")
+        return;
+      }
     }
-    const fileRes = await profileupload(fileFormData)
 
     if (editPass.length > 0) {
       console.log("다음 항목에서 통과하지 못했습니다:", editPass);
@@ -131,6 +136,7 @@ function MyInfoEdit({ password }) {
 
     if (res) {
       alert("수정되었습니다");
+      navigate(0);
     }
   }
 
@@ -174,12 +180,13 @@ function MyInfoEdit({ password }) {
               {/* 이미지 업로드 버튼 */}
               <label htmlFor="file" className={`${styles.fileBtn}`}>
                 <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                  {console.log(user.profile_image)}
                   {
                     profile ?
                     <img className={`${styles.profileImg}`} alt='preview' src={profile}/>
-                    : user.profile_image == '' ?
-                      <Person className={`${styles.profileIcon}`}/> :
-                      <img src={process.env.PUBLIC_URL + `/img/profile/${user.profile_image}`} className={`${styles.profileImg}`}/>
+                    : user.profile_image ?
+                      <img src={process.env.PUBLIC_URL + `/img/profile/${user.profile_image}`} className={`${styles.profileImg}`}/> : 
+                      <Person className={`${styles.profileIcon}`}/>
                   }
                 </div>
               </label>
