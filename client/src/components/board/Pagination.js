@@ -14,7 +14,7 @@ function Pagination({ total, limit, page, setPage }) {
   // aria가 i + 1과 같을 경우 클래스 명 추가, 다를 경우 클래스 없게
   let handleBtnClick = (pageNumber) => {
     setPage(pageNumber);
-    setAriaCurrentPage(pageNumber)
+    setAriaCurrentPage(pageNumber);
   }
 
   let handlePrevBtn = () => {
@@ -26,7 +26,7 @@ function Pagination({ total, limit, page, setPage }) {
   let handleNextBtn = () => {
     let nextPageNum = page + 1;
     setPage(nextPageNum);
-    setAriaCurrentPage(nextPageNum)
+    setAriaCurrentPage(nextPageNum);
   }
 
 

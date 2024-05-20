@@ -15,7 +15,12 @@
 
 /* board-write (게시글 작성 폼) */
 .boardForm .col{margin: 20px 0;}
-.boardForm .titleInput, .contentInput {width: 90%; padding: 5px 10px;}
+.boardForm .titleInput, .contentInput {
+  width: 90%; 
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+.boardForm .contentInput {height: 240px; min-height: 240px;}
 
 .titleBox{display: flex; align-items: center;}
 .titleBox, .contentBox, .btnWrap{padding: 0 10px;}
