@@ -86,8 +86,7 @@ function BoardWrite() {
     formData.append('boardId', res.insertId)
     const fileRes = await fileupload(formData)
 
-    console.log(res.message, fileRes)
-    if(res.message == 'success' && fileRes == 'OK'){
+    if(res.message == 'success'){
       navigate("/board");
     } else {
       setErrorMessage("제목이나 내용을 다시 확인해주세요");

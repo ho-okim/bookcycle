@@ -105,14 +105,12 @@ function BoardEdit() {
 
     const formData = new FormData()
     let prevFiles = []
-    let lastIdx
     uploadImg.forEach((el, i) => {
       if(!el.id) {
         formData.append('files', el)
       } else {
         console.log(el)
         prevFiles.push({id: el.id, boardNo: el.boardNo})
-        lastIdx = i
       }
     })
     formData.delete('editBoardId')
@@ -126,7 +124,7 @@ function BoardEdit() {
     // boardWrite 함수 호출
     const res = await boardEdit(id, finalTitle, finalContent);
 
-    formData.append('boardId', res.insertId)
+    // formData.append('boardId', res.insertId)
     const fileRes = await fileupdate(formData)
 
     if(res.message == 'success' && fileRes == 'OK'){
