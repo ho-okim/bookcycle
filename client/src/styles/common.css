@@ -32,7 +32,7 @@ body{font-family: 'Pretendard-SemiBold';}
 /* .toggleBtnWrap{height: 50px;} */
 
 /* chatBtn */
-.chatBtnWrap{position: fixed; bottom: 40px; right: 40px;}
+.chatBtnWrap{position: fixed; bottom: 120px; right: 40px;}
 .chatBtn{
   width: 50px; height: 50px; border-radius: 50%;
   background-color: rgb(77, 145, 182); border: none;
@@ -42,7 +42,7 @@ body{font-family: 'Pretendard-SemiBold';}
 
 /* notificationBtn */
 .notify_btn_wrap{
-  position: fixed; bottom: 120px; right: 40px;
+  position: fixed; bottom: 40px; right: 40px;
 }
 .notification_btn{
   width: 50px; height: 50px; border-radius: 50%;

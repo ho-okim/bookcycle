@@ -1,12 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../../styles/search.module.css';
 import { useSearchResult } from '../../contexts/SearchResultContext';
-import { Button } from 'react-bootstrap';
 import UserDataBox from './UserDataBox';
 
 function SearchUser() {
 
-    const { keyword, userResult, handleMoreView } = useSearchResult();
+    const { keyword, userResult } = useSearchResult();
 
     return(
         <>
@@ -15,7 +14,6 @@ function SearchUser() {
                     <h2>"{keyword}" 사용자 검색 결과</h2>
                     <p className={styles.result_count}>총 {userResult?.length ?? 0}건</p>
                 </div>
-                <Button onClick={handleMoreView}>더보기</Button>
             </div>
             <div className={styles.user}>
             {

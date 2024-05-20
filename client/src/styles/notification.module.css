@@ -1,6 +1,6 @@
 .toast_wrap{
     width: 300px; height: auto;
-    position: fixed; bottom: 180px; right: 40px;
+    position: fixed; bottom: 40px; right: 100px;
     z-index: 20;
 }
 

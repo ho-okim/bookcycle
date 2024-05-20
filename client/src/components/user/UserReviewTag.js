@@ -10,7 +10,7 @@ import UserReviewTagTable from './UserReviewTagTable.js';
 function UserReviewTag() {
 
     const {targetUserId} = useTargetUser(); // 대상 id
-    const [reviewTagTotal, setReveiwTagTotal] = useState(null);
+    const [reviewTagTotal, setReveiwTagTotal] = useState(null); // 전체 태그 수
     const [reviewTagList, setReviewTagList] = useState([]); // 리뷰태그 목록
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
     const [offset, setOffset] = useState(0); // 데이터 가져오는 시작점

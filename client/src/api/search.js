@@ -1,6 +1,6 @@
 import axios from '../lib/axios.js';
 
-// 상품 검색
+// 상품 검색 - 20개 제한
 export async function searchProduct(keyword) {
     const res = await axios.get(`/search/product?keyword=${keyword}`);
 

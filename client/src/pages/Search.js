@@ -43,8 +43,6 @@ function Search() {
     function handleMoreView() { // 더보기 이동
         if (category === 'product') {
             navigate(`/product?search=${keyword}`);
-        } else if (category === 'user') {
-            navigate(`/search/user?keyword=${keyword}`);
         } else if (category === 'board') {
             navigate(`/board?search=${keyword}`);
         }

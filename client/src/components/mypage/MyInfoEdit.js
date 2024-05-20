@@ -131,6 +131,7 @@ function MyInfoEdit({ password }) {
 
     if (res) {
       alert("수정되었습니다");
+      navigate(0);
     }
   }
 

@@ -1,16 +1,18 @@
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 
 import styles from '../../styles/mypage.module.css';
 import { StarFill } from "react-bootstrap-icons";
+import { useEffect } from 'react';
 
 
 function LeftNav() {
   const { user } = useAuth();
 
+  const navigate = useNavigate();
+
   if (!user) {
-    return <div>Loading..</div>
-    // return <Navigate to="/login" />
+    navigate('/login');
   }
 
   return (

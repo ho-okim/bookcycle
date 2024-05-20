@@ -62,7 +62,7 @@ function Header() {
           </div>
       }
       {
-        location.pathname == '/chat' ? null :
+        (!user || location.pathname == '/chat') ? null :
         <div className="chatBtnWrap">
           <button className="chatBtn" onClick={navigateToChat}>
             <ChatDotsFill className="ChatDotsFill"/>
