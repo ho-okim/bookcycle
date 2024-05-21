@@ -34,8 +34,6 @@ function Board() {
     updown : "DESC" 
   })
 
-  console.log("정렬 기준", order)
-
   // client > api 에서 받아온 상위 10개 게시글 리스트
   async function getBoard(){
     const data = await board(order)

@@ -13,7 +13,6 @@ export async function board(order){
     const res = await axios.get(url)
 
     if (res.statusText != "OK") {
-      //console.error("get fails");
       window.location.href = '/error/500';
     } 
     const body = res.data;
@@ -97,7 +96,7 @@ export async function fileupdate(formData) {
 }
 
 
-// 특정 사용자 글 조회
+// 특정 게시글 조회
 export async function boardDetail(id){
   
   try {

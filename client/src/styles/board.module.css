@@ -87,7 +87,7 @@
 
 
 /* ReplyForm (댓글 폼) */
-.replyHeader {border-bottom: 1px solid #e8e8e8; padding: 0 0 10px 0;}
+.replyHeader {border-bottom: 1px solid #e8e8e8; padding: 0 0 7px 0;}
 .replyCountWrap .replyCount {margin-right: 15px;}
 .replyCountWrap .chatIcon, .replyLength, .likeCounts {color: #427D9D;}
 .replyCountWrap .chatIcon, .heartIcon {
@@ -117,7 +117,7 @@
 }
 .replySubmit:hover {background-color: #427D9D;}
 
-.loginNeeded {margin: 60px 0 50px 0; text-align: center;}
+.loginNeeded {margin: 80px 0 20px 0; text-align: center;}
 .login {color: #427D9D;}
 
 

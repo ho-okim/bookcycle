@@ -75,9 +75,9 @@ function ReplyForm(){
 
 
 // 댓글 목록 및 좋아요 ---------------------------------------------
-function ReplyList(props){
+function ReplyList(){
   const { user } = useAuth();
-  const { id, likehit, replyNumbers } = useBoard();
+  const { id, content } = useBoard();
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
@@ -125,8 +125,8 @@ function ReplyList(props){
 
     }
     getReplyLike();
-    setLikeCounts(likehit);
-  }, [id, likehit])
+    setLikeCounts(content.likehit);
+  }, [id, content])
 
   useEffect(()=>{
     if (user) { // 사용자와 댓글 변경때마다 새로 업데이트
@@ -134,9 +134,9 @@ function ReplyList(props){
     }
   }, [user, replies]);
 
-  console.log("좋아요 개수: ", likeCounts)
-  console.log("로그인 회원이 좋아요한 게시글 정보(likeStates): ", likeStates)
-  console.log("id: ", id)
+  // console.log("좋아요 개수: ", likeCounts)
+  // console.log("로그인 회원이 좋아요한 게시글 정보(likeStates): ", likeStates)
+  // console.log("id: ", id)
 
   // setLikeStates(likeState) - 만약 현재 게시글의 id와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
 
@@ -179,8 +179,6 @@ function ReplyList(props){
   // 댓글 삭제
   // id = reply.id(삭제할 댓글의 id) 
   async function onDelete(id){
-    console.log("삭제한 댓글 id: ", id)
-    console.log("게시글 아이디: ", id)
     
     const res = await replyDelete(id);
 
@@ -230,7 +228,7 @@ function ReplyList(props){
           <div className={styles.replyCount}>
             <ChatLeftQuote size="20" className={styles.chatIcon}/>
             <span>댓글 </span>
-            <span className={styles.replyLength}>{replyNumbers}</span>개
+            <span className={styles.replyLength}>{content.reply_numbers}</span>개
           </div>
           {
             !user ? (
@@ -267,7 +265,7 @@ function ReplyList(props){
                   <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
                 </div>
                 {user?.nickname == reply.nickname ? (
-                  <Button variant="outline-secondary" className={styles.deleteBtn} onClick={()=>onDelete(reply.user_id)}>삭제</Button>
+                  <Button variant="outline-secondary" className={styles.deleteBtn} onClick={()=>onDelete(reply.id)}>삭제</Button>
                 ) : null}
                 {
                 (user && user?.nickname !== reply.nickname) ? 

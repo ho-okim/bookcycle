@@ -150,7 +150,7 @@ router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
 router.get('/reply/:id', async(req, res) => {
   let { id } = req.params;
 
-  let sql = "SELECT * FROM reply_user WHERE board_id = ? ORDER BY createdAt ASC";
+  let sql = "SELECT * FROM reply_user WHERE board_id = ? AND blocked = 0 ORDER BY createdAt ASC";
   const query = mysql.format(sql, [id]);
 
   try {
