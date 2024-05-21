@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { boardWrite, fileupload } from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Form } from "react-bootstrap";
-import { Camera, XCircleFill } from 'react-bootstrap-icons'
+import { Camera, ExclamationCircleFill, XCircleFill } from 'react-bootstrap-icons'
 import DatePicker from "react-datepicker";
 import { ko } from 'date-fns/locale';
 import { set } from 'date-fns';
@@ -11,34 +11,36 @@ import { toZonedTime } from 'date-fns-tz'
 import "react-datepicker/dist/react-datepicker.css";
 import { productFileupload, productWrite } from '../../api/product.js';
 import { useAuth } from '../../contexts/LoginUserContext.js';
+import { NumericFormat } from "react-number-format"
 
 function BoardWrite() {
 
   const {user} = useAuth();
   const [errorMessage, setErrorMessage] = useState();
-
   const navigate = useNavigate();
+
+  // 카테고리 배열
+  const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
+  const emptyErrorMsg = "필수 입력 항목입니다";
   
   const date = new Date();
+  const [cate, setCate] = useState();
   const titleRef = useRef();
   const writerRef = useRef();
   const publisherRef = useRef();
   const isbnRef = useRef();
-  const priceRef = useRef();
+  const [price, setPrice] = useState()
+  const [con, setCon] = useState();
   const contentRef = useRef()
   const [pubDate, setPubDate] = useState(null);
-
-  // 카테고리 배열
-  const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
+  const [isEmpty, setIsEmpty] = useState()
+  // 빈 값 입력 후 버튼 클릭 시 스크롤 이벤트를 위한 useRef
+  const scrollTopRef = useRef()
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
   // 이미지 미리보기 URL 담는 useState
   const [uploadImgUrl, setUploadImgUrl] = useState("");
-  // 카테고리 useState
-  const [cate, setCate] = useState();
-  // 상품 상태 useState
-  const [con, setCon] = useState();
 
   // 카테고리 라디오 버튼 핸들러
   const cateHandler = (e, i) => {
@@ -56,21 +58,22 @@ function BoardWrite() {
       setPubDate(toZonedTime(localDate, 'Asia/Seoul'))
     }
   }
+  // 가격을 콤마 제외한 값 받기 위한 핸들러
+  const handlePrice = (values) => {
+    const {value} = values
+    setPrice(Number(value))
+  }
 
   // 이미지 미리보기 함수
   const onchangeImageUpload = (event) => {
-    // 하나씩 업로드하면 하나만 들어오고 다중 선택해서 한 번에 업로드 해야 배열로 한번에 들어옴
     const imageLists = event.target.files;
     let imageUrlLists = [...uploadImgUrl];
-    // setUploadImg를 위한 카피본 작성
     let uploadImgLists = [...uploadImg]
 
     for (let i = 0; i < imageLists.length; i++) {
-      // URL로 변경한 이미지를 imageUrlLists에 삽입
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
 
-      // file 정보를 uploadImgLists에 삽입
       uploadImgLists.push(imageLists[i])
     }
 
@@ -94,15 +97,14 @@ function BoardWrite() {
   const check = async() => {
     const category_id = cate + 1
     const title = titleRef.current.value
-    const price = priceRef.current.value
     const description = contentRef.current.value
 
 
     if(user && !isNaN(cate) && title && price && con && description){
       // 필수 항목들이 전부 값이 있을 때만 데이터 전송
 
-      // 서버에 보낼 데이터 배열
-      let data = {seller_id: user.id, category_id, product_name: title, condition: con, description, price: Number(price), writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
+      // // 서버에 보낼 데이터 배열
+      let data = {seller_id: user.id, category_id, product_name: title, condition: con, description, price, writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
       if(writerRef.current.value){
         data.writer = writerRef.current.value
       } if(publisherRef.current.value){
@@ -114,7 +116,6 @@ function BoardWrite() {
       } if(isbnRef.current.value.length == 13){
         data.isbn13 = isbnRef.current.value
       }
-      // setErrorMessage("필수 입력 항목입니다")
   
       const formData = new FormData()
       for(let i = 0; i < uploadImg.length; i++){
@@ -136,6 +137,17 @@ function BoardWrite() {
       } else {
         setErrorMessage("제목이나 내용을 다시 확인해주세요");
       }
+    } else {
+      let emptyList = {cate: true, title: true, price: true, con: true, description: true}
+      if(!isNaN(cate)) delete emptyList.cate
+      if(title) delete emptyList.title
+      if(price) delete emptyList.price
+      if(con) delete emptyList.con
+      if(description) delete emptyList.description
+      setIsEmpty(emptyList)
+      scrollTopRef.current?.scrollIntoView({behavior: 'smooth'})
+
+      
     }
 
   }
@@ -149,7 +161,7 @@ function BoardWrite() {
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
               <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
               <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
-              <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`}>
+              <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
                   <Camera className={`${styles.previewDefaultImg}`}/>
@@ -172,59 +184,92 @@ function BoardWrite() {
             </div>
             <div className={``}>
               <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                <div>
+                <div className={`${styles.inputTitle} d-flex`}>    
                   <p className={`${styles.essentialInput}`}>카테고리</p>
+                  {
+                    isEmpty?.cate &&
+                    <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                    <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                    </p>
+                  }
                 </div>
                 <div className={styles.radioWrap}>
-                    <div>
-                      <div key={`inline-radio`} className="d-flex flex-wrap">
-                        {category.map((category, i)=>{
-                          return(
-                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
-                          )
-                        })}
-                      </div>
+                  <div>
+                    <div key={`inline-radio`} className="d-flex flex-wrap">
+                      {category.map((category, i)=>{
+                        return(
+                          <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
+                        )
+                      })}
                     </div>
                   </div>
+                </div>
               </div>
               <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                <div>
+                <div className={`${styles.inputTitle} d-flex`}>    
                   <p className={`${styles.essentialInput}`}>제목</p>
+                  {
+                    isEmpty?.title &&
+                    <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                    <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                    </p>
+                  }
                 </div>
                 <input className={`${styles.input}`} placeholder="제목을 입력하세요" maxLength={40} ref={titleRef}></input>
               </div>
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={``}>저자</p>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>저자</p>
+                  </div>
                   <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={40} ref={writerRef}></input>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={``}>출판사</p>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>출판사</p>
+                  </div>
                   <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={40} ref={publisherRef}></input>
                 </div>
               </div>
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={``}>isbn 10/13</p>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn 10/13</p>
+                  </div>
                   <input className={`${styles.input}`} placeholder="10자리 혹은 13자리를 입력하세요" maxLength={40} ref={isbnRef}></input>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={``}>출간일</p>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={``}>출간일</p>
+                  </div>
                   <DatePicker className={`${styles.input}`} selected={pubDate} locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date} onChange={handleDateChange}/>
                 </div>
               </div>
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={`${styles.essentialInput}`}>가격</p>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>가격</p>
+                    {
+                      isEmpty?.price &&
+                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                      </p>
+                    }
+                  </div>
                   <div className='d-flex'>
-                    <input className={`${styles.priceInput}`} placeholder="판매 가격을 입력하세요" type='number'min={0} max={1000000} ref={priceRef}></input>
-                    <div className='d-flex justify-content-center align-items-center'>
-                    <p>원</p>
-                    </div>
+                    <NumericFormat thousandSeparator="," className={`${styles.input}`} placeholder="판매 가격을 입력하세요" onValueChange={(values)=>handlePrice(values)} suffix=' 원'/>
                   </div>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={`${styles.essentialInput}`}>상품의 상태</p>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>상태</p>
+                    {
+                      isEmpty?.con &&
+                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                      </p>
+                    }
+                  </div>
                   <div className={styles.radioWrap}>
                     <Form>
                       <div key={`inline-radio`} className="d-flex justify-content-between align-items-center">
@@ -240,7 +285,15 @@ function BoardWrite() {
                 </div>
               </div>
               <div className={`col-12 ${styles.col} d-flex flex-column`}>
-                <p className={`${styles.essentialInput}`}>내용</p>
+                <div className={`${styles.inputTitle} d-flex`}>
+                  <p className={`${styles.essentialInput}`}>내용</p>
+                    {
+                      isEmpty?.description &&
+                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                      </p>
+                    }
+                </div>
                 <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요" ref={contentRef}></textarea>
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
