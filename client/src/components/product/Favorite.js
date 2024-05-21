@@ -15,7 +15,6 @@ function Favorite (){
     const {id, likehit} = useProductDetail();
     const { user } = useAuth();
 
-
     async function getproductLikeState() {
         const data = await productLikeState(id);
         return data;
@@ -27,12 +26,14 @@ function Favorite (){
     useEffect(()=>{
 
         let productLikeState;
-
-        const getLikeState = async () => {
+        const getLikeState = async () => { // 현재 내가 찜한 목록 가져오기
             productLikeState = await getproductLikeState();
             setproductLikeStates(productLikeState);
         };
-        getLikeState();
+
+        if (user) { // 사용자가 로그인한 상태일때만 호출
+          getLikeState();  
+        }
         setproductLikeCounts(likehit);
     }, [id, likehit]);
 
