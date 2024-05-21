@@ -6,8 +6,8 @@ function MiniBook(props){
   const {product_name, price, filename} = el
   return(
     <>
-      <div className="productWrap">
-        <div className="productImgWrap d-flex flex-column justify-content-center align-items-center">
+      <div className="productWrap d-flex flex-column justify-content-center align-items-center">
+        <div className="productImgWrap d-flex justify-content-center align-items-center">
           {
             filename ? 
               <img src={process.env.PUBLIC_URL + `/img/product/${filename}`} alt="" className="productImg"/> :
