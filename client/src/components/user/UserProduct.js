@@ -19,7 +19,7 @@ function UserProduct() {
     const isProductUrl = currentUrl.includes("product"); // 상품 목록 페이지 여부
     const location = useLocation(); // location 객체
 
-    const { targetUserId } = useTargetUser(); // 대상 id
+    const { targetUserId, userInfo } = useTargetUser(); // 대상 id
     
     const [productList, setProductList] = useState([]); // 상품목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -70,8 +70,11 @@ function UserProduct() {
             const res = await getCategory();
             setCategory(res);
         }
-        getCategoryList();
-    }, []);
+
+        if (userInfo.blocked === 0) { // 차단되지 않은 사용자일때만 호출
+            getCategoryList();
+        }
+    }, [userInfo]);
 
     useEffect(()=>{
         async function pageOffset() { // 페이지 시작점 처리
@@ -85,14 +88,18 @@ function UserProduct() {
             }
         }
 
-        getTotal();
-        pageOffset();
-    }, [totalData, searchParams, location.state]);
+        if (userInfo.blocked === 0) { // 차단되지 않은 사용자일때만 호출
+            getTotal();
+            pageOffset();
+        }
+    }, [totalData, searchParams, location.state, userInfo]);
 
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
-        setLoading(true);
-        getProductList();
-    }, [targetUserId, offset, order, location.state]);
+        if (userInfo.blocked === 0) { // 차단되지 않은 사용자일때만 호출
+            setLoading(true);
+            getProductList();
+        }
+    }, [targetUserId, offset, order, location.state, userInfo]);
     
     function handleMoreView() { // 판매목록 리스트로 이동
         if (!isProductUrl) {
@@ -102,7 +109,6 @@ function UserProduct() {
 
     function handleMoveBack() { // 이전 페이지 - 유저정보
         if (isProductUrl) {
-            //navigate(`/user/${targetUserId}`);
             navigate(-1);
         }
     }
