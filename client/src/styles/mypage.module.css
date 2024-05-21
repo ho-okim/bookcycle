@@ -13,11 +13,13 @@ ul, ol, li { list-style: none; }
 .conTitle { border-bottom: 1px solid #666; }
 .empty { margin-top: 30px; text-align: center; }
 .table { margin: 0; }
+.date { font-size: 15px; }
 
 /* LEFT-NAV */
 .navProfile { 
   display: flex; 
   justify-content: space-between; 
+  align-items: center;
   height: 40px; 
   border-bottom: 1px solid #666; 
 }
@@ -26,7 +28,11 @@ ul, ol, li { list-style: none; }
   background-color: #ddd; 
   border-radius: 100% 
 }
-.profile_default { width: 23px; height: 23px; color: #cacaca; }
+.profile_default { 
+  width: 23px; height: 23px; 
+  color: #cacaca; 
+}
+.navProfile .score { display: flex; align-items: center; }
 
 /* PAGINATION */
 .pagination { display: flex; justify-content: center; margin: 20px 0; }
@@ -63,6 +69,9 @@ ul, ol, li { list-style: none; }
   margin: 0; padding: 10px 0;
   border-bottom: 1px solid #ddd; 
 }
+/* .date { font-size: 15px; } */
+
+
 
 .show:active { color: black; }
 .toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus, .toggleBtn-check:checked+.toggleBtn, .toggleBtn.active, .toggleBtn.show, .toggleBtn:first-child:active, :not(.toggleBtn-check)+.toggleBtn:active{ 
@@ -72,41 +81,73 @@ ul, ol, li { list-style: none; }
 }
 .toggleBtn::after { content: none; }
 
+
+
 /* HEART LIST*/
-.heartList { padding: 20px 0 30px; }
-.heartTop {
+.heartHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.heartTop .pagination { margin: 0; }
+.heartHeader .pagination { margin: 0; }
 
-/* PRODUCT LIST */
-.productListWrap { padding: 0 0 20px; }
-
-/* HEART LIST / PRODUCTPOST LIST */ 
-.productWrap { 
+.heartList { padding: 20px 0 30px; }
+.heartWrap { 
   padding: 10px 0; display: flex; 
   justify-content: space-between; 
   border-bottom: 1px solid #ddd; 
 }
-.productWrap .productImg { width: 80px; height: 100px; background-color: #ddd; }
+.heartImg { width: 80px; height: 100px; background-color: #ddd; }
 
-.productWrap .productInfo { padding: 0 20px; margin-right: auto; }
-.productTitle { font-size: 16px; }
-.productContent { font-size: 13px; }
-.productContent span { color: #777; }
-.productContent span::after { content: '|'; padding: 0 10px; }
-.productContent span:last-of-type::after { content: ''; }
-.productPrice { font-size: 16px; }
+.heartInfo { padding: 0 20px; margin-right: auto; }
+.heartTitle { font-size: 16px; }
+.heartContent { font-size: 13px; }
+.heartContent p { color: #777; }
+.heartContent p::after { content: '|'; padding: 0 10px; }
+.heartContent p:last-of-type::after { content: ''; }
+.heartPrice { font-size: 16px; }
 
-.productWrap .productSeller { 
+.heartSeller { 
   display: flex; 
   align-items: center; 
   margin-bottom: auto;
   font-size: 18px; 
 }
-.productWrap .productSeller .person { font-size: 20px; }
+.person { font-size: 20px; }
+
+
+/* PRODUCT LIST */
+.productListWrap { padding: 0 0 20px; }
+.productList { display: flex; padding: 20px 0; }
+.productReaction { display: flex; justify-content: end; }
+.productReaction p:first-of-type { padding-right: 10px; }
+
+.productWrap {
+  width: calc(20%);
+  /* flex: 1 1 100%;  */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; 
+  margin: 10px; 
+}
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  text-align: center;
+}
+.productImg {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+.productContent { flex-grow: 1; }
+.productContent p { text-align: center;}
+.productTitle, .productPrice {
+  margin: 5px 0;
+}
+
 
 /* BOARDPOST LIST*/
 .boardListWrap { padding: 50px 0 10px; }
@@ -125,9 +166,18 @@ ul, ol, li { list-style: none; }
   font-size: 14px;
   color: #6A6A6A;
 }
-.boardInfo { display: flex; justify-content: space-between; }
+.boardInfo {}
+.boardInfo.withImage { width: 90%; }
+.boardInfo.noImage { width: 100%; }
+.boardBottom { display: flex; justify-content: space-between; }
 .boardReaction { display: flex; }
-.boardImg { width: 10%; height: 50px; }
+.boardReaction p { padding-right: 10px; }
+.boardImg { width: 10%; object-fit: cover; }
+
+/* PRODUCTPOST LIST / BOARDPOST LIST */
+.postDate { font-size: 13px; color: #999; }
+.liked { color: #dc3545; }
+.count { color: #427D9D; }
 
 
 /* MYPAGE EDIT */

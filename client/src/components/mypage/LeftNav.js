@@ -39,8 +39,8 @@ function LeftNav() {
       <div className={styles.leftNav}>
         <div className={`py-2 ${styles.navProfile}`}>
           { profileImageBox() }
-          <div>{nickname}</div>
-          <div><StarFill style={{color: '#FFC100'}}/>{mannerScore.toFixed(1)}</div>
+          <div className={styles.nickname}>{nickname}</div>
+          <div className={styles.score}><StarFill style={{color: '#FFC100'}}/>{mannerScore.toFixed(1)}</div>
         </div>
         <ul className="p-0">
           <li className="border-bottom py-2">

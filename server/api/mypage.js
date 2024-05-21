@@ -57,7 +57,7 @@ router.get("/mypage/buyGetReviewList", isLoggedIn, async (req, res) => {
 router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
   const { id } = req.user;
 
-  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? ORDER BY H.liked_date DESC;"
+  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? ORDER BY H.liked_date DESC"
   
   try {
     const query = mysql.format(sql, [id]);
@@ -121,7 +121,7 @@ router.get("/mypage/sellGetReviewList", isLoggedIn, async (req, res) => {
 router.get("/mypage/postList", isLoggedIn, async (req,res) => {
   const { id } = req.user;
 
-  let productPostSql = "SELECT * FROM product WHERE seller_id = ? AND buyer_id = ? ORDER BY createdAt DESC";
+  let productPostSql = "SELECT * FROM product_detail PD JOIN product P ON P.id = PD.product_id WHERE PD.seller_id = ? AND P.buyer_id = ? ORDER BY P.createdAt DESC";
   let boardPostSql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? GROUP BY B.id ORDER BY createdAt DESC";
 
   try {

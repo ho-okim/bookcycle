@@ -4,7 +4,7 @@ import { postList } from '../../api/mypage';
 import Pagination from './Pagination.js';
 import dateProcessing from '../../lib/dateProcessing.js';
 
-import { ChatLeftQuote } from 'react-bootstrap-icons';
+import { Eye, ChatLeftQuote } from 'react-bootstrap-icons';
 import styles from '../../styles/mypage.module.css';
 
 function MyPostList() {
@@ -37,7 +37,7 @@ function MyPostList() {
     getItems();
   }, []);
 
-  console.log(boardPostItems)
+  console.log(productPostItems)
 
   return (
     <div className={styles.content}>
@@ -46,24 +46,28 @@ function MyPostList() {
         {productPostItems.length === 0 ? (
           <div className={`pb-5 ${styles.empty}`}>판매중인 상품이 없습니다.</div>
         ) : (
-          productPostItems.slice(productOffset, productOffset + productLimit).map((item, index) => (
-            <div key={index} className={styles.productWrap}>
-              {
-                item.filename ? 
-                  <img src={process.env.PUBLIC_URL + `/img/product/${item.filename}`} alt="" className={styles.productImg}/> :
-                  <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
-              }
-              <Link to={`/product/detail/${item.id}`} className={styles.productInfo}>
-                <p className={styles.productTitle}>{item.product_name}</p>
-                <p className={styles.productContent}>
-                  <span>저자 {item.writer}</span>
-                  <span>출판사 {item.publisher}</span>
-                  <span>출간일 {dateProcessing(item.publish_date)}</span>
-                </p>
-                <p className={styles.productPrice}>₩{item.price}</p>
-              </Link>
-            </div>
-          ))
+          <div className={styles.productList}>
+            {productPostItems.slice(productOffset, productOffset + productLimit).map((item, index) => (
+              <div key={index} className={styles.productWrap}>
+                <Link to={`/product/detail/${item.id}`} className={styles.productInfo}>
+                  {
+                    item.filename ? 
+                      <img src={process.env.PUBLIC_URL + `/img/product/${item.filename}`} alt="" className={styles.productImg}/> :
+                      <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
+                  }
+                  <div className={styles.productContent}>
+                    <p className={styles.productTitle}>{item.product_name}</p>
+                    <p className={styles.productPrice}>₩{item.price}</p>
+                    <p className={styles.postDate}>{dateProcessing(item.createdAt)}</p>
+                  </div>
+                </Link>
+                <div className={styles.productReaction}>
+                  <p className={styles.liked}>❤ <span>{item.liked}</span></p>
+                  <p className={styles.count}><Eye size="18"/> <span>{item.view_count}</span></p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         <Pagination offset={productOffset} limit={productLimit} page={productPage} total={productTotal} setPage={setProductPage}/>
       </div>
@@ -74,32 +78,23 @@ function MyPostList() {
         ) : (
           boardPostItems.slice(boardOffset, boardOffset + boardLimit).map((item, index) => (
             <div key={index} className={styles.boardWrap}>
-              <div style={{width:'90%'}} >
-                <Link to={`/board/${item.id}`}>
+              <div className={`${styles.boardInfo} ${item.filename ? styles.withImage : styles.noImage}`} >
+                <Link to={`/board/${item.id}`} className={styles.boardHeader}>
                   <p className={styles.boardTitle}>{item.title}</p>
                   <p className={styles.boardContent}>{item.content}</p>
                 </Link>
-                <div className={styles.boardInfo}>
-                  <div>{dateProcessing(item.createdAt)}</div>
+                <div className={styles.boardBottom}>
+                  <p className={styles.postDate}>{dateProcessing(item.createdAt)}</p>
                   <div className={styles.boardReaction}>
-                    <p>❤ <span className="ms-1">{item.likehit}</span></p>
-                    <p><ChatLeftQuote size="20" className={styles.chatIcon}/> <span className="ms-1">{item.reply_numbers}</span></p>
+                    <p className={styles.liked}>❤ <span>{item.likehit}</span></p>
+                    <p className={styles.count}><ChatLeftQuote size="20"/> <span>{item.reply_numbers}</span></p>
                   </div>
                 </div>
               </div>
-              {/* {
+              {
                 item.filename ?
-                  files.map((el)=>{
-                    return(
-                      <img 
-                        key={el.id}
-                        src={process.env.PUBLIC_URL + `/img/board/${el.filename}`}
-                        alt='board image' className={`${styles.boardImg}`}
-                      />
-                    )
-                  }) : null
-              } */}
-              <img className={styles.boardImg} src="" />
+                  <img key={item.id} src={process.env.PUBLIC_URL + `/img/board/${item.filename}`} alt='board image' className={`${styles.boardImg}`}/> : ''
+              }
             </div>
           ))
         )}

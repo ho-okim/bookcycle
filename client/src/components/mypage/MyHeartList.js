@@ -62,8 +62,8 @@ function MyHeartList() {
   return (
     <>
       <div className={styles.content}>
-        <div className={`${styles.conTitle} ${styles.heartTop}`}>
-        <p> &gt; 찜한책 목록</p>
+        <div className={`${styles.conTitle} ${styles.heartHeader}`}>
+          <p> &gt; 찜한책 목록</p>
           <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
           <select className={styles.select} value={sortOption} onChange={handleChange}>
             <option>최근담은순</option>
@@ -80,22 +80,22 @@ function MyHeartList() {
             getSortedHearts().slice(offset, offset + limit).map((heart, index) => (
               // soldDate가 null인 경우에만 하트 리스트에 표시
               heart.soldDate === null && (
-                <div key={index} className={styles.productWrap}>
+                <div key={index} className={styles.heartWrap}>
                   {
                     heart.filename ? 
-                      <img src={process.env.PUBLIC_URL + `/img/product/${heart.filename}`} alt="" className={styles.productImg}/> :
-                      <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
+                      <img src={process.env.PUBLIC_URL + `/img/product/${heart.filename}`} alt="" className={styles.heartImg}/> :
+                      <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.heartImg}/>
                   }
-                  <Link to={`/product/detail/${heart.product_id}`} className={styles.productInfo}>
-                    <p className={styles.productTitle}>{heart.product_name}</p>
-                    <p className={styles.productContent}>
-                      <span>저자 {heart.writer}</span>
-                      <span>출판사 {heart.publisher}</span>
-                      <span>출간일 {dateProcessing(heart.publish_date)}</span>
-                    </p>
-                    <p className={styles.productPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
+                  <Link to={`/product/detail/${heart.product_id}`} className={styles.heartInfo}>
+                    <p className={styles.heartTitle}>{heart.product_name}</p>
+                    <div className={styles.heartContent}>
+                      <p>저자 {heart.writer}</p>
+                      <p>출판사 {heart.publisher}</p>
+                      <p>출간일 {dateProcessing(heart.publish_date)}</p>
+                    </div>
+                    <p className={styles.heartPrice}>₩{parseInt(heart.price).toLocaleString()}</p>
                   </Link>
-                  <Link to={`/user/${heart.seller_id}`} className={styles.productSeller}>
+                  <Link to={`/user/${heart.seller_id}`} className={styles.heartSeller}>
                     <PersonFill className={styles.person} />
                     <p>{heart.seller_nickname}</p>
                   </Link>
