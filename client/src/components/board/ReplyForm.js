@@ -72,8 +72,6 @@ function ReplyForm(){
   )
 }
 
-
-
 // 댓글 목록 및 좋아요 ---------------------------------------------
 function ReplyList(){
   const { user } = useAuth();

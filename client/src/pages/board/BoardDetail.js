@@ -55,7 +55,7 @@ function BoardDetail(){
       setContent(data)
       
       // 차단이 안된 경우나 내 게시글인 경우에만 렌더링
-      if(data.blocked === 0 || data.user_id === user?.id) {
+      if(data?.blocked === 0 || data?.user_id === user?.id) {
         const res = await filesList(id)
         setFiles(res)
       }
