@@ -50,13 +50,13 @@ function MyBuyGiveReviewList() {
         <div className={styles.empty}>판매자에게 남긴 후기가 없습니다.</div>
       ) : (
         <>
-          <div className="rev-list">
+          <div className={styles.revList}>
             {reviews.slice(offset, offset + limit).map((review, index) => (
               <div key={index} className={`row ${styles.revWrap}`}>
                 <div className="col col-2">{starRating(review.score)}</div>
                 <div className="col col-6">{review.content}</div>
                 <div className="col col-1">{review.buyer_nickname}</div>
-                <div className="col-2">{dateProcessing(review.createdAt)}</div>
+                <div className={`col-2 ${styles.date}`}>{dateProcessing(review.createdAt)}</div>
                 <Dropdown className="col col-1">
                   <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
                     ⁝

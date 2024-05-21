@@ -58,7 +58,7 @@ function MySellGiveReviewList() {
                 <div className="col col-1">
                   <Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link>
                 </div>
-                <div className="col-2">{dateProcessing(review.createdAt)}</div>
+                <div className={`col-2 ${styles.date}`}>{dateProcessing(review.createdAt)}</div>
                 <Dropdown className="col col-1">
                   <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
                     ⁝

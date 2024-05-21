@@ -41,11 +41,11 @@ function MySellGetReviewList() {
             {reviews.slice(offset, offset + limit).map((review, index) => (
               <div key={index} className={`row ${styles.revWrap}`}>
                 <div className="rating col col-2">{starRating(review.score)}</div>
-                <div className="col col-6">{review.content}</div>
-                <div className="col col-2">
+                <div className="col col-7">{review.content}</div>
+                <div className="col col-1">
                   <Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link>
                 </div>
-                <div className="col-2">{dateProcessing(review.createdAt)}</div>
+                <div className={`col-2 ${styles.date}`}>{dateProcessing(review.createdAt)}</div>
               </div>
             ))}
           </div>

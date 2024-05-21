@@ -44,7 +44,7 @@ function MyBuyGetReviewList() {
                 <div className="rating col col-2">{starRating(review.score)}</div>
                 <div className="col col-6">{review.content}</div>
                 <div className="col col-1">{review.buyer_nickname}</div>
-                <div className="col-2">{dateProcessing(review.createdAt)}</div>
+                <div className={`col-2 ${styles.date}`}>{dateProcessing(review.createdAt)}</div>
               </div>
             ))}
           </div>

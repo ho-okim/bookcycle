@@ -20,11 +20,12 @@ import { useAuth } from "../../contexts/LoginUserContext";
 import { Link } from "react-router-dom";
 import { getReportedOrNot } from "../../api/report";
 import Report from "../Report";
+import {useBoard} from "../../contexts/BoardContext";
 
 // 댓글 작성 폼 ---------------------------------------------
-function ReplyForm(props) {
+function ReplyForm() {
   // id = boardDetail이 내려준 게시글 id
-  const { id, likehits } = props;
+  const { id } = useBoard();
   const { user } = useAuth();
 
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ function ReplyForm(props) {
 
   return (
     <>
-      <ReplyList boardId={id} likehits={likehits} />
+      <ReplyList/>
       {user ? (
         <form
           className={styles.replyForm}
@@ -102,22 +103,22 @@ function ReplyForm(props) {
 }
 
 // 댓글 목록 및 좋아요---------------------------------------------
-function ReplyList(props) {
+function ReplyList() {
   const { user } = useAuth();
-  const { boardId, likehits } = props;
+  const { id, likehit, replyNumbers } = useBoard();
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
   // 댓글 조회
   async function getReply() {
-    const data = await replyList(boardId);
+    const data = await replyList(id);
     return data;
   }
 
   // 좋아요 상태 조회
   async function getLikeState() {
-    const data = await likeState(boardId);
+    const data = await likeState(id);
     return data;
   }
 
@@ -142,8 +143,8 @@ function ReplyList(props) {
       setLikeStates(likeState);
     };
     test();
-    setLikeCounts(likehits);
-  }, [boardId, likehits]);
+    setLikeCounts(likehit);
+  }, [id, likehit]);
 
   // 로그인한 사용자의 댓글 신고 여부 목록 가져오기
   async function getReportedRepliesList() {
@@ -162,29 +163,25 @@ function ReplyList(props) {
 
   console.log("좋아요 개수: ", likeCounts);
   console.log("로그인 회원이 좋아요한 게시글(likeStates): ", likeStates);
-  console.log("boardId: ", boardId);
+  console.log("id: ", id);
 
-  // setLikeStates(likeState) - 만약 현재 게시글의 boardId와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
+  // setLikeStates(likeState) - 만약 현재 게시글의 id와 likeState 안에 board_id가 일치하는 게 있다면 💛 / 없다면 🤍 -> find() 활용
 
   // 빈 하트 클릭 : '좋아요'로 바꾸기 🤍 -> 💛
   const changeToLike = async () => {
     if (!user) {
       alert("로그인 후 이용하실 수 있습니다.");
     } else {
-      hitLike(boardId);
+      hitLike(id);
 
       // 기존 prevlikeStates에 새로운 state 추가
       setLikeStates((prevLikeStates) => [
         ...prevLikeStates,
-        { user_id: user?.id, board_id: Number(boardId) },
+        { user_id: user?.id, board_id: Number(id) },
       ]);
 
       // 기존 prevLikeCounts에 + 1
-      setLikeCounts((prevLikeCounts) => ({
-        ...prevLikeCounts,
-        likehit: likeCounts.likehit + 1,
-      }));
-    }
+      setLikeCounts((prevLikeCounts) => (prevLikeCounts + 1));}
   };
 
   // 채워진 하트 클릭 : '좋아요 취소' 하기 💛 ->  🤍
@@ -192,21 +189,17 @@ function ReplyList(props) {
     if (!user) {
       alert("로그인 후 이용하실 수 있습니다.");
     } else {
-      unLike(boardId);
+      unLike(id);
 
       // 기존에 존재하던 prevlikeStates에 해당 state 제거
       setLikeStates((prevLikeStates) =>
         prevLikeStates.filter(
-          (likeState) => likeState.board_id !== Number(boardId)
+          (likeState) => likeState.board_id !== Number(id)
         )
       );
 
       // 기존 prevLikeCounts에 - 1
-      setLikeCounts((prevLikeCounts) => ({
-        ...prevLikeCounts,
-        likehit: likeCounts.likehit - 1,
-      }));
-    }
+      setLikeCounts((prevLikeCounts) => (prevLikeCounts - 1));}
   };
 
   const noUserLike = async () => {
@@ -217,7 +210,7 @@ function ReplyList(props) {
   // id = reply.id(삭제할 댓글의 id)
   async function onDelete(id) {
     console.log("삭제한 댓글 id: ", id);
-    console.log("게시글 아이디: ", boardId);
+    console.log("게시글 아이디: ", id);
 
     const res = await replyDelete(id);
 
@@ -284,7 +277,7 @@ function ReplyList(props) {
             </div>
           ) : (
             <div className={styles.heartCount}>
-              {likeStates.find((el) => el.board_id === Number(boardId)) ? (
+              {likeStates.find((el) => el.board_id === Number(id)) ? (
                 <BalloonHeartFill
                   size="20"
                   className={styles.heartIcon}
