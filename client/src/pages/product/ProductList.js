@@ -41,43 +41,44 @@ function ProductList() {
 
   const limit = 15;
 
-    // 전체 상품 수 조회 - 페이징 처리 위함
-  async function getTotal() { 
-    const res = await getProductAll(filter, searchKeyword);
-    setTotalData(res);
-  }
-
-  // 상품 목록 가져오기
-  async function getProducts() {
-    let res;
-    res = await getProductList(limit, offset, order, filter, searchKeyword);
-    setProductList(res);
-    setLoading(false);
-  }
-
   useEffect(()=>{
-      async function pageOffset() { // 페이지 시작점 처리
-          if (!searchParams.get("page") 
-          || searchParams.get("page") < 0 
-          || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
-          {
-              setOffset(0);
-          } else {
-              setOffset((searchParams.get("page")-1)*limit);
-          }
-      }
+    // 전체 상품 수 조회 - 페이징 처리 위함
+    async function getTotal() { 
+      const res = await getProductAll(filter, searchKeyword);
+      setTotalData(res);
+    }
 
-      getTotal();
-      pageOffset();
+    async function pageOffset() { // 페이지 시작점 처리
+        if (!searchParams.get("page") 
+        || searchParams.get("page") < 0 
+        || searchParams.get("page") > Math.max(Math.ceil(totalData/limit), 1) ) 
+        {
+            setOffset(0);
+        } else {
+            setOffset((searchParams.get("page")-1)*limit);
+        }
+    }
+
+    getTotal();
+    pageOffset();
   }, [totalData, searchParams, filter]);
 
   useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
-      setLoading(true);
-      getProducts();
+    setLoading(true);
+
+    // 상품 목록 가져오기
+    async function getProducts() {
+      let res;
+      res = await getProductList(limit, offset, order, filter, searchKeyword);
+      setProductList(res);
+      setLoading(false);
+    }
+
+    getProducts();
   }, [offset, searchParams, order, filter, url]);
 
   function handlePagination(pageNumber) { // pagination에서 offset 변경
-      setOffset((pageNumber-1)*limit);
+    setOffset((pageNumber-1)*limit);
   }
 
   function handleClick() {

@@ -16,7 +16,7 @@ function UserReview({tradeType}) {
     const isReviewUrl = url.includes("review"); // 리뷰 목록 페이지 여부
     const location = useLocation(); // location 객체
     
-    const {targetUserId, setTargetUserId, targetUsername} = useTargetUser(); // 대상 id
+    const {targetUserId, userInfo} = useTargetUser(); // 대상 정보
     
     const [reviewList, setReviewList] = useState([]); // 리뷰목록
     const [searchParams, setSearchParams] = useSearchParams(); // page query
@@ -34,25 +34,11 @@ function UserReview({tradeType}) {
     // 더보기버튼 클릭 시 이동
     const navigate = useNavigate();
 
-    // 전체 데이터 수
-    async function getTotal() {
-        const res = await getUserReviewAll(targetUserId, tradeType);
-        setTotalData(res);    
-    }
-
-    // 기본 페이지 - 5개만 출력
-    async function getReviewList() {
-        let res;
-        if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
-            res = await getUserReviewList(targetUserId, tradeType, showLimit, 0, order);
-        } else { // 더보기 후 상세 페이지라면 상세 정보
-            res = await getUserReviewList(targetUserId, tradeType, limit, offset, order);
-        }
-        setReviewList(res);
-        setLoading(false);
-    }
-
     useEffect(()=>{
+        async function getTotal() { // 전체 데이터 수
+            const res = await getUserReviewAll(targetUserId, tradeType);
+            setTotalData(res);    
+        }
         async function pageOffset() { // 페이지 시작점 처리
             if (!searchParams.get("page") 
             || searchParams.get("page") < 0 
@@ -64,14 +50,31 @@ function UserReview({tradeType}) {
             }
         }
 
-        getTotal();
-        pageOffset();
-    }, [totalData, searchParams]);
+        if (userInfo.blocked === 0) { // 차단되지 않은 사용자일때만 호출
+            getTotal();
+            pageOffset();
+        }
+    }, [targetUserId, totalData, searchParams, userInfo]);
 
     useEffect(()=>{ // 요청 url이 바뀔때마다 리뷰 정보를 다시 가져옴
         setLoading(true);
-        getReviewList();
-    }, [targetUserId, offset, searchParams, order]);
+
+        // 기본 페이지 - 5개만 출력
+        async function getReviewList() {
+            let res;
+            if (!isReviewUrl) { // 사용자 페이지라면 간략한 정보
+                res = await getUserReviewList(targetUserId, tradeType, showLimit, 0, order);
+            } else { // 더보기 후 상세 페이지라면 상세 정보
+                res = await getUserReviewList(targetUserId, tradeType, limit, offset, order);
+            }
+            setReviewList(res);
+        }
+
+        if (userInfo.blocked === 0) { // 차단되지 않은 사용자일때만 호출
+            getReviewList();
+        }
+        setLoading(false);
+    }, [targetUserId, offset, searchParams, order, userInfo]);
 
     function handleMoreView() { // 리뷰 리스트로 이동
         if (!isReviewUrl) {
@@ -101,9 +104,9 @@ function UserReview({tradeType}) {
                     <h4 className={styles.title_font}>
                         {
                             tradeType === 'buy' ?
-                            `${targetUsername}님의 상품을 구매했어요`
+                            `${userInfo.nickname}님의 상품을 구매했어요`
                             : tradeType === 'sell' ?
-                            `${targetUsername}님에게 상품을 판매했어요`
+                            `${userInfo.nickname}님에게 상품을 판매했어요`
                             :null
                         }
                     </h4>
@@ -138,8 +141,7 @@ function UserReview({tradeType}) {
                         reviewList.length != 0 ? 
                         reviewList.map((el, i)=>{
                             return(
-                                <UserReviewBox key={i} review={el} 
-                                setTargetUserId={setTargetUserId}/>
+                                <UserReviewBox key={i} review={el}/>
                             )
                         })
                         : tradeType === 'buy' ?

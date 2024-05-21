@@ -24,18 +24,6 @@ function Search() {
 
     let category = 'product'; // 기본 탭
 
-    async function getData() { // 데이터 가져오기
-        const productData = await searchProduct(keyword);
-        const userData = await searchUser(keyword);
-        const boardData = await searchBoard(keyword);
-
-        setProductResult(productData);
-        setUserResult(userData);
-        setBoardResult(boardData);
-
-        setLoading(false);
-    }
-
     function handleSelect(eventKey) { // 탭 선택
         category = eventKey;
     }
@@ -50,6 +38,19 @@ function Search() {
 
     useEffect(()=>{
         setLoading(true);
+
+        async function getData() { // 데이터 가져오기
+            const productData = await searchProduct(keyword);
+            const userData = await searchUser(keyword);
+            const boardData = await searchBoard(keyword);
+    
+            setProductResult(productData);
+            setUserResult(userData);
+            setBoardResult(boardData);
+    
+            setLoading(false);
+        }
+        
         getData();
     }, [keyword]);
 

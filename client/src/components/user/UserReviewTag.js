@@ -1,6 +1,6 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Container from 'react-bootstrap/esm/Container.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import { getUserReviewTag, getUserReviewTagTotal } from '../../api/user.js';
@@ -9,7 +9,7 @@ import UserReviewTagTable from './UserReviewTagTable.js';
 
 function UserReviewTag() {
 
-    const {targetUserId} = useTargetUser(); // 대상 id
+    const {targetUserId, userInfo} = useTargetUser(); // 대상 정보
     const [reviewTagTotal, setReveiwTagTotal] = useState(null); // 전체 태그 수
     const [reviewTagList, setReviewTagList] = useState([]); // 리뷰태그 목록
     const [loading, setLoading] = useState(true); // 데이터 로딩 처리
@@ -23,7 +23,8 @@ function UserReviewTag() {
         return;
     }
 
-    async function getMoreReview(newOffset) { // 리뷰 더 가져오기
+    // 리뷰 더 가져오기
+    const getMoreReview = useCallback(async (newOffset) => { 
         const res = await getUserReviewTag(targetUserId, limit, newOffset);
 
         if (res === 'error') {
@@ -33,15 +34,18 @@ function UserReviewTag() {
 
         setReviewTagList((reviewTagList) => ([...reviewTagList, ...res]));
         setLoading(false);
-    }
+    }, [targetUserId, limit]);
 
     useEffect(()=>{
         async function getTotal() { // 리뷰 총 개수 가져오기
             const res = await getUserReviewTagTotal(targetUserId);
             setReveiwTagTotal(res.total);
         }
-        getTotal();
-    }, [targetUserId]);
+
+        if (userInfo.blocked === 0) {  // 차단되지 않은 사용자일때만 호출
+            getTotal();
+        }
+    }, [targetUserId, userInfo]);
 
     useEffect(()=>{ // 요청 id가 바뀔때마다 리뷰 정보를 다시 가져옴
         setOffset(0); // 시작점 초기화
@@ -57,17 +61,18 @@ function UserReviewTag() {
             setReviewTagList(res);
             setLoading(false);
         }
-
-        if (reviewTagTotal !== null) {
+        // 차단되지 않은 사용자일때만 호출
+        if (reviewTagTotal !== null && userInfo.blocked === 0) {
             getReviewTagList();
         }
-    }, [targetUserId, reviewTagTotal]);
+    }, [targetUserId, reviewTagTotal, userInfo]);
 
     useEffect(()=>{ // 시작점 바뀔때마다 정보 추가
-        if (offset > 0) {
+         // 차단되지 않은 사용자일때만 호출
+        if (offset > 0 && userInfo.blocked === 0) {
             getMoreReview(offset); 
         }
-    }, [offset]);
+    }, [offset, getMoreReview, userInfo]);
 
     return(
         <Container className={styles.section_sub_box}>

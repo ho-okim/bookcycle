@@ -20,7 +20,7 @@ export function dateProcessingYear(date){
   return year
 }
 
-export function dateTimeProcessing(date){
+export function dateTimeProcessing(date){ // 2024년 5월 21일 (화) 오후 04:03
   // 데이터의 createdAt이 date 객체로 들어오는 게 아니라 string으로 들어옴에 주의
   let newDate = new Date(date)
   let options = {
@@ -31,7 +31,7 @@ export function dateTimeProcessing(date){
     hour : "2-digit",
     minute : "2-digit",
   }
-  newDate = newDate.toLocaleString("ko-kr", options)
+  newDate = newDate.toLocaleString("ko-kr", options);
 
   return newDate
 }

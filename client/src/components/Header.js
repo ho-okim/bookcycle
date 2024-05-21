@@ -51,7 +51,6 @@ function Header() {
   const location = useLocation();
 
   useEffect(()=>{
-    console.log(location.pathname)
     if (!location.pathname.includes('search')) {
       setSearch('');
     }
