@@ -38,6 +38,14 @@
 
 .selectedDay{background-color: #427D9D; border-radius: 50%!important; border: none;}
 
+.onPost {
+  background-color: #4D91B6; 
+  border: 1px solid #4D91B6;
+}
+.onPost:hover {
+  background-color: #427D9D;
+  border: 1px solid #427D9D;
+}
 
 /* image upload */
 .imgComment{color: #979797; margin: 0;}

@@ -179,7 +179,7 @@ function BoardEdit() {
             </div>
             <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
               <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
-              <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+              <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
             </div>
           </div>
         </form>

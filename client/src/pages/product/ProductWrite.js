@@ -1,6 +1,5 @@
 import styles from '../../styles/product.module.css';
 import { useEffect, useRef, useState } from 'react';
-import { boardWrite, fileupload } from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Form } from "react-bootstrap";
 import { Camera, ExclamationCircleFill, XCircleFill } from 'react-bootstrap-icons'
@@ -28,7 +27,8 @@ function BoardWrite() {
   const titleRef = useRef();
   const writerRef = useRef();
   const publisherRef = useRef();
-  const isbnRef = useRef();
+  const isbn10Ref = useRef();
+  const isbn13Ref = useRef();
   const [price, setPrice] = useState()
   const [con, setCon] = useState();
   const contentRef = useRef()
@@ -111,10 +111,10 @@ function BoardWrite() {
         data.publisher = publisherRef.current.value
       } if(pubDate){
         data.publish_date =pubDate
-      } if(isbnRef.current.value.length == 10){
-        data.isbn10 = isbnRef.current.value
-      } if(isbnRef.current.value.length == 13){
-        data.isbn13 = isbnRef.current.value
+      } if(isbn10Ref.current.value.length == 10){
+        data.isbn10 = isbn10Ref.current.value
+      } if(isbn13Ref.current.value.length == 13){
+        data.isbn13 = isbn13Ref.current.value
       }
   
       const formData = new FormData()
@@ -146,8 +146,6 @@ function BoardWrite() {
       if(description) delete emptyList.description
       setIsEmpty(emptyList)
       scrollTopRef.current?.scrollIntoView({behavior: 'smooth'})
-
-      
     }
 
   }
@@ -205,47 +203,19 @@ function BoardWrite() {
                   </div>
                 </div>
               </div>
-              <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                <div className={`${styles.inputTitle} d-flex`}>    
-                  <p className={`${styles.essentialInput}`}>제목</p>
-                  {
-                    isEmpty?.title &&
-                    <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                    <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                    </p>
-                  }
-                </div>
-                <input className={`${styles.input}`} placeholder="제목을 입력하세요" maxLength={40} ref={titleRef}></input>
-              </div>
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                    
-                    <p className={``}>저자</p>
+                  <div className={`${styles.inputTitle} d-flex`}>    
+                    <p className={`${styles.essentialInput}`}>제목</p>
+                    {
+                      isEmpty?.title &&
+                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
+                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
+                      </p>
+                    }
                   </div>
-                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={40} ref={writerRef}></input>
+                  <input className={`${styles.input}`} placeholder="제목을 입력하세요" maxLength={80} ref={titleRef}></input>
                 </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                    
-                    <p className={``}>출판사</p>
-                  </div>
-                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={40} ref={publisherRef}></input>
-                </div>
-              </div>
-              <div className='d-flex justify-content-between'>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn 10/13</p>
-                  </div>
-                  <input className={`${styles.input}`} placeholder="10자리 혹은 13자리를 입력하세요" maxLength={40} ref={isbnRef}></input>
-                </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>
-                    <p className={``}>출간일</p>
-                  </div>
-                  <DatePicker className={`${styles.input}`} selected={pubDate} locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date} onChange={handleDateChange}/>
-                </div>
-              </div>
-              <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>가격</p>
@@ -257,8 +227,30 @@ function BoardWrite() {
                     }
                   </div>
                   <div className='d-flex'>
-                    <NumericFormat thousandSeparator="," className={`${styles.input}`} placeholder="판매 가격을 입력하세요" onValueChange={(values)=>handlePrice(values)} suffix=' 원'/>
+                    <NumericFormat thousandSeparator="," className={`${styles.input}`} placeholder="판매 가격을 입력하세요" onValueChange={(values)=>handlePrice(values)} suffix=' 원'  maxLength={10}/>
                   </div>
+                </div>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>저자</p>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef}></input>
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>출판사</p>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef}></input>
+                </div>
+              </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={``}>출간일</p>
+                  </div>
+                  <DatePicker className={`${styles.input} regular`} selected={pubDate} locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date} onChange={handleDateChange}/>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
@@ -284,6 +276,20 @@ function BoardWrite() {
                   </div>
                 </div>
               </div>
+              <div className='d-flex justify-content-between'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn 10</p>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref}></input>
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn 13</p>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref}></input>
+                </div>
+              </div>
               <div className={`col-12 ${styles.col} d-flex flex-column`}>
                 <div className={`${styles.inputTitle} d-flex`}>
                   <p className={`${styles.essentialInput}`}>내용</p>
@@ -294,11 +300,11 @@ function BoardWrite() {
                       </p>
                     }
                 </div>
-                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요" ref={contentRef}></textarea>
+                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요" ref={contentRef} maxLength={3000}></textarea>
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
                 <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
-                <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
               </div>
             </div>
           </div>

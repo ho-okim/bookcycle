@@ -248,16 +248,16 @@ function ProductEdit() {
               </div>
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <p className={``}>isbn 10/13</p>
-                  <input className={`${styles.input}`} placeholder="10자리 혹은 13자리를 입력하세요" maxLength={40} ref={isbnRef}></input>
-                </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <p className={``}>출간일</p>
                   <DatePicker className={`${styles.input} regular`} selected={pubDate}
                     locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date}
                     onChange={handleDateChange}
                     dayClassName={(d) => (d.getDate() == pubDate ? styles.selectedDay : styles.unselectedDay)}
                     />
+                </div>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <p className={``}>isbn 10/13</p>
+                  <input className={`${styles.input}`} placeholder="10자리 혹은 13자리를 입력하세요" maxLength={40} ref={isbnRef}></input>
                 </div>
               </div>
               <div className='d-flex justify-content-between'>
@@ -295,7 +295,7 @@ function ProductEdit() {
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
                 <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
-                <Button className="submit" as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
               </div>
             </div>
           </div>
