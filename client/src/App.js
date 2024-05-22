@@ -14,7 +14,8 @@ import MyHeartList from './components/mypage/MyHeartList.js';
 import MySellList from './components/mypage/MySellList.js';
 import MySellGiveReviewList from './components/mypage/MySellGiveReviewList.js';
 import MySellGetReviewList from './components/mypage/MySellGetReviewList.js';
-import MyPostList from './components/mypage/MyPostList.js';
+import MyProductPostList from "./components/mypage/MyProductPostList";
+import MyBoardPostList from "./components/mypage/MyBoardPostList";
 import MyReportList from './components/mypage/MyReportList.js';
 import ConfirmPassword from './components/mypage/ConfirmPassword';
 import MyInfoEdit from './components/mypage/MyInfoEdit';
@@ -79,7 +80,7 @@ function App() {
               <Route path="sellList" element={<MySellList/>}/>
               <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
               <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
-              <Route path="postList" element={<MyPostList/>}/>
+              <Route path="postList" element={<MyProductPostList/> && <MyBoardPostList/>}/>
               <Route path="reportList" element={<MyReportList/>}/>
               <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
               <Route path="notifications" element={<MyNotifications/>}/>

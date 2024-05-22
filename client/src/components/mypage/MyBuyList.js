@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { buyList } from '../../api/mypage';
 import Pagination from './Pagination.js';
-import dateProcessing from '../../lib/dateProcessing.js';
+import { dateProcessingDash } from '../../lib/dateProcessing.js';
 
-import Table from 'react-bootstrap/Table';
+import { Table } from 'react-bootstrap';
 import styles from '../../styles/mypage.module.css';
 
 
@@ -31,7 +31,7 @@ function MyBuyList() {
 
   return (
     <div className={styles.content}>
-      <p className={styles.conTitle}> &gt; 전체 구매 내역</p>
+      <p className={styles.contentHeader}> &gt; 전체 구매 내역</p>
       {buyItems.length === 0 ? (
         <div className={styles.empty}>구매내역이 없습니다.</div>
         ) : (
@@ -49,7 +49,7 @@ function MyBuyList() {
               <tbody>
                 {buyItems.slice(offset, offset + limit).map((item, index) => (
                   <tr key={index}>
-                    <td>{dateProcessing(item.soldDate)}</td>
+                    <td>{dateProcessingDash(item.soldDate)}</td>
                     <td>{item.product_name}</td>
                     <td>₩{parseInt(item.price).toLocaleString()}</td>
                     <td>

@@ -25,22 +25,22 @@ function LeftNav() {
     return null; // navigate 후에는 컴포넌트를 렌더링하지 않음  
   }
 
-  function profileImageBox() { // 프로필 이미지 처리
-    if(user.profile_image) {
-      if (user.profile_image.length != 0) {
-        return <img className={styles.profile_image} src={`${process.env.PUBLIC_URL}/img/profile/${user.profile_image}`} alt='프로필'/>;
-      }
-    }
-    return <PersonCircle className={styles.profile_default}/>;
-  }
-
   return (
     <>
       <div className={styles.leftNav}>
         <div className={`py-2 ${styles.navProfile}`}>
-          { profileImageBox() }
-          <div className={styles.nickname}>{nickname}</div>
-          <div className={styles.score}><StarFill style={{color: '#FFC100'}}/>{mannerScore.toFixed(1)}</div>
+          <div className={styles.navProfileImgWrap}>
+            {user.profile_image && user.profile_image.length != 0 ? (
+              <img className={styles.navProfileImg} src={`${process.env.PUBLIC_URL}/img/profile/${user.profile_image}`} alt='프로필'/>
+            ) : (<PersonCircle className={styles.profile_default}/>)}
+          </div>
+          <div className={styles.navProfileOverlay}>
+            <div className={styles.score}>
+              <StarFill className={styles.starIcon} />
+              <span className={styles.mannerScore}>{mannerScore.toFixed(1)}</span>
+            </div>
+            <div className={styles.nickname}>{nickname}</div>
+          </div>
         </div>
         <ul className="p-0">
           <li className="border-bottom py-2">

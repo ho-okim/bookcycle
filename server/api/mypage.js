@@ -56,8 +56,12 @@ router.get("/mypage/buyGetReviewList", isLoggedIn, async (req, res) => {
 // 찜한책 페이지
 router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
   const { id } = req.user;
+  const { sortOption } = req.query;
+  console.log(sortOption)
 
-  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? ORDER BY H.liked_date DESC"
+  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ?"
+  const orderBy = sortOption.split('.');
+  sql += ` ORDER BY H.${orderBy[0]} ${orderBy[1]}`;
   
   try {
     const query = mysql.format(sql, [id]);
@@ -117,19 +121,43 @@ router.get("/mypage/sellGetReviewList", isLoggedIn, async (req, res) => {
 });
 
 
-// 게시글 목록
-router.get("/mypage/postList", isLoggedIn, async (req,res) => {
+// 상품 게시 목록
+router.get("/mypage/productPostList", isLoggedIn, async (req,res) => {
   const { id } = req.user;
+  const { sortOption } = req.query;
+  console.log(sortOption)
 
-  let productPostSql = "SELECT * FROM product_detail PD JOIN product P ON P.id = PD.product_id WHERE PD.seller_id = ? AND P.buyer_id = ? ORDER BY P.createdAt DESC";
-  let boardPostSql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? GROUP BY B.id ORDER BY createdAt DESC";
+  let sql = "SELECT PD.*, P.buyer_id FROM product_detail PD JOIN product P ON P.id = PD.product_id WHERE PD.seller_id = ? AND P.buyer_id = ?";
+
+  const orderBy = sortOption.split('.');
+  sql += ` ORDER BY ${orderBy[0]} ${orderBy[1]}`;
+
 
   try {
-    const productPostQuery = mysql.format(productPostSql, [id, id]);
-    const productPostResult = await pool.query(productPostQuery);
-    const boardPostQuery = mysql.format(boardPostSql, [id]);
-    const boardPostResult = await pool.query(boardPostQuery);
-    res.send({ productPost: productPostResult, boardPost: boardPostResult });
+    const query = mysql.format(sql, [id, id]);
+    const result = await pool.query(query);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+})
+
+// 게시판 게시글 목록
+router.get("/mypage/boardPostList", isLoggedIn, async (req,res) => {
+  const { id } = req.user;
+  const { sortOption } = req.query;
+  console.log(sortOption)
+
+  let sql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? AND (I.boardNo = 0 OR I.boardNo IS NULL) GROUP BY U.id";
+
+  const orderBy = sortOption.split('.');
+  sql += ` ORDER BY ${orderBy[0]} ${orderBy[1]}`;
+
+  try {
+    const query = mysql.format(sql, [id]);
+    const result = await pool.query(query);
+    res.send(result);
   } catch (error) {
     console.error(error);
     res.send('error');
