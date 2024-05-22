@@ -51,68 +51,72 @@ import MyNotifications from './components/mypage/MyNotifications.js';
 function App() {
   return (
     <AuthProvider>
-      <Header/>
-        <Routes>
-          <Route path="/" element={<Main/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/join" element={<Join/>}/>
-          <Route path="/password">
-            <Route path="find" element={<FindPwd/>}/>
-            <Route path="reset/:email" element={<Reset/>}/>
-          </Route>
-          <Route path='/verify' element={<Verify/>}>
-            <Route path='confirmed' element={<VerifyConfirmed/>}/>
-            <Route path='error' element={<VerifyError/>}/>
-            <Route path='expired' element={<VerifyExpired/>}/>
-            <Route path='notfound' element={<VerifyNotFound/>}/>
-          </Route>
-          <Route path='/search' element={<Search/>}>
-            <Route path='user' element={<SearchUser/>}/>
-          </Route>
-          <Route path="/mypage" element={<Mypage/>}>
-            <Route path="buyList" element={<MyBuyList/>}/>
-            <Route path="buyGiveReviewList" element={<MyBuyGiveReviewList/>}/>
-            <Route path="buyGetReviewList" element={<MyBuyGetReviewList/>}/>
-            <Route path="heartList" element={<MyHeartList/>}/>
-            <Route path="sellList" element={<MySellList/>}/>
-            <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
-            <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
-            <Route path="postList" element={<MyPostList/>}/>
-            <Route path="reportList" element={<MyReportList/>}/>
-            <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
-            <Route path="notifications" element={<MyNotifications/>}/>
-          </Route>
-          <Route path="/board">
-            <Route path="" element={<Board/>}/>
-            <Route path="write" element={<BoardWrite/>}/>
-            <Route path=":id" element={<BoardDetail/>}/>
-            <Route path="edit/:id" element={<BoardEdit/>}/>
-          </Route>
-          <Route path="/user/:id/*" element={<User/>}>
-            <Route path="product" element={<UserProduct/>}/>
-            <Route path="review">
-              <Route path="*" element={<UserReviewList/>}/>
+      <div className='app-wrapper'>
+        <Header/>
+        <div className='content-wrapper'>
+          <Routes>
+            <Route path="/" element={<Main/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/join" element={<Join/>}/>
+            <Route path="/password">
+              <Route path="find" element={<FindPwd/>}/>
+              <Route path="reset/:email" element={<Reset/>}/>
             </Route>
-            <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
-            <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
-            <Route path="sellerReviewEdit" element={<SellerReviewEdit/>}/>
-            <Route path="buyerReviewEdit" element={<BuyerReviewEdit/>}/>
-          </Route>
-          <Route path="/chat">
-            <Route path="" element={<Chat/>}/>
-            <Route path=":id" element={<Chat/>}/>
-          </Route>
-          <Route path="/product">
-            <Route path="" element={<ProductList/>}/>
-            <Route path='detail/:id' element={<ProductDetail/>}/>
-            <Route path="edit/:id"  element={<ProductEdit/>}/>
-            <Route path="write" element={<ProductWrite/>}/>
-          </Route>
-          <Route path="/error">
-            <Route path=":errorCode" element={<Error/>}/>
-          </Route>
-        </Routes>
-      <Footer/>
+            <Route path='/verify' element={<Verify/>}>
+              <Route path='confirmed' element={<VerifyConfirmed/>}/>
+              <Route path='error' element={<VerifyError/>}/>
+              <Route path='expired' element={<VerifyExpired/>}/>
+              <Route path='notfound' element={<VerifyNotFound/>}/>
+            </Route>
+            <Route path='/search' element={<Search/>}>
+              <Route path='user' element={<SearchUser/>}/>
+            </Route>
+            <Route path="/mypage" element={<Mypage/>}>
+              <Route path="buyList" element={<MyBuyList/>}/>
+              <Route path="buyGiveReviewList" element={<MyBuyGiveReviewList/>}/>
+              <Route path="buyGetReviewList" element={<MyBuyGetReviewList/>}/>
+              <Route path="heartList" element={<MyHeartList/>}/>
+              <Route path="sellList" element={<MySellList/>}/>
+              <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
+              <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
+              <Route path="postList" element={<MyPostList/>}/>
+              <Route path="reportList" element={<MyReportList/>}/>
+              <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
+              <Route path="notifications" element={<MyNotifications/>}/>
+            </Route>
+            <Route path="/board">
+              <Route path="" element={<Board/>}/>
+              <Route path="write" element={<BoardWrite/>}/>
+              <Route path=":id" element={<BoardDetail/>}/>
+              <Route path="edit/:id" element={<BoardEdit/>}/>
+            </Route>
+            <Route path="/user/:id/*" element={<User/>}>
+              <Route path="product" element={<UserProduct/>}/>
+              <Route path="review">
+                <Route path="*" element={<UserReviewList/>}/>
+              </Route>
+              <Route path="sellerReviewWrite" element={<SellerReviewWrite/>}/>
+              <Route path="buyerReviewWrite" element={<BuyerReviewWrite/>}/>
+              <Route path="sellerReviewEdit" element={<SellerReviewEdit/>}/>
+              <Route path="buyerReviewEdit" element={<BuyerReviewEdit/>}/>
+            </Route>
+            <Route path="/chat">
+              <Route path="" element={<Chat/>}/>
+              <Route path=":id" element={<Chat/>}/>
+            </Route>
+            <Route path="/product">
+              <Route path="" element={<ProductList/>}/>
+              <Route path='detail/:id' element={<ProductDetail/>}/>
+              <Route path="edit/:id"  element={<ProductEdit/>}/>
+              <Route path="write" element={<ProductWrite/>}/>
+            </Route>
+            <Route path="/error">
+              <Route path=":errorCode" element={<Error/>}/>
+            </Route>
+          </Routes>
+          </div>
+        <Footer/>
+      </div>
     </AuthProvider>
   );
 }

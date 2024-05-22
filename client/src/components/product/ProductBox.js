@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import styles from "../../styles/productList.module.css";
 import {Eye, HeartFill} from 'react-bootstrap-icons';
+import { dateProcessingDash } from "../../lib/dateProcessing";
 
 function ProductBox({product}){
   
   let newDate = '';
   if (product.publish_date) {
-      newDate = new Date(product.publish_date).toLocaleDateString();
+      newDate = dateProcessingDash(product.publish_date);
   } else {
       newDate = '❔';
   }

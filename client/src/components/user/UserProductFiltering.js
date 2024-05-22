@@ -51,15 +51,19 @@ function UserProductFiltering({category}) {
             placement='top'
             overlay={
                 <Popover className={styles.filter_box}>
-                    <input type='checkbox' id='not_sold'
-                    onChange={(e)=>{handleSoldChange(e)}}
-                    checked={filter.sold === false ? true : false}/>
-                    <label htmlFor='not_sold' className={styles.filter_label}>판매된 상품 제외</label>
-                    <input type='checkbox' id='sold'
-                    onChange={(e)=>{handleSoldChange(e)}}
-                    checked={filter.sold ? true : false}/>
-                    <label htmlFor='sold' className={styles.filter_label}>판매된 상품만</label>
-
+                    <div className=''>
+                        <input type='checkbox' id='not_sold'
+                        className='mx-1'
+                        onChange={(e)=>{handleSoldChange(e)}}
+                        checked={filter.sold === false ? true : false}/>
+                        <label htmlFor='not_sold' className={styles.filter_label}>판매된 상품 제외</label>
+                        
+                        <input type='checkbox' id='sold'
+                        className='mx-1'
+                        onChange={(e)=>{handleSoldChange(e)}}
+                        checked={filter.sold ? true : false}/>
+                        <label htmlFor='sold' className={styles.filter_label}>판매된 상품만</label>
+                    </div>
                     <div className={styles.bar}/>
 
                     <label htmlFor='category_box'>카테고리</label>
@@ -67,12 +71,13 @@ function UserProductFiltering({category}) {
                         {
                             category.map((el, i)=>{
                                 return(
-                                    <span key={el.id}>
+                                    <div key={el.id} className='my-1 d-flex align-items-center'>
                                         <input type='checkbox' id={el.id} 
+                                        className='mx-1'
                                         onChange={(e)=>{handleCategoryChange(e, i, el.id)}}
                                         checked={(currentCategory)===i}/>
                                         <label htmlFor={el.id} className={styles.filter_label}>{el.category_name}</label>
-                                    </span>
+                                    </div>
                                 )
                             })
                         }
@@ -85,7 +90,7 @@ function UserProductFiltering({category}) {
                             : null
                         }
                         
-                        <Button variant='secondary' id='apply_filter' 
+                        <Button className={styles.filter_apply} id='apply_filter' 
                         onClick={(e)=>{handleFilterBtn(e.currentTarget.id)}}>적용</Button>
                     </div>
                 </Popover>

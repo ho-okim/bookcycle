@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useHref, useNavigate, useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/esm/Container.js';
-import UserReviewTag from '../components/user/UserReviewTag.js';
 import UserProduct from '../components/user/UserProduct.js';
 import TargetUserContext from '../contexts/TargetUserContext.js';
 import UserInfo from '../components/user/UserInfo.js';
@@ -20,11 +19,13 @@ function User() {
     const [userInfo, setUserInfo] = useState({}); // 사용자 정보
     const [isReported, setIsReported] = useState(true); // 내가 해당 사용자를 신고한 여부
 
+    const navigate = useNavigate();
+
     useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
         async function getTargetUser() { // 대상 사용자 정보 가져오기
             const res = await getUserInfo(targetUserId);
-            if (res == 'error') {
-                //navigate("/error/400");
+            if (res == 'error' || res.length === 0) {
+                navigate("/error/400");
             }
             setUserInfo(res);
         }
@@ -53,25 +54,24 @@ function User() {
     return (
         <TargetUserContext.Provider 
         value={{targetUserId, setTargetUserId, userInfo, isReported}}>
-            <Container className={`d-flex justify-content-center ${styles.undrag}`}>
-                <section className={styles.user_content}>
-                    {
-                        (userInfo.blocked === 0) ?
-                            (subUrl) ?
-                            <>
-                                <UserInfo/>
-                                <Outlet/>
-                            </>
-                            :
-                            <>
-                                <UserInfo/>
-                                <UserReviewTag/>
-                                <UserReviewList/>
-                                <UserProduct/>
-                            </>
-                        : <UserInfo/>
-                    }
-                </section>
+            <Container className={styles.undrag}>
+                <div className='inner'>
+                {
+                    (userInfo.blocked === 0) ?
+                        (subUrl) ?
+                        <>
+                            <UserInfo/>
+                            <Outlet/>
+                        </>
+                        :
+                        <>
+                            <UserInfo/>
+                            <UserReviewList/>
+                            <UserProduct/>
+                        </>
+                    : <UserInfo/>
+                }
+                </div>
             </Container>
         </TargetUserContext.Provider>
     )

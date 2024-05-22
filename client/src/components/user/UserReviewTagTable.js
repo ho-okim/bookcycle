@@ -1,6 +1,7 @@
 import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'react-bootstrap';
+import { PersonHearts } from 'react-bootstrap-icons';
 
 // 리뷰 출력 테이블
 function UserReviewTagTable ({
@@ -44,12 +45,12 @@ function UserReviewTagTable ({
 // 리뷰 행
 function ReviewTag({reviewTag}) {
     return(
-        <tr>
+        <tr className={styles.tag_tr}>
             <td className={styles.liked}>
-                <p className={styles.box}>{reviewTag.size} 명</p>
+                <p><PersonHearts className='text-success'/> {reviewTag.size} 명</p>
             </td>
             <td className={styles.tag}>
-                <p className={styles.box}>{reviewTag.tag_name}</p>
+                <span className={styles.tag_name_box}>{reviewTag.tag_name}</span>
             </td>
         </tr>
     )

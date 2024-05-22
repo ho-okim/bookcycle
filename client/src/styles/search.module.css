@@ -39,28 +39,23 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.product .product_box{
-  padding:10px;
-  width: calc((100% - 10px) / 2);
+  word-break: keep-all;
 }
 
 .product .box_content{
-  padding:10px;
-  display: flex;
-  justify-content: flex-start;
-  border: 1px solid #dddddd;
   border-radius: 10px;
   transition: 0.3s;
 }
 
 .product .box_content:hover{
-  box-shadow: 0 0 5px #cecece;
+  background-color: #f1f1f1;
 }
 
-.product .writer:after,
-.product .publisher:after,
+.product .publisher:after{
+  content:'|';
+  margin: 5px;
+}
+
 .product .view_count:after{
   content:'|';
   margin: 5px;
@@ -68,17 +63,13 @@
 
 .product .bookpicbox{
   margin: 1vw 2vw;
-  width: 25%;
+  box-shadow: 0 0 4px #cecece;
 }
 
 .product .bookpic, .product .no_bookpic{
   width: 100%;
   aspect-ratio: 1/1.65;
   border-radius: 5px;
-}
-
-.product .bookinfoabout{
-  margin: 1vw 2vw;
 }
 
 .product .book_title{
@@ -88,6 +79,14 @@
 .product .book_info{
   line-height: 2;
   color:#555555;
+}
+
+.product .seller_info{
+  margin-top: 10px;
+}
+
+@media screen and (max-width :576px) {
+  
 }
 
 /* 게시판 */

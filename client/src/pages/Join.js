@@ -107,7 +107,7 @@ function Join() {
                 ...errorMessage, 
                 [name] : (value && REGEX.NAME_REG.test(value)) ? '' :
                 (value && !REGEX.NAME_REG.test(value)) ? 
-                '이름은 2글자 이상, 특수문자는 제외해야 합니다.' 
+                '이름은 2글자~13글자, 특수문자는 제외해야 합니다.' 
                 : defaultError[name]
             }));
         }
@@ -208,7 +208,6 @@ function Join() {
     function handlePasswordVisible() { // 비밀번호 보임 처리
         setPwdVisible((pwdVisible)=>(!pwdVisible));
     }
-
 
     return (
         <Container className={styles.container_box}>

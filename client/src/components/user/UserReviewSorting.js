@@ -2,13 +2,8 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ArrowDown, ArrowUp, Clock, Star } from 'react-bootstrap-icons';
-import { useHref, useNavigate } from 'react-router-dom';
 
 function UserReviewSorting({ sortType, typeAscend, order, setOrder }) {
-    
-    const url = useHref();
-
-    const navigate = useNavigate();
 
     function handleSort(e) { // 정렬 처리
         let order_id = e.currentTarget.id;

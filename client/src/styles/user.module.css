@@ -1,15 +1,3 @@
-.user_content{
-    width: 100%;
-}
-
-.user_content a{
-    text-decoration: none; color:black;
-}
-
-.user_content a:hover{
-    text-decoration: underline;
-}
-
 .undrag{
     -ms-user-select: none;
     -moz-user-select: none;
@@ -18,32 +6,17 @@
     user-select: none;
 }
 
-.user_menu{
-    width: 20%;
-}
-
-.username {
-    margin: 10px 0;
-    text-align: center;
-}
-
 .other_user_nologin{
     width: 100%;
 }
 
 .info_box {
-    width: 60%;
+    width: 100%;
 }
 
-.section_sub_box {
+.section_box {
+    width:100%;
     margin-top: 40px;
-}
-
-.box{
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 2px solid #dddddd;
 }
 
 .more_btn{
@@ -64,14 +37,15 @@
 }
 
 .pagination a{
-    color : rgb(77, 145, 182) !important;
+    color : #a6a6a6 !important;
     text-decoration: none !important;
 }
 
 .pagination{
-    --bs-pagination-color: rgb(77, 145, 182) !important;
-    --bs-pagination-active-border-color: rgb(77, 145, 182) !important;
-    --bs-pagination-active-bg: rgb(77, 145, 182) !important;
+    --bs-pagination-color: #ddd !important;
+    --bs-pagination-active-color: rgb(0, 166, 255) !important;
+    --bs-pagination-active-border-color: none !important;
+    --bs-pagination-active-bg: none !important;
     --bs-pagination-hover-color: rgb(77, 145, 182) !important;
     --bs-pagination-focus-color: rgb(77, 145, 182) !important;
     --bs-pagination-focus-box-shadow: none !important;
@@ -79,11 +53,14 @@
 
 /* 다른 사용자 정보 */
 .user_box {
-    position:relative;
+    padding: 10px 0;
+    position: relative;
+    border-bottom: 1px solid #dddddd;
 }
 
 .image_box{
-    width: 100px; height: 100px;
+    width: 100%; max-width: 180px; 
+    min-width: 100px;
     border-radius: 100%;
 }
 
@@ -94,7 +71,9 @@
 
 .profile_image {
     width: 100%; height: 100%;
+    aspect-ratio: 1/1;
     border-radius: 100%;
+    box-shadow: 0px 0px 5px #cecece;
 }
 
 .title {
@@ -116,11 +95,12 @@
     margin:10px; padding: 5px;
     background-color: #fff;
     border-radius: 5px;
+    font-size: 20px;
     text-align: center;
 }
 
 .score_box {
-    margin:10px;
+    margin-bottom:20px;
     position:relative;
     text-align: center;
 }
@@ -141,34 +121,40 @@
 
 .report_box{
     width: 80px;
-    position:absolute; right:5px; top:5px;
+    position: absolute; right:5px; top:5px;
 }
 
 .report_btn{
     margin:0; padding:0;
     width: 100%;
-    border: 2px solid rgb(220, 53, 69);
+    border: 1px solid rgb(220, 53, 69);
     font-size: 16px;
 }
 
 .alread_reported{
     width: 100%;
     padding: 3px;
-    border: 2px solid rgb(220, 53, 69);
+    border: 1px solid rgb(220, 53, 69);
     border-radius: 7px;
     color: rgb(220, 53, 69);
-    font-size: 13px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.blocked_box{
+    width: 100%;
+    margin: 10px 0;
     text-align: center;
 }
 
 .blocked{
-    width: 100%;
-    margin: 10px 0; padding: 4px;
+    width: 50%;
+    margin: 10px 0; padding: 10px;
     background-color: rgb(220, 53, 69);
     border: none;
     border-radius: 7px;
     color: white;
-    font-size: 13px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -197,24 +183,31 @@
 .filter_box {
     padding: 10px;
     width: 280px;
-    background-color: #e6e6e6;
+    background-color: rgb(214, 234, 244);
     border-radius: 5px;
+    border:none;
     font-size: 15px;
     font-family: 'Pretendard-SemiBold' !important;
 }
 
-.filter_icon{
-    margin-left: 8px;
-    line-height: 2;
+.filter_box input {
+    transform: scale(1.5);
 }
 
-.popover-arrow{
-    background-color: #e6e6e6;
+.filter_icon{
+    margin-left: 8px;
+    line-height: 2;   
 }
 
 .filter_btn{
     cursor: pointer;
-    font-size: 25px;
+    color: rgb(77, 145, 182);
+    font-size: 2.3rem;
+    transition: 0.2s ease;
+}
+
+.filter_btn:hover{
+    color: rgb(22, 72, 99);
 }
 
 .filter_input_box {
@@ -227,22 +220,39 @@
     margin: 2px 5px 2px 3px;
 }
 
+.filter_apply{
+    background-color: rgb(77, 145, 182);
+    border:none;
+}
+
+.filter_apply:hover, .filter_apply:active, .filter_apply:focus{
+    background-color: rgb(22, 72, 99) !important;
+    border:none;
+}
+
 /* 유저 리뷰 */
 
 .liked{
-    padding: 0 5px 0 0;
+    padding: 10px;
     width: 15%;
     text-align: center;
 }
 
 .tag{
-    padding: 0 0 0 5px;
+    padding: 10px;
     width: 70%;
-    text-align: center;
+    text-align: left;
 }
 
 .liked .box, .tag .box {
     margin: 5px 0;
+}
+
+.tag_name_box{
+    padding: 5px;
+    background-color: #d1d1d1;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px #cecece;
 }
 
 .arrow_more_btn{
@@ -260,27 +270,12 @@
 
 .review_box{
     margin: 3px 0;
-    border-bottom: 2px solid #dddddd;
-}
-
-.review_box:last-of-type{
-    border-bottom: none;
+    border-bottom: 1px solid #dddddd;
 }
 
 .review_box *{
     margin: 3px 0;
     text-align: center;
-}
-
-.score, .date{
-    width: 15%;
-}
-
-.review{
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .review_box .book_title{
@@ -290,27 +285,30 @@
 }
 
 .review_content {
+    text-align: center;
     overflow: hidden;
 }
 
 .bar{
     margin: 5px 0;
     width: 100%; height: 1px;
-    background-color: #949494;
+    background-color: #c8c8c8;
 }
 
 /* 상품 정보 */
+.book_card a{
+    text-decoration: none; color:black;
+}
 
-.book_card{
-    width: calc((100% - 15px * 4) / 5);
-    margin-top:10px;
+.book_card a:hover{
+    text-decoration: underline;
 }
 
 .book_image_box{
-    height: 120px;
     display: flex; justify-content: center;
     align-items: center;
-    border: 2px solid #dddddd;
+    border: 1px solid #dddddd;
+    box-shadow: 0 0 4px #cecece;
     border-radius: 5px;
 }
 
@@ -320,21 +318,15 @@
     display:block;
 }
 
-.no_book_image {
-    width: 70%; height: 70%;
-    display:block;
+.book_info{
+    margin-top: 10px;
+    padding: 0 20px;
+    word-break: keep-all;
 }
 
 .book_info .price{
     padding:0; margin: 5px 0 0;
     text-align: center;
-}
-
-.book_title {
-    height: 55px;
-    padding: 3px; margin: 5px 0 0;
-    text-align: center;
-    vertical-align: bottom;
 }
 
 .pagination_wrap {
@@ -344,10 +336,27 @@
 }
 
 .back_btn{
-    width: 80px;
+    width: 180px;
     padding: 7px;
     position:absolute; top: 0; right: 0;
     border-radius: 5px;
+}
+
+@media screen and (max-width:768px ) {
+    
+    .pagination_wrap {
+        margin-top : 10px;
+        display: flex; flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .back_btn{
+        width: 180px;
+        padding: 7px;
+        position:relative;
+        border-radius: 5px;
+    }
 }
 
 .text_hidden{
