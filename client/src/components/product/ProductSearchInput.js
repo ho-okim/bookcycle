@@ -48,6 +48,7 @@ function ProductSearchInput() {
                     <Dropdown.Item id='writer' eventKey='저자'>저자</Dropdown.Item>
                     <Dropdown.Item id='publisher' eventKey='출판사'>출판사</Dropdown.Item>
                     <Dropdown.Item id='nickname' eventKey='등록인'>등록인</Dropdown.Item>
+                    <Dropdown.Item id='isbn' eventKey='isbn'>isbn</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
             <Form.Control type="search" id='searchKeyword' 

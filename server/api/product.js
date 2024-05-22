@@ -41,7 +41,7 @@ router.get('/productList/all', async (req, res) => {
     }
 });
 
-// 상품 목록 조회
+// 상품 목록 조회 - 필터링, 검색, 정렬
 router.get('/productList/product', async (req, res) => {
     const { limit, offset, name, ascend, category_id, condition, stype } = req.query;
     let { search } = req.query;
@@ -54,8 +54,13 @@ router.get('/productList/product', async (req, res) => {
 
     if (search !== 'null') {
         search = search.toLocaleLowerCase();
-        sql += ` AND LOWER(${stype}) LIKE CONCAT('%', LOWER(?), '%')`;
-        variables.push(`%${search}%`);
+        if (stype === 'isbn') {
+          sql += ` AND (? REGEXP '^[0-9]+$' AND ((CAST(? AS UNSIGNED) = isbn10 OR (CAST(? AS UNSIGNED) = isbn13))))`;
+          variables.push(search, search, search);  
+        } else {
+          sql += ` AND (LOWER(${stype}) LIKE CONCAT('%', LOWER(?), '%'))`;
+          variables.push(search);
+        }
     }
     if (parseInt(category_id) !== 0) {
         sql += ' AND category_id = ?';
