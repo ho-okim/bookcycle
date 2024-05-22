@@ -8,9 +8,6 @@ const Footer = () => <footer className="page-footer font-small blue pt-4">
             <div className="col-md-6 mt-md-0 mt-3">
                 <h5 className="text-uppercase"><img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'150px' }} alt='logo'/></h5>
             </div>
-
-            <hr className="clearfix w-100 d-md-none pb-0"/>
-
             <div className="col-md-3 mb-md-0 mb-3">
                 <h5 className="text-uppercase">Contributors</h5>
                 <ul className="list-unstyled">
