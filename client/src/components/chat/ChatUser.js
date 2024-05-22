@@ -1,11 +1,10 @@
 import styles from "../../styles/chat.module.css"
 import { Person } from 'react-bootstrap-icons';
-import { dateProcessingYear } from '../../lib/dateProcessing';
+import { chatTimeCalculator } from "../../lib/timeCalculator";
 
 function ChatUser(props){
   const {el, readOrNot} = props
   const {read_count} = readOrNot ? readOrNot : 0
-  const year = el.createdAt ? dateProcessingYear(el.createdAt) : null
   
   return(
     <>
@@ -24,7 +23,7 @@ function ChatUser(props){
               <p className={`${styles.userName}`}>{el.user_nickname}</p>
             </div>
             <div className={`${styles.chatDate} text-center regular d-flex align-items-center`}>
-              <p>{year}</p>
+              <p>{chatTimeCalculator(el.createdAt)}</p>
             </div>
           </div>
           <div className={`d-flex justify-content-between`}>

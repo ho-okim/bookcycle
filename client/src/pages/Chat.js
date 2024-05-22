@@ -10,8 +10,9 @@ import { Button } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
 import { Link, useNavigate } from 'react-router-dom';
 import DefaultModal from '../components/DefaultModal';
+import { isSameDate } from '../lib/timeCalculator';
+import { dateProcessingYear } from '../lib/dateProcessing';
 
-var prevIdx
 var currentIdx = null
 
 function Chat() {
@@ -23,8 +24,6 @@ function Chat() {
   const socket = io('http://localhost:10000')
   socket.connect()
 
-  // 우측에 열린 채팅창의 상대가 갖고 있는 room_id
-  // const [chatroomIdx, setChatroomIdx] = useState(null)
   // 우측에 열린 채팅방의 정보
   const [activeChatroom, setActiveChatroom] = useState({})
   // 현재 로그인 한 계정이 갖고 있는 chatRoom 객체의 배열
@@ -35,6 +34,7 @@ function Chat() {
   const [msgs, setMsgs] = useState(null)
   // 선택된 채팅방 배경 변경 위한 active 변수
   const [active, setActive] = useState(null)
+  let activeRef = useRef(null)
 
   const chatRef = useRef()
 
@@ -47,7 +47,6 @@ function Chat() {
 
   // 채팅방 요소 클릭 시 수행되는 핸들러
   const handleChatroomClick = (e, room_id, i) => {
-    // setChatroomIdx(room_id)
     setActiveChatroom(chatRoom.find((item) => item.room_id == room_id))
     currentIdx = room_id
     if(readOrNot.length){
@@ -55,6 +54,7 @@ function Chat() {
       setReadOrNot(temp)
     }
     setActive(i)
+    activeRef = i
   }
 
   // 채팅방 스크롤 제어 핸들러
@@ -64,6 +64,29 @@ function Chat() {
     }
   }
 
+  // 채팅 보내기 버튼 클릭 시 textarea값 socket 통신으로 서버에 전송
+  const handleMsgClick = () => {
+    // 채팅 메시지 서버에 보내고 화면에 띄우기 위한 소켓 통신
+    if(textRef.current.value != ""){
+      const loginUserId = user?.id
+      const socketMsg = textRef.current.value
+      socket.emit('send-message', {loginUserId, socketMsg, chatroomIdx: currentIdx})
+      textRef.current.value = ""
+      textRef.current.focus() // 채팅방 진입 시 textarea에 focus
+    }
+  }
+
+  // 리뷰 작성 페이지로 redirect 핸들러
+  const reviewWriteHandler = (sellerId, productId) => {
+    navigate(`/user/${sellerId}/reviewWrite?productId=${productId}`)
+  }
+
+  // 거래 완료 버튼 누른 후 product 업데이트
+  const getSoldOut = (isSold) => {
+    setActiveChatroom((prevRoom)=>{prevRoom.soldDate = isSold})
+  }
+
+  
   // modal
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
@@ -105,18 +128,6 @@ function Chat() {
     handleScroll(chatRef)
   }, [msgs])
 
-  // 채팅 보내기 버튼 클릭 시 textarea값 socket 통신으로 서버에 전송
-  const handleMsgClick = () => {
-    // 채팅 메시지 서버에 보내고 화면에 띄우기 위한 소켓 통신
-    if(textRef.current.value != ""){
-      const loginUserId = user?.id
-      const socketMsg = textRef.current.value
-      socket.emit('send-message', {loginUserId, socketMsg, chatroomIdx: currentIdx})
-      textRef.current.value = ""
-      textRef.current.focus() // 채팅방 진입 시 textarea에 focus
-    }
-  }
-
   // 우측 채팅 메시지 화면 랜더링 될 때 보내는 socket 통신(readOrNot 처리 위함)
   useEffect(()=>{
     const loginUserId = user?.id
@@ -124,7 +135,7 @@ function Chat() {
       socket.emit('refreshRON', {loginUserId, chatroomIdx: currentIdx})
     }
     return()=>{
-      prevIdx = currentIdx
+      
     }
   }, [currentIdx])
 
@@ -175,16 +186,6 @@ function Chat() {
     }
     test()
   }, [currentIdx]);
-
-  // 리뷰 작성 페이지로 redirect 핸들러
-  const reviewWriteHandler = (sellerId, productId) => {
-    navigate(`/user/${sellerId}/reviewWrite?productId=${productId}`)
-  }
-
-  // 거래 완료 버튼 누른 후 product 업데이트
-  const getSoldOut = (isSold) => {
-    setActiveChatroom((prevRoom)=>{prevRoom.soldDate = isSold})
-  }
   
 
   // 소켓 통신
@@ -192,36 +193,58 @@ function Chat() {
     // 채팅 메시지 전송 성공 시 서버에서 보낸 정보 받기
     socket.on('success', (data) => {
       const {id, user_id, room_id, message, date} = data
+      let tempReadOrNot;
 
+      // 전송한 채팅 메시지 정보로 chatRoom의 latest_msg, updatedAt 변경
+      let tempChatRoom = chatRoom.map((item) => item.room_id == room_id ? { ...item, message, createdAt: date} : item)
+
+      if(room_id == currentIdx){ // 수신자, 발신자 모두
+        // 현재 위치한 방의 메시지가 갱신된 것이라면 msgs 배열에 신규 메시지 덧붙이기
+        setMsgs(prevMsgs => [...prevMsgs, {id, user_id, room_id, message, read_or_not: 1, createdAt: date}])
+      }
+      
       if(user_id != user?.id){ // 채팅 수신자 진입
         if(room_id == currentIdx){ // 받은 메시지의 채팅방 = 현재 위치한 채팅방
           // chatroomIdx는 소켓 내부에서 부르면 처음에 null로 떠서 전역변수를 이용함
           console.log('same')
           socket.emit('sameChatroomIdx', data)
+          tempReadOrNot = [...readOrNot];
+          setActive(0);
         } else { // 받은 메시지의 채팅방 != 현재 위치한 채팅방
           console.log('dif')
           socket.emit('difChatroomIdx', data)
 
           let cnt = readOrNot.find((item) => item.room_id == room_id).read_count + 1
-          console.log(cnt)
-          let temp = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt} : item)
-          setReadOrNot(temp)
+          tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
+          setActive(prev => prev + 1);
         }
       } else { // 채팅 발신자 진입
+        setActive(0);
+        tempReadOrNot = [...readOrNot];
       }
 
-      if(room_id == currentIdx){
-        setMsgs(prevMsgs => [...prevMsgs, {id, user_id, room_id, message, read_or_not: 1, createdAt: date}])
+      // 현재 첫 번째 채팅방의 아이디와 메시지의 룸아이디가 같지 않을 때만 sorting이 필요
+      if(chatRoom[0].room_id != room_id){
+        // 변경된 정보 토대로 createdAt 정렬
+        tempChatRoom.sort((a, b)=>{
+          let dateA = new Date(a.createdAt);
+          let dateB = new Date(b.createdAt);
+          return dateB - dateA; // 최신 날짜가 앞에 오도록 정렬
+        });
+        tempReadOrNot.sort((a, b)=>{
+          let dateA = new Date(a.createdAt);
+          let dateB = new Date(b.createdAt);
+          return dateB - dateA;
+        });
       }
 
-      // 전송한 채팅 메시지 정보로 chatRoom의 latest_msg, updatedAt 변경
-      let temp = chatRoom.map((item) => item.room_id == room_id ? { ...item, message, createdAt: date} : item)
-      setChatRoom(temp)
+      setChatRoom(tempChatRoom);
+      setReadOrNot(tempReadOrNot);
     })
   }
 
   socket.on('msgCnt0', (data)=>{
-    const {id, user_id, room_id, message, date} = data
+    // const {id, user_id, room_id, message, date} = data
 
     setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
     // readOrNot 배열 중 현재 채팅방에 해당하는 배열의 read_count를 0으로 갱신
@@ -331,9 +354,15 @@ function Chat() {
                 <div className={`${styles.chatting}`} ref={chatRef}>
                   <div>
                     {
-                      msgs && msgs.map((el)=>{
+                      msgs && msgs.map((el, i)=>{
                         return(
-                          <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/>
+                          isSameDate(el.createdAt, msgs[i-1]?.createdAt) ?
+                            <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/> :
+                            <>
+                              <div className={`d-flex justify-content-center align-items-center`}>
+                                <p className={`${styles.chatDifDate} regular`}>{dateProcessingYear(el.createdAt)}</p></div>
+                              <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/>
+                            </> 
                         )
                       })
                     }

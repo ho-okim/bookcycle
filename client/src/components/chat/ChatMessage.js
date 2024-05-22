@@ -8,7 +8,7 @@ function ChatMessage(props){
   const {user} = useAuth();
 
   const {el, nickname} = props
-  const {year, time} = dateProcessingYT(el.createdAt)
+  const {time} = dateProcessingYT(el.createdAt)
   
   // 나중에 삼항연산자로 mine 애들은 오른쪽 정렬되게
   return(

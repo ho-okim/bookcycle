@@ -23,7 +23,15 @@
   overflow: hidden;
 }
 .chatInfo{width: 100%;}
-.chatDate{margin: 0px; color: #a3a3a3; font-size: 13px;}
+.chatDate{
+  margin: 0px; color: #a3a3a3; font-size: 13px; flex-shrink: 0;
+}
+.userName{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
 
 
 /* empty chatList */
@@ -61,6 +69,11 @@
 .chatWrap{margin-bottom: 20px;}
 .date{margin: 0px 5px; color: #a3a3a3; font-size: 12px;}
 .ron{color: rgb(22, 72, 99);}
+.chatDifDate{
+  padding: 3px 10px; margin: 10px 0;
+  color: white; font-size: 13px;
+  background-color: #c9c9c9; border-radius: 20px;
+}
 
 /* chatMsg mine */
 .chatWrapMine{padding: 10px 0;}
