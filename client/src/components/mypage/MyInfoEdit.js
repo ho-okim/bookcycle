@@ -70,7 +70,7 @@ function MyInfoEdit({ password }) {
         ...errorMessage,
         [name] : updatedValue && REGEX.NAME_REG.test(updatedValue) ? "" : 
           updatedValue && !REGEX.NAME_REG.test(updatedValue) ? 
-            "이름은 2글자 이상, 특수문자는 제외해야 합니다." : 
+            "이름은 2글자~13글자, 특수문자는 제외해야 합니다." : 
             setErrorMessage[name],
       }));
     }
@@ -165,6 +165,7 @@ function MyInfoEdit({ password }) {
           type={
             value === "phone_number" ? "tel" : "text"
           }
+          maxLength={13}
           onChange={handleInputChange}
         />
       </>

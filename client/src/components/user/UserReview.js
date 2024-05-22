@@ -2,8 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Container from 'react-bootstrap/esm/Container.js';
-import { Button } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
 import { getUserReviewList, getUserReviewAll } from '../../api/user.js';
 import LoadingSpinner from '../LoadingSpinner.js';
@@ -98,15 +97,18 @@ function UserReview({tradeType}) {
     : `${styles.box}`;
     
     return(
-        <Container className={styles.section_sub_box}>
-            <div className='inner'>
+        <section className={styles.section_box}>
+            <Container>
                 <div className={styles.title}>
                     <h4 className={styles.title_font}>
+                        {/* buy : buyer_id = targetUserId
+                            sell : seller_id = targetuserId
+                        */}
                         {
                             tradeType === 'buy' ?
-                            `${userInfo.nickname}님의 상품을 구매했어요`
-                            : tradeType === 'sell' ?
                             `${userInfo.nickname}님에게 상품을 판매했어요`
+                            : tradeType === 'sell' ?
+                            `${userInfo.nickname}님의 상품을 구매했어요`
                             :null
                         }
                     </h4>
@@ -138,16 +140,20 @@ function UserReview({tradeType}) {
                 }
                 <div className={databox_css}>
                     {
-                        reviewList.length != 0 ? 
+                        (reviewList && reviewList.length != 0) ? 
                         reviewList.map((el, i)=>{
                             return(
-                                <UserReviewBox key={i} review={el}/>
+                                <UserReviewBox key={i} review={el} isReviewUrl={isReviewUrl}/>
                             )
                         })
                         : tradeType === 'buy' ?
-                        <p>아직 구매한 제품에 작성된 후기가 없어요!</p>
+                        <div className='blank_box p-0 m-0'>
+                            <p className='blank_message'>아직 구매한 제품에 작성된 후기가 없어요!</p>
+                        </div>
                         : tradeType === 'sell' ?
-                        <p>아직 판매한 제품에 작성된 후기가 없어요!</p>
+                        <div className='blank_box p-0 m-0'>
+                            <p className='blank_message'>아직 판매한 제품에 작성된 후기가 없어요!</p>
+                        </div>
                         :null
                     }
                 </div>
@@ -162,13 +168,13 @@ function UserReview({tradeType}) {
                             <Button variant='secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}
-                            >뒤로가기</Button>
+                            >사용자 페이지로 돌아가기</Button>
                         </div>
                     </>
                     : null
                 }
-            </div>
-        </Container>
+            </Container>
+        </section>
     )
 }
 

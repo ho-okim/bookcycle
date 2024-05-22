@@ -41,7 +41,7 @@ export async function getProductList(limit, offset, order, filter, searchKeyword
 
   let newName = REGEX.CHAR_REG.test(name) ? name.trim() : 'createdAt';
   let newCondition = (condition === '상' || condition === '중' || condition === '하') ? condition : 'all';
-  let newType = (type === 'product_name' || type === 'writer' || type === 'publisher' || type === 'nickname') ? type : 'product_name';
+  let newType = (type === 'product_name' || type === 'writer' || type === 'publisher' || type === 'nickname' || type === 'isbn') ? type : 'product_name';
   let newKeyword = (!keyword) ? null : keyword;
 
   let url = `/productList/product?search=${newKeyword}&stype=${newType}&category_id=${category_id}&condition=${newCondition}&limit=${limit}&offset=${offset}&name=${newName}&ascend=${ascend}`;

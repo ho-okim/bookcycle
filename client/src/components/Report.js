@@ -100,18 +100,18 @@ function Report({ show, handleClose, targetId, category }) {
       <Modal.Footer>
         <div className={styles.report_error}>{errorMessage}</div>
         <Button
-          variant="secondary"
-          style={{ fontSize: "17px" }}
-          onClick={handleHide}
-        >
-          취소
-        </Button>
-        <Button
           variant="danger"
           style={{ fontSize: "17px" }}
           onClick={handleClick}
         >
           신고하기
+        </Button>
+        <Button
+          variant="secondary"
+          style={{ fontSize: "17px" }}
+          onClick={handleHide}
+        >
+          취소
         </Button>
       </Modal.Footer>
     </Modal>

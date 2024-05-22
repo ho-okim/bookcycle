@@ -2,8 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Container from 'react-bootstrap/esm/Container.js';
-import { Button } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import { getUserProductList, getUserProductAll } from '../../api/user.js';
 import { getCategory } from '../../api/product.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
@@ -109,7 +108,7 @@ function UserProduct() {
 
     function handleMoveBack() { // 이전 페이지 - 유저정보
         if (isProductUrl) {
-            navigate(-1);
+            navigate(`/user/${targetUserId}`);
         }
     }
 
@@ -124,71 +123,74 @@ function UserProduct() {
 
     return(
     <UserProductContext.Provider value={productOption}>
-        <Container className={styles.section_sub_box}>
-            <div className='inner'>
-                    <div className={styles.title}>
-                        <h4 className={styles.title_font}>판매목록</h4>
-                        {
-                            (isProductUrl || !productList || productList.length == 0) ? 
-                            null
-                            : <Button 
-                            variant='outline-primary' 
-                            className={styles.more_btn}
-                            onClick={handleMoreView}
-                            >더보기</Button>
-                        }
-                        {
-                            (isProductUrl) ? 
-                            <div className={styles.option_box}>
-                                <UserProductSorting
-                                sortType={'product_name'} 
-                                typeAscend={order.name === 'product_name' && order.ascend}/>
-                                <UserProductSorting
-                                sortType={'price'} 
-                                typeAscend={order.name === 'price' && order.ascend} />
-                                <UserProductSorting
-                                sortType={'createdAt'} 
-                                typeAscend={order.name === 'createdAt' && order.ascend}/>
-                                <UserProductFiltering category={category}/>
-                            </div> 
-                            : null
-                        }
-                    </div>
+        <section className={styles.section_box}>
+            <Container>
+                <div className={styles.title}>
+                    <h4 className={styles.title_font}>판매목록</h4>
                     {
-                        (loading) ?
-                        <div className={databox_css}>
-                            <LoadingSpinner/>
-                        </div>
+                        (isProductUrl || !productList || productList.length == 0) ? 
+                        null
+                        : <Button 
+                        variant='outline-primary' 
+                        className={styles.more_btn}
+                        onClick={handleMoreView}
+                        >더보기</Button>
+                    }
+                    {
+                        (isProductUrl) ? 
+                        <div className={styles.option_box}>
+                            <UserProductSorting
+                            sortType={'product_name'} 
+                            typeAscend={order.name === 'product_name' && order.ascend}/>
+                            <UserProductSorting
+                            sortType={'price'} 
+                            typeAscend={order.name === 'price' && order.ascend} />
+                            <UserProductSorting
+                            sortType={'createdAt'} 
+                            typeAscend={order.name === 'createdAt' && order.ascend}/>
+                            <UserProductFiltering category={category}/>
+                        </div> 
                         : null
                     }
+                </div>
+                {
+                    (loading) ?
                     <div className={databox_css}>
-                        {
-                            (productList && productList.length > 0) ?
-                            productList.map((el, i) => {
-                                return(
-                                    <SoldBook key={i} product={el}/>
-                                )
-                            })
-                            : <p>아직 등록한 상품이 없어요!</p>
-                        }
-                        
+                        <LoadingSpinner/>
                     </div>
+                    : null
+                }
+                <div className={databox_css}>
                     {
-                        isProductUrl ?
-                        <div className={styles.pagination_wrap}>
-                            <DataPagination
-                            totalData={totalData} 
-                            limit={limit} blockPerPage={3}
-                            handlePagination={handlePagination}/>
-                            <Button variant='secondary'
-                            className={`${styles.back_btn}`}
-                            onClick={handleMoveBack}
-                            >뒤로가기</Button>
+                        (productList && productList.length > 0) ?
+                        productList.map((el, i) => {
+                            return(
+                                <SoldBook key={i} product={el}/>
+                            )
+                        })
+                        : 
+                        <div className='blank_box p-0 m-0'>
+                            <p className='blank_message'>아직 등록한 상품이 없어요!</p>
                         </div>
-                        : null
                     }
-            </div>
-        </Container>
+                    
+                </div>
+                {
+                    isProductUrl ?
+                    <div className={styles.pagination_wrap}>
+                        <DataPagination
+                        totalData={totalData} 
+                        limit={limit} blockPerPage={3}
+                        handlePagination={handlePagination}/>
+                        <Button variant='secondary'
+                        className={styles.back_btn}
+                        onClick={handleMoveBack}
+                        >사용자 페이지로 돌아가기</Button>
+                    </div>
+                    : null
+                }
+            </Container>
+        </section>
     </UserProductContext.Provider>
     )
 }
@@ -197,21 +199,19 @@ function UserProduct() {
 function SoldBook({product}) {
 
     return(
-        <div className={`${styles.book_card} d-flex flex-column`}>
+        <div className='col-6 col-sm-4 col-md-3 col-lg-2 m-2 d-flex flex-column'>
             <Link to={`/product/detail/${product.id}`}>
                 <div className={styles.book_image_box}>
                     {
                         product.filename ? 
                         <img className={styles.book_image} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
                         :
-                        <img className={styles.no_book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
+                        <img className={styles.book_image} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
                     }
                 </div>
                 <div className={styles.book_info}>
-                    <div className={`${styles.book_title} d-flex justify-content-center align-items-center`}>
-                    <span className={styles.text_hidden}>{product.product_name}</span>
-                    </div>
-                    <p className={`${styles.price}`}>&#8361; {product.price.toLocaleString()}</p>
+                    <p className={`${styles.text_hidden} text-center`}>{product.product_name}</p>
+                    <p className={styles.price}>&#8361; {product.price.toLocaleString()}</p>
                 </div>
             </Link>
         </div>

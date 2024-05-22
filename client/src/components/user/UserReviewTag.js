@@ -48,6 +48,7 @@ function UserReviewTag() {
     }, [targetUserId, userInfo]);
 
     useEffect(()=>{ // 요청 id가 바뀔때마다 리뷰 정보를 다시 가져옴
+        setLoading(true);
         setOffset(0); // 시작점 초기화
         
         async function getReviewTagList() { // 처음 리뷰 목록 가져오기
@@ -59,45 +60,45 @@ function UserReviewTag() {
             }
 
             setReviewTagList(res);
-            setLoading(false);
         }
         // 차단되지 않은 사용자일때만 호출
         if (reviewTagTotal !== null && userInfo.blocked === 0) {
             getReviewTagList();
         }
+        setLoading(false);
     }, [targetUserId, reviewTagTotal, userInfo]);
 
     useEffect(()=>{ // 시작점 바뀔때마다 정보 추가
-         // 차단되지 않은 사용자일때만 호출
+        setLoading(true);
+        // 차단되지 않은 사용자일때만 호출
         if (offset > 0 && userInfo.blocked === 0) {
             getMoreReview(offset); 
         }
+        setLoading(false);
     }, [offset, getMoreReview, userInfo]);
 
     return(
-        <Container className={styles.section_sub_box}>
-            <div className="inner">
-                <div className={styles.title}>
-                    <h4 className={styles.title_font}>이런 점이 좋았어요</h4>
-                </div>
-                {
-                    (loading) ? 
-                    <div className={`${styles.box} d-flex justify-content-center`}>
-                        <LoadingSpinner/>
-                    </div>
-                    :
-                    (reviewTagList.length == 0) ?
-                    <div className={`${styles.box} d-flex justify-content-center`}>
-                        <p>아직 등록된 평가가 없어요!</p>
-                    </div>
-                    : <UserReviewTagTable 
-                        reviewTagList={reviewTagList}
-                        handleMoreView={handleMoreView}
-                        reviewTagTotal={reviewTagTotal}
-                        limit={limit}
-                    />
-                }
+        <Container className='col-12 col-md-8 p-0'>
+            <div>
+                <h4 className={styles.title_font}>이런 점이 좋았어요</h4>
             </div>
+            {
+                (loading) ? 
+                <div className='d-flex justify-content-center'>
+                    <LoadingSpinner/>
+                </div>
+                :
+                (reviewTagList.length == 0) ?
+                <div className='blank_box p-0 m-0'>
+                    <p className='blank_message'>아직 등록된 평가가 없어요!</p>
+                </div>
+                : <UserReviewTagTable 
+                    reviewTagList={reviewTagList}
+                    handleMoreView={handleMoreView}
+                    reviewTagTotal={reviewTagTotal}
+                    limit={limit}
+                />
+            }
         </Container>
     )
 }

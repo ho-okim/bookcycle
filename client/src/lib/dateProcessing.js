@@ -1,4 +1,3 @@
-// client/src/lib/dateProcessing
 // 데이터의 createdAt이 date 객체로 들어오는 게 아니라 string으로 들어옴에 주의
 
 // 출력 형식 : 2024. 5. 9.

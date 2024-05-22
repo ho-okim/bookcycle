@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "../../styles/search.module.css";
-import dateProcessing from "../../lib/dateProcessing";
+import { dateProcessingDash } from "../../lib/dateProcessing";
 
 function BoardDataBox({board}) {
     return(
@@ -9,7 +9,7 @@ function BoardDataBox({board}) {
                 <p className={styles.listTitle}>{board.title}</p>
                     <div className={`${styles.listInfo} regular`}>
                     <span className={styles.userid}>{board.nickname}</span>
-                    <span className={styles.date}>{dateProcessing(board.createdAt)}</span>
+                    <span className={styles.date}>{dateProcessingDash(board.createdAt)}</span>
                 </div>
             </div>
         </Link>

@@ -15,10 +15,19 @@
   font-style: normal;
 }
 
-body{font-family: 'Pretendard-SemiBold';}
+body{font-family: 'Pretendard-SemiBold'; height:100%;}
 .medium{font-family: 'Pretendard-Medium';}
 .regular{font-family: 'Pretendard-Regular';}
 
+.app-wrapper{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper{
+  flex: 1;
+}
 
 /* Header */
 .header{
@@ -123,4 +132,9 @@ textarea:focus{}
   background-color: rgb(77, 145, 182);
   color: white;
   border-radius: 50px;
+}
+
+/* footer */
+footer{
+  margin-top: 50px;
 }
