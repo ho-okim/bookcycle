@@ -21,35 +21,61 @@ body{font-family: 'Pretendard-SemiBold';}
 
 
 /* Header */
+.header{
+  position: sticky; top: 0px;
+  padding: 4px 0;
+  background-color: white; z-index: 100;
+}
+.onScroll::after{
+  content: ''; display: block; position: absolute;
+  bottom: -3px;
+  width: 100%; height: 3px;
+  background: linear-gradient(to top, transparent, rgba(0,0,0,0.1));
+}
 .toggleBtn:active, .toggleBtn:focus{
   outline: none!important;
   box-shadow: none!important;
 }
 
+.searchBtn {
+  background-color: #4D91B6; 
+  border: 1px solid #4D91B6;
+}
+.searchBtn:hover {
+  background-color: #427D9D;
+  border: 1px solid #427D9D;
+}
+
+@media screen and (max-width: 767px){
+  .searchForm{margin: 20px 0;}
+}
 @media screen and (min-width: 768px){
   .toggleBtnWrap{display: none!important;}
 } /* 헤더 토글 버튼 md보다 큰 화면에서 아예 보이지 않도록 설정 */
-/* .toggleBtnWrap{height: 50px;} */
+.toggleBtnWrap{height: 50px;}
 
 /* chatBtn */
-.chatBtnWrap{position: fixed; bottom: 120px; right: 40px;}
-.chatBtn{
-  width: 50px; height: 50px; border-radius: 50%;
-  background-color: rgb(77, 145, 182); border: none;
-  z-index: 20;
+.react-datepicker__portal {
+  z-index: 10; /* 원하는 z-index 값으로 설정 */
 }
-.ChatDotsFill{color: white; font-size: 30px;}
+.chatBtnWrap{position: fixed; bottom: 30px; right: 80px;}
+.chatBtn{
+  width: 40px; height: 40px; border-radius: 50%;
+  background-color: white; border: none; box-shadow: 0 0 3px #6b6b6b;
+  z-index: 50;
+}
+.ChatDotsFill{color: rgb(77, 145, 182); font-size: 25px;}
 
 /* notificationBtn */
 .notify_btn_wrap{
-  position: fixed; bottom: 40px; right: 40px;
+  position: fixed; bottom: 30px; right: 30px;
 }
 .notification_btn{
-  width: 50px; height: 50px; border-radius: 50%;
-  background-color: rgb(77, 145, 182); border: none;
-  z-index: 20;
+  width: 40px; height: 40px; border-radius: 50%;
+  background-color: rgb(77, 145, 182); border: none; box-shadow: 0 0 2px #6b6b6b;
+  z-index: 2000;
 }
-.notification{color: white; font-size: 30px;}
+.notification{color: white; font-size: 25px;}
 
 /* common setting */
 *{margin: 0; padding: 0; box-sizing: border-box;}
@@ -59,7 +85,7 @@ a{text-decoration: none; color:black;}
 
 input{
   padding: 2px 5px; border: 1px solid #ddd; border-radius: 2px;
-  outline: none; font-family: 'Pretendard-Regular';
+  outline: none!important; font-family: 'Pretendard-Regular';
 }
 input[type="file"]{
   /* 파일 업로드 기본 버튼 삭제 */
@@ -76,7 +102,7 @@ textarea{
   padding-bottom: 0.2em;
   line-height: 1.6;
 }
-textarea:focus{outline: none;}
+textarea:focus{outline: none!important;}
 
 input::placeholder{color: #979797; font-family: 'Pretendard-Regular';}
 textarea::placeholder{color: #979797; font-family: 'Pretendard-Regular';}

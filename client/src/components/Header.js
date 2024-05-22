@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import { BellFill, ChatDotsFill, Search } from 'react-bootstrap-icons';
@@ -19,6 +19,26 @@ function Header() {
   const toggleToast = () => setShowToast(!showToast); // 알림창 온오프
 
   const navigate = useNavigate();
+
+  // 스크롤 위치 감지
+  const headerRef = useRef();
+  const [position, setPosition] = useState(0);
+  function onScroll() {
+    setPosition(window.scrollY);
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  if(headerRef.current && !position){
+    headerRef.current.classList.remove('onScroll')
+  }
+  if(headerRef.current && position){
+    headerRef.current.classList.add('onScroll')
+  }
 
   const navigateToChat = () => { // 채팅방 이동
     navigate('/chat');
@@ -75,9 +95,9 @@ function Header() {
           </button>
         </div>
       }
-      <Navbar className="bg-body-tertiary mb-3" expand={'md'}>
+      <Navbar className="mb-3 header" expand={'md'} ref={headerRef}>
         <Container className='p-0'>
-          <div className='inner d-flex' style={{ width: "100%" }}>
+          <div className='inner d-flex align-items-center' style={{ width: "100%" }}>
             <Navbar.Brand href="/" style={{ fontSize: "25px" }}>
               <img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'250px' }} alt='logo'/>
             </Navbar.Brand>
@@ -91,9 +111,9 @@ function Header() {
               className="d-flex justify-content-center"
             >
               <Offcanvas.Header closeButton>
-                <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
+                {/* <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
                   <Link to={'/'}>BookCycle</Link>
-                </Offcanvas.Title>
+                </Offcanvas.Title> */}
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav className="justify-content-end flex-grow-1 pe-3">
@@ -110,7 +130,7 @@ function Header() {
                     </>
                   }
                 </Nav>
-                <Form className="d-flex">
+                <Form className="d-flex searchForm">
                   <Form.Control
                     type="search"
                     placeholder="전체 검색"
@@ -121,10 +141,11 @@ function Header() {
                     maxLength={50}
                     value={search}
                   />
-                  <Button 
+                  <Button
+                  className='searchBtn'
                   variant="outline-success" 
                   onClick={handleSubmit}>
-                    <Search/>
+                    <Search style={{color: 'white'}}/>
                   </Button>
                 </Form>
               </Offcanvas.Body>
