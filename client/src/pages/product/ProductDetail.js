@@ -11,6 +11,7 @@ import OtherProduct from "../../components/product/OtherProduct.js";
 import Favorite from "../../components/product/Favorite.js";
 import { getReportedOrNot } from "../../api/report.js";
 import ProductDetailContext from "../../contexts/ProductDetailContext.js";
+import ProductCaution from "../../components/product/ProductCaution.js";
 import { dateTimeProcessing } from "../../lib/dateProcessing.js";
 
 
@@ -154,6 +155,7 @@ function ProductDetail() {
                     <div className={`${style.infocate}`}>                     
                       <div className={`${style.cateinfo}`}>카테고리 : <span>{product.category_name}</span></div> 
                       <div className={`${style.cateinfo}`}>ISBN 10 : <span>{product.isbn10}</span></div> 
+                      <div className={`${style.cateinfo}`}>ISBN 13 : <span>{product.isbn13}</span></div> 
                       <div className={`${style.cateinfo}`}>판매가 : <span>{product.price}</span></div> 
                     </div>
                       <div>
@@ -203,10 +205,11 @@ function ProductDetail() {
                     </div>          
                     </div>
                   </div>
+                  <ProductCaution/>
                   </>
             : <p>아직 등록한 상품이 없어요!</p>
             }
-        </div>
+        </div> 
 
         <OtherProduct id={product.seller_id}/>
       </Container>

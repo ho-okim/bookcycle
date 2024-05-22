@@ -29,7 +29,7 @@ function OtherProduct({id}) {
     }
 
     function handleClick() {
-        navigate(`/user/${id}/product`);
+        navigate(`/user/${id}/product`); 
     }
 
     useEffect(()=>{ // 시작점과 정렬 순서, 필터링이 바뀌면 재 랜더링
