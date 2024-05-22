@@ -65,12 +65,11 @@ export async function buyGetReviewList() {
 }
 
 // 찜한책
-export async function heartList() {
+export async function heartList(sortOption) {
   try {
-    const res = await axios.get('/mypage/heartList');
+    const res = await axios.get('/mypage/heartList', {params: {sortOption}});
 
     if (res.statusText !== "OK") {
-      //console.error("mypage 로딩 실패");
       window.location.href = '/error/500';
     }
     const body = res.data;
@@ -142,12 +141,31 @@ export async function sellGetReviewList() {
   }
 }
 
-export async function postList() {
+export async function productPostList(sortOption) {
   try {
-    const res = await axios.get('/mypage/postList');
+    const res = await axios.get('/mypage/productPostList', {params: {sortOption}});
 
     if (res.statusText !== "OK") {
-      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
+    }
+    const body = res.data;
+    return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
+export async function boardPostList(sortOption) {
+  try {
+    const res = await axios.get('/mypage/boardPostList', {params: {sortOption}});
+
+    if (res.statusText !== "OK") {
       window.location.href = '/error/500';
     }
     const body = res.data;

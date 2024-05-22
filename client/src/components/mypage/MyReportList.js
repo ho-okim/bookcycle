@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../../styles/mypage.module.css";
 import { Table } from "react-bootstrap";
 import { useAuth } from "../../contexts/LoginUserContext";
 import { getReport } from "../../api/report";
+import { dateProcessingDash } from "../../lib/dateProcessing.js"
 import Pagination from "./Pagination.js";
 
 function MyReportList() {
@@ -42,12 +43,12 @@ function MyReportList() {
   return (
     <>
       <div className={styles.content}>
-        <p className={styles.conTitle}>&gt; 전체 신고 내역</p>
+        <p className={styles.contentHeader}>&gt; 전체 신고 내역</p>
         {reportItem.length === 0 ? (
         <div className={styles.empty}>신고 내역이 없습니다.</div>
         ) : (
           <>
-            <Table responsive>
+            <Table responsive className={styles.table}>
               <thead className={styles.tradeList}>
                 <tr>
                   <th>신고 번호</th>
@@ -67,13 +68,9 @@ function MyReportList() {
                       <td>{setCategoryName(el.category)}</td>
                       <td>{el.target_id}</td>
                       <td>{el.content}</td>
-                      <td>{new Date(el.createdAt).toLocaleString()}</td>
+                      <td>{dateProcessingDash(el.createdAt)}</td>
                       <td>{el.read_or_not}</td>
-                      <td>
-                        {el.updatedAt
-                          ? new Date(el.updatedAt).toLocaleString()
-                          : null}
-                      </td>
+                      <td>{el.updatedAt ? dateProcessingDash(el.updatedAt) : null}</td>
                     </tr>
                   );
                 })}

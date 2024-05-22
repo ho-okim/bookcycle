@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { sellList } from '../../api/mypage';  // axios 인스턴스 import
-import dateProcessing from '../../lib/dateProcessing.js';
+import { dateProcessingDash } from '../../lib/dateProcessing.js';
 import Pagination from './Pagination.js';
 
 import Table from 'react-bootstrap/Table';
@@ -31,7 +31,7 @@ function MySellList() {
 
   return (
     <div className={styles.content}>
-      <p className={styles.conTitle}> &gt; 전체 판매 내역</p>
+      <p className={styles.contentHeader}> &gt; 전체 판매 내역</p>
       {sellItems.length === 0 ? (
         <div className={styles.empty}>판매내역이 없습니다.</div>
         ) : (
@@ -49,7 +49,7 @@ function MySellList() {
               <tbody>
                 {sellItems.slice(offset, offset + limit).map((item, index) => (
                   <tr key={index}>
-                    <td>{dateProcessing(item.soldDate)}</td>
+                    <td>{dateProcessingDash(item.soldDate)}</td>
                     <td>{item.product_name}</td>
                     <td>₩{parseInt(item.price).toLocaleString()}</td>
                     <td>

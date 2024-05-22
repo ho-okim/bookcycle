@@ -11,7 +11,8 @@ import MyHeartList from "../components/mypage/MyHeartList";
 import MySellList from "../components/mypage/MySellList";
 import MySellGiveReviewList from "../components/mypage/MySellGiveReviewList";
 import MySellGetReviewList from "../components/mypage/MySellGetReviewList";
-import MyPostList from "../components/mypage/MyPostList";
+import MyProductPostList from "../components/mypage/MyProductPostList";
+import MyBoardPostList from "../components/mypage/MyBoardPostList";
 import MyReportList from "../components/mypage/MyReportList";
 import ConfirmPassword from '../components/mypage/ConfirmPassword';
 import MyInfoEdit from '../components/mypage/MyInfoEdit';
@@ -42,7 +43,12 @@ function MyPage() {
             url.includes('sellList') ? (<MySellList/>) :
             url.includes('sellGiveReviewList') ? (<MySellGiveReviewList/>) :
             url.includes('sellGetReviewList') ? (<MySellGetReviewList/>) :
-            url.includes('postList') ? (<MyPostList/>) :
+            url.includes('postList') ? (
+              <div className={styles.content}>
+                <MyProductPostList/>
+                <MyBoardPostList/>
+              </div>
+            ):
             url.includes('notifications') ? (<MyNotifications/>) :
             url.includes('reportList') ? (<MyReportList/>) :
             url.includes('edit') ? (

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { buyGiveReviewList, reviewDelete } from '../../api/mypage';
-import dateProcessing from '../../lib/dateProcessing.js';
+import { dateProcessingDash } from '../../lib/dateProcessing.js';
 import starRating from '../../lib/starRating.js';
 import Pagination from './Pagination.js';
 
-import Dropdown from 'react-bootstrap/Dropdown';
 import styles from '../../styles/mypage.module.css';
-
+import { Dropdown, Table } from 'react-bootstrap';
 
 function MyBuyGiveReviewList() {
   const navigate = useNavigate();
@@ -45,32 +44,36 @@ function MyBuyGiveReviewList() {
 
   return (
     <div className={styles.content}>
-      <p className={styles.conTitle}> &gt; 총 {reviews.length}개의 판매자에게 남긴후기</p>
+      <p className={styles.contentHeader}> &gt; 총 {reviews.length}개의 판매자에게 남긴후기</p>
       {reviews.length === 0 ? (
         <div className={styles.empty}>판매자에게 남긴 후기가 없습니다.</div>
       ) : (
         <>
-          <div className={styles.revList}>
-            {reviews.slice(offset, offset + limit).map((review, index) => (
-              <div key={index} className={`row ${styles.revWrap}`}>
-                <div className="col col-2">{starRating(review.score)}</div>
-                <div className="col col-6">{review.content}</div>
-                <div className="col col-1">{review.buyer_nickname}</div>
-                <div className={`col-2 ${styles.date}`}>{dateProcessing(review.createdAt)}</div>
-                <Dropdown className="col col-1">
-                  <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
-                    ⁝
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href={`/user/${review.seller_id}/sellerReviewEdit?productId=${review.product_id}`}>
-                      수정
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            ))}
-          </div>
+          <Table responsive>
+            <tbody>
+              {reviews.slice(offset, offset + limit).map((review, index) => (
+                <tr key={index} className={styles.revWrap}>
+                  <td>{starRating(review.score)}</td>
+                  <td>{review.content}</td>
+                  <td>{review.buyer_nickname}</td>
+                  <td className={`col-2 ${styles.date}`}>{dateProcessingDash(review.createdAt)}</td>
+                  <td className='col-1'>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
+                        ⁝
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item className={styles.dropdownItem} href={`/user/${review.seller_id}/sellerReviewEdit?productId=${review.product_id}`}>
+                          수정
+                        </Dropdown.Item>
+                        <Dropdown.Item className={styles.dropdownItem} onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
           <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
         </>
       )}

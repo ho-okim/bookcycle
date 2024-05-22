@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { dateTimeProcessing } from '../../lib/dateProcessing';
 import {Book, Clipboard2Fill, MegaphoneFill, Pencil, PersonFill} from 'react-bootstrap-icons';
+import { Table } from 'react-bootstrap';
 import { getNotification, readNotification } from '../../api/alert';
 import { useAuth } from '../../contexts/LoginUserContext';
 import Pagination from './Pagination';
@@ -106,7 +107,7 @@ function MyNotifications() {
 
     return(
         <div className={styles.content}>
-            <table>
+            <Table responsive className={styles.table}>
                 <tbody>
                 <tr className={styles.notification_info}>
                     <td>
@@ -129,7 +130,7 @@ function MyNotifications() {
                     })
                 }
                 </tbody>
-            </table>
+            </Table>
             <Pagination offset={offset} limit={limit} page={currentPage} total={notificationTotal} setPage={setCurrentPage}/>
         </div>
     )

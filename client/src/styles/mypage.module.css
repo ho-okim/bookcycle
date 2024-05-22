@@ -1,38 +1,69 @@
 * { margin: 0; padding: 0; }
 ul, ol, li { list-style: none; }
 
+table { height:100%}
+
 /* COMMON */
 .inner { display: flex; justify-content: space-between; }
 .leftNav, .content { border: 1px solid #bbb; border-radius: 6px; }
 .leftNav { 
+  width: 15%;
   padding: 10px 20px; 
-  width: 15%; height: 420px; 
-  white-space: nowrap; overflow: hidden; 
+  white-space: nowrap; overflow: hidden;
+  background-color: #ffffff;
 }
 .content { padding: 20px 30px 0; width: 83%; }
-.conTitle { border-bottom: 1px solid #666; }
+.contentHeader { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #666; }
 .empty { margin-top: 30px; text-align: center; }
 .table { margin: 0; }
 .date { font-size: 15px; }
 
-/* LEFT-NAV */
+/* LEFT NAV */
 .navProfile { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  height: 40px; 
+  position: relative; display: flex; 
+  justify-content: center; align-items: center;
   border-bottom: 1px solid #666; 
 }
-.navProfile img { 
-  width: 23px; height: 23px; 
-  background-color: #ddd; 
-  border-radius: 100% 
+.navProfileImgWrap {
+  position: relative; overflow: hidden;
+  width: 80px; height: 80px;
+  border-radius: 100%;
+}
+.navProfileImg { 
+  width: auto; height: 100%; 
+  object-fit: cover;
 }
 .profile_default { 
-  width: 23px; height: 23px; 
+  /* width: 23px; height: 23px;  */
   color: #cacaca; 
 }
-.navProfile .score { display: flex; align-items: center; }
+.navProfileOverlay {
+  position: absolute; bottom: 0; left: 40%;
+  display: flex; width: 100%;
+  padding-left: 5px;
+  /* background-color: white; */
+}
+.score {
+  position: relative;
+  display: inline-block;
+  width: 24px; height: 24px;
+  margin-bottom: 2px;
+}
+.starIcon {
+  width: 100%; height: 100%;
+  color: #FFC100;
+}
+.mannerScore {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -40%);
+  font-size: 12px;
+}
+.nickname {
+  font-size: 17px;
+  font-weight: bold;
+  margin-top: auto;
+}
 
 /* PAGINATION */
 .pagination { display: flex; justify-content: center; margin: 20px 0; }
@@ -64,31 +95,24 @@ ul, ol, li { list-style: none; }
 
 
 /* REVIEW LIST*/
-.revWrap { 
-  display: flex; align-items: center; 
-  margin: 0; padding: 10px 0;
-  border-bottom: 1px solid #ddd; 
-}
-/* .date { font-size: 15px; } */
+.revWrap { vertical-align: middle; }
 
 
-
-.show:active { color: black; }
-.toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus, .toggleBtn-check:checked+.toggleBtn, .toggleBtn.active, .toggleBtn.show, .toggleBtn:first-child:active, :not(.toggleBtn-check)+.toggleBtn:active{ 
+.toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus, 
+.toggleBtn:first-child:active, 
+.toggleBtn.show ~ .toggleBtn:active
+{ 
   background-color: transparent; 
   border: 0; color: black; 
   box-shadow: none; outline: none;
 }
 .toggleBtn::after { content: none; }
 
+.dropdownItem:active, .dropdownItem:focus { background-color: #eee; color: #444 }
+
 
 
 /* HEART LIST*/
-.heartHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 .heartHeader .pagination { margin: 0; }
 
 .heartList { padding: 20px 0 30px; }
@@ -97,23 +121,31 @@ ul, ol, li { list-style: none; }
   justify-content: space-between; 
   border-bottom: 1px solid #ddd; 
 }
+.heartInfo { display: flex; }
 .heartImg { width: 80px; height: 100px; background-color: #ddd; }
 
-.heartInfo { padding: 0 20px; margin-right: auto; }
+.heartBox { padding: 0 20px; margin-right: auto; }
 .heartTitle { font-size: 16px; }
-.heartContent { font-size: 13px; }
+.heartContent { display: flex; font-size: 13px; font-weight: Thin; }
 .heartContent p { color: #777; }
 .heartContent p::after { content: '|'; padding: 0 10px; }
 .heartContent p:last-of-type::after { content: ''; }
 .heartPrice { font-size: 16px; }
 
 .heartSeller { 
+  width: 10%;
   display: flex; 
   align-items: center; 
   margin-bottom: auto;
   font-size: 18px; 
 }
 .person { font-size: 20px; }
+
+@media screen and (max-width: 992px) {
+  .heartContent { display: block; margin: 2px 0; }
+  .heartContent p::after { content: ''; }
+
+}
 
 
 /* PRODUCT LIST */
@@ -123,12 +155,11 @@ ul, ol, li { list-style: none; }
 .productReaction p:first-of-type { padding-right: 10px; }
 
 .productWrap {
-  width: calc(20%);
-  /* flex: 1 1 100%;  */
+  width: 20%;
   display: flex;
   flex-direction: column;
   align-items: stretch; 
-  margin: 10px; 
+  padding: 10px; 
 }
 .productInfo {
   display: flex;
