@@ -1,12 +1,16 @@
 .toast_wrap{
     width: 300px; height: auto;
-    position: fixed; bottom: 40px; right: 100px;
+    position: fixed; bottom: 80px; right: 30px;
     z-index: 20;
 }
 
 .toast {
     background-color: white;
     opacity: 0.98;
+}
+
+.toast_header button:focus{
+    box-shadow: none !important;
 }
 
 .notify_more_btn {
@@ -51,5 +55,5 @@
 }
 
 .notification_read{
-    color:#979797;
+    color:#979797 !important;
 }

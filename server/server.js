@@ -126,7 +126,8 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
             phone_number : data.phone_number,
             username : data.username,
             manner_score : data.manner_score,
-            verification : data.verification
+            verification : data.verification,
+            blocked : data.blocked
         }
 
         process.nextTick(() => {

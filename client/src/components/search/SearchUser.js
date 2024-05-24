@@ -6,12 +6,12 @@ import UserDataBox from './UserDataBox';
 function SearchUser() {
 
     const { keyword, userResult } = useSearchResult();
-
+    
     return(
         <>
-            <div className={styles.title_box}>
-                <div className={styles.result_box}>
-                    <h2>"{keyword}" 사용자 검색 결과</h2>
+            <div>
+                <div className='d-flex justify-content-start align-items-center col-12 col-lg-6'>
+                    <h2 className='m-0'>"{keyword}" 사용자 검색 결과</h2>
                     <p className={styles.result_count}>총 {userResult?.length ?? 0}건</p>
                 </div>
             </div>

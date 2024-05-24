@@ -28,6 +28,9 @@ export function dateTimeProcessingDash(date) {
   if (formattedDate.endsWith('-')) { // 맨 마지막 '-'를 제거
     formattedDate = formattedDate.slice(0, -1);
   }
+  // 일과 시간 사이의 '-'를 제거
+  formattedDate = formattedDate.replace(/-(\d{2}:\d{2})$/, ' $1');
+
   return date ? formattedDate : "";
 }
 

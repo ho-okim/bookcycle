@@ -1,20 +1,3 @@
-.title_box{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.result_box{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.result_box h2{
-  margin:0;
-}
-
 .result_count{
   margin: 0 10px;
   font-size: 20px;
@@ -32,6 +15,12 @@
   background-color: rgb(22, 72, 99) !important;
 }
 
+.text_hidden{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* 상품 */
 .product{
   margin-top:10px;
@@ -42,38 +31,32 @@
   word-break: keep-all;
 }
 
+@media screen and (max-width: 992px) {
+  .product{
+    justify-content: center;
+  }
+}
+
 .product .box_content{
   border-radius: 10px;
   transition: 0.3s;
+}
+
+@media screen and(min-width: 576px) {
+  .product .box_content{
+    max-height: 200px;
+  }
 }
 
 .product .box_content:hover{
   background-color: #f1f1f1;
 }
 
-.product .publisher:after{
-  content:'|';
-  margin: 5px;
-}
-
-.product .view_count:after{
-  content:'|';
-  margin: 5px;
-}
-
-.product .bookpicbox{
-  margin: 1vw 2vw;
-  box-shadow: 0 0 4px #cecece;
-}
-
-.product .bookpic, .product .no_bookpic{
-  width: 100%;
-  aspect-ratio: 1/1.65;
-  border-radius: 5px;
-}
-
-.product .book_title{
-  font-size: 18px;
+.product .info_box{
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .product .book_info{
@@ -81,46 +64,82 @@
   color:#555555;
 }
 
-.product .seller_info{
-  margin-top: 10px;
+.product .book_info span::after{
+  content:'|';
+  margin: 5px;
 }
 
-@media screen and (max-width :576px) {
-  
+.product .book_info span:last-of-type::after{
+  display: none;
+}
+
+.product .pic_box{
+  height: 100%;
+  min-width: 80px;
+}
+
+.product .bookpic{
+  width: 100%;
+  aspect-ratio: 1/1.65;
+  border-radius: 5px;
+  box-shadow: 0 0 4px #cecece;
+  object-fit: cover;
+}
+
+@media screen and (min-width: 576px) {
+  .product .bookpic{
+    max-height: 180px;
+  }
+}
+
+.category_badge{
+  margin-bottom: 3px;
+  font-size: 14px;
+  background-color: #4d91b6 !important;
+  border: none !important;
+}
+
+.product .book_title{
+  font-size: 18px;
+}
+
+.product .seller_info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-clamp: 1;
+  overflow: hidden;
+}
+
+.product .person_icon{
+  margin-right: 3px;
+  font-size: 20px;
 }
 
 /* 게시판 */
+.total_box{
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
 .board .onPostBtn {
   background-color: #4d91b6; border: none;
 }
 
-.board .boardHeader {
-  margin-top: 40px
-}
-
-.board .listHeader {
-  padding: 20px 0 17px; border-bottom: 1px solid #171717;
+.board .board_box:nth-of-type(2n-1){
+  border-right: 1px solid #e8e8e8;
 }
 
 .board .board_box:hover{
-  color: blue;
+  color: rgb(22, 72, 99);
 }
 
 .board .list {
-  padding: 32px; border-bottom: 1px solid #e8e8e8; cursor: pointer;
+  padding: 25px; border-bottom: 1px solid #e8e8e8; cursor: pointer;
 }
 
 .board .listTitle {
   font-size: 18px;
-}
-
-.board .listContent {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    margin-bottom: 10px;
-    color: #6A6A6A;
 }
 
 .board .listInfo .userid:after{
@@ -137,60 +156,64 @@
   flex-wrap: wrap;
 }
 
-.user .user_box{
-  padding:10px;
-  width: calc((100% - 10px) / 3);
+.user a{
+  min-width: 150px;
+  max-width: 180px;
 }
 
-.user .user_content{
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #dddddd;
+.user .info_box {
   border-radius: 10px;
   transition: 0.3s;
 }
 
-.user .user_content:hover{
+.user .info_box:hover{
   box-shadow: 0 0 5px #cecece;
 }
 
 .user .image_box{
-  width: 50%;
-  display: flex;
-  justify-content: center;
+  width: 100%; 
+  min-width: 80px;
+  max-width: 200px;
   border-radius: 100%;
 }
 
-.user .profile_image{
-  width: 5vw; min-width: 90px;
+.user .profile_image {
+  width: 100%; height: 100%;
   aspect-ratio: 1/1;
   border-radius: 100%;
+  box-shadow: 0px 0px 5px #cecece;
+  
 }
 
-.user .profile_default{
-  font-size: 5vw;
+.user .profile_default {
+  width: 100%; height: 100%;
+  color: #cacaca;
+}
+
+.user .score_box {
+  margin-bottom:20px;
+  position:relative;
   text-align: center;
 }
 
-.user .info_box{
-  width: 75%;
-}
-
-.user .score_box{
-  margin-bottom: 1vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.user .manner_score{
+  position: absolute; top: 50%; left:50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  z-index: 1;
 }
 
 .user .manner_score_star{
-  margin-right: 5px;
+  position: absolute; top: 50%; left:50%;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
   color: #FFC100;
-  font-size: 20px;
 }
 
-.user .user_nickname {
+.user .user_info{
+  margin:10px; padding: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+  font-size: 1rem;
   text-align: center;
 }

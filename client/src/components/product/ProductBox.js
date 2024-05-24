@@ -1,42 +1,41 @@
 import { Link } from "react-router-dom";
 import styles from "../../styles/productList.module.css";
-import {Eye, HeartFill} from 'react-bootstrap-icons';
+import {Eye, Heart, Person} from 'react-bootstrap-icons';
 import { dateProcessingDash } from "../../lib/dateProcessing";
+import { Badge } from "react-bootstrap";
 
 function ProductBox({product}){
-  
-  let newDate = '';
-  if (product.publish_date) {
-      newDate = dateProcessingDash(product.publish_date);
-  } else {
-      newDate = '❔';
-  }
-
   return (
-    <Link to={`/product/detail/${product.product_id}`} className={styles.product_link}>
-      <div className={styles.product}>
-        <div className={styles.bookpicbox}>
+    <Link to={`/product/detail/${product.product_id}`} className={`${styles.product_link} p-2 col-12 col-lg-6`}>
+      <div className={`${styles.product} p-2 d-flex justify-content-around align-items-start flex-wrap`}>
+        <div className={`${styles.pic_box} col-5 col-sm-3`}>
         {
             product.filename ? 
             <img className={styles.bookpic} src={process.env.PUBLIC_URL + '/img/product/' + product.filename} alt='책사진'/>
             :
-            <img className={styles.no_bookpic} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
+            <img className={styles.bookpic} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
         }
         </div>
-        <div className={styles.bookinfoabout}>
-          <p className={styles.book_title}>{product.product_name}</p>
-          <p>{product.category_name}</p>
-          <p className={styles.book_info}>
-            <span className={styles.writer}>{product.writer ?? '❔'}</span>
-            <span className={styles.publisher}>{product.publisher ?? '❔'}</span>
-            <span>{newDate}</span>
-          </p>
-          <p>&#8361; {product.price.toLocaleString()}</p>
-        </div>
-        <div className={styles.seller_info}>
-          <p>{product.nickname}</p>
-          <p><Eye/> {product.view_count.toLocaleString()}</p>
-          <p><HeartFill className={styles.heart}/> {product.liked.toLocaleString()}</p>
+        <div className={`${styles.info_box} px-2 my-3 my-sm-0 col-8 col-sm-8  text-sm-start`}>
+          <div>
+            <Badge className={styles.category_badge}>{product.category_name}</Badge>
+            <p className={`${styles.book_title} ${styles.text_hidden}`}>{product.product_name}</p>
+            <div className={`${styles.book_info} ${styles.text_hidden}`}>
+              {(product.writer && <span>{product.writer}</span>)}
+              {(product.publisher && <span>{product.publisher}</span>)}
+              {(product.publish_date && <span>{dateProcessingDash(product.publish_date)}</span>)}
+            </div>
+            <p>&#8361; {product.price.toLocaleString()}</p>
+          </div>
+          <div className={styles.seller_info}>
+            <div className={`${styles.book_title} d-flex align-items-center`}>
+              <Person className={styles.person_icon}/> <span>{product.nickname}</span>
+            </div>
+            <div>
+              <span className='me-2'><Eye/> {product.view_count.toLocaleString()}</span>
+              <span><Heart/> {product.liked.toLocaleString()}</span>
+            </div>
+          </div>
         </div>
       </div>
     </Link>

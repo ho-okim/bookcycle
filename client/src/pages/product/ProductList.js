@@ -8,19 +8,15 @@ import ProductSorting from "../../components/product/ProductSorting.js";
 import ProductPagination from '../../components/product/ProductPagination.js';
 import ProductOptionContext from '../../contexts/ProductOptionContext.js';
 import LoadingSpinner from '../../components/LoadingSpinner.js';
-import { useHref, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useHref, useLocation, useSearchParams } from 'react-router-dom';
 import { getProductAll, getProductList } from '../../api/product.js';
 import ProductSearchInput from '../../components/product/ProductSearchInput.js';
-import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function ProductList() {
 
   const [searchParams, setSearchParams] = useSearchParams(); // query string
   const url = useHref();
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const { user } = useAuth(); // 로그인 한 사용자
 
   const [loading, setLoading] = useState(false); // 데이터 로딩 처리
   const [productList, setProductList] = useState([]); // 상품목록
@@ -81,35 +77,27 @@ function ProductList() {
     setOffset((pageNumber-1)*limit);
   }
 
-  function handleClick() {
-    navigate("/product/write");
-  }
-
     return (
       <ProductOptionContext.Provider value={{order, setOrder, filter, setFilter, searchKeyword, setSearchKeyword}}>
         <Container>
-          <div className={`${styles.list_box} inner`}>
-              <ProductCategory filter={filter} setFilter={setFilter}/>
-              <div className={styles.productList}>
-                {
-                  (user) ?
-                  <div className={styles.add_box}>
-                    <Button className={styles.add_btn}
-                    onClick={handleClick}>책 등록하기</Button>
+          <div className='inner'>
+              <div className={styles.top_box}>
+                <Container>
+                  <div className={`${styles.top_inner_box} inner`}>
+                    <div className={styles.option_box}>
+                      <ProductSorting order={order} setOrder={setOrder}/>
+                      <ProductSearchInput/>
+                    </div>
+                    <ProductCategory filter={filter} setFilter={setFilter}/>
+                    <ProductPagination     
+                      totalData={totalData}
+                      limit={limit}
+                      blockPerPage={5}
+                      handlePagination={handlePagination}/>
                   </div>
-                  : null
-                }
-                <div className={styles.search_box}>
-                  <ProductSearchInput/>
-                </div>
-                <div className={styles.option_box}>
-                  <ProductPagination     
-                  totalData={totalData}
-                  limit={limit}
-                  blockPerPage={5}
-                  handlePagination={handlePagination}/>
-                  <ProductSorting order={order} setOrder={setOrder}/>
-                </div>
+                </Container>
+              </div>
+              <div className={styles.productList}>
                 {
                   loading ? 
                   <div className='blank_box'>

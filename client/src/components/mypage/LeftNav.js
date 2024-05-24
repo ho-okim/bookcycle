@@ -50,7 +50,7 @@ function LeftNav() {
           <div className={styles.navProfileOverlay}>
             <div className={styles.score}>
               <StarFill className={styles.starIcon} />
-              <span className={`${styles.mannerScore} regular`}>{mannerScore.toFixed(1)}</span>
+              <span className={styles.mannerScore}>{mannerScore?.toFixed(1)}</span>
             </div>
             <div className={`${styles.nickname} regular`}>{clampText(nickname, 5)}</div>
           </div>

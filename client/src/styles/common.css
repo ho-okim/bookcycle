@@ -47,12 +47,23 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 }
 
 .searchBtn {
-  background-color: #4D91B6; 
-  border: 1px solid #4D91B6;
+  background-color: #4D91B6 !important; 
+  border: 1px solid #4D91B6 !important;
 }
+
 .searchBtn:hover {
-  background-color: #427D9D;
-  border: 1px solid #427D9D;
+  background-color: #427D9D !important;
+  border: 1px solid #427D9D !important;
+}
+
+.searchBtn:hover:active, .searchBtn:hover:focus{
+  background-color: #427D9D !important;
+  border: 1px solid #427D9D !important;
+}
+
+.navbar .form-control:focus{
+  border-color:none !important;
+  box-shadow: none !important;
 }
 
 @media screen and (max-width: 767px){

@@ -114,7 +114,7 @@ function UserReview({tradeType}) {
                     </h4>
                     {
                         (isReviewUrl) ? 
-                        <div className={styles.option_box}>
+                        <div className='d-flex justify-content-end align-items-center flex-wrap'>
                             <UserReviewSorting
                             sortType={'score'} 
                             typeAscend={order.name === 'score' && order.ascend} 

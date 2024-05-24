@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/LoginUserContext";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import timeCalculator from '../lib/timeCalculator';
-import { dateTimeProcessing } from '../lib/dateProcessing';
+import { dateTimeProcessingDash } from '../lib/dateProcessing';
 import {Book, Clipboard2Fill, MegaphoneFill, Pencil, PersonFill} from 'react-bootstrap-icons';
 import { readNotification } from '../api/alert';
 
@@ -48,7 +48,7 @@ function Notification({showToast, setShowToast, toggleToast}) {
     // 알림 클릭시 이동할 link 생성
     function generateRoute(alert) {
         const {id, keyword_id, keyword, target_type, target_id, createdAt, read_or_not} = alert;
-        const alertDate = dateTimeProcessing(createdAt);
+        const alertDate = dateTimeProcessingDash(createdAt);
         let url = '';
 
         // 키워드별 라우트 설정
@@ -105,7 +105,7 @@ function Notification({showToast, setShowToast, toggleToast}) {
     return(
         <ToastContainer className={styles.toast_wrap}>
             <Toast show={showToast} onClose={toggleToast} className={styles.toast}>
-                <Toast.Header>
+                <Toast.Header className={styles.toast_header}>
                     <strong className="me-auto">새 알림 <Badge bg="danger">{notReadAlerts}</Badge></strong>
                     <small>최근 알림 : {recentNotifiedTime}</small>
                     <small><button className={styles.notify_more_btn} onClick={handleClick}>더보기</button></small>
