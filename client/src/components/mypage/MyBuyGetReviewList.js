@@ -43,7 +43,7 @@ function MyBuyGetReviewList() {
             <tbody>
               {reviews.slice(offset, offset + limit).map((review, index) => (
                 <tr key={index} className={styles.revWrap}>
-                  <td>{starRating(review.score)}</td>
+                  <td className={styles.star}>{starRating(review.score)}</td>
                   <td>{review.content}</td>
                   <td>{review.seller_nickname}</td>
                   <td>{dateProcessingDash(review.createdAt)}</td>

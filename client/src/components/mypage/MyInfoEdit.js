@@ -108,7 +108,13 @@ function MyInfoEdit({ password }) {
     }
   }
 
-  // 확인 버튼 누를 시 수정
+  // 취소 버튼 클릭
+  async function handleCancel() {
+    navigate('/mypage/buyList');
+    navigate(0);
+  }
+
+  // 확인 버튼 클릭 시 수정
   async function handleSubmit() {
 
     let editPass = Object.entries(formState).filter(([key, value]) => !value).map(([key]) => key);
@@ -181,7 +187,6 @@ function MyInfoEdit({ password }) {
               {/* 이미지 업로드 버튼 */}
               <label htmlFor="file" className={`${styles.fileBtn}`}>
                 <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
-                  {console.log(user.profile_image)}
                   {
                     profile ?
                     <img className={`${styles.profileImg}`} alt='preview' src={profile}/>
@@ -215,7 +220,7 @@ function MyInfoEdit({ password }) {
         </div>
           <div className={styles.btnWrap}>
             <Button className={styles.edit} variant="primary" type="submit" onClick={handleSubmit}>수정</Button>
-            <Button className={styles.cancel} variant="outline-secondary" type="button" onClick={() => {navigate(`/mypage/buyList`);}}>취소</Button>
+            <Button className={styles.cancel} variant="outline-secondary" type="button" onClick={handleCancel}>취소</Button>
           </div>
       </form>
     </div>

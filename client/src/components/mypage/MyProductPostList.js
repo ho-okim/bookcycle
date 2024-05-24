@@ -22,13 +22,10 @@ function MyProductPostList() {
   const [productPostItems, setProductPostItems] = useState([]);
   const [sortOption, setSortOption] = useState("createdAt.DESC")
 
-  console.log(productPostItems)
-
-  let total = productPostItems.length; // 전체 게시물 수
-  let limit = 5; // 페이지 당 게시물 수
-  let [page, setPage] = useState(1); // 현재 페이지 번호
-  let offset = (page - 1) * limit; // 페이지당 첫 게시물 위치
-
+  let total = productPostItems.length;
+  let limit = 10;
+  let [page, setPage] = useState(1);
+  let offset = (page - 1) * limit;
 
   useEffect(() => {
     async function getItems(){
@@ -48,7 +45,7 @@ function MyProductPostList() {
   };
 
   return (
-    <div className={`${styles.productListWrap}`}>
+    <div className={styles.content}>
       <div className={styles.contentHeader}>
         <p> &gt; 상품 등록 내역</p>
         <Sorting sortOption={sortOption} handleChange={handleChange} options={productSortOptions} />
@@ -57,22 +54,26 @@ function MyProductPostList() {
         {productPostItems.length === 0 ? (
           <div className={`pb-5 ${styles.empty}`}>판매중인 상품이 없습니다.</div>
         ) : (
-          productPostItems.slice(offset, offset + limit).map((item, index) => (
-            <div key={index} className={styles.productWrap}>
-              <Link to={`/product/detail/${item.id}`} className={styles.productInfo}>
-                {
-                  item.filename ? 
-                    <img src={process.env.PUBLIC_URL + `/img/product/${item.filename}`} alt="" className={styles.productImg}/> :
-                    <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
-                }
-                <div className={styles.productContent}>
-                  <p className={styles.productTitle}>{item.product_name}</p>
-                  <p className={styles.productPrice}>₩{item.price}</p>
-                  <p className={styles.postDate}>{dateProcessingDash(item.createdAt)}</p>
-                </div>
-              </Link>
-            </div>
-          ))
+          <div className={styles.productGrid}>
+            {productPostItems.slice(offset, offset + limit).map((item, index) => (
+              <div key={index} className={styles.productWrap}>
+                <Link to={`/product/detail/${item.id}`} className={styles.productInfo}>
+                  <div className={styles.productImgWrap}>
+                    {
+                      item.filename ? 
+                        <img src={process.env.PUBLIC_URL + `/img/product/${item.filename}`} alt="" className={styles.productImg}/> :
+                        <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} alt="" className={styles.productImg}/>
+                    }
+                  </div>
+                  <div className={styles.productContent}>
+                    <p className={styles.productTitle}>{item.product_name}</p>
+                    <p className={styles.productPrice}>&#8361; {item.price.toLocaleString()}</p>
+                    <p className={styles.postDate}>{dateProcessingDash(item.createdAt)}</p>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
         )}
       </div>
       <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>

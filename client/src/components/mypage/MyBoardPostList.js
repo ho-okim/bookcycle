@@ -44,7 +44,7 @@ function MyBoardPostList() {
   };
 
   return (
-    <div className={`border-top ${styles.boardListWrap}`}>
+    <div className={styles.content}>
       <div className={styles.contentHeader}>
         <p> &gt; 게시글 작성 내역</p>
         <Sorting sortOption={sortOption} handleChange={handleChange} options={boardSortOptions} />
