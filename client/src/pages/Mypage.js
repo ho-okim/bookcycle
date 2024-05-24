@@ -43,12 +43,8 @@ function MyPage() {
             url.includes('sellList') ? (<MySellList/>) :
             url.includes('sellGiveReviewList') ? (<MySellGiveReviewList/>) :
             url.includes('sellGetReviewList') ? (<MySellGetReviewList/>) :
-            url.includes('postList') ? (
-              <div className={styles.content}>
-                <MyProductPostList/>
-                <MyBoardPostList/>
-              </div>
-            ):
+            url.includes('productPostList') ? (<MyProductPostList/>) :
+            url.includes('boardPostList') ? (<MyBoardPostList/>) :
             url.includes('notifications') ? (<MyNotifications/>) :
             url.includes('reportList') ? (<MyReportList/>) :
             url.includes('edit') ? (

@@ -80,7 +80,8 @@ function App() {
               <Route path="sellList" element={<MySellList/>}/>
               <Route path="sellGiveReviewList" element={<MySellGiveReviewList/>}/>
               <Route path="sellGetReviewList" element={<MySellGetReviewList/>}/>
-              <Route path="postList" element={<MyProductPostList/> && <MyBoardPostList/>}/>
+              <Route path="productPostList" element={<MyProductPostList/>}/>
+              <Route path="boardPostList" element={<MyBoardPostList/>}/>
               <Route path="reportList" element={<MyReportList/>}/>
               <Route path="edit" element={<MyInfoEdit/> && <ConfirmPassword/>}/>
               <Route path="notifications" element={<MyNotifications/>}/>

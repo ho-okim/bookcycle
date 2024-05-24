@@ -57,9 +57,8 @@ router.get("/mypage/buyGetReviewList", isLoggedIn, async (req, res) => {
 router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
   const { id } = req.user;
   const { sortOption } = req.query;
-  console.log(sortOption)
 
-  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ?"
+  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? AND (image_no = 0 OR image_no IS NULL)"
   const orderBy = sortOption.split('.');
   sql += ` ORDER BY H.${orderBy[0]} ${orderBy[1]}`;
   
@@ -125,9 +124,8 @@ router.get("/mypage/sellGetReviewList", isLoggedIn, async (req, res) => {
 router.get("/mypage/productPostList", isLoggedIn, async (req,res) => {
   const { id } = req.user;
   const { sortOption } = req.query;
-  console.log(sortOption)
 
-  let sql = "SELECT PD.*, P.buyer_id FROM product_detail PD JOIN product P ON P.id = PD.product_id WHERE PD.seller_id = ? AND P.buyer_id = ?";
+  let sql = "SELECT P.id, P.product_name, P.price, P.createdAt, PI.filename FROM product P LEFT JOIN product_image PI ON PI.product_id = P.id WHERE seller_id = ? AND buyer_id = ?  AND (boardNo = 0 OR boardNo IS NULL)";
 
   const orderBy = sortOption.split('.');
   sql += ` ORDER BY ${orderBy[0]} ${orderBy[1]}`;
@@ -147,9 +145,8 @@ router.get("/mypage/productPostList", isLoggedIn, async (req,res) => {
 router.get("/mypage/boardPostList", isLoggedIn, async (req,res) => {
   const { id } = req.user;
   const { sortOption } = req.query;
-  console.log(sortOption)
 
-  let sql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? AND (I.boardNo = 0 OR I.boardNo IS NULL) GROUP BY U.id";
+  let sql = "SELECT U.*, I.boardNo, I.filename FROM board_user U LEFT JOIN board_image I ON U.id = I.board_id WHERE U.user_id = ? AND (I.boardNo = 0 OR I.boardNo IS NULL)";
 
   const orderBy = sortOption.split('.');
   sql += ` ORDER BY ${orderBy[0]} ${orderBy[1]}`;
@@ -163,7 +160,6 @@ router.get("/mypage/boardPostList", isLoggedIn, async (req,res) => {
     res.send('error');
   }
 })
-
 
 
 // 회원정보관리 - 비밀번호 확인
@@ -187,7 +183,6 @@ router.post('/mypage/confirmPassword', isLoggedIn, async (req, res) => {
     const isMatch = await bcrypt.compare(password, hashedPassword);
 
     if (!isMatch) {
-      console.log("서버 실패")
       return res.status(401).json({ message: "fail" });
     }
 
