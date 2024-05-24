@@ -2,12 +2,13 @@ import styles from '../../styles/board.module.css'
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
-import {ChatLeftQuote} from 'react-bootstrap-icons';
+import {Ban, ChatLeftQuote} from 'react-bootstrap-icons';
 import { Heart } from 'react-bootstrap-icons';
 import { HeartFill } from 'react-bootstrap-icons';
 import { BalloonHeart } from 'react-bootstrap-icons';
 import { BalloonHeartFill } from 'react-bootstrap-icons';
 import { DashCircle } from 'react-bootstrap-icons';
+import { Trash3 } from 'react-bootstrap-icons';
 import { replyWrite, replyList, replyDelete, hitLike, unLike, likeState } from '../../api/board';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext';
@@ -71,6 +72,8 @@ function ReplyForm(){
     </>
   )
 }
+
+
 
 // 댓글 목록 및 좋아요 ---------------------------------------------
 function ReplyList(){
@@ -231,7 +234,7 @@ function ReplyList(){
           {
             !user ? (
               <div className={styles.heartCount}>
-                <BalloonHeart size="20" className={styles.heartIcon} onClick={() => noUserLike()}/>
+                <Heart size="20" className={styles.heartIcon} onClick={() => noUserLike()}/>
                 <span>좋아요 </span>
                 <span className={styles.likeCounts}>{likeCounts}</span>개
               </div>
@@ -239,8 +242,8 @@ function ReplyList(){
               <div className={styles.heartCount}>
                 { 
                   likeStates.find(el => el.board_id === Number(id))
-                  ? <BalloonHeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>
-                  : <BalloonHeart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
+                  ? <HeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>
+                  : <Heart size="20" className={styles.heartIcon} onClick={() => changeToLike()}/>
                 }
                 <span>좋아요 </span>
                 <span className={styles.likeCounts}>{likeCounts}</span>개
@@ -263,14 +266,14 @@ function ReplyList(){
                   <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
                 </div>
                 {user?.nickname == reply.nickname ? (
-                  <Button variant="outline-secondary" className={styles.deleteBtn} onClick={()=>onDelete(reply.id)}>삭제</Button>
+                  <Button variant="outline-secondary" className={styles.replyDeleteBtn} onClick={()=>onDelete(reply.id)}><Trash3 size='17' className='me-1'/></Button>
                 ) : null}
                 {
                 (user && user?.nickname !== reply.nickname) ? 
                   (!is_reported) ? (
                     <Button variant="outline-secondary" className={styles.alertBtn} 
-                    onClick={()=>{onSpam(reply.id)}}>신고하기</Button>
-                  ) : <div className='d-flex align-items-center'><DashCircle className='me-1'/>신고완료 댓글</div>
+                    onClick={()=>{onSpam(reply.id)}}><img style={{width: '23px'}} src={process.env.PUBLIC_URL + `/report.png`}/></Button>
+                  ) : <div className='d-flex align-items-center' style={{color: '#6C757D'}}><DashCircle className='me-1'/>신고완료 댓글</div>
                   : null
                 }
               </div>

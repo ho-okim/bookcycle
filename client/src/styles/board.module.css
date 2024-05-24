@@ -1,13 +1,26 @@
 /* common */
-.updateBtn, .deleteBtn, .alertBtn, .goBoard {
-  border: 1px solid #e8e8e8;
-  font-size: 13px;
+.updateBtn, .deleteBtn {
+  /* background-color: #4D91B6;  */
+  border: 1px solid #ccc;
+  border: none;
+}
+.goBoard {
+  background-color: #4D91B6;
+  border: none;
+  color: #fff;
+}
+.alertBtn, .replyDeleteBtn {
+  border: none;
+}
+.alertBtn:hover, .replyDeleteBtn:hover{
+  background-color: transparent;
+  color: #6C757D;
 }
 .onPost {
   background-color: #4D91B6; 
   border: none;
 }
-.onPost:hover {
+.onPost:hover, .goBoard:hover{
   background-color: #427D9D;
 }
 .listInfo, .detailInfo, .replyInfo {
@@ -35,18 +48,16 @@
   margin: 5px;
 }
 
-.boardSort .boardOption {
-  padding: 6px 36px 6px 12px;
+.boardSort {
+  width: 28%;
+  margin-right: 5px;
 }
 
 
 /* board-Detail (상세 게시글) */
 .boardDetail .titleWrap {margin: 40px 0 20px}
-.boardDetail .blockedDetail {
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  padding: 100px;
-  margin-bottom: 50px;
+.boardDetail .blockedPost {
+  margin: 60px 0;
 }
 .boardDetail .detailWrapper {
   border: 1px solid #e8e8e8;
@@ -68,7 +79,7 @@
   margin: 5px;
   color: #6A6A6A;
 }
-.detailMain .detailInfo .spamBtn{cursor: pointer; color: rgb(220, 53, 69);}
+.detailMain .detailInfo .spamBtn{cursor: pointer;}
 .detailMain .detailContentWrap {
   padding: 0 0 170px;
 }
@@ -117,7 +128,7 @@
 }
 .replySubmit:hover {background-color: #427D9D;}
 
-.loginNeeded {margin: 80px 0 20px 0; text-align: center;}
+.loginNeeded {margin: 100px 0 40px 0; text-align: center;}
 .login {color: #427D9D;}
 
 
