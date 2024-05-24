@@ -119,7 +119,7 @@ function UserProduct() {
     // 로딩 및 데이터가 없을 때 박스 css
     const databox_css = (!productList || productList.length == 0) ?
     `${styles.sold} ${styles.box} d-flex justify-content-center`
-    : `${styles.sold} ${styles.box} d-flex justify-content-around row-cols-5 flex-wrap`;
+    : `${styles.sold} ${styles.box} d-flex justify-content-around flex-wrap`;
 
     return(
     <UserProductContext.Provider value={productOption}>
@@ -138,7 +138,7 @@ function UserProduct() {
                     }
                     {
                         (isProductUrl) ? 
-                        <div className={styles.option_box}>
+                        <div className='d-flex justify-content-end align-items-center flex-wrap'>
                             <UserProductSorting
                             sortType={'product_name'} 
                             typeAscend={order.name === 'product_name' && order.ascend}/>
@@ -149,7 +149,7 @@ function UserProduct() {
                             sortType={'createdAt'} 
                             typeAscend={order.name === 'createdAt' && order.ascend}/>
                             <UserProductFiltering category={category}/>
-                        </div> 
+                        </div>
                         : null
                     }
                 </div>
@@ -165,7 +165,7 @@ function UserProduct() {
                         (productList && productList.length > 0) ?
                         productList.map((el, i) => {
                             return(
-                                <SoldBook key={i} product={el}/>
+                                <BookForSale key={i} product={el}/>
                             )
                         })
                         : 
@@ -196,10 +196,10 @@ function UserProduct() {
 }
 
 // 판매 상품 목록
-function SoldBook({product}) {
+function BookForSale({product}) {
 
     return(
-        <div className='col-6 col-sm-4 col-md-3 col-lg-2 m-2 d-flex flex-column'>
+        <div className={`${styles.book_box} col-5 col-sm-3 col-md-2 m-2 d-flex flex-column`}>
             <Link to={`/product/detail/${product.id}`}>
                 <div className={styles.book_image_box}>
                     {

@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/esm/Container.js';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import REGEX from '../lib/regex.js';
 import { Eye, EyeSlash } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap';
 
 function Login() {
 
@@ -78,7 +79,7 @@ function Login() {
   }
 
   return (
-    <Container>
+    <Container className={styles.login_box}>
       <div className='inner text-center'>
         <h2 className={styles.title}>로그인</h2>
         <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
@@ -110,7 +111,7 @@ function Login() {
           }
           <div>
             <button className={styles.login_btn} type="submit" onClick={()=>{check()}}>확인</button>
-            <button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/")}}>취소</button>
+            <Button className={styles.back_btn} variant='outline-secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
           </div>
           <div className={styles.more_info}>
             <div>

@@ -61,6 +61,8 @@ export async function addReport(reportForm) {
     } catch (error) {
         if (error.response.status == 403) {
             window.location.href = '/login';
+        } else if (error.response.status == 401) {
+            window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
         }

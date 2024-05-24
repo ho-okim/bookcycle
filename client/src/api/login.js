@@ -34,7 +34,7 @@ export async function getLoginUser() {
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error?.response?.status === 403) {
             console.error('로그인 후 사용 가능');
         } else {
             window.location.href = '/error/500';

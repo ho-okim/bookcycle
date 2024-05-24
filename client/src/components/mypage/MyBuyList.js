@@ -52,22 +52,18 @@ function MyBuyList() {
                     <td>{dateProcessingDash(item.soldDate)}</td>
                     <td>{item.product_name}</td>
                     <td>₩{parseInt(item.price).toLocaleString()}</td>
-                    <td>
-                      <Link to={`/user/${item.seller_id}`}>{item.seller_nickname}</Link>
-                    </td>
+                    <td><Link to={`/user/${item.seller_id}`}  className={styles.buy_seller}>{item.seller_nickname}</Link></td>
                     <td>
                       {(item.buyer_id === item.writer_id) ? (
                         <div className={`${styles.reviewBtn} ${styles.complete}`}>작성완료</div>
                       ) : (
                         <Link
-                        to={{
-                          pathname: `/user/${item.seller_id}/sellerReviewWrite`,
-                          search: `?productId=${item.product_id}`,
-                        }}
-                        className={styles.reviewBtn}
-                      >
-                        작성하기
-                      </Link>
+                          to={{ pathname: `/user/${item.seller_id}/sellerReviewWrite`,
+                                search: `?productId=${item.product_id}` }}
+                          className={styles.reviewBtn}
+                        >
+                          작성하기
+                        </Link>
                       )}
                     </td>
                   </tr>

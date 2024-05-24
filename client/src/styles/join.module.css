@@ -52,7 +52,7 @@
     width: 60px; padding: 6px 10px;
     margin: 0 10px;
     background-color: rgb(77, 145, 182);
-    border: none;
+    border: 1px solid rgb(77, 145, 182);
     border-radius: 7px;
     color:#fff;
     font-size: 14px;
@@ -66,10 +66,6 @@
 .back_btn {
     width: 60px; padding: 6px 10px;
     margin: 0 10px;
-    border: none;
-    background-color: #979797;
-    border-radius: 7px;
-    color:#fff;
     font-size: 14px;
     transition: 0.2s ease;
 }

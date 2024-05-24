@@ -24,8 +24,10 @@ function User() {
     useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
         async function getTargetUser() { // 대상 사용자 정보 가져오기
             const res = await getUserInfo(targetUserId);
-            if (res == 'error' || res.length === 0) {
+            if (res == 'error') {
                 navigate("/error/400");
+            } else if (res.length === 0) {
+                navigate("/error/404");
             }
             setUserInfo(res);
         }

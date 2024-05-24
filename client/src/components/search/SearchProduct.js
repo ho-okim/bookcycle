@@ -10,12 +10,14 @@ function SearchProduct() {
     
     return(
         <>
-            <div className={styles.title_box}>
-                <div className={styles.result_box}>
-                    <h2>"{keyword}" 상품 검색 결과</h2>
+            <div className='d-flex justify-content-between align-items-center flex-wrap'>
+                <div className='d-flex justify-content-start align-items-center'>
+                    <h2 className='m-0'>"{keyword}" 관련 상품 검색 결과</h2>
                     <p className={styles.result_count}>총 {productResult?.length ?? 0}건</p>
                 </div>
-                <Button className={styles.more_btn} onClick={handleMoreView}>상세 검색</Button>
+                {
+                    (productResult.length > 0 && <Button className={styles.more_btn} onClick={handleMoreView}>상세 검색</Button>)
+                }
             </div>
             <div className={styles.product}>
             {

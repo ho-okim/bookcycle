@@ -141,6 +141,7 @@ export async function sellGetReviewList() {
   }
 }
 
+// 상품 등록 내역
 export async function productPostList(sortOption) {
   try {
     const res = await axios.get('/mypage/productPostList', {params: {sortOption}});
@@ -161,6 +162,7 @@ export async function productPostList(sortOption) {
   }
 }
 
+// 게시글 작성 내역
 export async function boardPostList(sortOption) {
   try {
     const res = await axios.get('/mypage/boardPostList', {params: {sortOption}});
@@ -187,7 +189,6 @@ export async function confirmPassword(password) {
     const res = await axios.post('/mypage/confirmPassword', { password });
 
     if (res.statusText !== "OK") {
-      //console.error("mypage 로딩 실패");
       window.location.href = '/error/500';
     }
     const body = res.data;
@@ -196,7 +197,8 @@ export async function confirmPassword(password) {
     if (error.response.status == 403) {
       window.location.href = '/login';
     } else if (error.response.status == 401) {
-      window.location.href = '/error/401';
+      console.log("비밀번호가 일치하지 않습니다.")
+      // window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }

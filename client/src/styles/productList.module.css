@@ -1,26 +1,61 @@
-.list_box{
-    padding: 20px 0;
-    border-bottom: 1px solid #ddd; 
-    display: flex;
-    justify-content: space-between;
+.text_hidden{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.productList{
-    width: 83%;
-    padding: 0 10px;
+.top_box{
+    width: 100%;
+    position: fixed; top:72px; right:0;
+    background-color: #f5f5f5;
+    z-index: 10;
 }
 
-.add_box{
-    margin-bottom: 10px;
+.top_inner_box{
+    margin: 20px 0;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
+.productList{
+    width: 100%;
+    margin-top: 395px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+}
+
+@media screen and (min-width: 412px) {
+    .productList{
+        margin-top: 343px;
+    }
+}
+
+@media screen and (min-width: 576px) {
+    .productList{
+        margin-top: 297px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .productList{
+        margin-top: 254px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .productList{
+        margin-top: 208px;
+    }
+}
+
 .add_btn{
+    height: 100%;
     color:#fff;
     background-color: rgb(77, 145, 182) !important;
     border:1px solid rgb(77, 145, 182) !important;
+    white-space: nowrap;
 }
 
 .add_btn:hover, .add_btn:active{
@@ -31,13 +66,13 @@
 .product_box{
     width:100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .product_link{
-    width: 100%;
+    padding:10px;
 }
 
 .product_link:hover{
@@ -59,6 +94,8 @@
     color:#fff;
     background-color: rgb(77, 145, 182) !important;
     border:1px solid rgb(77, 145, 182) !important;
+    border-top-right-radius: var(--bs-border-radius) !important;
+    border-bottom-right-radius: var(--bs-border-radius) !important;
 }
 
 .search_confirm_btn:hover{
@@ -66,17 +103,27 @@
     border:1px solid rgb(22, 72, 99) !important;
 }
 
+.searchKeyword:focus{
+    border-color:none !important;
+    box-shadow: none !important;
+}
+
 .product{
     margin: 10px 0;
     padding: 10px;
     width: 100%;
-    height: 300px;
     border-radius: 10px;
     background-color: #fdfdfd;
     border: 1px solid #dddddd;
     display: flex;
     justify-content: space-around;
     transition: 0.4s;
+}
+
+@media screen and(min-width: 576px) {
+    .product{
+        max-height: 300px;
+    }
 }
 
 .product:hover{
@@ -87,11 +134,23 @@
     margin:50px;
 }
 
-.bookpic{
+.pic_box{
     height: 100%;
+    min-width: 80px;
+}
+
+.bookpic{
+    width: 100%;
     border-radius: 5px;
     aspect-ratio: 1/1.65;
     box-shadow: 0 0 4px #cecece;
+    object-fit: cover;
+}
+
+@media screen and (min-width: 576px) {
+    .bookpic{
+        max-height: 200px;
+    }
 }
 
 .no_bookpic{
@@ -102,9 +161,17 @@
     opacity: 0.5;
 }
 
-.bookinfoabout{
-    width : 50%;
-    padding: 0 5px;
+.category_badge{
+    font-size: 14px;
+    background-color: #4d91b6 !important;
+    border: none !important;
+}
+
+.info_box{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .book_title{
@@ -118,62 +185,96 @@
 }
 
 /* 상품 */
-.writer:after,
-.publisher:after{
+.book_info span::after{
     content:'|';
     margin: 5px;
 }
 
+.book_info span:last-of-type::after{
+    display: none;
+}
+
 .seller_info{
-    width: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-clamp: 1;
+    overflow: hidden;
+}
+
+.person_icon{
+    margin-right: 3px;
+    font-size: 20px;
 }
 
 .option_box {
-    display: flex; justify-content: space-between;
+    width: 100%;
+    display: flex; 
+    justify-content: space-between;
     align-items: center;
 }
 
-.pagination{
-    margin: 0;
+@media screen and (max-width: 768px) {
+    .option_box {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
 
 .pagination *{
     border:none;
 }
 
+.pagination a{
+    color : #a6a6a6 !important;
+    text-decoration: none !important;
+}
+
 .pagination{
-    --bs-pagination-color: rgb(77, 145, 182) !important;
-    --bs-pagination-active-border-color: rgb(77, 145, 182) !important;
-    --bs-pagination-active-bg: rgb(77, 145, 182) !important;
-    --bs-pagination-hover-color: rgb(77, 145, 182) !important;
-    --bs-pagination-focus-color: rgb(77, 145, 182) !important;
+    margin:0 !important;
+    padding:0 !important;
+    --bs-pagination-color: #ddd !important;
+    --bs-pagination-bg : transparent !important;
+    --bs-pagination-active-color: rgb(0, 166, 255) !important;
+    --bs-pagination-active-border-color: none !important;
+    --bs-pagination-active-bg: transparent !important;
+    --bs-pagination-hover-color: transparent !important;
+    --bs-pagination-hover-bg: transparent !important;
+    --bs-pagination-focus-color: transparent !important;
     --bs-pagination-focus-box-shadow: none !important;
 }
 
 .buttonList{
-    display: flex; justify-content: flex-end;
+    display: flex; justify-content: center;
     line-height: 0;
 }
 
 .condition_select, .order_select {
-    margin: 0 10px; padding: 5px;
+    margin-right: 10px;
+    padding: 5px;
     width: 120px;
     text-align: center;
     border: 1px solid #dddddd;
-    border-radius: 3px;
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    .condition_select, .order_select {
+        margin-bottom: 10px;
+    }
 }
 
 .category_box{
-    width:15%;
+    width:100%;
     padding: 0;
 }
 
 .category_list {
-    margin:0;
-    padding: 10px;
-    position: sticky;
-    background-color: #fdfdfd;
-    border: 1px solid #dddddd;
+    margin: 18px 0;
+    padding: 5px 8px;
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap;
+    background-color: rgb(225, 233, 238);
     border-radius: 10px;
     text-align: center;
 }
@@ -185,7 +286,7 @@
 .category_btn {
     width: 100%;
     padding:5px 10px;
-    background-color: transparent;
+    background-color: #f5f5f5;
     border-radius: 5px;
     color : black;
     border: 1px solid rgb(77, 145, 182);
@@ -200,8 +301,4 @@
 button:disabled.category_btn {
     color:#fff;
     background-color: rgb(77, 145, 182);
-}
-
-.heart{
-    color:rgb(255, 54, 19);
 }

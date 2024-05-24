@@ -10,14 +10,16 @@ function SearchBoard() {
 
     return(
         <>
-            <div className={styles.title_box}>
-                <div className={styles.result_box}>
-                    <h2>"{keyword}" 게시글 검색 결과</h2>
+            <div className={`${styles.total_box} d-flex justify-content-between align-items-center flex-wrap`}>
+                <div className='d-flex justify-content-start align-items-center'>
+                    <h2 className='m-0'>"{keyword}" 관련 게시글 검색 결과</h2>
                     <p className={styles.result_count}>총 {boardResult?.length ?? 0}건</p>
                 </div>
-                <Button className={styles.more_btn} onClick={handleMoreView}>더보기</Button>
+                {
+                    (boardResult.length > 0 && <Button className={styles.more_btn} onClick={handleMoreView}>더보기</Button>)
+                }
             </div>
-            <div className={styles.board}>
+            <div className={`${styles.board} d-flex justify-content-start align-items-center flex-wrap`}>
             {
                 (boardResult && boardResult.length > 0) ?
                 boardResult.map((el)=>{

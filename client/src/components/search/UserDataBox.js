@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "../../styles/search.module.css";
 import { PersonCircle, StarFill } from "react-bootstrap-icons";
+import { getUserInfo } from "../../api/user";
 
 function UserDataBox({user}) {
 
@@ -13,27 +14,28 @@ function UserDataBox({user}) {
         return(<PersonCircle className={styles.profile_default}/>);
     }
 
-
     return(
-        <Link to={`/user/${user.id}`} className={styles.user_box}>
-            <div className={styles.user_content}>
+        <Link to={`/user/${user.id}`} className='m-sm-2 col-4 col-sm-3 col-lg-2'>
+            <div className={`${styles.info_box} p-3 d-flex flex-column justify-content-center align-items-center`}>
                 <div className={styles.image_box}>
                     {
                         profileImageBox()
                     }
                 </div>
-                <div className={styles.info_box}>
-                    <div className={styles.score_box}>
-                        <StarFill className={styles.manner_score_star}/>
-                        <span className={styles.manner_score}>
-                        {
-                            (user.manner_score) ?
-                            (user.manner_score).toFixed(1)
-                            : '-'
-                        }
-                        </span>
-                    </div>
-                    <p className={styles.user_nickname}>{user.nickname}</p>
+                <div className={styles.score_box}>
+                    <p className={styles.manner_score}>
+                    {
+                        (user.manner_score) ?
+                        (user.manner_score).toFixed(1)
+                        : '-'
+                    }
+                    </p>
+                    <StarFill className={styles.manner_score_star}/>
+                </div>
+                <p className={styles.user_info}>{user.nickname}</p>
+                <div className='text-center'>
+                    <p className={styles.sell_count}>판매 : {(user.sell_count)} 권</p>
+                    <p>구매 : {(user.buy_count)} 권</p>
                 </div>
             </div>
         </Link>

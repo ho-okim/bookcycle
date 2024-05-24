@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
-const { isLoggedIn, isAdmin } = require('../lib/auth.js');
+const { isLoggedIn, isAdmin, isLoggedInAndBlocked } = require('../lib/auth.js');
 
 // 내가 신고한 내역 조회
 router.get('/report/myreport/', isLoggedIn, async (req, res) => {
@@ -42,7 +42,7 @@ router.get('/report/reported', isLoggedIn, async (req, res) => {
 });
 
 // 신고내역 추가
-router.post('/report', isLoggedIn, async (req, res) => {
+router.post('/report', isLoggedInAndBlocked, async (req, res) => {
 
     const {category, user_id, target_id, content} = req.body;
 

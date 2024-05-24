@@ -244,7 +244,7 @@ function Join() {
                 }
                 <div>
                     <button className={styles.confirm_btn} variant='primary' type="submit" onClick={()=>{check()}}>확인</button>
-                    <button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate(-1)}}>취소</button>
+                    <Button variant='outline-secondary' className={styles.back_btn} type="button" onClick={()=>{navigate(-1)}}>취소</Button>
                 </div>
             </form>
         </div>

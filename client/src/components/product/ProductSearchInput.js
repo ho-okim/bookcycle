@@ -4,8 +4,11 @@ import { useProductOption } from "../../contexts/ProductOptionContext";
 import { useState } from "react";
 import { Search } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function ProductSearchInput() {
+
+    const { user } = useAuth(); // 로그인 한 사용자
 
     const {searchKeyword, setSearchKeyword} = useProductOption();
     const [optionName, setOptionName] = useState('제목');
@@ -35,8 +38,12 @@ function ProductSearchInput() {
         }
     }
 
+    function handleClick() { // 상품 작성 페이지 이동
+        navigate("/product/write");
+    }
+
     return(
-        <InputGroup className="mb-3">
+        <InputGroup>
             <Dropdown onSelect={handleSelect}>
                 <Dropdown.Toggle
                 className={styles.search_option_btn}
@@ -51,12 +58,21 @@ function ProductSearchInput() {
                     <Dropdown.Item id='isbn' eventKey='isbn'>isbn</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
-            <Form.Control type="search" id='searchKeyword' 
+            <Form.Control type="search" id='searchKeyword'
+            className={styles.searchKeyword}
             maxLength={50} onChange={(e)=>{handleKeyword(e)}} 
             onKeyDown={(e)=>{handleEnter(e)}}
             autoFocus
             value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/>검색</Button>
+            {
+                (user && user.blocked === 0) ?
+                <div className="ms-1 ms-sm-2 my-0">
+                    <Button className={`${styles.add_btn} h-100`}
+                    onClick={handleClick}>책 등록하기</Button>
+                </div>
+                : null
+            }
         </InputGroup>
     )
 }

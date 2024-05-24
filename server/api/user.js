@@ -8,14 +8,14 @@ router.get('/user/:userId', async (req, res) => {
     const {userId} = req.params;
 
     // query문 설정
-    let sql = 'SELECT id, nickname, profile_image, manner_score, blocked FROM users WHERE id = ?';
+    let sql = 'CALL user_info(?)';
 
     try {
         // db connection pool을 가져오고, query문 수행
         const query = mysql.format(sql, [parseInt(userId)]);
         const [result] = await pool.query(query); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
-
-        res.send(result);
+        
+        res.send(result[0]);
     } catch (error) {
         console.error(error);
         res.send('error');

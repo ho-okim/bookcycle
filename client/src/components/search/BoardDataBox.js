@@ -4,10 +4,10 @@ import { dateProcessingDash } from "../../lib/dateProcessing";
 
 function BoardDataBox({board}) {
     return(
-        <Link to={`/board/${board.id}`} class={styles.board_box}>
+        <Link to={`/board/${board.id}`} class={`${styles.board_box} col-12 col-sm-6 col-xl-4`}>
             <div className={`col ${styles.list}`}>
-                <p className={styles.listTitle}>{board.title}</p>
-                    <div className={`${styles.listInfo} regular`}>
+                <p className={`${styles.listTitle} ${styles.text_hidden}`}>{board.title}</p>
+                <div className={`${styles.listInfo} regular my-1`}>
                     <span className={styles.userid}>{board.nickname}</span>
                     <span className={styles.date}>{dateProcessingDash(board.createdAt)}</span>
                 </div>

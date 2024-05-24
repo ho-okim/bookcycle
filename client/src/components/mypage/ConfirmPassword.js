@@ -8,7 +8,6 @@ import styles from '../../styles/mypage.module.css';
 function ConfirmPassword({ onConfirm }) {
 
   const { user } = useAuth();
-
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -21,17 +20,19 @@ function ConfirmPassword({ onConfirm }) {
 
       const res = await confirmPassword(password);
 
-      if (res.message === "success") {
+      console.log(res)
+      if (res && res.message === "success") {
         onConfirm(password);
       } else {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       }
     } catch (error) {
-      if(error.message === "not allowed") {
+      if (error.response && error.response.status === 401) {
+        // 401 오류는 비밀번호 불일치로 처리
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       } else {
         console.error(error);
-        setErrorMessage("뭔가.. 오류");
+        setErrorMessage("비밀번호 확인 중 오류가 발생했습니다.");
       }
     }
   };

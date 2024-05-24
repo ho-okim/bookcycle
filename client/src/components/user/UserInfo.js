@@ -47,7 +47,7 @@ function UserInfo() {
                 </div>)
             }
     
-            if(user) {
+            if(user && user.blocked === 0) {
                 if (!isReported) {
                     return(
                         <div className={styles.report_box}>
@@ -93,8 +93,13 @@ function UserInfo() {
                                 <StarFill className={styles.manner_score_star}/>
                             </div>
                             <p className={styles.user_info}>{userInfo.nickname}</p>
+                            <div className='text-center'>
+                                <span className={styles.sell_count}>판매 : {(userInfo.sell_count)} 권</span>
+                                <span>구매 : {(userInfo.buy_count)} 권</span>
+                            </div>
                         </div>
                     </div>
+
                     {
                         (userInfo.blocked === 0) ?
                         <UserReviewTag/>
