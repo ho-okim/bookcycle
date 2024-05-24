@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Badge, Stack } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
 import { useEffect, useState, react } from 'react';
 import { useAuth } from "../../contexts/LoginUserContext";
@@ -122,8 +122,26 @@ function ProductDetail() {
             (product ) ?
                   <div className='book-info'>
                     <Container>
-                      <div className='name'>
-                        <span>{product.product_name}</span>
+                      <div className={`${style.name}`}>
+                        <span>{product.product_name}&nbsp;&nbsp;</span>
+                        <div className='sold'>
+                        {
+                          (product.soldDate) ?
+                          <Stack direction="horizontal" gap={2}>
+                             <Badge bg = "primary">판매 완료</Badge>
+                          </Stack>
+                          : null
+                        }
+                        </div>
+                        <div className='block'>
+                        {
+                          (product.blocked === 1) ?
+                          <span>차단됨</span>
+                          : null
+                        }
+                        </div>
+                      </div>
+                      <div>
                       </div>
                     </Container>
                     <Container>

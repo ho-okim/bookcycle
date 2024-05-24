@@ -1,0 +1,79 @@
+.sold{
+
+}
+
+.box{
+
+}
+
+.section_sub_box{
+
+}
+
+.title{
+    margin-bottom : 10px;
+    display: flex; justify-content: space-between;
+    align-items: center;
+}
+
+.title_font{
+    line-height: 2;
+}
+
+.more_btn{
+    color: rgb(77, 145, 182);
+    border: 1px solid rgb(77, 145, 182);
+}
+
+.more_btn:hover{
+    background-color: rgb(77, 145, 182);
+}
+
+.book_card{
+    text-decoration: none; color:black;
+}
+
+.book_image_box{
+    display: flex; justify-content: center;
+    align-items: center;
+    border: 1px solid #dddddd;
+    box-shadow: 0 0 4px #cecece;
+    border-radius: 5px;
+}
+
+.book_image{
+    width: 80%; 
+    aspect-ratio: 1/1.25;
+    display:block;
+}
+
+.no_book_image{
+    width: 80%; 
+    aspect-ratio: 1/1.25;
+    display:block;
+
+}
+
+.book_info{
+    margin-top: 10px;
+    padding: 0 20px;
+    word-break: keep-all;
+}
+
+.book_info .book_tilte{
+    margin-bottom: 5px;
+    padding: 0;
+    height: 25px;
+}
+
+.text_hidden{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.book_info .price{
+    padding:0; margin: 5px 0 0;
+    text-align: center;
+}

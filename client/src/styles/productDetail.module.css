@@ -18,6 +18,11 @@
     margin-top: 20px;
 }
 
+
+.name{
+    display: flex;
+}
+
 .innerbox{
     background-color: lightblue;
     height: 250px;

@@ -1,4 +1,4 @@
-import styles from '../../styles/user.module.css';
+import styles from '../../styles/otherproduct.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -82,12 +82,14 @@ function SoldBook({product}) {
                 <div className={styles.book_info}>
                     <div className={`${styles.book_title} d-flex justify-content-center align-items-center`}>
                     <span className={styles.text_hidden}>{product.product_name}</span>
-                    </div>
+                    </div> 
                     <p className={`${styles.price}`}>&#8361; {product.price.toLocaleString()}</p>
                 </div>
             </Link>
         </div>
     )
 }
+
+
 
 export default OtherProduct;
