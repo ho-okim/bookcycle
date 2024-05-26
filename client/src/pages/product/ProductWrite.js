@@ -1,5 +1,5 @@
 import styles from '../../styles/product.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Form } from "react-bootstrap";
 import { Camera, ExclamationCircleFill, XCircleFill } from 'react-bootstrap-icons'
@@ -11,16 +11,21 @@ import "react-datepicker/dist/react-datepicker.css";
 import { productFileupload, productWrite } from '../../api/product.js';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { NumericFormat } from "react-number-format"
+import EmptyError from '../../components/EmptyError.js';
 
 function BoardWrite() {
 
   const {user} = useAuth();
   const [errorMessage, setErrorMessage] = useState();
   const navigate = useNavigate();
+  let isNotFirstCheck = useRef(false);
 
   // 카테고리 배열
   const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
-  const emptyErrorMsg = "필수 입력 항목입니다";
+  const isbn10Msg = "10자리여야 합니다";
+  const isbn13Msg = "13자리여야 합니다";
+
+  const [triggerVibration, setTriggerVibration] = useState(true);
   
   const date = new Date();
   const [cate, setCate] = useState();
@@ -33,9 +38,15 @@ function BoardWrite() {
   const [con, setCon] = useState();
   const contentRef = useRef()
   const [pubDate, setPubDate] = useState(null);
-  const [isEmpty, setIsEmpty] = useState()
   // 빈 값 입력 후 버튼 클릭 시 스크롤 이벤트를 위한 useRef
   const scrollTopRef = useRef()
+
+  const [titleLen, setTitleLen] = useState(0)
+  const [writerLen, setWriterLen] = useState(0)
+  const [publisherLen, setPublisherLen] = useState(0)
+  const [isbn10Len, setiIsbn10Len] = useState(0)
+  const [isbn13Len, setIsbn13Len] = useState(0)
+  const [contentLen, setContentLen] = useState(0)
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
@@ -43,26 +54,20 @@ function BoardWrite() {
   const [uploadImgUrl, setUploadImgUrl] = useState("");
 
   // 카테고리 라디오 버튼 핸들러
-  const cateHandler = (e, i) => {
-    setCate(i)
-  }
+  const cateHandler = useCallback((e, i) => setCate(i), []);
   // 상품 상태 라디오 버튼 핸들러
-  const conditionHandler = (e, condition) => {
-    setCon(condition)
-  }
+  const conditionHandler = useCallback((e, condition) => setCon(condition), []);
   // 출간일 핸들러
-  const handleDateChange = (date) => {
-    if(date){
-      // 사용자 입력 날짜를 로컬 타임으로 설정
-      const localDate = set(date, { hours: 12 }); // 시간을 정오로 설정하여 오차를 줄임
-      setPubDate(toZonedTime(localDate, 'Asia/Seoul'))
+  const handleDateChange = useCallback((date) => {
+    if (date) {
+      const localDate = set(date, { hours: 12 });
+      setPubDate(toZonedTime(localDate, 'Asia/Seoul'));
     }
-  }
+  }, []);
   // 가격을 콤마 제외한 값 받기 위한 핸들러
-  const handlePrice = (values) => {
-    const {value} = values
-    setPrice(Number(value))
-  }
+  const handlePrice = useCallback((values) => {
+    setPrice(Number(values.value));
+  }, []);
 
   // 이미지 미리보기 함수
   const onchangeImageUpload = (event) => {
@@ -93,41 +98,53 @@ function BoardWrite() {
     setUploadImg(uploadImg.filter((_, index) => index !== id));
   };
 
+  const handleLength = () => {
+    setTitleLen(titleRef.current?.value.length);
+    setWriterLen(writerRef.current?.value.length);
+    setPublisherLen(publisherRef.current?.value.length);
+    setiIsbn10Len(isbn10Ref.current?.value.length);
+    setIsbn13Len(isbn13Ref.current?.value.length);
+    setContentLen(contentRef.current?.value.length);
+  }
+
+  // textarea 높이 자동 조절 함수
+  const handleResizeHeight = useCallback(() => {
+    titleRef.current.style.height = "1rem";
+    titleRef.current.style.height = titleRef.current.scrollHeight + "px";
+  }, []);
+
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
-    const category_id = cate + 1
-    const title = titleRef.current.value
-    const description = contentRef.current.value
+    isNotFirstCheck.current = true;
+    const category_id = cate + 1;
+    const title = titleRef.current.value;
+    const description = contentRef.current.value;
+    const isbn10 = isbn10Ref.current.value;
+    const isbn13 = isbn13Ref.current.value;
 
-
-    if(user && !isNaN(cate) && title && price && con && description){
-      // 필수 항목들이 전부 값이 있을 때만 데이터 전송
-
-      // // 서버에 보낼 데이터 배열
-      let data = {seller_id: user.id, category_id, product_name: title, condition: con, description, price, writer: null, publisher: null, publish_date: null, isbn10: null, isbn13: null}
-      if(writerRef.current.value){
-        data.writer = writerRef.current.value
-      } if(publisherRef.current.value){
-        data.publisher = publisherRef.current.value
-      } if(pubDate){
-        data.publish_date =pubDate
-      } if(isbn10Ref.current.value.length == 10){
-        data.isbn10 = isbn10Ref.current.value
-      } if(isbn13Ref.current.value.length == 13){
-        data.isbn13 = isbn13Ref.current.value
-      }
+    if(user && !isNaN(cate) && title && price && con && description
+    && (isbn10Len === 10 || isbn10Len === 0)
+    && (isbn13Len === 13 || isbn13Len === 0)){ // 필수 항목들이 전부 값이 있고 선택 항목이 조건에 맞으면 데이터 전송
+      const data = { // 서버에 보낼 데이터 배열
+        seller_id: user.id,
+        category_id,
+        product_name: title,
+        condition: con,
+        description,
+        price,
+        writer: writerRef.current.value || null,
+        publisher: publisherRef.current.value || null,
+        publish_date: pubDate || null,
+        isbn10: isbn10Len === 10 ? isbn10 : null,
+        isbn13: isbn13Len === 13 ? isbn13: null
+      };
   
       const formData = new FormData()
-      for(let i = 0; i < uploadImg.length; i++){
-        formData.append('files', uploadImg[i])
-      }
+      uploadImg.forEach((img) => formData.append('files', img));
       
       // 데이터 서버에 전송
       const res = await productWrite(data);
-      console.log(res)
       if(res){
-        console.log("결과값 id: ", res.insertId)
-    
         formData.append('productId', res.insertId)
         const fileRes = await productFileupload(formData)
       }
@@ -138,16 +155,12 @@ function BoardWrite() {
         setErrorMessage("제목이나 내용을 다시 확인해주세요");
       }
     } else {
-      let emptyList = {cate: true, title: true, price: true, con: true, description: true}
-      if(!isNaN(cate)) delete emptyList.cate
-      if(title) delete emptyList.title
-      if(price) delete emptyList.price
-      if(con) delete emptyList.con
-      if(description) delete emptyList.description
-      setIsEmpty(emptyList)
       scrollTopRef.current?.scrollIntoView({behavior: 'smooth'})
-    }
 
+      // EmptyError 컴포넌트 애니메이션 관리
+      setTriggerVibration(true);
+      setTimeout(() => setTriggerVibration(false), 2000);
+    }
   }
 
   return (
@@ -157,8 +170,13 @@ function BoardWrite() {
           <div className={`inner ${styles.boardForm}`}>
             <h3 className={styles.title}>상품 등록</h3>
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
-              <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
-              <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
+              <div className='d-flex'>
+              <p className={``}>상품 사진</p>
+              <div className='d-flex align-items-end'>
+                <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
+              </div>
+              </div>
+              {/* <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p> */}
               <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
@@ -185,10 +203,8 @@ function BoardWrite() {
                 <div className={`${styles.inputTitle} d-flex`}>    
                   <p className={`${styles.essentialInput}`}>카테고리</p>
                   {
-                    isEmpty?.cate &&
-                    <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                    <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                    </p>
+                    isNotFirstCheck.current && isNaN(cate) ?
+                    <EmptyError triggerVibration={triggerVibration}/> : null
                   }
                 </div>
                 <div className={styles.radioWrap}>
@@ -207,23 +223,22 @@ function BoardWrite() {
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>    
                     <p className={`${styles.essentialInput}`}>제목</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({titleLen}/80)</span>
+                    </div>
                     {
-                      isEmpty?.title &&
-                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                      </p>
+                      isNotFirstCheck.current && titleLen === 0 ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                   </div>
-                  <input className={`${styles.input}`} placeholder="제목을 입력하세요" maxLength={80} ref={titleRef}></input>
+                  <textarea className={`${styles.input} ${styles.titleTextarea}`} placeholder="제목을 입력하세요" maxLength={80} ref={titleRef} onInput={handleResizeHeight} onChange={handleLength}/>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>가격</p>
                     {
-                      isEmpty?.price &&
-                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                      </p>
+                      isNotFirstCheck.current && (!price || price === 0) ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                   </div>
                   <div className='d-flex'>
@@ -235,14 +250,20 @@ function BoardWrite() {
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                    
                     <p className={``}>저자</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({writerLen}/50)</span>
+                    </div>
                   </div>
-                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef}></input>
+                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef} onChange={handleLength}></input>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                    
                     <p className={``}>출판사</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({publisherLen}/50)</span>
+                    </div>
                   </div>
-                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef}></input>
+                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef} onChange={handleLength}></input>
                 </div>
               </div>
               <div className='d-flex justify-content-between'>
@@ -256,10 +277,8 @@ function BoardWrite() {
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>상태</p>
                     {
-                      isEmpty?.con &&
-                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                      </p>
+                      isNotFirstCheck.current && !con ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                   </div>
                   <div className={styles.radioWrap}>
@@ -279,28 +298,44 @@ function BoardWrite() {
               <div className='d-flex justify-content-between'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn 10</p>
+                    <p className={``}>isbn10</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn10Len}/10)</span>
+                    </div>
+                    {
+                      isNotFirstCheck.current && (isbn10Len !== 0 && isbn10Len !== 10) ?
+                      <EmptyError emptyErrorMsg={isbn10Msg} triggerVibration={triggerVibration}/> : null
+                    }
                   </div>
-                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref}></input>
+                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref} onChange={handleLength}></input>
                 </div>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn 13</p>
+                    <p className={``}>isbn13</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn13Len}/13)</span>
+                    </div>
+                    {
+                      isNotFirstCheck.current && (isbn13Len !== 0 && isbn13Len !== 13) ?
+                      <EmptyError emptyErrorMsg={isbn13Msg} triggerVibration={triggerVibration}/> : null
+                    }
                   </div>
-                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref}></input>
+                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
                 </div>
               </div>
               <div className={`col-12 ${styles.col} d-flex flex-column`}>
                 <div className={`${styles.inputTitle} d-flex`}>
                   <p className={`${styles.essentialInput}`}>내용</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({contentLen}/3000)</span>
+                    </div>
                     {
-                      isEmpty?.description &&
-                      <p className={`${styles.emptyErrorMsg} ${styles.vibration} d-flex align-items-center justify-content-center`}>
-                      <ExclamationCircleFill className={styles.emptyIcon}/>{emptyErrorMsg}
-                      </p>
+                      isNotFirstCheck.current && contentLen === 0 ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                 </div>
-                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요" ref={contentRef} maxLength={3000}></textarea>
+                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요"
+                  ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
                 <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>

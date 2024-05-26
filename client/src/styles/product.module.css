@@ -4,7 +4,7 @@
   font-style: normal;
 }
 
-.title{margin-bottom: 20px;}
+.title{padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1.5px solid #ddd;}
 .inputTitle{margin-bottom: 5px;}
 
 .boardForm .col{margin: 20px 0; padding: 0 10px;}
@@ -13,26 +13,13 @@
 .container{padding: 0}
 
 .inputBox{width: 100%;}
-.content{height: 200px;}
+.content{min-height: 200px;}
+.titleTextarea{height: 35.6px;}
+.count{color: #979797; font-size: 13px; font-family: 'Pretendard-Regular';}
 
 .boardForm .reset{margin-right: 10px;}
 
 .essentialInput::after{content: "*"; margin-left: 2px; color: #427D9D;}
-.emptyErrorMsg{
-  margin-left: 5px; padding: 0px 8px;
-  background-color: rgb(220, 53, 69); color: white;
-  border-radius: 5px;
-}
-@keyframes vibration {
-  from {
-    transform: rotate(1deg);
-  }
-  to {
-    transform: rotate(-1deg);
-  }
-}
-.emptyErrorMsg.vibration{animation: vibration .1s 15;}
-.emptyIcon{margin-right: 6px;}
 .category{margin-right: 20px;}
 .radioWrap{padding: 5px 10px;}
 
