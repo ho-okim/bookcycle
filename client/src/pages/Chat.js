@@ -103,6 +103,11 @@ function Chat() {
 
   // 언마운트될 때 현재 채팅방 번호를 저장하는 전역변수 초기화
   useEffect(()=>{
+    // 마운트될 때 만약에 active가 살아있으면 해당 active 채팅방을 보여줌
+    if(!isNaN(active)){
+      currentIdx = chatRoom[active]?.room_id
+    }
+
     return(()=>{
       currentIdx = null;
     })
@@ -150,6 +155,7 @@ function Chat() {
   useEffect(()=>{
     const test = async () => {
       let {res, ron} = await getChatList()
+      console.log(res)
       setChatRoom(res)
       setReadOrNot(ron)
     }
@@ -216,7 +222,10 @@ function Chat() {
 
           let cnt = readOrNot.find((item) => item.room_id == room_id).read_count + 1
           tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
-          setActive(prev => prev + 1);
+          console.log("받은 메시지 : ", chatRoom[active]?.createdAt, "위치한 채팅방 : ", date)
+          if(chatRoom[active]?.createdAt < date){
+            setActive(prev => prev + 1);
+          }
         }
       } else { // 채팅 발신자 진입
         setActive(0);

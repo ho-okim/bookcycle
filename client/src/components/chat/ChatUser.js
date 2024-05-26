@@ -1,10 +1,18 @@
 import styles from "../../styles/chat.module.css"
-import { Person } from 'react-bootstrap-icons';
+import { Person, PersonExclamation } from 'react-bootstrap-icons';
 import { chatTimeCalculator } from "../../lib/timeCalculator";
+import { useAuth } from "../../contexts/LoginUserContext";
 
 function ChatUser(props){
+  const {user} = useAuth();
   const {el, readOrNot} = props
   const {read_count} = readOrNot ? readOrNot : 0
+
+  if(user?.id == el.user_id){
+    // 상대방 정보에 나 자신이 들어왔다면
+    el.profile_image = 'quit';
+    el.user_nickname = '탈퇴한 유저';
+  }
   
   return(
     <>
@@ -13,6 +21,7 @@ function ChatUser(props){
           <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
             {
               el.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
+              : el.profile_image == 'quit' ? <PersonExclamation className={`${styles.profileIcon}`}/>
               : <img src={process.env.PUBLIC_URL + `/img/profile/${el.profile_image}`} className={`${styles.profileImg}`}/>
             }
           </div>
