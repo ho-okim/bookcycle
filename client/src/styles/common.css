@@ -145,6 +145,23 @@ textarea:focus{}
   border-radius: 50px;
 }
 
+/* EmptyError */
+.emptyErrorMsg{
+  margin-left: 5px; padding: 0px 6px;
+  background-color: rgb(220, 53, 69); color: white;
+  border-radius: 5px; font-size: 14px;
+}
+@keyframes vibration {
+  from {
+    transform: rotate(1deg);
+  }
+  to {
+    transform: rotate(-1deg);
+  }
+}
+.emptyErrorMsg.vibration{animation: vibration .1s infinite;}
+.emptyIcon{margin-right: 3px;}
+
 /* footer */
 footer{
   margin-top: 50px;
