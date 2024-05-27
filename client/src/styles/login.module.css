@@ -1,5 +1,12 @@
 .login_box{
-    margin-top:20vh;
+    margin-top:15vh;
+}
+
+.login_inner_box{
+    width: 500px;
+    padding: 30px 0;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
 }
 
 .form_box {
@@ -49,12 +56,20 @@
 }
 
 .more_info {
-    margin: 10px 0;
+    margin-top: 30px;
 }
 
 .join_info {
-    margin-right : 10px;
+    margin-right: 10px;
     color: #868686;
+}
+
+.join_link{
+    color: rgb(22, 72, 99);
+}
+
+.join_link:hover{
+    text-decoration: underline;
 }
 
 .find_info {

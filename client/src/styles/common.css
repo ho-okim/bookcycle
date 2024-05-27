@@ -51,12 +51,7 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
   border: 1px solid #4D91B6 !important;
 }
 
-.searchBtn:hover {
-  background-color: #427D9D !important;
-  border: 1px solid #427D9D !important;
-}
-
-.searchBtn:hover:active, .searchBtn:hover:focus{
+.searchBtn:hover, .searchBtn:active, .searchBtn:focus {
   background-color: #427D9D !important;
   border: 1px solid #427D9D !important;
 }
@@ -101,7 +96,7 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 *{margin: 0; padding: 0; box-sizing: border-box;}
 ul, ol, li{list-style: none;}
 a{text-decoration: none; color:black;}
-.inner{max-width: 1320px;}
+.inner{margin:0 auto; max-width: 1000px;}
 
 input{
   padding: 2px 5px; border: 1px solid #ddd; border-radius: 2px;

@@ -199,7 +199,7 @@ function Join() {
                 />
                 {
                     value === "email" &&
-                    <Button variant='success' className={styles.duple_btn} onClick={handleDuplication}>중복체크</Button>
+                    <Button variant='outline-success' className={styles.duple_btn} onClick={handleDuplication}>중복체크</Button>
                 }
             </>
         )
@@ -242,7 +242,7 @@ function Join() {
                         )
                     })
                 }
-                <div>
+                <div className='my-4'>
                     <button className={styles.confirm_btn} variant='primary' type="submit" onClick={()=>{check()}}>확인</button>
                     <Button variant='outline-secondary' className={styles.back_btn} type="button" onClick={()=>{navigate(-1)}}>취소</Button>
                 </div>

@@ -46,7 +46,16 @@
     width: 80px;
     position:absolute;
     transform : translate(-100%, -20%);
+    background-color: transparent !important;
+    border: 1px solid rgb(77, 145, 182) !important;
+    color:rgb(77, 145, 182) !important;
 }
+
+.duple_btn:hover, .duple_btn:focus, .duple_btn:active {
+    background-color: transparent !important;
+    color:rgb(77, 145, 182) !important;
+}
+
 
 .confirm_btn {
     width: 60px; padding: 6px 10px;

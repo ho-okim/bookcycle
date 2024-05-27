@@ -65,7 +65,7 @@
 .chatting{padding: 15px 20px 0; border-top: 1px solid #ddd;}
 
 /* chatMsg */
-.chatBox span{padding: 7px 10px; background-color: rgb(221, 242, 252); border-radius: 5px;}
+.chatBox span{padding: 7px 10px; background-color: rgb(211, 240, 254); border-radius: 5px;}
 .chatWrap{margin-bottom: 20px;}
 .date{margin: 0px 5px; color: #a3a3a3; font-size: 12px;}
 .ron{color: rgb(22, 72, 99);}
@@ -81,7 +81,7 @@
 
 
 /* chatForm */
-.chatForm{margin: 10px; background-color: rgb(221, 242, 252); border-radius: 10px;}
+.chatForm{margin: 10px; background-color: rgb(211, 240, 254); border-radius: 10px;}
 .chatText{padding: 7px 10px; height: 40px; border: none; background-color: transparent;}
 .chatText:focus{outline: none;}
 .chatBtn{padding: 10px; cursor: pointer; color: white;}

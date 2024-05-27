@@ -31,7 +31,7 @@ function ProductBox({product}){
             <div className={`${styles.book_title} d-flex align-items-center`}>
               <Person className={styles.person_icon}/> <span>{product.nickname}</span>
             </div>
-            <div>
+            <div className={styles.view_like_box}>
               <span className='me-2'><Eye/> {product.view_count.toLocaleString()}</span>
               <span><Heart/> {product.liked.toLocaleString()}</span>
             </div>

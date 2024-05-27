@@ -41,12 +41,17 @@
     text-decoration: none !important;
 }
 
+.pagination a:hover{
+    color : rgb(77, 145, 182) !important;
+    text-decoration: underline !important;
+}
+
 .pagination{
     --bs-pagination-color: #ddd !important;
     --bs-pagination-active-color: rgb(0, 166, 255) !important;
     --bs-pagination-active-border-color: none !important;
     --bs-pagination-active-bg: none !important;
-    --bs-pagination-hover-color: rgb(77, 145, 182) !important;
+    --bs-pagination-hover-bg: none !important;
     --bs-pagination-focus-color: rgb(77, 145, 182) !important;
     --bs-pagination-focus-box-shadow: none !important;
 }
@@ -252,7 +257,7 @@
 
 .liked{
     padding: 10px;
-    width: 15%;
+    width: 30%;
     text-align: center;
 }
 
@@ -267,8 +272,8 @@
 }
 
 .tag_name_box{
-    padding: 5px;
-    background-color: #d1d1d1;
+    padding: 5px 10px;
+    background-color: #ebe9e9;
     border-radius: 10px;
     box-shadow: 0 1px 3px #cecece;
 }
@@ -288,7 +293,7 @@
 
 .review_box{
     margin: 3px 0;
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #ddd;
 }
 
 .review_box *{
@@ -314,6 +319,13 @@
 }
 
 /* 상품 정보 */
+.book_list_box{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
 .book_box{ min-width: 80px; max-width: 150px; }
 
 .book_card a{
@@ -361,7 +373,6 @@
     padding: 7px;
     position:absolute; top: 0; right: 0;
     border-radius: 5px;
-    z-index: 1;
 }
 
 @media screen and (max-width:768px ) {

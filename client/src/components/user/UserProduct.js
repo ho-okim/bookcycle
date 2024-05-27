@@ -117,9 +117,9 @@ function UserProduct() {
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
-    const databox_css = (!productList || productList.length == 0) ?
-    `${styles.sold} ${styles.box} d-flex justify-content-center`
-    : `${styles.sold} ${styles.box} d-flex justify-content-around flex-wrap`;
+    const databox_css = (!productList || productList.length === 0) ?
+    `d-flex justify-content-center`
+    : `${styles.book_list_box}`;
 
     return(
     <UserProductContext.Provider value={productOption}>
@@ -182,7 +182,7 @@ function UserProduct() {
                         totalData={totalData} 
                         limit={limit} blockPerPage={3}
                         handlePagination={handlePagination}/>
-                        <Button variant='secondary'
+                        <Button variant='outline-secondary'
                         className={styles.back_btn}
                         onClick={handleMoveBack}
                         >사용자 페이지로 돌아가기</Button>
@@ -199,7 +199,7 @@ function UserProduct() {
 function BookForSale({product}) {
 
     return(
-        <div className={`${styles.book_box} col-5 col-sm-3 col-md-2 m-2 d-flex flex-column`}>
+        <div className={`${styles.book_box} d-flex flex-column`}>
             <Link to={`/product/detail/${product.id}`}>
                 <div className={styles.book_image_box}>
                     {

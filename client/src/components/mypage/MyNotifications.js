@@ -94,16 +94,14 @@ function MyNotifications() {
         navigate(url); // 대상 페이지 이동
     }
 
-    useEffect(()=>{
-        if (!user) { // 로그인을 안 한 상태라면 login으로 이동
-            navigate("/login");
-        }
-    }, [user]);
-
     useEffect(()=>{ // 사용자 변경 시 알림 목록 다시 설정
         getNotificationList();
         getNotReadAlerts();
     }, [user]);
+
+    if (!user) { // 로그인을 안 한 상태라면 login으로 이동
+        navigate("/login");
+    }
 
     return(
         <div className={styles.content}>

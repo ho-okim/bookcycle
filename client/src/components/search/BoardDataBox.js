@@ -4,7 +4,7 @@ import { dateProcessingDash } from "../../lib/dateProcessing";
 
 function BoardDataBox({board}) {
     return(
-        <Link to={`/board/${board.id}`} class={`${styles.board_box} col-12 col-sm-6 col-xl-4`}>
+        <Link to={`/board/${board.id}`} class={`${styles.board_box} col-12 col-sm-6`}>
             <div className={`col ${styles.list}`}>
                 <p className={`${styles.listTitle} ${styles.text_hidden}`}>{board.title}</p>
                 <div className={`${styles.listInfo} regular my-1`}>

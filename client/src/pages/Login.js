@@ -80,7 +80,8 @@ function Login() {
 
   return (
     <Container className={styles.login_box}>
-      <div className='inner text-center'>
+      <div className='inner text-center d-flex justify-content-center'>
+        <div className={styles.login_inner_box}>
         <h2 className={styles.title}>로그인</h2>
         <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
           <div className={styles.input_box}>
@@ -115,14 +116,16 @@ function Login() {
           </div>
           <div className={styles.more_info}>
             <div>
-              <span className={styles.join_info}>BookCycle에 처음이신가요?</span>
-              <Link to="/join">회원가입</Link>
+              <span className={`${styles.join_info} regular`}>BookCycle에 처음이신가요?</span>
+              <Link to="/join" className={styles.join_link}>회원가입</Link>
             </div>
             <div>
-              <Link to="/password/find" className={styles.find_info}>비밀번호 찾기</Link>
+              <span className={`${styles.join_info} regular`}>비밀번호를 잊어버리셨나요?</span>
+              <Link to="/password/find" className={styles.join_link}>비밀번호 찾기</Link>
             </div>
           </div>
         </form>
+        </div>
       </div>
     </Container>
   )

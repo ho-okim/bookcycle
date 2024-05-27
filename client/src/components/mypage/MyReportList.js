@@ -36,6 +36,9 @@ function MyReportList() {
       case "product":
         categoryName = "상품";
         break;
+      case "reply":
+        categoryName = "댓글";
+        break;
     }
     return categoryName;
   }

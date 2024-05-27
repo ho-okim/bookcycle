@@ -165,7 +165,7 @@ function UserReview({tradeType}) {
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}/>
-                            <Button variant='secondary'
+                            <Button variant='outline-secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}
                             >사용자 페이지로 돌아가기</Button>

@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "../../styles/productList.module.css";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import ProductBox from "../../components/product/ProductBox.js";
 import ProductCategory from "../../components/product/ProductCategory.js";
@@ -82,20 +82,13 @@ function ProductList() {
         <Container>
           <div className='inner'>
               <div className={styles.top_box}>
-                <Container>
-                  <div className={`${styles.top_inner_box} inner`}>
-                    <div className={styles.option_box}>
-                      <ProductSorting order={order} setOrder={setOrder}/>
-                      <ProductSearchInput/>
-                    </div>
-                    <ProductCategory filter={filter} setFilter={setFilter}/>
-                    <ProductPagination     
-                      totalData={totalData}
-                      limit={limit}
-                      blockPerPage={5}
-                      handlePagination={handlePagination}/>
+                <div className={`${styles.top_inner_box} inner`}>
+                  <div className={styles.option_box}>
+                    <ProductSorting order={order} setOrder={setOrder}/>
+                    <ProductSearchInput/>
                   </div>
-                </Container>
+                  <ProductCategory filter={filter} setFilter={setFilter}/>
+                </div>
               </div>
               <div className={styles.productList}>
                 {
@@ -122,6 +115,13 @@ function ProductList() {
                   }
                   </div>
                 }
+              </div>
+              <div className='d-flex justify-content-center'>
+                <ProductPagination     
+                totalData={totalData}
+                limit={limit}
+                blockPerPage={5}
+                handlePagination={handlePagination}/>
               </div>
             </div>
         </Container>

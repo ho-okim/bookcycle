@@ -78,9 +78,9 @@ function UserReviewTag() {
     }, [offset, getMoreReview, userInfo]);
 
     return(
-        <Container className='col-12 col-md-8 p-0'>
+        <Container className='col-12 col-md-6 col-lg-6 p-0'>
             <div>
-                <h4 className={styles.title_font}>이런 점이 좋았어요</h4>
+                <h4 className={`${styles.title_font} text-center mt-4`}>이런 점이 좋았어요</h4>
             </div>
             {
                 (loading) ? 
