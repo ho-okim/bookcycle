@@ -1,27 +1,51 @@
+/* 공통 */
 .text_hidden{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* 상단 박스 */
 .top_box{
     width: 100%;
 }
 
 .top_inner_box{
-    margin: 20px 0;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.productList{
-    width: 100%;
-    display: flex; flex-direction: column;
-    justify-content: center;
+/* 필터링, 정렬 */
+.buttonList{
+    display: flex; justify-content: center;
+    line-height: 0;
 }
 
+.drop_menu a{
+    line-height: 1.5;
+}
+
+.option_dropdown button{
+    width: 100px;
+    margin-right: 10px;
+    background-color: rgb(77, 145, 182) !important;
+    border:1px solid rgb(77, 145, 182) !important;
+}
+
+.option_dropdown a:active{
+    background-color: rgb(77, 145, 182) !important;
+}
+
+@media screen and (max-width:768px) {
+    .option_dropdown button{
+        margin:0 5px 15px 5px;
+    }
+}
+
+/* 상품 등록 */
 .add_btn{
     height: 100%;
     color:#fff;
@@ -31,24 +55,13 @@
 }
 
 .add_btn:hover, .add_btn:active{
-    background-color: rgb(22, 72, 99) !important;
-    border:1px solid rgb(22, 72, 99) !important;
+    background-color: #427D9D !important;
+    border:1px solid #427D9D !important;
 }
 
-.product_box{
-    width:100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.product_link{
-    padding:10px;
-}
-
-.product_link:hover{
-    text-decoration: none;
+/* 상품 검색 */
+.input_group a:active{
+    background-color: rgb(77, 145, 182) !important;
 }
 
 .search_option_btn {
@@ -58,8 +71,8 @@
 }
 
 .search_option_btn:hover{
-    background-color: rgb(22, 72, 99) !important;
-    border:1px solid rgb(22, 72, 99) !important;
+    background-color: rgb(77, 145, 182) !important;
+    border:1px solid rgb(77, 145, 182) !important;
 }
 
 .search_confirm_btn{
@@ -71,13 +84,72 @@
 }
 
 .search_confirm_btn:hover{
-    background-color: rgb(22, 72, 99) !important;
-    border:1px solid rgb(22, 72, 99) !important;
+    background-color: #427D9D !important;
+    border:1px solid #427D9D !important;
 }
 
 .searchKeyword:focus{
     border-color:none !important;
     box-shadow: none !important;
+}
+
+/* 카테고리 박스 */
+.category_box{
+    width:100%;
+    padding: 0;
+}
+
+.category_list {
+    margin: 18px 0;
+    padding: 5px 8px;
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    border: 1px solid #dddddd;
+    text-align: center;
+}
+
+.category {
+    margin: 5px 0;
+}
+
+.category_btn {
+    width: 100%;
+    padding:5px 10px;
+    background-color: transparent;
+    border-radius: 5px;
+    color : black;
+    border: 1px solid rgb(77, 145, 182);
+}
+
+.category_btn:hover {
+    background-color: rgb(77, 145, 182);
+    color:#fff;
+    transition: 0.2s;
+}
+
+button:disabled.category_btn {
+    color:#fff;
+    background-color: rgb(77, 145, 182);
+}
+
+/* 상품 리스트 */
+.productList{
+    width: 100%;
+    display: flex; flex-direction: column;
+    justify-content: center;
+}
+
+.product_box{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.product_link:hover{
+    text-decoration: none;
 }
 
 .product{
@@ -87,8 +159,6 @@
     border-radius: 10px;
     background-color: #fdfdfd;
     border: 1px solid #dddddd;
-    display: flex;
-    justify-content: space-around;
     transition: 0.4s;
 }
 
@@ -121,7 +191,7 @@
 
 @media screen and (min-width: 576px) {
     .bookpic{
-        max-height: 200px;
+        max-height: 180px;
     }
 }
 
@@ -140,7 +210,7 @@
 }
 
 .info_box{
-    height: 200px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -148,7 +218,7 @@
 
 .book_title{
     line-height: 2;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .book_info{
@@ -156,7 +226,6 @@
     color:#6A6A6A;
 }
 
-/* 상품 */
 .book_info span::after{
     content:'|';
     margin: 5px;
@@ -166,12 +235,34 @@
     display: none;
 }
 
+.price{
+    color : #979797;
+    font-size: 14px;
+}
+
 .seller_info{
     display: flex;
     justify-content: space-between;
     align-items: center;
     line-clamp: 1;
     overflow: hidden;
+}
+
+@media screen and (max-width: 576px) {
+    .product .info_box{
+        height: 100%;
+        margin: 16px 0 0 0 !important;
+    }
+
+    .book_title, .person_icon{
+        font-size: 16px;
+    }
+
+    .book_info{ font-size: 14px; }
+
+    .product .seller_info{
+        margin-top: 20px;
+    }
 }
 
 .view_like_box span{
@@ -224,63 +315,3 @@
     --bs-pagination-focus-color: transparent !important;
     --bs-pagination-focus-box-shadow: none !important;
 }
-
-.buttonList{
-    display: flex; justify-content: center;
-    line-height: 0;
-}
-
-.condition_select, .order_select {
-    margin-right: 10px;
-    padding: 5px;
-    width: 120px;
-    text-align: center;
-    border: 1px solid #dddddd;
-    border-radius: 5px;
-}
-
-@media screen and (max-width: 768px) {
-    .condition_select, .order_select {
-        margin-bottom: 10px;
-    }
-}
-
-.category_box{
-    width:100%;
-    padding: 0;
-}
-
-.category_list {
-    margin: 18px 0;
-    padding: 5px 8px;
-    display: flex; justify-content: space-between;
-    flex-wrap: wrap;
-    border-radius: 10px;
-    border: 1px solid #dddddd;
-    text-align: center;
-}
-
-.category {
-    margin: 5px 0;
-}
-
-.category_btn {
-    width: 100%;
-    padding:5px 10px;
-    background-color: transparent;
-    border-radius: 5px;
-    color : black;
-    border: 1px solid rgb(77, 145, 182);
-}
-
-.category_btn:hover {
-    background-color: rgb(77, 145, 182);
-    color:#fff;
-    transition: 0.2s;
-}
-
-button:disabled.category_btn {
-    color:#fff;
-    background-color: rgb(77, 145, 182);
-}
-

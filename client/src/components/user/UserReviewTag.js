@@ -79,9 +79,7 @@ function UserReviewTag() {
 
     return(
         <Container className='col-12 col-md-6 col-lg-6 p-0'>
-            <div>
-                <h4 className={`${styles.title_font} text-center mt-4`}>이런 점이 좋았어요</h4>
-            </div>
+            <h4 className={styles.reviewtag_title}>이런 점이 좋았어요</h4>
             {
                 (loading) ? 
                 <div className='d-flex justify-content-center'>

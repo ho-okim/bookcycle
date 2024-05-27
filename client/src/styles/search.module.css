@@ -1,6 +1,7 @@
 .result_count{
   margin: 0 10px;
   font-size: 20px;
+  color: #6A6A6A;
 }
 
 .more_btn{
@@ -12,7 +13,7 @@
 }
 
 .more_btn:hover, .more_btn:active, .more_btn:focus{
-  background-color: rgb(22, 72, 99) !important;
+  background-color: #427D9D !important;
 }
 
 .text_hidden{
@@ -52,27 +53,6 @@
   background-color: #f1f1f1;
 }
 
-.product .info_box{
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.product .book_info{
-  line-height: 2;
-  color:#555555;
-}
-
-.product .book_info span::after{
-  content:'|';
-  margin: 5px;
-}
-
-.product .book_info span:last-of-type::after{
-  display: none;
-}
-
 .product .pic_box{
   height: 100%;
   min-width: 80px;
@@ -92,6 +72,37 @@
   }
 }
 
+.product .info_box{
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product .book_info{
+  line-height: 2;
+  color:#6A6A6A;
+}
+
+.product .book_info span::after{
+  content:'|';
+  margin: 5px;
+}
+
+.product .book_info span:last-of-type::after{
+  display: none;
+}
+
+@media screen and (max-width: 576px) {
+  .product .info_box{
+    height: auto;
+  }
+
+  .product .seller_info{
+    margin-top: 20px;
+  }
+}
+
 .category_badge{
   margin-bottom: 3px;
   font-size: 14px;
@@ -103,12 +114,21 @@
   font-size: 18px;
 }
 
+.product .price{
+  color : #979797;
+  font-size: 14px;
+}
+
 .product .seller_info{
   display: flex;
   justify-content: space-between;
   align-items: center;
   line-clamp: 1;
   overflow: hidden;
+}
+
+.view_like_box span{
+  color: #6A6A6A;
 }
 
 .product .person_icon{
@@ -126,12 +146,22 @@
   background-color: #4d91b6; border: none;
 }
 
+.board .board_box {
+  transition: 0.2s ease;
+}
+
 .board .board_box:nth-of-type(2n-1){
   border-right: 1px solid #e8e8e8;
 }
 
+@media screen and (max-width: 576px) {
+  .board .board_box:nth-of-type(2n-1){
+    border-right: none;
+  }
+}
+
 .board .board_box:hover{
-  color: rgb(22, 72, 99);
+  background-color: #f1f1f1;
 }
 
 .board .list {
@@ -142,38 +172,57 @@
   font-size: 18px;
 }
 
-.board .listInfo .userid:after{
+.board .board_content{
+  font-size: 16px;
+  color: #6A6A6A;
+}
+
+.board .userid{
+  font-size: 14px;
+}
+
+.board .userid:after{
   content:'|';
   margin: 5px;
+}
+
+.board .date {
+  color : #6A6A6A;
+  font-size: 14px;
 }
 
 /* 사용자 */
 .user{
   margin-top:10px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.user a{
-  min-width: 150px;
-  max-width: 180px;
+@media screen and (max-width: 768px) {
+  .user{
+    justify-content: center;
+  } 
 }
 
 .user .info_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   border-radius: 10px;
   transition: 0.3s;
 }
 
 .user .info_box:hover{
-  box-shadow: 0 0 5px #cecece;
+  background-color: #f1f1f1;
 }
 
 .user .image_box{
-  width: 100%; 
+  width: 40%;
   min-width: 80px;
-  max-width: 200px;
+  max-width: 100px;
   border-radius: 100%;
 }
 
@@ -190,30 +239,36 @@
   color: #cacaca;
 }
 
-.user .score_box {
-  margin-bottom:20px;
-  position:relative;
-  text-align: center;
+.user .info_list_box{
+  margin-left:10px;
+  width: 55%;
 }
 
 .user .manner_score{
-  position: absolute; top: 50%; left:50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  z-index: 1;
+  font-size: 16px;
 }
 
 .user .manner_score_star{
-  position: absolute; top: 50%; left:50%;
-  transform: translate(-50%, -50%);
-  font-size: 60px;
+  margin-right: 5px;
+  font-size: 30px;
   color: #FFC100;
 }
 
 .user .user_info{
-  margin:10px; padding: 5px;
-  background-color: #fff;
-  border-radius: 5px;
-  font-size: 1rem;
-  text-align: center;
+  font-size: 18px;
+  text-align: left;
+}
+
+.user .trade_info{
+  margin-top:5px;
+}
+
+.user .trade_info span{
+  text-align: left;
+  font-size: 14px;
+}
+
+.user .trade_info span:first-of-type::after{
+  content: '|';
+  margin: 0 5px;
 }

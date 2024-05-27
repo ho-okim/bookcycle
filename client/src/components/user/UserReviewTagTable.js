@@ -11,7 +11,7 @@ function UserReviewTagTable ({
     limit
     }) {
     return(
-        <table>
+        <table className={styles.review_table}>
             <tbody>
                 {
                     reviewTagList.map((el, i)=>{

@@ -165,6 +165,8 @@ function UserReview({tradeType}) {
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}/>
+                        </div>
+                        <div className={styles.back_wrap}>
                             <Button variant='outline-secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}

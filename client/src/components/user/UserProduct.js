@@ -177,16 +177,20 @@ function UserProduct() {
                 </div>
                 {
                     isProductUrl ?
+                    <>
                     <div className={styles.pagination_wrap}>
                         <DataPagination
                         totalData={totalData} 
                         limit={limit} blockPerPage={3}
                         handlePagination={handlePagination}/>
+                    </div>
+                    <div className={styles.back_wrap}>
                         <Button variant='outline-secondary'
                         className={styles.back_btn}
                         onClick={handleMoveBack}
                         >사용자 페이지로 돌아가기</Button>
                     </div>
+                    </>
                     : null
                 }
             </Container>
@@ -211,7 +215,7 @@ function BookForSale({product}) {
                 </div>
                 <div className={styles.book_info}>
                     <p className={`${styles.text_hidden} text-center`}>{product.product_name}</p>
-                    <p className={styles.price}>&#8361; {product.price.toLocaleString()}</p>
+                    <p className={styles.price}>{product.price.toLocaleString()} 원</p>
                 </div>
             </Link>
         </div>

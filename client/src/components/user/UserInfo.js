@@ -51,9 +51,10 @@ function UserInfo() {
                 if (!isReported) {
                     return(
                         <div className={styles.report_box}>
-                            <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                            variant='outline-danger' onClick={()=>{handleOpen()}}
-                            ><MegaphoneFill/> 신고</Button>
+                            <Button variant="outline-secondary" 
+                            className={`${styles.alertBtn} d-flex`} 
+                            onClick={()=>{handleOpen()}}>
+                            <img style={{width: '23px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
                             <Report show={modalShow} handleClose={handleClose} targetId={targetUserId} category={'user'}/>
                         </div>
                     )

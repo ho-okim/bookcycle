@@ -17,7 +17,7 @@ function UserReviewBox({review, isReviewUrl}) {
             <div className={'col-6 my-2'}>
                 <p className={`${styles.review_content} ${styles.text_hidden}`}>{review.content}</p>
             </div>
-            <p className='col-3 my-2'>
+            <p className={`${styles.date} col-3 my-2`}>
                 {
                     (isReviewUrl) ?
                     dateTimeProcessing(new Date(review.createdAt))
