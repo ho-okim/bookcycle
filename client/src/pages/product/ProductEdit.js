@@ -183,14 +183,16 @@ function ProductEdit() {
       // 사진 업데이트
       const formData = new FormData()
       let prevFiles = []
-      uploadImg.forEach((el, i) => {
-        if(!el.id) {
-          formData.append('files', el)
-        } else {
-          console.log(el)
-          prevFiles.push({id: el.id, boardNo: el.boardNo})
-        }
-      })
+      if(uploadImg){
+        uploadImg.forEach((el) => {
+          if(!el.id) {
+            formData.append('files', el)
+          } else {
+            console.log(el)
+            prevFiles.push({id: el.id, boardNo: el.boardNo})
+          }
+        })
+      }
       formData.delete('editProductId')
       formData.append('editProductId', id)
       formData.delete('prevFiles')
@@ -391,8 +393,8 @@ function ProductEdit() {
                   ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
-                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
                 <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               </div>
             </div>
           </div>

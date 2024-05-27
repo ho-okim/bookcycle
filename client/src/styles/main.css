@@ -70,10 +70,11 @@ h4, p{margin: 0;}
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
+  color: #4f4f4f;
 }
 
 .boardCnt, .boardDate{font-size: 14px ; color: #979797;}
-.boardDate{width: 100%;}
+.boardDate{width: 100%; margin-right: 15px;}
 .boardEye{width: 60px;}
 .boardHeart{width: 40px;}
 .boardChatLeftDots{width: 40px;}
@@ -81,5 +82,6 @@ h4, p{margin: 0;}
 @media screen and (max-width: 767px){
   .boardNickname{padding-left: 0px;}
   .boardContentWrap{padding: 10px 0px 0px;}
+  .boardDate{margin-right: 10px;}
   .boardDate::before{content: '|'; margin: 0 10px;}
 }

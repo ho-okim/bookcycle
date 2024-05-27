@@ -6,7 +6,7 @@ import ChatUser from '../components/chat/ChatUser';
 import { useAuth  } from '../contexts/LoginUserContext';
 import { chatList, newChatroom, getChatMsg } from '../api/chat';
 import { EmojiTear, Person, SendFill } from 'react-bootstrap-icons';
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
 import { Link, useNavigate } from 'react-router-dom';
 import DefaultModal from '../components/DefaultModal';
@@ -278,7 +278,6 @@ function Chat() {
   return (
     <Container className={`chattingSec p-0`}>
       <div className='inner'>
-        <h3 className={`${styles.title}`}>대화 목록</h3>
         {
           chatRoom?.length != 0 ?
           <div className={`inner d-flex justify-content-between`}>
@@ -320,7 +319,30 @@ function Chat() {
                     </div>
                   </Link>
                   <div className={`d-flex align-items-center`}>
-                    <div><Link className={`${styles.report}`}>신고하기</Link></div>
+                    <div>
+                      <Dropdown>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
+                          ⁝
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item className={styles.dropdownItem}>
+                            <Link className={`${styles.report}`}>채팅방 나가기</Link>
+                          </Dropdown.Item>
+                          <Dropdown.Item className={styles.dropdownItem}>
+                            <Link className={`${styles.report}`}>
+                              <img style={{width: '20px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                              사용자 신고하기
+                            </Link>
+                          </Dropdown.Item>
+                          <Dropdown.Item className={styles.dropdownItem}>
+                            <Link className={`${styles.report}`}>
+                              <img style={{width: '20px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                            상품 신고하기
+                            </Link>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      </div>
                   </div>
                 </div>
                 {

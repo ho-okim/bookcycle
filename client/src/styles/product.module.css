@@ -14,10 +14,10 @@
 
 .inputBox{width: 100%;}
 .content{min-height: 200px;}
-.titleTextarea{height: 35.6px;}
+.titleTextarea{height: 36px;}
 .count{color: #979797; font-size: 13px; font-family: 'Pretendard-Regular';}
 
-.boardForm .reset{margin-right: 10px;}
+.boardForm .reset{margin-left: 10px;}
 
 .essentialInput::after{content: "*"; margin-left: 2px; color: #427D9D;}
 .category{margin-right: 20px;}

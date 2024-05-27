@@ -140,7 +140,9 @@ function BoardWrite() {
       };
   
       const formData = new FormData()
-      uploadImg.forEach((img) => formData.append('files', img));
+      if(uploadImg){
+        uploadImg.forEach((img) => formData.append('files', img));
+      }
       
       // 데이터 서버에 전송
       const res = await productWrite(data);
@@ -338,8 +340,8 @@ function BoardWrite() {
                   ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
               </div>
               <div className={`col ${styles.col} d-flex justify-content-end`}>
-                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
                 <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               </div>
             </div>
           </div>

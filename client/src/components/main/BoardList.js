@@ -49,7 +49,7 @@ function BoardList(){
                   <div className="col-12 col-md-6 bold boardTitle">{el.title}</div>
                   <div className="col-12 col-md-6 d-flex boardContentWrap justify-content-between">
                     <div className="d-flex">
-                      <div className="boardNickname">{el.nickname}</div>
+                      <div className="boardNickname medium">{el.nickname}</div>
                       {
                         innerWidth < 768 ?
                         <div className="regular date d-flex align-items-center justify-content-end">
