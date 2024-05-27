@@ -6,7 +6,7 @@ function MiniBook(props){
   const {product_name, price, filename} = el
   return(
     <>
-      <div className="productWrap d-flex flex-column justify-content-center align-items-center">
+      <div className="productWrap d-flex flex-column align-items-center">
         <div className="productImgWrap d-flex justify-content-center align-items-center">
           {
             filename ? 

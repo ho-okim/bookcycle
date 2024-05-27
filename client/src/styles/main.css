@@ -1,7 +1,7 @@
 h3{margin: 0; display: flex; align-items: center;}
 h4, p{margin: 0;}
 
-.sec{padding: 20px 0 100px;}
+.sec{padding: 60px 0 30px;}
 .btn{font-size: 14px; padding: 6px 10px;}
 
 
@@ -29,28 +29,57 @@ h4, p{margin: 0;}
 }
 .productTitle{
   font-size: 16px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
 }
 .productPrice{font-size: 14px; color: #979797;}
 
 
 /* BoardList.js */
+
 .boardHeadWrap{
   border-top: 2px solid #ddd; border-bottom: 2px solid #ddd!important;
-  color: #636363;
+  font-size: 15px; color: #6A6A6A;
 }
+
 .boardWrap{
-  display: flex; padding: 5px 0;
-  justify-self: center; align-items: center;
+  padding: 15px 5px;
   border-bottom: 1px solid #ddd;
 }
-.date{font-size: 13px;}
+
+.boardTopWrap{margin-bottom: 3px;}
 .boardTitle{
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+.boardInsideContent{
+  margin-left: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: #979797; font-size: 14.5px;
+}
+/* .boardInsideContent::before{content: '|'; margin: 0px 5px;} */
+
+.boardNickname{
+  padding-left: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.boardCnt, .boardDate{font-size: 14px ; color: #979797;}
+.boardDate{width: 100%;}
+.boardEye{width: 60px;}
+.boardHeart{width: 40px;}
+.boardChatLeftDots{width: 40px;}
+
+@media screen and (max-width: 767px){
+  .boardNickname{padding-left: 0px;}
+  .boardContentWrap{padding: 10px 0px 0px;}
+  .boardDate::before{content: '|'; margin: 0 10px;}
 }

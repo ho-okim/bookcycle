@@ -1,17 +1,24 @@
 import { useState, useEffect } from "react";
 import {mainBoard} from "../../api/main";
 import {Link} from 'react-router-dom'
-
-function DateProcessing(date){
-  // 데이터의 createdAt이 date 객체로 들어오는 게 아니라 string으로 들어옴에 주의
-  let newDate = new Date(date)
-  let year = newDate.toLocaleString("ko-kr", {dateStyle:'long'})
-  let time = newDate.toLocaleString("ko-kr").slice(12, -3)
-
-  return {year, time}
-}
+import timeCalculator from "../../lib/timeCalculator";
+import { ChatLeftDots, Eye, Heart } from 'react-bootstrap-icons'
 
 function BoardList(){
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  const resizeListener = () => {
+    setInnerWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeListener);
+
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때 한 번만 실행되도록 설정
+
   // api > main.js에서 받아온 상위 10개 게시글 리스트
   async function getBoard(){
     const data = await mainBoard()
@@ -33,26 +40,35 @@ function BoardList(){
 
   return(
     <>
-      <div className="row text-center boardWrap boardHeadWrap">
-        <div className="col-5 col-lg-8  regular">제목</div>
-        <div className="col-2 col-lg-1 regular">작성자</div>
-        <div className="col-3 col-lg-2 regular">작성 날짜</div>
-        <div className="col-2 col-lg-1 regular">좋아요</div>
-      </div>
       <div className="">
         {
           contents.map((el, i)=>{
-            const {year, time} = DateProcessing(el.createdAt)
             return(
               <Link to={`/board/${el.id}`} style={{ textDecoration: "none", color: "black"}} key={el.id}>
-                <div className="row text-center boardWrap" key={el.id}>
-                  <div className="col-5 col-lg-8 medium boardTitle">{el.title}</div>
-                  <div className="col-2 col-lg-1 medium">{el.nickname}</div>
-                  <div className="col-3 col-lg-2 regular date">
-                    <p className="year">{year}</p>
-                    <p className="time">{time}</p>
+                <div className="row boardWrap d-flex g-0" key={el.id}>
+                  <div className="col-12 col-md-6 bold boardTitle">{el.title}</div>
+                  <div className="col-12 col-md-6 d-flex boardContentWrap justify-content-between">
+                    <div className="d-flex">
+                      <div className="boardNickname">{el.nickname}</div>
+                      {
+                        innerWidth < 768 ?
+                        <div className="regular date d-flex align-items-center justify-content-end">
+                          <p className="boardDate">{timeCalculator(el.createdAt)}</p>
+                        </div> : null
+                      }
                     </div>
-                  <div className="col-2 col-lg-1 regular">{el.likehit}</div>
+                    <div className="boardDesWrap d-flex">
+                      {
+                        innerWidth >= 768 ?
+                        <div className="regular date d-flex align-items-center justify-content-end">
+                          <p className="boardDate">{timeCalculator(el.createdAt)}</p>
+                        </div> : null
+                      }
+                      <div className="text-center regular boardCnt boardEye"><Eye className="me-1"/>{el.view_count}</div>
+                      <div className="text-center regular boardCnt boardHeart"><Heart className="me-1"/>{el.likehit}</div>
+                      <div className="text-center regular ms-1 boardCnt boardChatLeftDots"><ChatLeftDots className="me-1"/>{el.reply_numbers}</div>
+                    </div>
+                  </div>
                 </div>
               </Link>
             )
