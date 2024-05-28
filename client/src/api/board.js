@@ -296,12 +296,31 @@ export async function likeState(id){
 
 
 // 게시판 검색
-export async function searchBoard(keyword) {
-  const res = await axios.get(`/search/board?keyword=${keyword}`);
+export async function searchBoard(searchKeyword, order) {
+  const {keyword, type} = searchKeyword;
+  const { sortBy, updown } = order; // order 초기값 없음 -> 아래 조건에 따라 sortBy는 'createdAt' 으로 지정됨
+  let newKeyword = (!keyword) ? '' : keyword;
 
-  if (res.statusText !== 'OK') {
-      window.location.href = '/error/500';
+  let newSortBy = REGEX.CHAR_REG.test(sortBy) ? sortBy.trim() : 'createdAt';
+  let url;
+
+  try {
+    let res;
+    if (type === 'writer') { // 작성자 검색
+      url = `/search/board/writer?keyword=${newKeyword}&sortBy=${newSortBy}&updown=${updown}`;
+      res = await axios.get(url);
+    } else { // 그 외 경우
+      url = `/search/board/titleContent?keyword=${newKeyword}&sortBy=${newSortBy}&updown=${updown}`;
+      res = await axios.get(url);
+    }
+
+    if (res.statusText !== 'OK') {
+        window.location.href = '/error/500';
+    }
+    
+    const body = res.data;
+    return body;
+  } catch (error) {
+    window.location.href = '/error/500';
   }
-  const body = res.data;
-  return body;
 }

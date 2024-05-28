@@ -1,5 +1,5 @@
 import styles from '../../styles/board.module.css';
-import { board } from '../../api/board.js';
+import { board, searchBoard } from '../../api/board.js';
 import Pagination from '../../components/board/Pagination.js';
 import BoardSorting from '../../components/board/BoardSorting.js';
 import BoardSearchInput from '../../components/board/BoardSearchInput.js';
@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 import Form from 'react-bootstrap/Form';
 import {ChatLeftDots, Search, Eye, Heart} from 'react-bootstrap-icons';
 import { useAuth } from '../../contexts/LoginUserContext.js';
+import { dateProcessingDash } from '../../lib/dateProcessing.js';
 
 function Board() {
 
@@ -34,23 +35,31 @@ function Board() {
     updown : "DESC" 
   })
 
-  const [search, setSearch] = useState('');
-
-  // client > api 에서 받아온 상위 10개 게시글 리스트
-  async function getBoard(){
-    const data = await board(order)
-    return data;
-  }
+  const [searchKeyword, setSearchKeyword] = useState({ // 검색
+    type : searchParams.get("stype") ?? 'writer', 
+    keyword : searchParams.get("search") ?? ''
+  });
 
   useEffect(()=>{
-    let board
-    const getBoardData = async () => {
-      board = await getBoard()
-      setContents(board)
+    // client > api 에서 받아온 상위 10개 게시글 리스트
+    async function getBoard() {
+      const data = await board(order);
+      setContents(data);
     }
-    getBoardData()
-  }, [searchParams])
 
+    // 검색 결과로 얻은 게시글 리스트
+    async function getBoardSearchResult() {
+      const data = await searchBoard(searchKeyword, order);
+      setContents(data);
+    }
+
+    if (!searchParams.get('search')) {
+      getBoard();
+    } else {
+      getBoardSearchResult();
+    }
+    
+  }, [searchParams]);
 
   async function onPost(){
     if(user){
@@ -59,27 +68,6 @@ function Board() {
       alert('로그인 후 작성할  수 있습니다.')
     }
   }
-
-  // 날짜 yyyy-mm-dd 형식 변환
-  function DateProcessing(date){
-    
-    let newDate = new Date(date)
-
-    let year = newDate.getFullYear();
-    let month = String(newDate.getMonth() + 1).padStart(2, '0');  // getMonth(): 0-11 출력해서 1 더해주기
-    let day = String(newDate.getDate()).padStart(2, '0'); 
-    
-    // yyyy-mm-dd 형식
-    let formattedDate = `${year}-${month}-${day}`;
-  
-    return formattedDate;
-  }
-
-  function handleKeyword(e){}
-
-  function handleEnter(){}
-
-  function handleSubmit(){}
 
   return (
     <>
@@ -96,25 +84,7 @@ function Board() {
                 className={styles.order}
                 order={order} 
                 setOrder={setOrder}/>
-              {/* <Form className="d-flex searchForm">
-                <Form.Control
-                  type="search"
-                  placeholder="제목+본문 검색"
-                  className={`${styles.search} me-1`}
-                  aria-label="Search"
-                  onChange={(e)=>{handleKeyword(e)}}
-                  onKeyDown={(e)=>{handleEnter(e)}}
-                  maxLength={50}
-                  value={search}
-                />
-                <Button
-                className='searchBtn'
-                variant="outline-success" 
-                onClick={handleSubmit}>
-                  <Search style={{color: 'white'}}/>
-                </Button>
-              </Form>      */}
-              <BoardSearchInput/>
+              <BoardSearchInput searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword}/>
             </div>
           </div>
           {
@@ -126,7 +96,7 @@ function Board() {
                   <div className={`${styles.listInfo} d-flex justify-content-between regular`}>
                     <div className='userInfo'>
                       <span className={`${styles.userid} medium`}>{content.nickname}</span>
-                      <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
+                      <span className={styles.date}>{dateProcessingDash(content.createdAt)}</span>
                     </div>
                     <div className='boardInfo'>
                       <Eye/> {content.view_count}

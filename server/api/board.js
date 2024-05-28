@@ -366,14 +366,15 @@ router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)
 
 
 // 게시판 작성자 검색
-router.get('/search/board', async (req, res) => {
-  const { keyword } = req.query;
+router.get('/search/board/writer', async (req, res) => {
+  // 프로시저에 정렬 방향은 추가 안 함
+  const { keyword, sortBy, updown } = req.query;
 
   // query문
-  let sql = 'CALL board_writer_search(?)';
+  let sql = 'CALL board_writer_search(?, ?)';
 
   try {
-      const query = mysql.format(sql, [keyword]);
+      const query = mysql.format(sql, [keyword, sortBy]);
       const [result] = await pool.query(query);
 
       res.send(result);
@@ -385,14 +386,15 @@ router.get('/search/board', async (req, res) => {
 
 
 // 게시판 제목 + 내용 검색
-router.get('/search/board', async (req, res) => {
-  const { keyword } = req.query;
+router.get('/search/board/titleContent', async (req, res) => {
+  // 프로시저에 정렬 방향은 추가 안 함
+  const { keyword, sortBy, updown } = req.query;
 
   // query문
-  let sql = 'CALL board_title_content_search(?)';
+  let sql = 'CALL board_title_content_search(?, ?)';
 
   try {
-      const query = mysql.format(sql, [keyword]);
+      const query = mysql.format(sql, [keyword, sortBy]);
       const [result] = await pool.query(query);
 
       res.send(result);
