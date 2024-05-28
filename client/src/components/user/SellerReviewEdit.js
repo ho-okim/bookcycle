@@ -5,8 +5,11 @@ import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
+import { useAuth } from '../../contexts/LoginUserContext';
 
 function SellerReviewEdit() {
+
+  const { user } = useAuth(); // 로그인 한 사용자
 
   const { id } = useParams();
   const [reviewTags, setReviewTags] = useState([]);
@@ -97,6 +100,11 @@ function SellerReviewEdit() {
     />
   ));
 
+  if (!user) { // 로그인 안 한 사용자 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
+  }
 
   return (
     <>

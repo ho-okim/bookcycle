@@ -163,6 +163,12 @@ function BoardWrite() {
     }
   }
 
+  if (!user) { // 로그인 안 한 사용자의 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
+  }
+
   return (
     <>
       <Container className={`board-write ${styles.sec} ${styles.container}`}>

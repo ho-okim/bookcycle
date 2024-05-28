@@ -1,18 +1,20 @@
 import styles from '../../styles/boardWrite.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function BoardWrite() {
+  const { user } = useAuth(); // 로그인 한 사용자
 
   const [form, setForm] = useState({title : '', content : ''});
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  
+
   function handleTitle(value){
     setForm({...form, title : value});
   }
@@ -91,6 +93,12 @@ function BoardWrite() {
     } else {
       setErrorMessage("제목이나 내용을 다시 확인해주세요");
     }
+  }
+
+  if (!user) { // 로그인 안 한 사용자의 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
   }
 
   return (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { buyGiveReviewList, reviewDelete } from '../../api/mypage';
 import { dateProcessingDash } from '../../lib/dateProcessing.js';
@@ -7,8 +8,11 @@ import Pagination from './Pagination.js';
 
 import styles from '../../styles/mypage.module.css';
 import { Dropdown, Table } from 'react-bootstrap';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function MyBuyGiveReviewList() {
+  const {user} = useAuth(); // 로그인 한 사용자
+
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   
@@ -63,9 +67,13 @@ function MyBuyGiveReviewList() {
                         ⁝
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item className={styles.dropdownItem} href={`/user/${review.seller_id}/sellerReviewEdit?productId=${review.product_id}`}>
-                          수정
-                        </Dropdown.Item>
+                        {
+                          (user.blocked === 0) ?
+                          <Dropdown.Item className={styles.dropdownItem} href={`/user/${review.seller_id}/sellerReviewEdit?productId=${review.product_id}`}>
+                          수정</Dropdown.Item>
+                          : <Dropdown.Item className={`${styles.dropdownItem} text-decoration-line-through`}>
+                          수정</Dropdown.Item>
+                        }
                         <Dropdown.Item className={styles.dropdownItem} onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

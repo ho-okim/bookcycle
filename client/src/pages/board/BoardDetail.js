@@ -7,7 +7,7 @@ import Error from '../Error.js';
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
-import { DashCircle, Ban, Trash3, Pencil, ExclamationTriangle } from 'react-bootstrap-icons';
+import { DashCircle, Ban, Trash3, Pencil, ExclamationTriangle, PersonFillSlash } from 'react-bootstrap-icons';
 import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
@@ -176,11 +176,15 @@ function BoardDetail(){
                 </div>
                 <div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                   <div className='info'>
-                    <span className={`${styles.userid} medium`}>{content.nickname}</span>
+                    <span className={`${styles.userid} medium`}>
+                      {(content.user_blocked === 1) ? 
+                      <PersonFillSlash className='fs-6 me-1'/> : null}
+                      {content.nickname}
+                    </span>
                     <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                   </div>
                   {
-                      (user && user?.id != content.user_id) ?
+                      (user && user?.id != content.user_id && user.blocked === 0) ?
                       (!isReported ) ?
                       <>
                           <Button variant="outline-secondary" 
