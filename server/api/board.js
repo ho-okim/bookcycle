@@ -178,7 +178,6 @@ router.post('/replyDelete/:id', async(req, res)=>{
     let sql_result = await pool.query(query);
 
     res.send(sql_result);
-
   } catch(error){
     console.error(error);
     res.send('error');
@@ -364,5 +363,43 @@ router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)
     console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
   }
 })
+
+
+// 게시판 작성자 검색
+router.get('/search/board', async (req, res) => {
+  const { keyword } = req.query;
+
+  // query문
+  let sql = 'CALL board_writer_search(?)';
+
+  try {
+      const query = mysql.format(sql, [keyword]);
+      const [result] = await pool.query(query);
+
+      res.send(result);
+  } catch (error) {
+      console.error(error);
+      res.send('error');
+  }
+});
+
+
+// 게시판 제목 + 내용 검색
+router.get('/search/board', async (req, res) => {
+  const { keyword } = req.query;
+
+  // query문
+  let sql = 'CALL board_title_content_search(?)';
+
+  try {
+      const query = mysql.format(sql, [keyword]);
+      const [result] = await pool.query(query);
+
+      res.send(result);
+  } catch (error) {
+      console.error(error);
+      res.send('error');
+  }
+});
 
 module.exports = router;

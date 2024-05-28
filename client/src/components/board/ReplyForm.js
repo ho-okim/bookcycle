@@ -61,8 +61,18 @@ function ReplyForm(){
         <form className={styles.replyForm} onSubmit={(e)=>{e.preventDefault();}}>
           <div className={styles.replyId}>{user?.nickname}</div>
           <div className='d-flex justify-content-between'>
-            <input name='comment' id='commentInput' className={styles.replyInput} onChange={(e)=>{handleReply(e.target.value)}}></input>
-            <Button className={styles.replySubmit} as="input" type="submit" value="등록" onClick={()=>{submitReply()}}/>
+            <input 
+              name='comment' 
+              id='commentInput' 
+              className={styles.replyInput} 
+              maxLength={3000} 
+              onChange={(e)=>{handleReply(e.target.value)}}/>
+            <Button 
+              className={styles.replySubmit} 
+              as="input" 
+              type="submit" 
+              value="등록" 
+              onClick={()=>{submitReply()}}/>
           </div>
         </form>
       ) : (

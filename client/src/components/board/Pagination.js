@@ -1,8 +1,7 @@
 import styles from '../../styles/board.module.css';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import { ChevronLeft } from 'react-bootstrap-icons';
-import { ChevronRight } from 'react-bootstrap-icons';
+import { ChevronLeft, ChevronRight, ChevronDoubleLeft, ChevronDoubleRight } from 'react-bootstrap-icons';
 import { useState } from 'react';
 
 function Pagination({ total, limit, page, setPage }) {
@@ -17,12 +16,27 @@ function Pagination({ total, limit, page, setPage }) {
     setAriaCurrentPage(pageNumber);
   }
 
+  // 첫번째 페이지 가기
+  let handleFirstBtn = () => {
+    setPage(1);
+    setAriaCurrentPage(1);
+  }
+
+  // 마지막 페이지 가기
+  let handleLastBtn = () => {
+    let lastPageNum = numPages;
+    setPage(lastPageNum);
+    setAriaCurrentPage(lastPageNum);
+  }
+
+  // 이전 페이지 가기
   let handlePrevBtn = () => {
     let prevPageNum = page - 1;
     setPage(prevPageNum);
     setAriaCurrentPage(prevPageNum);
   }
 
+  // 다음 페이지 가기
   let handleNextBtn = () => {
     let nextPageNum = page + 1;
     setPage(nextPageNum);
@@ -34,10 +48,17 @@ function Pagination({ total, limit, page, setPage }) {
     <Nav role="navigation" className={`${styles.pageNav} d-flex justify-content-center`}>
       { 
         page == 1 
-          ? null : 
-          <Button className={styles.prevBtn} onClick={() => handlePrevBtn()}>
-            <ChevronLeft/>
-          </Button>   
+          ? null : (
+            <>
+              <Button className={styles.firstBtn} onClick={() => handleFirstBtn()}>
+                <ChevronDoubleLeft/>
+              </Button>
+              <Button className={styles.prevBtn} onClick={() => handlePrevBtn()}>
+                <ChevronLeft/>
+              </Button>   
+            </>
+          )
+          
       }
       {
         Array(numPages)
@@ -55,10 +76,17 @@ function Pagination({ total, limit, page, setPage }) {
       }
       { 
         page == numPages 
-          ? null :
-          <Button className={styles.nextBtn} onClick={() => handleNextBtn()} disabled={page === numPages}>
-            <ChevronRight/>
-          </Button>
+          ? null : (
+            <>
+              <Button className={styles.nextBtn} onClick={() => handleNextBtn()} disabled={page === numPages}>
+                <ChevronRight/>
+              </Button>
+              <Button className={styles.lastBtn} onClick={() => handleLastBtn()}>
+                <ChevronDoubleRight/>
+              </Button>
+            </>
+          )
+          
       }
     </Nav>
   );

@@ -2,6 +2,7 @@ import styles from '../../styles/board.module.css';
 import { board } from '../../api/board.js';
 import Pagination from '../../components/board/Pagination.js';
 import BoardSorting from '../../components/board/BoardSorting.js';
+import BoardSearchInput from '../../components/board/BoardSearchInput.js';
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
@@ -95,11 +96,11 @@ function Board() {
                 className={styles.order}
                 order={order} 
                 setOrder={setOrder}/>
-              <Form className="d-flex searchForm">
+              {/* <Form className="d-flex searchForm">
                 <Form.Control
                   type="search"
                   placeholder="제목+본문 검색"
-                  className="me-2"
+                  className={`${styles.search} me-1`}
                   aria-label="Search"
                   onChange={(e)=>{handleKeyword(e)}}
                   onKeyDown={(e)=>{handleEnter(e)}}
@@ -112,7 +113,8 @@ function Board() {
                 onClick={handleSubmit}>
                   <Search style={{color: 'white'}}/>
                 </Button>
-              </Form>     
+              </Form>      */}
+              <BoardSearchInput/>
             </div>
           </div>
           {
@@ -127,9 +129,9 @@ function Board() {
                       <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                     </div>
                     <div className='boardInfo'>
-                      <ChatLeftDots/> {content.reply_numbers}
-                      <Eye className='ms-3'/> {content.view_count}
+                      <Eye/> {content.view_count}
                       <Heart className='ms-3'/> {content.likehit}
+                      <ChatLeftDots className='ms-3'/> {content.reply_numbers}
                     </div>
                   </div>
                 </div>

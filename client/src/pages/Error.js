@@ -28,7 +28,7 @@ function Error() {
                     </div>
                     <div className={styles.content_box}>
                         <p className={styles.error_message}>{errorInfo.message}</p>
-                        <p><Link to="/">홈으로 돌아가기</Link></p>
+                        <p className={styles.error_goHome}><Link to="/">홈으로 돌아가기</Link></p>
                     </div>
                 </div>
             </div>

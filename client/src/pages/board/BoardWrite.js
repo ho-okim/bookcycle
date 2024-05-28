@@ -127,11 +127,12 @@ function BoardWrite() {
             </div>
             <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
               <label htmlFor="content">내용</label>
-              <textarea className={`${styles.contentInput}`} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+              <textarea className={`${styles.contentInput}`} maxLength={3000} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+
             </div>
             <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
-              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
             </div>
           </div>
         </form>

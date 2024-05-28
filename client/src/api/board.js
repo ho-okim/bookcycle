@@ -103,7 +103,6 @@ export async function boardDetail(id){
     const res = await axios.get(`/board/${id}`)
 
     if (res.statusText != "OK") {
-      //console.error("getDetail fails");
       window.location.href = '/error/500';
     } 
     const body = res.data[0];
@@ -120,7 +119,6 @@ export async function boardDelete(id){
   try {
     const res = await axios.post(`/delete/${id}`)
     if (res.statusText != "OK") {
-      //console.error("boardDelete fails");
       window.location.href = '/error/500';
     } 
     const body = res.data;
@@ -294,4 +292,16 @@ export async function likeState(id){
   } catch (error) {
     window.location.href = '/error/500';
   }
+}
+
+
+// 게시판 검색
+export async function searchBoard(keyword) {
+  const res = await axios.get(`/search/board?keyword=${keyword}`);
+
+  if (res.statusText !== 'OK') {
+      window.location.href = '/error/500';
+  }
+  const body = res.data;
+  return body;
 }
