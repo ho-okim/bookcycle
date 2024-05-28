@@ -5,13 +5,15 @@ import styles from '../styles/chat.module.css'
 import ChatUser from '../components/chat/ChatUser';
 import { useAuth  } from '../contexts/LoginUserContext';
 import { chatList, newChatroom, getChatMsg } from '../api/chat';
-import { EmojiTear, Person, SendFill } from 'react-bootstrap-icons';
+import { BoxArrowInRight, CheckCircle, DoorOpen, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
 import { Button, Dropdown } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
 import { Link, useNavigate } from 'react-router-dom';
 import DefaultModal from '../components/DefaultModal';
 import { isSameDate } from '../lib/timeCalculator';
 import { dateProcessingYear } from '../lib/dateProcessing';
+import Report from '../components/Report';
+import { getReportedOrNot } from '../api/report';
 
 var currentIdx = null
 
@@ -34,6 +36,10 @@ function Chat() {
   const [msgs, setMsgs] = useState(null)
   // 선택된 채팅방 배경 변경 위한 active 변수
   const [active, setActive] = useState(null)
+  // 신고 여부
+  const [isReported, setIsReported] = useState(true);
+  const [isUserReported, setIsUserReported] = useState(true);
+  
   let activeRef = useRef(null)
 
   const chatRef = useRef()
@@ -77,17 +83,20 @@ function Chat() {
   }
 
   // 리뷰 작성 페이지로 redirect 핸들러
-  const reviewWriteHandler = (sellerId, productId) => {
-    navigate(`/user/${sellerId}/reviewWrite?productId=${productId}`)
+  const reviewWriteHandler = (sellerId, buyer_id, productId) => {
+    if(user.id == sellerId){
+      navigate(`/user/${buyer_id}/sellerReviewWrite?productId=${productId}`)
+    } else navigate(`/user/${sellerId}/buyerReviewWrite?productId=${productId}`)
   }
 
   // 거래 완료 버튼 누른 후 product 업데이트
-  const getSoldOut = (isSold) => {
-    setActiveChatroom((prevRoom)=>{prevRoom.soldDate = isSold})
+  const getSoldOut = () => {
+    // 거래 완료 버튼으로 만들기 위해 임시값인 1 저장
+    setActiveChatroom((prevRoom)=>{prevRoom.soldDate = 1})
   }
 
   
-  // modal
+  // 상품 모달
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
 
   const handleClose = () => { // modal 닫기/숨기기 처리
@@ -98,6 +107,39 @@ function Chat() {
     if (!modalShow) setModalShow(true);
   };
 
+  // 신고 모달
+  const [modalReportShow, setModalReportShow] = useState(false); // modal 표시 여부
+  const [modalReportUserShow, setModalReportUserShow] = useState(false); // modal 표시 여부
+  const handleReportClose = () => { // modal 닫기/숨기기 처리
+    if (modalReportShow) setModalReportShow(false);
+  };
+
+  const handleReportOpen = () => { // modal 열기 처리
+    if (!modalReportShow) setModalReportShow(true);
+  };
+  const handleReportUserClose = () => {
+    if (modalReportUserShow) setModalReportUserShow(false);
+  };
+
+  const handleReportUserOpen = () => {
+    if (!modalReportUserShow) setModalReportUserShow(true);
+  };
+
+  // 신고하기 기능
+  function onSpam() {
+    if(!user) {
+      alert("로그인 후 이용하실 수 있습니다.")
+    } else {
+      handleReportOpen();
+    }
+  }
+  function onUserSpam() {
+    if(!user) {
+      alert("로그인 후 이용하실 수 있습니다.")
+    } else {
+      handleReportUserOpen();
+    }
+  }
 
   let prevChatRoom
 
@@ -143,7 +185,6 @@ function Chat() {
       
     }
   }, [currentIdx])
-
   
   // API
   // api > chat.js에서 GET 요청한 채팅 목록
@@ -155,7 +196,6 @@ function Chat() {
   useEffect(()=>{
     const test = async () => {
       let {res, ron} = await getChatList()
-      console.log(res)
       setChatRoom(res)
       setReadOrNot(ron)
     }
@@ -192,6 +232,20 @@ function Chat() {
     }
     test()
   }, [currentIdx]);
+
+  // 신고 여부 확인
+  useEffect(()=>{
+  async function getReported() {
+    const productRes = await getReportedOrNot('product', activeChatroom?.product_id);
+    const userRes = await getReportedOrNot('user', activeChatroom?.user_id);
+    setIsReported((isReported)=>((productRes === 0) ? false : true));
+    setIsUserReported((isReported)=>((userRes === 0) ? false : true));
+  }
+
+  if (user) { // 로그인을 했을 때만 호출
+    getReported();
+  }
+}, [activeChatroom]);
   
 
   // 소켓 통신
@@ -200,9 +254,18 @@ function Chat() {
     socket.on('success', (data) => {
       const {id, user_id, room_id, message, date} = data
       let tempReadOrNot;
+      let previousCreatedAt;
 
       // 전송한 채팅 메시지 정보로 chatRoom의 latest_msg, updatedAt 변경
-      let tempChatRoom = chatRoom.map((item) => item.room_id == room_id ? { ...item, message, createdAt: date} : item)
+      let tempChatRoom = chatRoom.map(item => {
+        if (item.room_id === room_id) {
+            previousCreatedAt = item.createdAt; // 기존 createdAt 값을 저장
+            console.log(previousCreatedAt)
+            return { ...item, message, createdAt: date }; // 새로운 createdAt 값으로 객체 업데이트
+        } else {
+            return item;
+        }
+    });
 
       if(room_id == currentIdx){ // 수신자, 발신자 모두
         // 현재 위치한 방의 메시지가 갱신된 것이라면 msgs 배열에 신규 메시지 덧붙이기
@@ -223,7 +286,7 @@ function Chat() {
           let cnt = readOrNot.find((item) => item.room_id == room_id).read_count + 1
           tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
           console.log("받은 메시지 : ", chatRoom[active]?.createdAt, "위치한 채팅방 : ", date)
-          if(chatRoom[active]?.createdAt < date){
+          if(chatRoom[active]?.createdAt > previousCreatedAt){
             setActive(prev => prev + 1);
           }
         }
@@ -281,7 +344,7 @@ function Chat() {
         {
           chatRoom?.length != 0 ?
           <div className={`inner d-flex justify-content-between`}>
-          <div className={`${styles.box}`}>
+          <div className={`${styles.box} ${styles.chatListBox}`}>
             <div className={`${styles.chattingList}`}>
               {
                 chatRoom && chatRoom.map((el, i)=>{
@@ -309,8 +372,11 @@ function Chat() {
                     <div className='d-flex'>
                       <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
                         {
-                          activeChatroom.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
-                          : <img src={process.env.PUBLIC_URL + `/img/profile/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
+                          user?.id == activeChatroom.user_id ?
+                          <PersonExclamation className={`${styles.profileIcon}`}/> :
+                          activeChatroom.profile_image == '' ?
+                          <Person className={`${styles.profileIcon}`}/> :
+                          <img src={process.env.PUBLIC_URL + `/img/profile/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
                         }
                       </div>
                       <div className={`${styles.nickname} d-flex align-items-center`}>
@@ -326,60 +392,81 @@ function Chat() {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item className={styles.dropdownItem}>
-                            <Link className={`${styles.report}`}>채팅방 나가기</Link>
-                          </Dropdown.Item>
-                          <Dropdown.Item className={styles.dropdownItem}>
-                            <Link className={`${styles.report}`}>
-                              <img style={{width: '20px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
-                              사용자 신고하기
+                            <Link className={`${styles.report} medium d-flex align-items-center`}>
+                              <BoxArrowInRight className={styles.chatOut}/>
+                              <span>채팅방 나가기</span>
                             </Link>
                           </Dropdown.Item>
-                          <Dropdown.Item className={styles.dropdownItem}>
-                            <Link className={`${styles.report}`}>
-                              <img style={{width: '20px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
-                            상품 신고하기
-                            </Link>
-                          </Dropdown.Item>
+                            {!isUserReported ?
+                            <Dropdown.Item className={styles.dropdownItem}>
+                              <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onUserSpam}>
+                                <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                                <span>사용자 신고하기</span>
+                              </Link>
+                            </Dropdown.Item> :
+                            <div className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
+                              <CheckCircle className={styles.reportComplete}/>사용자 신고 완료</div>
+                            }
+                            {!isReported ? 
+                            <Dropdown.Item className={styles.dropdownItem}>
+                              <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onSpam}>
+                                <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                                <span>상품 신고하기</span>
+                              </Link>
+                            </Dropdown.Item> :
+                            <span className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
+                              <CheckCircle className={styles.reportComplete}/>상품 신고 완료</span>
+                            }
                         </Dropdown.Menu>
                       </Dropdown>
+                      <Report show={modalReportUserShow} handleClose={handleReportUserClose} targetId={activeChatroom.user_id} category={'user'}/>
+                      <Report show={modalReportShow} handleClose={handleReportClose} targetId={activeChatroom.product_id} category={'product'}/>
                       </div>
                   </div>
                 </div>
                 {
                   <>
-                    <div className={`${styles.productWrap} d-flex justify-content-between`}>
-                      <Link style={{ textDecoration: 'none' }} to={`/product/detail/${activeChatroom.product_id}`}>
-                        <div className={`d-flex align-items-center`}>
-                          <div className='d-flex justify-content-center align-items-center'>
-                            <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>
-                              <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg} ${activeChatroom.soldDate && styles.soldOut}`}/>
-                            </div>
-                          </div>
-                          <div>
-                            {
-                              activeChatroom.soldDate &&
-                              <div className={`${styles.soldOutText}`}>(판매완료)</div>
-                            }
-                            <div className={`${styles.productContent} ${activeChatroom.soldDate && styles.soldOut} d-flex justify-content-center flex-column`}>
-                              <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
-                              <div className={`${styles.price} regular`}>{activeChatroom?.price.toLocaleString()}원</div>
-                            </div>
-                          </div>
+                    {
+                      !activeChatroom.product_id ?
+                      <div className={`${styles.productWrap} ${styles.deletedWrap}`}>
+                        <div className={`${styles.deletedText} d-flex flex-column justify-content-center align-items-center`}>
+                            <ExclamationCircleFill className={`${styles.deletedIcon}`}/><p>삭제된 상품입니다</p>
                         </div>
-                      </Link>
-                      <div className={`d-flex align-items-center ${styles.btnWrap}`}>
-                        {
-                          activeChatroom.soldDate ?
-                          <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.product_id)}>후기 작성</Button>
-                          : user?.id == activeChatroom.seller_id ?
-                            <Button variant="outline-danger" className={`${styles.btn}`} onClick={handleOpen}>거래 완료</Button>
-                            : null
-                        }
-                        <DefaultModal show={modalShow} handleClose={handleClose}
-                        targetId={activeChatroom.user_id} getSoldOut={getSoldOut}
-                        productId={activeChatroom.product_id}/>
+                      </div> :
+                      <div className={`${styles.productWrap} d-flex justify-content-between`}>
+                        <Link style={{ textDecoration: 'none' }} to={`/product/detail/${activeChatroom.product_id}`}>
+                          <div className={`d-flex align-items-center`}>
+                            <div className='d-flex justify-content-center align-items-center'>
+                              <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>
+                                <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg} ${activeChatroom.soldDate && styles.soldOut}`}/>
+                              </div>
+                            </div>
+                            <div>
+                              {
+                                activeChatroom.soldDate &&
+                                <div className={`${styles.soldOutText}`}>(판매완료)</div>
+                              }
+                              <div className={`${styles.productContent} ${activeChatroom.soldDate && styles.soldOut} d-flex justify-content-center flex-column`}>
+                                <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
+                                <div className={`${styles.price} regular`}>{activeChatroom?.price.toLocaleString()}원</div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                        <div className={`d-flex align-items-center ${styles.btnWrap}`}>
+                          {
+                            activeChatroom.soldDate ?
+                            <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}>후기 작성</Button>
+                            : user?.id == activeChatroom.seller_id ?
+                              <Button variant="outline-danger" className={`${styles.btn}`} onClick={handleOpen}>거래 완료</Button>
+                              : null
+                          }
+                          <DefaultModal show={modalShow} handleClose={handleClose}
+                          targetId={activeChatroom.user_id} getSoldOut={getSoldOut}
+                          productId={activeChatroom.product_id}/>
+                        </div>
                       </div>
-                    </div>
+                    }
                   </>
                 }
                 <div className={`${styles.chatting}`} ref={chatRef}>

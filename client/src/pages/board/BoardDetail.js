@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { getReportedOrNot } from '../../api/report.js';
+import DefaultModal from '../../components/DefaultModal.js';
 
 
 
@@ -29,6 +30,15 @@ function BoardDetail(){
   const [content, setContent] = useState([]); 
   const [files, setFiles] = useState(); // 파일의 배열
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+  
+  // 삭제 버튼 모달
+  const [modalDeleteShow, setModalDeleteShow] = useState(false); // modal 표시 여부
+  const handleDeleteClose = () => { // modal 닫기/숨기기 처리
+    if (modalDeleteShow) setModalDeleteShow(false);
+  };
+  const handleDeleteOpen = () => { // modal 열기 처리
+    if (!modalDeleteShow) setModalDeleteShow(true);
+  };
 
   useEffect(()=>{
     // 데이터 조회
@@ -78,16 +88,6 @@ function BoardDetail(){
   if (notFound) {
     return <Error/>
   }
-
-	// 데이터 삭제
-	async function onDelete() {
-		try {
-				await boardDelete(id); 
-				document.location.href = `/board`
-		} catch (error) {
-				console.error(error);
-		}
-	}
 
   const handleClose = () => { // modal 닫기/숨기기 처리
     if (modalShow) setModalShow(false);
@@ -155,12 +155,13 @@ function BoardDetail(){
                         variant="outline-secondary" 
                         className={styles.deleteBtn} 
                         id={content.id} 
-                        onClick={onDelete}>
+                        onClick={handleDeleteOpen}>
                         <Trash3 className='me-1'/>글 삭제
                       </Button>
                       </div>
                   ): null}
                 </div>
+                <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} boardId={id}/>
                 <div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                   <div className='info'>
                     <span className={`${styles.userid} medium`}>{content.nickname}</span>

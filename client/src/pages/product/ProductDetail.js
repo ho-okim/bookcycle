@@ -13,6 +13,7 @@ import { getReportedOrNot } from "../../api/report.js";
 import ProductDetailContext from "../../contexts/ProductDetailContext.js";
 import ProductCaution from "../../components/product/ProductCaution.js";
 import { dateTimeProcessing } from "../../lib/dateProcessing.js";
+import DefaultModal from "../../components/DefaultModal.js";
 
 
 function ProductDetail() {
@@ -24,12 +25,23 @@ function ProductDetail() {
   const [product, setProduct] = useState({}); // 상품 정보
   const [category, setCategory] = useState([]); // 카테고리
   const [likehit, setLikehit] = useState(0);
-
-  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
-  const [isReported, setIsReported] = useState(true); // 현재 사용자의 신고 여부
   // 파일의 배열
   const [files, setFiles] = useState([]); // 상품 이미지
 
+  
+  // 삭제 버튼 모달
+  const [modalDeleteShow, setModalDeleteShow] = useState(false); // modal 표시 여부
+  const handleDeleteClose = () => { // modal 닫기/숨기기 처리
+    if (modalDeleteShow) setModalDeleteShow(false);
+  };
+  const handleDeleteOpen = () => { // modal 열기 처리
+    if (!modalDeleteShow) setModalDeleteShow(true);
+  };
+
+  const [modalShow, setModalShow] = useState(false); // modal 표시 여부
+  const [isReported, setIsReported] = useState(true); // 현재 사용자의 신고 여부
+
+  // 신고 모달
   const handleClose = () => { // modal 닫기/숨기기 처리
     if (modalShow) setModalShow(false);
   };
@@ -37,16 +49,6 @@ function ProductDetail() {
   const handleOpen = () => { // modal 열기 처리
     if (!modalShow) setModalShow(true);
   };
-
-	async function onDelete() { // 상품 데이터 삭제
-		try {
-				await productDelete(id);
-				document.location.href = `/product`
-				console.log("삭제id: ", id)
-		} catch (error) {
-				console.error(error);
-		}
-	}
 
   const [like, setLike] = useState(0, 0, 0) //좋아요 셋팅
 
@@ -114,9 +116,10 @@ function ProductDetail() {
               <Button variant="outline-secondary" className={style.updateBtn} onClick={()=>{navigate(`/product/edit/${product.product_id}`,
               {state: {product: product, files}}
               )}}>글 수정</Button>
-              <Button variant="outline-secondary" className={style.deleteBtn} id={id} onClick={onDelete}>글 삭제</Button>
+              <Button variant="outline-secondary" className={style.deleteBtn} onClick={handleDeleteOpen}>글 삭제</Button>
             </> : null
           }
+          <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} productId={id}/>
           
         {
             (product ) ?

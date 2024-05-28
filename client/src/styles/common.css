@@ -75,6 +75,25 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 } /* 헤더 토글 버튼 md보다 큰 화면에서 아예 보이지 않도록 설정 */
 .toggleBtnWrap{height: 50px;}
 
+
+/* footer */
+/* .page-footer{background-color: #427D9D;} */
+.page-footer{background-color: #f1f1f1;}
+.footerTextSize{font-size: 14px; color: #4d4d4d;}
+.footerTitle{font-size: 15px;}
+
+.footerGithubIcon{margin-right: 3px; color: #4d4d4d;}
+.footerConWrap{color: #4d4d4d;}
+
+
+.footerYoutube{
+  margin-top: 5px; padding: 5px;
+  width: 30px; height: 30px;
+  border-radius: 50%; font-size: 16px;
+  color: #4d4d4d; background-color: white;
+}
+
+
 /* chatBtn */
 .react-datepicker__portal {
   z-index: 10; /* 원하는 z-index 값으로 설정 */

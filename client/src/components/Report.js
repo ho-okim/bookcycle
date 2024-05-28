@@ -72,15 +72,16 @@ function Report({ show, handleClose, targetId, category }) {
 
   return (
     <Modal
+      className={`${styles.modal}`}
       show={show}
       onHide={handleHide}
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header className="d-flex justify-content-center align-items-center">
-        <Modal.Title>신고사유를 선택해주세요</Modal.Title>
+      <Modal.Header className={`${styles.header} d-flex justify-content-center align-items-center`}>
+        <p style={{fontSize: '20px'}}>신고사유를 선택해주세요</p>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className={styles.body}>
         <table>
           <tbody>
             {reasonList.map((el, i) => {
@@ -97,20 +98,16 @@ function Report({ show, handleClose, targetId, category }) {
           </tbody>
         </table>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer style={{border:"none", paddingTop: "0px"}}>
         <div className={styles.report_error}>{errorMessage}</div>
         <Button
           variant="danger"
-          style={{ fontSize: "17px" }}
-          onClick={handleClick}
-        >
+          onClick={handleClick}>
           신고하기
         </Button>
         <Button
-          variant="secondary"
-          style={{ fontSize: "17px" }}
-          onClick={handleHide}
-        >
+          variant="outline-secondary"
+          onClick={handleHide}>
           취소
         </Button>
       </Modal.Footer>
@@ -120,8 +117,8 @@ function Report({ show, handleClose, targetId, category }) {
 
 function ReportReason({ index, currentIndex, content, handleChange }) {
   return (
-    <tr>
-      <td className={styles.checkbox}>
+    <div className="d-flex">
+      <div className={styles.checkbox}>
         <input
           type="checkbox"
           className={styles.input_checkbox}
@@ -129,12 +126,10 @@ function ReportReason({ index, currentIndex, content, handleChange }) {
           onChange={(e) => {
             handleChange(e, index);
           }}
-        ></input>
-      </td>
-      <td className={styles.reason_row}>
+        />
+      </div>
         <p className={`${styles.reason} ${styles.box}`}>{content}</p>
-      </td>
-    </tr>
+    </div>
   );
 }
 

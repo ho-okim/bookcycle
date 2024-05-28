@@ -1,4 +1,6 @@
-.modalBtn{font-size: 17px;}
+.modal{--bs-modal-width: 400px;}
+
+/* .modalBtn{font-size: 17px;} */
 
 .yesBtn{
   width: 50px;

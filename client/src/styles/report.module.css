@@ -1,8 +1,16 @@
+.header{
+  border: none;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.modal{
+  --bs-modal-width: 400px;
+}
+
 .box{
     padding: 10px;
-    background-color: #fff;
     border-radius: 5px;
-    border: 2px solid #dddddd;
 }
 
 .title .box{
@@ -15,8 +23,7 @@ table{
 }
 
 .checkbox{
-    width: 15%;
-    text-align: center;
+  margin: 10px 20px 10px 30px;
 }
 
 .input_checkbox {
@@ -24,7 +31,7 @@ table{
 }
 
 .reason_row{
-    width: 80%; padding: 10px 5px;
+    
 }
 
 .reason{

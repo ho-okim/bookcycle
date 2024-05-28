@@ -1,11 +1,13 @@
 import styles from '../styles/modal.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/LoginUserContext.js';
 import { setBuyerId } from '../api/chat.js';
+import { productDelete } from '../api/product.js';
+import { boardDelete } from '../api/board.js';
 
-function DefaultModal({show, handleClose, ownerId, targetId, productId, getSoldOut}) {
+function DefaultModal({show, handleClose, ownerId, targetId, productId, boardId, getSoldOut}) {
 
   const { user } = useAuth();
   const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지
@@ -24,8 +26,20 @@ function DefaultModal({show, handleClose, ownerId, targetId, productId, getSoldO
     if(currentUrl.includes("chat") && targetId){
       const res = await setBuyerId(targetId, productId)
       getSoldOut(1)
-    } else if(currentUrl.includes("board") || currentUrl.includes("product")){
-
+    } else if(currentUrl.includes("product")){
+      try {
+        await productDelete(productId);
+        document.location.href = `/product`
+        } catch (error) {
+            console.error(error);
+        }
+    } else if(currentUrl.includes("board")){
+      try {
+				await boardDelete(boardId); 
+				document.location.href = `/board`
+      } catch (error) {
+          console.error(error);
+		}
     }
 
     handleClose()
@@ -38,7 +52,7 @@ function DefaultModal({show, handleClose, ownerId, targetId, productId, getSoldO
   return(
   <Modal show={show} onHide={handleHide}
     aria-labelledby="contained-modal-title-vcenter"
-    centered
+    centered className={styles.modal}
   >
     <Modal.Header className='d-flex justify-content-center align-items-center'
       style={{border:"none", paddingTop:"40px"}}>
