@@ -2,7 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
+import { DashCircle, MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
 import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
@@ -61,7 +61,9 @@ function UserInfo() {
                 } else {
                     return(
                         <div className={styles.report_box}>
-                            <span className={styles.alread_reported}>신고했어요</span>
+                            <div className={`${styles.already_reported} d-flex align-items-center`}>
+                                <DashCircle className='me-1'/>신고완료
+                            </div>
                         </div>
                     )
                 } 

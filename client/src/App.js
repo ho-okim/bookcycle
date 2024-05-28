@@ -115,6 +115,7 @@ function App() {
             <Route path="/error">
               <Route path=":errorCode" element={<Error/>}/>
             </Route>
+            <Route path="*" element={<Error/>}/>
           </Routes>
           </div>
         <Footer/>

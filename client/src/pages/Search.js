@@ -68,7 +68,7 @@ function Search() {
                         <Tabs
                         defaultActiveKey="product"
                         id="search_type"
-                        className="mb-3"
+                        className={`${styles.tabs} mb-3`}
                         onSelect={handleSelect}
                         >
                         {
@@ -79,13 +79,13 @@ function Search() {
                             </div>
                             : null
                         }
-                        <Tab className={styles.tab} eventKey="product" title="상품">
+                        <Tab eventKey="product" title="상품">
                             <SearchProduct/>
                         </Tab>
-                        <Tab  className={styles.tab} eventKey="user" title="사용자">
+                        <Tab eventKey="user" title="사용자">
                             <SearchUser/>
                         </Tab>
-                        <Tab  className={styles.tab} eventKey="board" title="게시글">
+                        <Tab eventKey="board" title="게시글">
                             <SearchBoard/>
                         </Tab>
                     </Tabs>

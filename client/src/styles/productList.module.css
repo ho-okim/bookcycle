@@ -5,6 +5,14 @@
     text-overflow: ellipsis;
 }
 
+.undrag{
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 /* 상단 박스 */
 .top_box{
     width: 100%;

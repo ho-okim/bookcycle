@@ -20,6 +20,7 @@ const boardSortOptions = [
 function MyBoardPostList() {
   const [boardPostItems, setBoardPostItems] = useState([]);
   const [sortOption, setSortOption] = useState("createdAt.DESC")
+  const [optionName, setOptionName] = useState('정렬기준'); // 버튼 이름
 
   let total = boardPostItems.length; // 전체 게시물 수
   let limit = 5; // 페이지 당 게시물 수
@@ -39,15 +40,19 @@ function MyBoardPostList() {
     getItems();
   }, [sortOption]);
 
-  const handleChange = (e) => {
-    setSortOption(e.target.value);
+  const handleChange = (eventKey, event) => {
+    event.persist();
+    setSortOption(eventKey);
+    setOptionName(event.currentTarget.id);
+    console.log(event.currentTarget.id)
+    console.log(eventKey)
   };
 
   return (
     <div className={styles.content}>
       <div className={styles.contentHeader}>
         <p> &gt; 게시글 작성 내역</p>
-        <Sorting sortOption={sortOption} handleChange={handleChange} options={boardSortOptions} />
+        <Sorting optionName={optionName} handleChange={handleChange} options={boardSortOptions} />
       </div>
       {boardPostItems.length === 0 ? (
         <div className={`pb-5 ${styles.empty}`}>작성한 게시글이 없습니다.</div>

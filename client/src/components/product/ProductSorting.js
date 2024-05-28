@@ -11,7 +11,7 @@ function ProductSorting() {
   const [searchParams, setSearchParams] = useSearchParams(); // 현재 page
   const {setOrder, setFilter} = useProductOption();
 
-  const [filterName, setFilterName] = useState('상품상태'); // 정렬 드롭다운 이름
+  const [filterName, setFilterName] = useState('상품상태'); // 필터 드롭다운 이름
   const [optionName, setOptionName] = useState('정렬기준'); // 정렬 드롭다운 이름
   
   const navigate = useNavigate();

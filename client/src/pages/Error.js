@@ -13,8 +13,12 @@ function Error() {
 
     useEffect(()=>{
         for(let i = 0; i < errorType.length; i++) {
+            if (!errorCode) {
+                setErrorInfo(errorType[3]);
+                break;
+            }
             if (errorType[i].type === parseInt(errorCode)) {
-                setErrorInfo((errorInfo)=>(errorType[i]));
+                setErrorInfo(errorType[i]);
             }
         }
     }, [errorCode]);

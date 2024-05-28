@@ -116,7 +116,7 @@ function ProductList() {
                   </div>
                 }
               </div>
-              <div className='d-flex justify-content-center'>
+              <div className={`${styles.undrag} d-flex justify-content-center`}>
                 <ProductPagination     
                 totalData={totalData}
                 limit={limit}

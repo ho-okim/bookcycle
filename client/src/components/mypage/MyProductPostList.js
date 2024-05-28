@@ -21,6 +21,7 @@ function MyProductPostList() {
 
   const [productPostItems, setProductPostItems] = useState([]);
   const [sortOption, setSortOption] = useState("createdAt.DESC")
+  const [optionName, setOptionName] = useState('정렬기준'); // 버튼 이름
 
   let total = productPostItems.length;
   let limit = 10;
@@ -40,15 +41,17 @@ function MyProductPostList() {
     getItems();
   }, [sortOption]);
 
-  const handleChange = (e) => {
-    setSortOption(e.target.value);
+  const handleChange = (eventKey, event) => {
+    event.persist();
+    setSortOption(eventKey);
+    setOptionName(event.currentTarget.id);
   };
 
   return (
     <div className={styles.content}>
       <div className={styles.contentHeader}>
         <p> &gt; 상품 등록 내역</p>
-        <Sorting sortOption={sortOption} handleChange={handleChange} options={productSortOptions} />
+        <Sorting optionName={optionName} handleChange={handleChange} options={productSortOptions} />
       </div>
       <div className={styles.productList}>
         {productPostItems.length === 0 ? (

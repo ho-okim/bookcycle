@@ -1,3 +1,14 @@
+/* 공통 */
+.text_hidden{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabs button:not(:active){
+  color: #427D9D;
+}
+
 .result_count{
   margin: 0 10px;
   font-size: 20px;
@@ -14,12 +25,6 @@
 
 .more_btn:hover, .more_btn:active, .more_btn:focus{
   background-color: #427D9D !important;
-}
-
-.text_hidden{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* 상품 */
