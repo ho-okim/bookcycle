@@ -9,7 +9,6 @@ function BoardSorting({order, setOrder}){
 
   const [searchParams, setSearchParams] = useSearchParams(); // query string
 
-
   function nameTransform() { // 정렬 버튼 이름을 만드는 함수
     if (!searchParams.get('order')) {
       return '정렬기준';

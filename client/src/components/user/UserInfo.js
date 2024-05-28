@@ -2,7 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
+import { DashCircle, MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
 import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
@@ -51,16 +51,19 @@ function UserInfo() {
                 if (!isReported) {
                     return(
                         <div className={styles.report_box}>
-                            <Button className={`${styles.user_info} ${styles.report_btn} col-4`} 
-                            variant='outline-danger' onClick={()=>{handleOpen()}}
-                            ><MegaphoneFill/> 신고</Button>
+                            <Button variant="outline-secondary" 
+                            className={`${styles.alertBtn} d-flex`} 
+                            onClick={()=>{handleOpen()}}>
+                            <img style={{width: '23px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
                             <Report show={modalShow} handleClose={handleClose} targetId={targetUserId} category={'user'}/>
                         </div>
                     )
                 } else {
                     return(
                         <div className={styles.report_box}>
-                            <span className={styles.alread_reported}>신고했어요</span>
+                            <div className={`${styles.already_reported} d-flex align-items-center`}>
+                                <DashCircle className='me-1'/>신고완료
+                            </div>
                         </div>
                     )
                 } 

@@ -50,6 +50,7 @@ function Header() {
   }
 
   function handleKeyword(e) { // 검색어 설정
+    console.log(e.target.value)
     setSearch(e.target.value);
   }
 

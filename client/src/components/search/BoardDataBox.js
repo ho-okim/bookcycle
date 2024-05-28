@@ -7,6 +7,7 @@ function BoardDataBox({board}) {
         <Link to={`/board/${board.id}`} class={`${styles.board_box} col-12 col-sm-6`}>
             <div className={`col ${styles.list}`}>
                 <p className={`${styles.listTitle} ${styles.text_hidden}`}>{board.title}</p>
+                <p className={`${styles.board_content} ${styles.text_hidden}`}>{board.content}</p>
                 <div className={`${styles.listInfo} regular my-1`}>
                     <span className={styles.userid}>{board.nickname}</span>
                     <span className={styles.date}>{dateProcessingDash(board.createdAt)}</span>

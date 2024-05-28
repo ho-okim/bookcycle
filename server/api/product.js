@@ -77,6 +77,7 @@ router.get('/productList/product', async (req, res) => {
     try {
         // 상품 목록 조회
         const query = mysql.format(sql+order_sql, variables);
+        console.log(query)
         const body = await pool.query(query);
 
         res.send(body);

@@ -3,10 +3,8 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { sellerReviewWrite, sellerReviewEditData, sellerReviewEdit } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
-
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
-
 
 function SellerReviewEdit() {
 
@@ -126,11 +124,11 @@ function SellerReviewEdit() {
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
             <p>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContentChange}></textarea>
+            <textarea value={reviewContent} onChange={handleReviewContentChange}maxLength={3000}/>
           </div>
           <div className={styles.btnWrap}>
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/${id}/buyRevList`)}}/>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="수정" onClick={() => handleSubmit()}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/${id}/buyRevList`)}}/>
           </div>
         </div>
       </Container>

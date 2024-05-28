@@ -1,4 +1,5 @@
 import { StarFill } from "react-bootstrap-icons";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function starRating(rate) {
 
@@ -14,7 +15,7 @@ function starRating(rate) {
     ));
 
     return (
-        <div>
+        <div className="d-flex align-items-center">
             {yellowStars}
             {grayStars}
         </div>

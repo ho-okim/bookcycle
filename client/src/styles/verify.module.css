@@ -1,11 +1,12 @@
 .box{
+    margin-top: 15vh;
     padding: 30px;
     border: 1px solid #eee;
     border-radius: 10px;
 }
 
 .home_link {
-    color: blue;
+    color: rgb(22, 72, 99);
 }
 
 .home_link:hover{

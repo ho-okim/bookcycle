@@ -105,11 +105,11 @@ function BuyerReviewWrite() {
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
             <p>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContent}></textarea>
+            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000}/>
           </div>
           <div className={styles.btnWrap}>
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
           </div>
         </div>
       </Container>

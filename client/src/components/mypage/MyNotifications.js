@@ -1,7 +1,7 @@
 import styles from '../../styles/mypage.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { dateTimeProcessing } from '../../lib/dateProcessing';
 import {Book, Clipboard2Fill, MegaphoneFill, Pencil, PersonFill} from 'react-bootstrap-icons';
 import { Table } from 'react-bootstrap';
@@ -24,23 +24,13 @@ function MyNotifications() {
     const location = useLocation(); // location 객체
 
     // 내 알림 전체 가져오기
-    async function getNotificationList() { 
+    const getNotificationList = useCallback(async ()=>{
         const res = await getNotification();
-        setNotification(res);
-    }
+        setNotification(res.result);
 
-    // 안 읽은 알림 수 표시
-    function getNotReadAlerts() {
-        if (notification && notification.length > 0) { // 알림이 있을 때만 동작
-            let count = 0;
-            for(let i = 0; i < notification.length; i++) {
-                if (notification[i].read_or_not === 0) {
-                    count++;
-                }
-            }
-            setNotReadAlerts(count);
-        }
-    }
+        // 안 읽은 알림 수 표시
+        setNotReadAlerts(res.unread);
+    });
 
     // 알림 클릭시 이동할 link 생성
     function generateRoute(alert) {
@@ -96,12 +86,7 @@ function MyNotifications() {
 
     useEffect(()=>{ // 사용자 변경 시 알림 목록 다시 설정
         getNotificationList();
-        getNotReadAlerts();
     }, [user]);
-
-    if (!user) { // 로그인을 안 한 상태라면 login으로 이동
-        navigate("/login");
-    }
 
     return(
         <div className={styles.content}>

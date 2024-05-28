@@ -107,7 +107,7 @@ function Report({ show, handleClose, targetId, category }) {
           신고하기
         </Button>
         <Button
-          variant="secondary"
+          variant="outline-secondary"
           style={{ fontSize: "17px" }}
           onClick={handleHide}
         >

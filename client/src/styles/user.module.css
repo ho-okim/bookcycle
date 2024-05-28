@@ -1,9 +1,18 @@
+/* 공통 */
 .undrag{
     -ms-user-select: none;
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+}
+
+.text_hidden{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: keep-all;
 }
 
 .other_user_nologin{
@@ -30,30 +39,6 @@
 .more_btn:hover, .more_btn:active{
     background-color: rgb(77, 145, 182);
     border: 1px solid rgb(77, 145, 182);
-}
-
-.pagination *{
-    border:none;
-}
-
-.pagination a{
-    color : #a6a6a6 !important;
-    text-decoration: none !important;
-}
-
-.pagination a:hover{
-    color : rgb(77, 145, 182) !important;
-    text-decoration: underline !important;
-}
-
-.pagination{
-    --bs-pagination-color: #ddd !important;
-    --bs-pagination-active-color: rgb(0, 166, 255) !important;
-    --bs-pagination-active-border-color: none !important;
-    --bs-pagination-active-bg: none !important;
-    --bs-pagination-hover-bg: none !important;
-    --bs-pagination-focus-color: rgb(77, 145, 182) !important;
-    --bs-pagination-focus-box-shadow: none !important;
 }
 
 /* 다른 사용자 정보 */
@@ -129,26 +114,24 @@
     margin: 5px;
 }
 
+/* 신고 */
 .report_box{
-    width: 80px;
+    width: 100px;
     position: absolute; right:5px; top:5px;
 }
 
-.report_btn{
-    margin:0; padding:0;
-    width: 100%;
-    border: 1px solid rgb(220, 53, 69);
-    font-size: 16px;
+.alertBtn {
+    border: none;
 }
 
-.alread_reported{
-    width: 100%;
-    padding: 3px;
-    border: 1px solid rgb(220, 53, 69);
-    border-radius: 7px;
-    color: rgb(220, 53, 69);
-    font-size: 15px;
-    text-align: center;
+.alertBtn:hover, .alertBtn:active, .alertBtn:focus{
+    background-color: transparent !important;
+    /* border: 1px solid #6C757D; */
+    color: #6C757D !important;
+}
+
+.already_reported{
+    color: #6C757D;
 }
 
 .blocked_box{
@@ -169,7 +152,6 @@
 }
 
 /* 정렬, 필터 */
-
 .sort_box {
     margin-left: 10px;
     padding: 6px 10px;
@@ -230,7 +212,7 @@
 }
 
 .filter_btn:hover{
-    color: rgb(22, 72, 99);
+    color: #427D9D;
 }
 
 .filter_input_box {
@@ -249,21 +231,36 @@
 }
 
 .filter_apply:hover, .filter_apply:active, .filter_apply:focus{
-    background-color: rgb(22, 72, 99) !important;
+    background-color: #427D9D !important;
     border:none;
 }
 
 /* 유저 리뷰 */
+.reviewtag_title{
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+@media screen and (max-width: 992px) {
+    .reviewtag_title{
+        margin-top: 30px;
+    }
+}
+
+.review_table{
+    margin: 0 auto;
+    width: 80%;
+}
 
 .liked{
-    padding: 10px;
-    width: 30%;
+    padding: 10px 0;
+    width: 25%; min-width: 80px;
     text-align: center;
 }
 
 .tag{
-    padding: 10px;
-    width: 70%;
+    padding: 10px 0;
+    width: 50%; min-width: 240px;
     text-align: left;
 }
 
@@ -286,12 +283,16 @@
 }
 
 /* 상품 구매, 판매 리뷰 */
+.date{
+    color: #6A6A6A;
+    font-size: 14px;
+}
 
 .review_tag_table {
     width: 100%;
 }
 
-.review_box{
+.review_box, .review_box_long{
     margin: 3px 0;
     border-bottom: 1px solid #ddd;
 }
@@ -309,6 +310,9 @@
 
 .review_content {
     text-align: center;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     overflow: hidden;
 }
 
@@ -323,10 +327,28 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 10px;
+    grid-gap: 25px;
 }
 
-.book_box{ min-width: 80px; max-width: 150px; }
+.book_box{ 
+    width: 100%;
+    margin:0 auto;
+    min-width: 80px; max-width: 150px;
+}
+
+@media screen and (max-width:768px) {
+    .book_list_box{
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 15px;
+    }
+}
+
+@media screen and (max-width:576px) {
+    .book_list_box{
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 15px;
+    }
+}
 
 .book_card a{
     text-decoration: none; color:black;
@@ -347,7 +369,7 @@
 .book_image {
     width: 100%; height: 100%;
     display:block;
-    aspect-ratio: 1/1.75;
+    aspect-ratio: 1/1.65;
     border-radius: 5px;
 }
 
@@ -360,23 +382,59 @@
 .book_info .price{
     padding:0; margin: 5px 0 0;
     text-align: center;
+    color : #979797;
+    font-size: 14px;
 }
 
+/* 페이지네이션 */
 .pagination_wrap {
-    margin-top : 10px;
-    position: relative;
+    margin-top : 20px;
     display: flex; justify-content: center;
 }
 
+.pagination_wrap ul{
+    margin:0 !important;
+}
+
+.pagination *{
+    border:none;
+}
+
+.pagination a{
+    color : #a6a6a6 !important;
+    text-decoration: none !important;
+    position: inherit;
+}
+
+.pagination a:hover{
+    color : rgb(77, 145, 182) !important;
+    text-decoration: underline !important;
+}
+
+.pagination{
+    --bs-pagination-color: #ddd !important;
+    --bs-pagination-bg: transparent !important;
+    --bs-pagination-active-color: rgb(0, 166, 255) !important;
+    --bs-pagination-active-border-color: none !important;
+    --bs-pagination-active-bg: none !important;
+    --bs-pagination-hover-bg: none !important;
+    --bs-pagination-focus-color: rgb(77, 145, 182) !important;
+    --bs-pagination-focus-box-shadow: none !important;
+}
+
+.back_wrap{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .back_btn{
-    width: 180px;
     padding: 7px;
-    position:absolute; top: 0; right: 0;
+    float: right;
     border-radius: 5px;
 }
 
 @media screen and (max-width:768px ) {
-    
     .pagination_wrap {
         margin-top : 10px;
         display: flex; flex-direction: column;
@@ -384,18 +442,7 @@
         align-items: center;
     }
 
-    .back_btn{
-        width: 180px;
-        padding: 7px;
-        position:relative;
-        border-radius: 5px;
+    .back_wrap{
+        justify-content: center;
     }
-}
-
-.text_hidden{
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    word-break: keep-all;
 }

@@ -88,7 +88,7 @@ function SellerReviewWrite() {
             <div>{star}</div>
           </div>
           <div className={`${styles.review} ${styles.selectTag}`}>
-            <p>어떤 점이 좋았나요? <span>택 1</span></p>
+            <p className='fs-5'>어떤 점이 좋았나요? <span>택 1</span></p>
             <div className={styles.tagWrap}>
               {reviewTags.map((tag, index) => {
                 return (
@@ -105,12 +105,12 @@ function SellerReviewWrite() {
             </div>
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
-            <p>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContent}></textarea>
+            <p className='fs-5'>리뷰작성 <span>필수</span></p>
+            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000}/>
           </div>
           <div className={styles.btnWrap}>
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
           </div>
         </div>
       </Container>

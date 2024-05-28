@@ -82,49 +82,49 @@ function Login() {
     <Container className={styles.login_box}>
       <div className='inner text-center d-flex justify-content-center'>
         <div className={styles.login_inner_box}>
-        <h2 className={styles.title}>로그인</h2>
-        <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
-          <div className={styles.input_box}>
-            <input name="email" placeholder="email / 이메일"
-            className={styles.input_form}
-            onChange={(e)=>{handleEmail(e.target.value)}} 
-            maxLength={50}
-            autoFocus/>
-            <div className={styles.password_box}>
-              <input name="password" placeholder="password / 비밀번호"
+          <h2 className={`${styles.title} ${styles.undrag}`}>로그인</h2>
+          <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
+            <div className={styles.input_box}>
+              <input name="email" placeholder="email / 이메일"
               className={styles.input_form}
-              type={(pwdVisible) ? "text" : "password"}
-              onChange={(e)=>{handlePassword(e.target.value)}}
-              maxLength={13}/>
-              <span className={styles.password_eye} 
-              onClick={handlePasswordVisible}>
-                {
-                  (pwdVisible) ? 
-                  <EyeSlash/>:<Eye/>
-                }
-              </span>
+              onChange={(e)=>{handleEmail(e.target.value)}} 
+              maxLength={50}
+              autoFocus/>
+              <div className={styles.password_box}>
+                <input name="password" placeholder="password / 비밀번호"
+                className={styles.input_form}
+                type={(pwdVisible) ? "text" : "password"}
+                onChange={(e)=>{handlePassword(e.target.value)}}
+                maxLength={13}/>
+                <span className={styles.password_eye} 
+                onClick={handlePasswordVisible}>
+                  {
+                    (pwdVisible) ? 
+                    <EyeSlash/>:<Eye/>
+                  }
+                </span>
+              </div>
             </div>
-          </div>
-          {
-            errorMessage ?
-            <div className={styles.error_box}>{errorMessage}</div>
-            : null
-          }
-          <div>
-            <button className={styles.login_btn} type="submit" onClick={()=>{check()}}>확인</button>
-            <Button className={styles.back_btn} variant='outline-secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
-          </div>
-          <div className={styles.more_info}>
+            {
+              errorMessage ?
+              <div className={styles.error_box}>{errorMessage}</div>
+              : null
+            }
             <div>
-              <span className={`${styles.join_info} regular`}>BookCycle에 처음이신가요?</span>
-              <Link to="/join" className={styles.join_link}>회원가입</Link>
+              <Button className={styles.login_btn} type="submit" onClick={()=>{check()}}>확인</Button>
+              <Button className={styles.back_btn} variant='outline-secondary' type="button" onClick={()=>{navigate("/")}}>취소</Button>
             </div>
-            <div>
-              <span className={`${styles.join_info} regular`}>비밀번호를 잊어버리셨나요?</span>
-              <Link to="/password/find" className={styles.join_link}>비밀번호 찾기</Link>
+            <div className={`${styles.more_info} ${styles.undrag}`}>
+              <div>
+                <span className={`${styles.join_info} regular`}>BookCycle에 처음이신가요?</span>
+                <Link to="/join" className={styles.join_link}>회원가입</Link>
+              </div>
+              <div>
+                <span className={`${styles.join_info} regular`}>비밀번호를 잊어버리셨나요?</span>
+                <Link to="/password/find" className={styles.join_link}>비밀번호 찾기</Link>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
         </div>
       </div>
     </Container>
