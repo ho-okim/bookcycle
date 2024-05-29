@@ -1,8 +1,8 @@
-import styles from "../../styles/board.module.css";
+import styles from "../../styles/productDetail.module.css";
 import {useState, useEffect} from 'react';
 import Button from "react-bootstrap/Button";
-import { BalloonHeart } from "react-bootstrap-icons";
-import { BalloonHeartFill } from "react-bootstrap-icons";
+import { Heart } from "react-bootstrap-icons";
+import { HeartFill } from "react-bootstrap-icons";
 import { 
     productLike, 
     productUnLike, 
@@ -81,7 +81,7 @@ function Favorite (){
     <div className='heartproduct'>
     {!user ? (
         <div className={styles.heartCount}>
-          <BalloonHeart
+          <Heart
             size="20"
             className={styles.heartIcon}
             onClick={() => productUnLike()}
@@ -92,13 +92,13 @@ function Favorite (){
       ) : (
         <div className={styles.heartCount}>
           {productLikeStates.find((el) => el.product_id === Number(id)) ? (
-            <BalloonHeartFill
+            <HeartFill
               size="20"
               className={styles.heartIcon}
               onClick={() => changeToproductUnLike()}
             />
           ) : (
-            <BalloonHeart
+            <Heart
               size="20"
               className={styles.heartIcon}
               onClick={() => changeToproductLike()}

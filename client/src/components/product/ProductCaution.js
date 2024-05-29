@@ -5,11 +5,11 @@ import React from 'react';
 function ProductCaution(){
 
     return(
-    <div className={`${style.infocaution}`}>
-        <div className={`${style.info01}`}>
+    <div className={`${style.cateinfo1}`}>
+        <div className={`${style.cateinfo2_1}`}>
             <span>주의 사항</span>
         </div>
-        <div className ={`${style.infocaution2}`}>
+        <div className ={`${style.cateinfo3_1}`}>
             <span>
                 1. 판매되는 중고상품의 취소 및 반품은 판매자와 별도 협의로만 가능합니다.  <br/> 
                 2. 직거래로 인한 피해 발생 시 BookCycle는 일체 책임지지 않습니다. <br/> 

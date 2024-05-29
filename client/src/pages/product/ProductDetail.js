@@ -2,8 +2,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge, Stack } from "react-bootstrap";
 import style from "../../styles/productDetail.module.css";
 import { useEffect, useState, react } from 'react';
+import { ChatDotsFill } from "react-bootstrap-icons";
+import { StarFill } from "react-bootstrap-icons";
 import { useAuth } from "../../contexts/LoginUserContext";
-import { MegaphoneFill } from "react-bootstrap-icons";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
 import { getCategory } from '../../api/product.js';
@@ -91,7 +92,7 @@ function ProductDetail() {
         // ownerId = 상품소유자id
         return (
           <>
-            <Button variant='danger' size="sm" onClick={handleOpen}><MegaphoneFill/> 신고</Button>
+            <Button variant="outline-secondary" className={style.secondary} onClick={handleOpen}>신고하기 <img style={{width: '35px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/></Button>
             <Report show={modalShow} handleClose={handleClose} targetId={product.product_id} category={'product'}/>
           </>
         )
@@ -107,7 +108,7 @@ function ProductDetail() {
     return(
       <ProductDetailContext.Provider value={{id, likehit}}>
       <Container>
-        <div className={`${style.inner}`}>
+        <div className='inner'>
           {
             product.seller_id == user?.id ?
             <>
@@ -123,12 +124,12 @@ function ProductDetail() {
                   <div className='book-info'>
                     <Container>
                       <div className={`${style.name}`}>
-                        <span>{product.product_name}&nbsp;&nbsp;</span>
+                        <h2>&nbsp;&nbsp;{product.product_name}&nbsp;&nbsp;</h2>
                         <div className='sold'>
                         {
                           (product.soldDate) ?
                           <Stack direction="horizontal" gap={2}>
-                             <Badge bg = "primary">판매 완료</Badge>
+                             <h2><Badge bg = "primary">판매 완료</Badge></h2>
                           </Stack>
                           : null
                         }
@@ -146,11 +147,22 @@ function ProductDetail() {
                     </Container>
                     <Container>
                       <div className={`${style.optioninfo}`}>
+                        <div className={`${style.optionlist}`}>
                         <p className='option'><span>저자 : {product.writer}</span></p>
                         <p className='option'><span>출판사 : {product.publisher}</span></p> 
                         <p className='option'><span>출간일 : {new Date(product.publish_date).toLocaleDateString()}</span></p>
                         <p className='option'><span>게시일 : {new Date(product.createdAt).toLocaleDateString()}</span></p>
+                        </div>
+                        <div className={`${style.favorite}`}>
+                      <Favorite/>
                       </div>
+                      <div className={`${style.warning}`}>
+                      {
+                        renderReportBtn()
+                      }
+                      </div>
+                      </div>
+                      
                     </Container>
                   </div>  
 
@@ -158,6 +170,7 @@ function ProductDetail() {
             }
         </div>
         <Container>
+          <div className='inner'>
             <div className={`${style.innerbox}`}>  
             {
               (product) ?
@@ -171,37 +184,91 @@ function ProductDetail() {
                     }
                       </div>
                     <div className={`${style.infocate}`}>                     
-                      <div className={`${style.cateinfo}`}>카테고리 : <span>{product.category_name}</span></div> 
-                      <div className={`${style.cateinfo}`}>ISBN 10 : <span>{product.isbn10}</span></div> 
-                      <div className={`${style.cateinfo}`}>ISBN 13 : <span>{product.isbn13}</span></div> 
-                      <div className={`${style.cateinfo}`}>판매가 : <span>{product.price}</span></div> 
+                      <div className={`${style.cateinfo1}`}>
+                        <div className={`${style.cateinfo2}`}>
+                          <span>판매자</span>
+                        </div>
+                        <div className={`${style.cateinfo3_name}`}>
+                          <div className={`${style.scorebox}`}>
+                            <div className={`${style.mannerbox}`}>
+                              {
+                                (product.manner_score) ?
+                                (product.manner_score).toFixed(1)
+                                : '-'
+                              }
+                            </div>
+                            <StarFill className={`${style.score_star}`}/>
+                          </div>
+                          <div className={`${style.nickname}`}>
+                          <h3>{product.nickname} &nbsp; </h3>
+                          </div>
+                          <div className={`${style.user_chat}`}>
+                          <Link to={'/chat'} ><ChatDotsFill size="40" className={style.namechat}/></Link>
+                          </div>  
+                        </div>
+                      </div> 
+                      <div className={`${style.cateinfo1}`}>
+                        <div className={`${style.cateinfo2}`}>
+                          <span>가격</span>
+                        </div>
+                        <div className={`${style.cateinfo3}`}>    
+                          <h3>{product.price}원</h3>
+                        </div> 
+                      </div>
+                      <div className={`${style.cateinfo1}`}>
+                        <div className={`${style.cateinfo2}`}>
+                          <span>ISBN</span>
+                        </div>
+                        <div className={`${style.cateinfo3}`}>
+                          <span>ISBN 10: {product.isbn10}<br/></span>    
+                          <span>ISBN 13: {product.isbn13}</span>
+                        </div> 
+                      </div>
+                      <div className={`${style.cateinfo1}`}>
+                        <div className={`${style.cateinfo2}`}>
+                          <span>카테고리</span>
+                        </div>
+                        <div className={`${style.cateinfo3}`}>    
+                          <span>{product.category_name}</span>
+                        </div> 
+                      </div>
+                      <div className={`${style.cateinfo1}`}>
+                        <div className={`${style.cateinfo2}`}>
+                          <span>책 소개 내용</span>
+                        </div>
+                        <div className={`${style.cateinfo3}`}>    
+                          <span>{product.description}</span>
+                        </div> 
+                      </div>
+                        <ProductCaution/>
                     </div>
-                      <div>
+                      {/* <div>
                       {
                         renderReportBtn()
                       }
                       </div>
                       <div>
                       <Favorite/>
-                      </div>
+                      </div> */}
                     </>
               : <p>상품 정보를 찾을 수 없습니다</p>
             }
             </div>
+            </div>
         </Container>
-
+            {/* <div className='inner'>
       <div className={`${style.boxinfo}`}>
       {
             (product) ?
                   <>
-                  {/* <div className={`${style.info0102}`}>
+                  <div className={`${style.info0102}`}>
                     <div className={`${style.info01}`}>
                       <span>책 제목</span>
                     </div>
                     <div className ={`${style.info02}`}>
                       <span>{product.product_name}</span>
                     </div>
-                  </div> */}
+                  </div>
                   <div className={`${style.info0102}`}>
                     <div className={`${style.info01}`}>
                       <span>책 상태</span>
@@ -228,7 +295,7 @@ function ProductDetail() {
             : <p>아직 등록한 상품이 없어요!</p>
             }
         </div> 
-
+        </div> */}
         <OtherProduct id={product.seller_id}/>
       </Container>
       </ProductDetailContext.Provider>
