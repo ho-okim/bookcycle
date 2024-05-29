@@ -25,10 +25,27 @@ function BoardSorting({order, setOrder}){
   }
   const optionName = nameTransform(); // 정렬 버튼 이름
 
+  function generateUrl(eventKey) { // 새 url 생성
+    let newUrl = url; // /board 기본 경로
+    let sortUrl = `order=${eventKey}&ascend=${order.updown}`;
+
+    const keyword = searchParams.get("search");
+    const searchType = searchParams.get("stype");
+
+    if (searchParams.get('search')) {
+      newUrl = `${url}?search=${keyword}&stype=${searchType}&${sortUrl}`;
+    } else {
+      newUrl = `${url}?${sortUrl}`;
+    }
+    return newUrl;
+  }
+
   function handleSort(eventKey, event) {
     event.persist();
     setOrder((order)=>({...order, sortBy : eventKey, updown : order.updown}));
-    navigate(`${url}?order=${eventKey}&ascend=${order.updown}`)
+
+    let newUrl = generateUrl(eventKey);
+    navigate(newUrl);
   }
 
   return(
