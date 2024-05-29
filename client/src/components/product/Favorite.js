@@ -87,7 +87,6 @@ function Favorite (){
             onClick={() => productUnLike()}
           />
           <span>좋아요 </span>
-        
         </div>
       ) : (
         <div className={styles.heartCount}>
@@ -104,8 +103,6 @@ function Favorite (){
               onClick={() => changeToproductLike()}
             />
           )}
-          <span>좋아요 </span>
-          <span className={styles.likeCounts}>{productlikeCounts}</span>개
         </div>
       )}
       </div>

@@ -43,7 +43,7 @@ import VerifyConfirmed from './components/verify/VerifyConfirmed.js';
 import VerifyError from './components/verify/VerifyError.js';
 import VerifyExpired from './components/verify/VerifyExpired.js';
 import VerifyNotFound from './components/verify/VerifyNotFound.js';
-import Error from './pages/Error.js';
+import Error from './components/Error.js';
 import UserReviewList from './components/user/UserReviewList.js';
 import Search from './pages/Search.js';
 import SearchUser from './components/search/SearchUser.js';

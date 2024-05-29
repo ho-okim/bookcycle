@@ -1,39 +1,41 @@
 
+
 .error_box{
-    margin: 80px;
+  margin: 80px;
 }
 
 .title {
-    font-size: 80px;
-    text-align: center;
-    color: #4D91B6;
+  font-size: 90px;
+  text-align: center;
+  color: #4D91B6;
 }
 
 .content_box {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .error_message {
-    line-height: 2;
+  line-height: 2;
 }
 
 .error_goHome {
-    border: none;
-    border-radius: 20px;
-    padding: 5px 20px;
-    margin-top: 10px;
-    background-color: #4D91B6;
-    font-size: 15px;
+  padding: 5px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 20px;
+  background-color: #4D91B6;
+  transition-property: background-color;
+  transition-duration: 0.25s; 
+  font-size: 15px;
 }
 
 .error_goHome:hover {
-    background-color: #427D9D;
-    transition: 0.2s;
+  background-color: #427D9D;
 }
 
 .goHome{
-    color: #Fff;
+  color: #Fff;
 }
