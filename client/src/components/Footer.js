@@ -24,45 +24,45 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
                 <div className='d-flex'>
                   <div>
                     <div>
-                      <p className="medium d-flex align-items-center">
+                      <div className="medium d-flex align-items-center">
                         <Link to="https://github.com/ho-okim">
                           <div className='d-flex align-items-center footerTextSize'>
                             <Github className='footerGithubIcon'/><span>ho-okim</span>
                           </div>
                         </Link>
-                      </p>
-                      <p className="medium d-flex align-items-center">
+                      </div>
+                      <div className="medium d-flex align-items-center">
                         <Link to="https://github.com/nahyun1012">
                           <div className='d-flex align-items-center footerTextSize'>
                             <Github className='footerGithubIcon'/><span>nahyun1012</span>
                           </div>
                         </Link>
-                      </p>
-                      <p className="medium d-flex align-items-center">
+                      </div>
+                      <div className="medium d-flex align-items-center">
                         <Link to="https://github.com/Sonamuhan">
                           <div className='d-flex align-items-center footerTextSize'>
                             <Github className='footerGithubIcon'/><span>Sonamuhan</span>
                           </div>
                         </Link>
-                      </p>
+                      </div>
                     </div>
                   </div>
                   <div>
                     <div>
-                      <p className="medium d-flex align-items-center">
+                      <div className="medium d-flex align-items-center">
                         <Link to="https://github.com/Kimyejin22">
                           <div className='d-flex align-items-center footerTextSize'>
                             <Github className='footerGithubIcon'/><span>Kimyejin22</span>
                           </div>
                         </Link>
-                      </p>
-                      <p className="medium d-flex align-items-center">
+                      </div>
+                      <div className="medium d-flex align-items-center">
                         <Link to="https://github.com/ase10git">
                           <div className='d-flex align-items-center footerTextSize'>
                             <Github className='footerGithubIcon'/><span>ase10git</span>
                           </div>
                         </Link>
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>

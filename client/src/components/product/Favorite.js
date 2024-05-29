@@ -37,9 +37,9 @@ function Favorite (){
         setproductLikeCounts(likehit);
     }, [id, likehit]);
 
-    console.log("좋아요 개수: ", productlikeCounts);
-    console.log("로그인 회원이 좋아요한 게시글(likeStates): ", productLikeStates);
-    console.log("id: ", id);
+    // console.log("좋아요 개수: ", productlikeCounts);
+    // console.log("로그인 회원이 좋아요한 게시글(likeStates): ", productLikeStates);
+    // console.log("id: ", id);
 
     const changeToproductLike = async () => {
         if (!user) {

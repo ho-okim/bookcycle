@@ -15,6 +15,7 @@ import ProductDetailContext from "../../contexts/ProductDetailContext.js";
 import ProductCaution from "../../components/product/ProductCaution.js";
 import { dateTimeProcessing } from "../../lib/dateProcessing.js";
 import DefaultModal from "../../components/DefaultModal.js";
+import { newChatroom } from "../../api/chat.js";
 
 
 function ProductDetail() {
@@ -50,6 +51,14 @@ function ProductDetail() {
   const handleOpen = () => { // modal 열기 처리
     if (!modalShow) setModalShow(true);
   };
+
+  // 신규 채팅방 개설
+  const handleCreateChatroom = async () => {
+    const seller_id = product.seller_id;
+    const result = await newChatroom(id, seller_id);
+    
+    navigate('/chat', {state: {chatroomId: result}})
+  }
 
   const [like, setLike] = useState(0, 0, 0) //좋아요 셋팅
 
@@ -206,7 +215,7 @@ function ProductDetail() {
                           <h3>{product.nickname} &nbsp; </h3>
                           </div>
                           <div className={`${style.user_chat}`}>
-                          <Link to={'/chat'} ><ChatDotsFill size="40" className={style.namechat}/></Link>
+                          <Link onClick={handleCreateChatroom}><ChatDotsFill size="40" className={style.namechat}/></Link>
                           </div>  
                         </div>
                       </div> 

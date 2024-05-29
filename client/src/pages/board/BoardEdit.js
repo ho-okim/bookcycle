@@ -2,11 +2,11 @@ import styles from '../../styles/boardWrite.module.css';
 import { useState, useEffect } from 'react';
 import {boardEdit, boardDetail, boardWrite, fileupload, fileupdate} from '../../api/board.js';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Container from "react-bootstrap/Container";
-import Button from 'react-bootstrap/Button';
+import { Container, Button } from "react-bootstrap";
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
+import Error from '../Error.js'
 
 // 버려진 기존 파일 이름 담을 배열
 var delFiles = []
@@ -144,6 +144,10 @@ function BoardEdit() {
     navigate("/login");
   } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
     navigate("/error/401");
+  }
+  
+  if(!defaultData){
+    return <Error/>
   }
 
   return (
