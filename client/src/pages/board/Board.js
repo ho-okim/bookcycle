@@ -8,7 +8,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Form from 'react-bootstrap/Form';
-import {ChatLeftDots, Search, Eye, Heart, PersonFillSlash} from 'react-bootstrap-icons';
+import {ChatLeftDots, Search, Eye, Heart, PersonFillSlash, ExclamationCircleFill, Ban} from 'react-bootstrap-icons';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { dateProcessingDash } from '../../lib/dateProcessing.js';
 
@@ -61,7 +61,7 @@ function Board() {
     
   }, [searchParams]);
 
-  function onPost() {
+  function onPost(){
     navigate('/board/write');
   }
 
@@ -71,8 +71,7 @@ function Board() {
         <div className="inner">
           <div className={`col ${styles.boardHeader} d-flex justify-content-between align-items-center`}>
             <h2 className={`${styles.title} m-0`}>게시판</h2>
-            {(user || user?.blocked === 0) ?
-              <Button onClick={onPost} className={styles.onPost}>글쓰기</Button>:null}
+            {(!user || user?.blocked === 1) ? null : <Button onClick={onPost} className={styles.onPost}>글쓰기</Button>}
           </div>
           <div className={`col ${styles.listHeader} d-flex justify-content-between`}>
             <p>총 {contents.length}건</p>
@@ -92,9 +91,9 @@ function Board() {
                   <div className={`${styles.listContent} regular`}>{content.content}</div>
                   <div className={`${styles.listInfo} d-flex justify-content-between regular`}>
                     <div className='userInfo'>
-                      <span className={`${styles.userid} medium`}>
+                      <span className={(content.user_blocked === 1 ? styles.bannedUserId : styles.userid)}>
                         {(content.user_blocked === 1) ? 
-                        <PersonFillSlash className='fs-6 me-1'/> : null}
+                        <Ban className='fs-6 me-1'/> : null}
                         {content.nickname}
                       </span>
                       <span className={styles.date}>{dateProcessingDash(content.createdAt)}</span>

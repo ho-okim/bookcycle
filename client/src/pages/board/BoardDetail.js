@@ -1,13 +1,13 @@
 import styles from '../../styles/board.module.css';
 import { boardDetail, boardDelete, filesList } from '../../api/board.js';
 import ReplyForm from '../../components/board/ReplyForm.js'
+import Error from '../../components/Error.js'
 import Report from '../../components/Report.js';
 import BoardContext from '../../contexts/BoardContext.js';
-import Error from '../Error.js';
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
-import { DashCircle, Ban, Trash3, Pencil, ExclamationTriangle, PersonFillSlash } from 'react-bootstrap-icons';
+import { DashCircle, Ban, Trash3, Pencil } from 'react-bootstrap-icons';
 import { useParams } from 'react-router-dom';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
@@ -47,11 +47,6 @@ function BoardDetail(){
 
       try {
         const data = await boardDetail(id)
-      
-          console.log("user id: ", user?.id);
-          console.log("block: ", data.blocked)
-          console.log("blocked state: ", isBlocked)
-          console.log("myblocked state: ", myBlockedPost)
 
           setIsBlocked(false);
           setMyBlockedPost(false);
@@ -137,9 +132,7 @@ function BoardDetail(){
     <BoardContext.Provider value={{id, content}}>
       <Container className={styles.boardDetail}>
         <div className="inner">
-          <div className={`${styles.titleWrap} d-flex justify-content-between align-items-center`}>
-            <h2 className={styles.title}>게시글</h2>
-          </div>
+          <h2 className={styles.title}>게시글</h2>
           <div className={`col col-lg ${styles.detailWrapper}`}>
             {(isBlocked) ? (
               <div className={`${styles.blockedPost} d-flex flex-column align-items-center`}>
@@ -177,9 +170,9 @@ function BoardDetail(){
                 <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} boardId={id}/>
                 <div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                   <div className='info'>
-                    <span className={`${styles.userid} medium`}>
+                    <span className={(content.user_blocked === 1 ? styles.bannedUserId : styles.userid)}>
                       {(content.user_blocked === 1) ? 
-                      <PersonFillSlash className='fs-6 me-1'/> : null}
+                      <Ban className='fs-6 me-1'/> : null}
                       {content.nickname}
                     </span>
                     <span className={styles.date}>{DateProcessing(content.createdAt)}</span>

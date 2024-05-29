@@ -263,13 +263,13 @@ function ReplyList(){
           </div>
           {
             !user ? (
-              <div className={styles.heartCount}>
+              <div className='likeCount'>
                 <Heart size="20" className={styles.heartIcon} onClick={() => noUserLike()}/>
                 <span>좋아요 </span>
                 <span className={styles.likeCounts}>{likeCounts}</span>개
               </div>
             ) : (
-              <div className={styles.heartCount}>
+              <div className='likeCount'>
                 { 
                   likeStates.find(el => el.board_id === Number(id))
                   ? <HeartFill size="20" className={styles.heartIcon} onClick={() => changeToUnLike()}/>

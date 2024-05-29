@@ -1,11 +1,26 @@
 .updateBtn, .deleteBtn, .alertBtn, .goBoard {
-  border: 1px solid #e8e8e8;
+  border: none;
   font-size: 13px;
 }
 
-.inner{
-    margin-top: 70px;
-    font-size: 25px;
+.productHeader {
+    border-bottom: 1px solid #e8e8e8;
+    padding: 15px 0;
+}
+.productTitle {margin-bottom: 10px;}
+.productInfo .info {
+    font-size: 14px;
+    color: #6a6a6a;
+}
+.productInfo .info:nth-child(-n + 3):after {
+  content:'|';
+  margin: 8px;
+}
+
+
+.productDetail {
+    padding: 20px 0 30px 0;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 .optioninfo{
@@ -56,7 +71,6 @@
     width: 40%;
     min-width: 300px;
     margin-top: 20px;
-    
 }
 
 .book_image{
@@ -105,6 +119,7 @@
 .cateinfo2_1{
     width: 25%;
     color: #a7a2a2;
+    font-size: 14px;
 }
 
 .cateinfo3{
@@ -154,6 +169,7 @@
 .cateinfo3_1{
     width: 70%;
     color: #a7a2a2;
+    font-size: 14px;
 }
 
 .heartIcon{

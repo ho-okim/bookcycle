@@ -47,11 +47,9 @@
     overflow: hidden;
     color: #6A6A6A;
 }
-.board .listInfo .userid:after{
-  content:'|';
-  margin: 5px;
-}
-/* .board .list:hover {background-color: #f1f1f1;} */
+
+.bannedUserId {color: rgb(220, 53, 69);}
+
 .boardSort button{
   width: 100px; height: 100%;
   margin-right: 10px; padding: 5px 10px;
@@ -61,6 +59,12 @@
 
 .boardSort a:active{
   background-color: rgb(77, 145, 182) !important;
+}
+
+.board .listInfo .userid:after, .bannedUserId:after{
+  content:'|';
+  margin: 5px;
+  color: #6A6A6A;
 }
 
 @media screen and (max-width: 992px) {
@@ -84,7 +88,7 @@
 
 
 /* board-Detail (상세 게시글) */
-.boardDetail .titleWrap {margin: 40px 0 20px}
+.boardDetail .title {margin: 40px 0 20px}
 .boardDetail .blockedPost {
   margin: 60px 0;
 }
@@ -237,3 +241,4 @@
   border-color:none !important;
   box-shadow: none !important;
 }
+
