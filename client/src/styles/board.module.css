@@ -24,6 +24,9 @@
 .onPost:hover, .goBoard:hover{
   background-color: #427D9D;
 }
+.onPost:active, .onPost:focus, .goBoard:active, .goBoard:focus{
+  background-color: #427D9D !important;
+}
 .listInfo, .detailInfo, .replyInfo {
   font-size: 14px; color: #6A6A6A;
 }
@@ -168,7 +171,7 @@
   border: none;
   margin: 0 0 0 10px;
 }
-.replySubmit:hover {background-color: c;}
+.replySubmit:hover, .replySubmit:active, .replySubmit:focus {background-color: #427D9D !important;}
 
 .loginNeeded {margin: 100px 0 40px 0; text-align: center;}
 .login {color: #427D9D;}

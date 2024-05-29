@@ -8,7 +8,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Form from 'react-bootstrap/Form';
-import {ChatLeftDots, Search, Eye, Heart} from 'react-bootstrap-icons';
+import {ChatLeftDots, Search, Eye, Heart, PersonFillSlash} from 'react-bootstrap-icons';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { dateProcessingDash } from '../../lib/dateProcessing.js';
 
@@ -61,11 +61,15 @@ function Board() {
     
   }, [searchParams]);
 
-  async function onPost(){
-    if(user){
-      document.location.href = `/board/write`
-    } else{
-      alert('로그인 후 작성할  수 있습니다.')
+  function onPost(){
+    if(user) {
+      if (user.blocked === 1) {
+        alert('차단된 사용자는 글을 작성하실 수 없습니다!');
+      } else {
+        navigate('/board/write');
+      }
+    } else {
+      alert('로그인 후 작성할  수 있습니다.');
     }
   }
 
@@ -95,7 +99,11 @@ function Board() {
                   <div className={`${styles.listContent} regular`}>{content.content}</div>
                   <div className={`${styles.listInfo} d-flex justify-content-between regular`}>
                     <div className='userInfo'>
-                      <span className={`${styles.userid} medium`}>{content.nickname}</span>
+                      <span className={`${styles.userid} medium`}>
+                        {(content.user_blocked === 1) ? 
+                        <PersonFillSlash className='fs-6 me-1'/> : null}
+                        {content.nickname}
+                      </span>
                       <span className={styles.date}>{dateProcessingDash(content.createdAt)}</span>
                     </div>
                     <div className='boardInfo'>

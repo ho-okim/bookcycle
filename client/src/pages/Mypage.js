@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHref } from 'react-router-dom';
+import { useHref, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import LeftNav from '../components/mypage/LeftNav';
 import styles from "../styles/mypage.module.css";
@@ -17,10 +17,13 @@ import MyReportList from "../components/mypage/MyReportList";
 import ConfirmPassword from '../components/mypage/ConfirmPassword';
 import MyInfoEdit from '../components/mypage/MyInfoEdit';
 import MyNotifications from '../components/mypage/MyNotifications';
+import { useAuth } from '../contexts/LoginUserContext';
 
 function MyPage() {
 
+  const {user} = useAuth(); // 로그인 한 사용자
   const url = useHref();
+  const navigate = useNavigate();
 
   const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
   const [password, setPassword] = useState(null);
@@ -30,6 +33,11 @@ function MyPage() {
     setIsPasswordConfirmed(true);
     setPassword(inputPwd);
   };
+
+  if (!user) {
+    navigate('/login')
+    return null; // navigate 후에는 컴포넌트를 렌더링하지 않음  
+  }
 
   return (
     <>

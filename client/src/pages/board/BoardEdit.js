@@ -6,11 +6,15 @@ import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 // 버려진 기존 파일 이름 담을 배열
 var delFiles = []
 
 function BoardEdit() {
+  
+  const { user } = useAuth(); // 로그인 한 사용자
+
   const {id} = useParams();
 
   const navigate = useNavigate();
@@ -136,6 +140,11 @@ function BoardEdit() {
     }
   }
 
+  if (!user) { // 로그인 안 한 사용자 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
+  }
 
   return (
     <>

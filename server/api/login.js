@@ -118,7 +118,7 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
   
   // 사용자 정보 쿼리
   let user_sql = 'SELECT id, verification, blocked FROM users WHERE email = ?';
-// verification -> is_verified
+
   try { // 사용자 정보 조회 - 접근 차단용
     const user_query = mysql.format(user_sql, [decodedEmail]);
     const [userRes] = await pool.query(user_query);

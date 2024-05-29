@@ -14,7 +14,7 @@ function clampText(text, maxCharacters) {
 
 function LeftNav() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+
   const [nickname, setNickname] = useState('unknown');
   const [mannerScore, setMannerScore] = useState(0);
 
@@ -26,11 +26,6 @@ function LeftNav() {
       setMannerScore(user.manner_score);
     }
   }, [user]);
-
-  if (!user) {
-    navigate('/login')
-    return null; // navigate 후에는 컴포넌트를 렌더링하지 않음  
-  }
 
   let buyUrl = url.includes("buyList") || url.includes("buyGiveReviewList") || url.includes("buyGetReviewList") || url.includes("heartList")
   let sellUrl = url.includes("sellList") || url.includes("sellGiveReviewList") || url.includes("sellGetReviewList")

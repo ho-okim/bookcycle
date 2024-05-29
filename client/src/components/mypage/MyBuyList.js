@@ -6,9 +6,12 @@ import { dateProcessingDash } from '../../lib/dateProcessing.js';
 
 import { Table } from 'react-bootstrap';
 import styles from '../../styles/mypage.module.css';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 
 function MyBuyList() {
+  const {user} = useAuth(); // 로그인 한 사용자
+
   const [buyItems, setBuyItems] = useState([]);
 
   let total = buyItems.length; // 전체 게시물 수
@@ -56,7 +59,8 @@ function MyBuyList() {
                     <td>
                       {(item.buyer_id === item.writer_id) ? (
                         <div className={`${styles.reviewBtn} ${styles.complete}`}>작성완료</div>
-                      ) : (
+                      ) : (user.blocked=== 0) ?
+                      (
                         <Link
                           to={{ pathname: `/user/${item.seller_id}/sellerReviewWrite`,
                                 search: `?productId=${item.product_id}` }}
@@ -64,7 +68,7 @@ function MyBuyList() {
                         >
                           작성하기
                         </Link>
-                      )}
+                      ) : <div className={`${styles.reviewBtn} ${styles.complete}`}>작성불가</div>}
                     </td>
                   </tr>
                 ))}
