@@ -54,26 +54,22 @@ function MyReportList() {
             <Table responsive className={styles.table}>
               <thead className={styles.tradeList}>
                 <tr>
-                  <th>신고 번호</th>
                   <th>카테고리</th>
                   <th>신고 대상</th>
                   <th>내용</th>
-                  <th>날짜</th>
+                  <th>신고날짜</th>
                   <th>처리여부</th>
-                  <th>처리날짜</th>
                 </tr>
               </thead>
               <tbody>
                 {reportItem.slice(offset, offset + limit).map((el, i) => {
                   return (
                     <tr key={i}>
-                      <td>{el.id}</td>
                       <td>{setCategoryName(el.category)}</td>
                       <td>{el.target_id}</td>
                       <td>{el.content}</td>
                       <td>{dateProcessingDash(el.createdAt)}</td>
                       <td>{el.read_or_not}</td>
-                      <td>{el.updatedAt ? dateProcessingDash(el.updatedAt) : null}</td>
                     </tr>
                   );
                 })}

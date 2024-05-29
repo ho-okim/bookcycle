@@ -34,7 +34,7 @@ function MyPage() {
   return (
     <>
       <Container>
-        <div className={styles.inner}>
+        <div className={`${styles.inner} inner`}>
           <LeftNav />
           {url.includes('buyList') ? (<MyBuyList/>) : 
             url.includes('buyGiveReviewList') ? (<MyBuyGiveReviewList/>) :

@@ -2,7 +2,7 @@ import React from "react";
 import styles from '../../styles/mypage.module.css';
 import { ChevronDoubleLeft, ChevronLeft, ChevronRight, ChevronDoubleRight } from "react-bootstrap-icons";
 
-function Pagination({ offset, limit, page, total, setPage }) {
+function Pagination({ limit, page, total, setPage }) {
   const totalPages = Math.ceil(total / limit); // 전체 페이지 수
   const pagesPerGroup = 5; // 그룹 당 페이지 수
 
@@ -36,7 +36,7 @@ function Pagination({ offset, limit, page, total, setPage }) {
             key={startPage + i} 
             onClick={() => setPage(startPage + i)} 
             className={styles.pageNum}
-            style={{ color: page === startPage + i ? '#427D9D' : 'black' }}
+            style={{ color: page === startPage + i ? '#4D91B6' : '' }}
           >
             {startPage + i}
           </button>

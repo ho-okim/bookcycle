@@ -49,10 +49,10 @@ function MyBuyList() {
               <tbody>
                 {buyItems.slice(offset, offset + limit).map((item, index) => (
                   <tr key={index}>
-                    <td>{dateProcessingDash(item.soldDate)}</td>
+                    <td className={styles.date}>{dateProcessingDash(item.soldDate)}</td>
                     <td>{item.product_name}</td>
-                    <td>₩{parseInt(item.price).toLocaleString()}</td>
-                    <td><Link to={`/user/${item.seller_id}`}  className={styles.buy_seller}>{item.seller_nickname}</Link></td>
+                    <td>{parseInt(item.price).toLocaleString()}원</td>
+                    <td><Link to={`/user/${item.seller_id}`}>{item.seller_nickname}</Link></td>
                     <td>
                       {(item.buyer_id === item.writer_id) ? (
                         <div className={`${styles.reviewBtn} ${styles.complete}`}>작성완료</div>
