@@ -12,9 +12,9 @@ export async function buyList() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -33,9 +33,9 @@ export async function buyGiveReviewList() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -54,9 +54,9 @@ export async function buyGetReviewList() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -75,9 +75,9 @@ export async function heartList(sortOption) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -109,9 +109,9 @@ export async function sellGiveReviewList() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -131,9 +131,9 @@ export async function sellGetReviewList() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -152,9 +152,9 @@ export async function productPostList(sortOption) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -173,9 +173,9 @@ export async function boardPostList(sortOption) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -194,9 +194,9 @@ export async function confirmPassword(password) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       console.log("비밀번호가 일치하지 않습니다.")
       // window.location.href = '/error/401';
     } else {
@@ -217,11 +217,11 @@ export async function mypage() {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
-    } else if (error.response.status == 400) {
+    } else if (error.response.status === 400) {
       window.location.href = '/error/400';
     } else {
       window.location.href = '/error/500';
@@ -241,9 +241,9 @@ export async function mypageEdit(formData) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -263,9 +263,9 @@ export async function sellerReviewWrite(id) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -284,9 +284,9 @@ export async function sellerReviewWritePost(id, score, tagIndex, reviewContent, 
     return body;
     
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -306,9 +306,9 @@ export async function buyerReviewWrite(id) {
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -327,9 +327,9 @@ export async function buyerReviewWritePost(id, score, tagIndex, reviewContent, p
     return body;
     
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -348,9 +348,9 @@ export async function sellerReviewEditData(id, productId) {
       const body = res.data;
       return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -370,9 +370,9 @@ export async function sellerReviewEdit(id, score, tagIndex, reviewContent, produ
     const body = res.data;
   return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -391,11 +391,11 @@ export async function buyerReviewEditData(id, productId) {
       const body = res.data;
       return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
-    } else if (error.response.status == 400) {
+    } else if (error.response.status === 400) {
       //throw new Error("required data missing");
       window.location.href = '/error/400';
     } else {
@@ -416,9 +416,9 @@ export async function buyerReviewEdit(id, score, tagIndex, reviewContent, produc
     const body = res.data;
     return body;  
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -448,15 +448,17 @@ export async function profileupload(formData) {
       }
     })
     
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("mypage 로딩 실패");
       window.location.href = '/error/500';
     } 
     
     return res.statusText;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
+    } else if (error.response.status === 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }

@@ -6,14 +6,14 @@ export async function chatList(){
     const res = result.data.result[0]
     const ron = result.data.readOrNot[0]
   
-    if (result.statusText != "OK") {
+    if (result.statusText !== "OK") {
       //console.error("chatList GET fails");
       window.location.href = '/error/500';
     } 
     const body = {res, ron}
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -25,7 +25,7 @@ export async function newChatroom() {
   try {
     const res = await axios.post('/newChatroom');
   
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("creating new chatroom failed");
       window.location.href = '/error/500';
     } 
@@ -34,7 +34,7 @@ export async function newChatroom() {
     
     return body.insertId;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -48,7 +48,7 @@ export async function getChatMsg(roomId) {
     const result = await axios.get(URL);
     const res = result.data
     
-    if (result.statusText != "OK") {
+    if (result.statusText !== "OK") {
       //console.error("GET chat message failed");
       window.location.href = '/error/500';
     } 
@@ -56,7 +56,7 @@ export async function getChatMsg(roomId) {
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -70,7 +70,7 @@ export async function setBuyerId(targetId, productId) {
     const result = await axios.put(URL, {targetId, productId});
     const res = result.data
     
-    if (result.statusText != "OK") {
+    if (result.statusText !== "OK") {
       //console.error("PUT buyer id failed");
       window.location.href = '/error/500';
     } 
@@ -78,7 +78,7 @@ export async function setBuyerId(targetId, productId) {
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';

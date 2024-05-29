@@ -77,7 +77,6 @@ router.get('/productList/product', async (req, res) => {
     try {
         // 상품 목록 조회
         const query = mysql.format(sql+order_sql, variables);
-        console.log(query)
         const body = await pool.query(query);
 
         res.send(body);
@@ -190,7 +189,6 @@ router.post('/product/delete/:id', isLoggedIn, async (req, res) => {
       const query = mysql.format(sql, [id]);
       let result = await pool.query(query);
       result.forEach((el)=>{
-        console.log(el.filename)
         fs.unlink(`./client/public/img/product/${el.filename}`, (err)=>{})
       })
 
@@ -240,7 +238,7 @@ router.post('/product/edit/:id', isLoggedInAndBlocked, async(req, res) => {
 
   try {
     let result = await pool.query(query);
-    console.log("수정 결과: ", result)
+    //console.log("수정 결과: ", result)
   
     res.send(result);
 

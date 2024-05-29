@@ -71,7 +71,7 @@ export async function findpwd(email) {
                 }
                 return 'send';
             } catch (error) {
-                if (error.response.status == 403) {
+                if (error.response.status === 403) {
                     window.location.href = '/error/403';
                 } else {
                     throw error;
@@ -81,9 +81,9 @@ export async function findpwd(email) {
             return JSON.stringify({ message : 'error' });
         }
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/error/401';
-        } else if (error.response.status == 500) {
+        } else if (error.response.status === 500) {
             window.location.href = '/error/500';
         } else {
             window.location.href = '/error/500';
@@ -108,9 +108,9 @@ export async function resetpwd(formData) {
             const body = res.data;
             return body;
         } catch (error) {
-            if (error.response.status == 403) {
+            if (error.response.status === 403) {
                 window.location.href = '/error/401';
-            } else if (error.response.status == 400) {
+            } else if (error.response.status === 400) {
                 window.location.href = '/error/400';
             } else {
                 window.location.href = '/error/500';

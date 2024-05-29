@@ -31,11 +31,11 @@ function BoardList(){
   // 화면 최초로 rendering 될 때만 데이터 get 요청
   useEffect(()=>{
     let board
-    const test = async () => {
+    const getBoardList = async () => {
       board = await getBoard()
       setContents(board)
     }
-    test()
+    getBoardList()
   }, [])
 
   return(

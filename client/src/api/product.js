@@ -5,7 +5,7 @@ import REGEX from '../lib/regex.js';
 export async function getCategory() {
   const res = await axios.get('/product/category');
     
-  if (res.statusText != "OK") {
+  if (res.statusText !== "OK") {
     window.location.href = '/error/500';
   }
   const body = res.data;
@@ -60,7 +60,7 @@ export async function getProductList(limit, offset, order, filter, searchKeyword
 export async function productDetail(id) {
   const res = await axios.get(`/productDetail/${id}`);
   
-  if (res.statusText != "OK") {
+  if (res.statusText !== "OK") {
     // window.location.href = '/error/500';
   }
   const product = res.data;
@@ -74,7 +74,7 @@ export async function productLike(id){
   try {
     const res = await axios.post(`/product/like/${id}`)
   
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       window.location.href = '/error/500';
     } 
     const body = res.data;
@@ -82,9 +82,9 @@ export async function productLike(id){
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -97,7 +97,7 @@ export async function productUnLike(id){
   try {
     const res = await axios.post(`/product/unLike/${id}`);
 
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("unlike fails");
       window.location.href = '/error/500';
     } 
@@ -106,9 +106,9 @@ export async function productUnLike(id){
   
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -121,14 +121,14 @@ export async function productLikeState(id){
   try {
     const res = await axios.get(`/product/likeState/${id}`)
 
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       window.location.href = '/error/500';
     } 
     const body = res.data;
   
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     }
     window.location.href = '/error/500';
@@ -141,7 +141,7 @@ export async function filesList(id){
     const result = await axios.get(`/product/file/${id}`)
     const res = result.data
 
-    if (result.statusText != "OK") {
+    if (result.statusText !== "OK") {
       //console.error("GET board file failed");
       window.location.href = '/error/500';
     } 
@@ -158,7 +158,7 @@ export async function productWrite(data) {
   try {
     const res = await axios.post('/productWrite', {data});
   
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("creating new product failed");
       window.location.href = '/error/500';
     } 
@@ -167,9 +167,9 @@ export async function productWrite(data) {
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -183,7 +183,7 @@ export async function productEdit(id, data){
   try {
     const res = await axios.post(`/product/edit/${id}`, {data})
 
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       console.error("productEdit fails");
       window.location.href = '/error/500';
     } 
@@ -192,9 +192,9 @@ export async function productEdit(id, data){
     console.log(body)
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -211,16 +211,16 @@ export async function productFileupload(formData) {
       }
     })
     
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("file upload fails");
       window.location.href = '/error/500';
     } 
     
     return res.statusText;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -238,16 +238,16 @@ export async function productFileupdate(formData) {
       }
     })
     
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("file update fails");
       window.location.href = '/error/500';
     } 
     
     return res.statusText;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -261,14 +261,14 @@ export async function productDelete(id){
   console.log(id)
   try {
     const res = await axios.post(`/product/delete/${id}`)
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("boardDelete fails");
       window.location.href = '/error/500';
     } 
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
