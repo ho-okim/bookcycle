@@ -15,6 +15,7 @@ h4, p{margin: 0;}
 
 .carousel-indicators{
   margin-bottom: 0;
+  transform: translate(0, 30px);
 }
 
 .carousel-indicators [data-bs-target]{

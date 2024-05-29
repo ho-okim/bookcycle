@@ -1,7 +1,7 @@
 .toast_wrap{
     width: 300px; height: auto;
     position: fixed; bottom: 80px; right: 30px;
-    z-index: 20;
+    z-index: 2000 !important;
 }
 
 .toast {

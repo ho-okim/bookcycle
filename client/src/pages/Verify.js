@@ -14,7 +14,7 @@ function Verify() {
 
     useEffect(()=>{
         if (parseInt(searchParams.get('v')) !== 1) { // 인증 메일이 아닌 일반 라우트 접근 차단
-            //navigate('/error/401');
+            navigate('/error/401');
         }
 
         const timer = setInterval(()=>{ // 카운트다운(1초 간격)
@@ -29,11 +29,11 @@ function Verify() {
     }, []);
 
     useEffect(()=>{
-        // if (count === 0) { // 인증 완료 주소가 아니라면 홈으로 돌아가기
-        //     url.includes("confirmed") ? 
-        //     navigate("/login")
-        //     : navigate("/")
-        // }
+        if (count === 0) { // 인증 완료 주소가 아니라면 홈으로 돌아가기
+            url.includes("confirmed") ? 
+            navigate("/login")
+            : navigate("/")
+        }
     }, [count, navigate, url]);
 
     return(

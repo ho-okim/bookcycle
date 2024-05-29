@@ -11,7 +11,7 @@ export async function getNotification() {
         }
 
         const body = res.data;
-        console.log(body)
+
         const unread = body.filter((el)=>(el.read_or_not === 0));
         return {result : body, unread : unread.length };
     }  catch (error) {
@@ -35,7 +35,7 @@ export async function getShortNotification() {
             window.location.href = '/error/500';
         }
 
-        const body = res.data;
+        const body = res.data;        console.log(body)
         return body;
     }  catch (error) {
         if (error.response.status === 403) {
