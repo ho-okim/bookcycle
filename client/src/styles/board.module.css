@@ -159,7 +159,7 @@
   border: none;
   margin: 0 0 0 10px;
 }
-.replySubmit:hover {background-color: #427D9D;}
+.replySubmit:hover {background-color: c;}
 
 .loginNeeded {margin: 100px 0 40px 0; text-align: center;}
 .login {color: #427D9D;}

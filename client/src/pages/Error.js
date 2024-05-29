@@ -26,13 +26,17 @@ function Error() {
     return(
         <Container>
             <div className='inner'>
-                <div className={styles.box}>
+                <div className={`${styles.error_box} d-flex flex-column`}>
                     <div className={styles.title_box}>
-                        <h2 className={styles.title}>{errorInfo.type} 에러</h2>
+                        <h2 className={styles.title}>{errorInfo.type}</h2>
                     </div>
                     <div className={styles.content_box}>
-                        <p className={styles.error_message}>{errorInfo.message}</p>
-                        <p className={styles.error_goHome}><Link to="/">홈으로 돌아가기</Link></p>
+                        {errorInfo.message.split('\n').map((message) => (
+                            <p className={styles.error_message}>{message}</p>
+                        ))}
+                        <p className={`${styles.error_goHome} regular`}>
+                            <Link to="/" className={styles.goHome}>홈으로 돌아가기</Link>
+                        </p>
                     </div>
                 </div>
             </div>

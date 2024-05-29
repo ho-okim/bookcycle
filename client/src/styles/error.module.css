@@ -1,16 +1,12 @@
-/* .box{
-    padding: 30px;
-    border: 1px solid #eee;
-    border-radius: 10px;
-} */
 
-.title_box {
-    margin-bottom: 10px;
+.error_box{
+    margin: 80px;
 }
 
 .title {
+    font-size: 80px;
     text-align: center;
-    color: rgb(220, 53, 69);
+    color: #4D91B6;
 }
 
 .content_box {
@@ -25,6 +21,19 @@
 }
 
 .error_goHome {
-    border: 1px solid #d2d2d2;
-    border-radius: 4px;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 20px;
+    margin-top: 10px;
+    background-color: #4D91B6;
+    font-size: 15px;
+}
+
+.error_goHome:hover {
+    background-color: #427D9D;
+    transition: 0.2s;
+}
+
+.goHome{
+    color: #Fff;
 }

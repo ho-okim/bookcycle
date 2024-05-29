@@ -1,5 +1,6 @@
 import styles from '../../styles/verify.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from "react-bootstrap";
 import {Link, useOutletContext} from 'react-router-dom';
 
 function VerifyConfirmed() {
@@ -7,7 +8,7 @@ function VerifyConfirmed() {
     const count = useOutletContext();
 
     return(
-        <>
+        <Container>
             <div className={styles.title_box}>
                 <h2 className={styles.title}>인증 완료</h2>
             </div>
@@ -18,7 +19,7 @@ function VerifyConfirmed() {
                     <p>{count}초 후 자동으로 로그인 화면으로 이동합니다.</p>
                 </div>
             </div>
-        </>
+        </Container>
     )
 }
 
