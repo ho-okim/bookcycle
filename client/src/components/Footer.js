@@ -8,22 +8,14 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
     <div className="">
       <Container className='p-0'>
         <div className='inner d-flex justify-content-between'>
-          {/* <div className="col-md-6 mt-md-0 mt-3">
-              <h6 className="text-uppercase"><img src={process.env.PUBLIC_URL + '/img/bookcycle-logo.png'} style={{ width:'200px' }} alt='logo'/></h6>
-          </div> */}
+          <div className="col-md-6 mt-md-0 mt-3">
+              <h6 className="text-uppercase"><img src={process.env.PUBLIC_URL + '/img/footer-logo.png'} style={{ width:'200px' }} alt='logo'/></h6>
+          </div>
           <div className='col-4 medium footerTextSize p-0'>
             <p className='bold footerTitle'>북사이클</p>
             <p>이메일: resellboook@gmail.com</p>
             <p>주소: 인천 부평구 시장로 7 부평MH타워 5층</p>
             <Link><div className='footerYoutube d-flex justify-content-center align-items-center'><Youtube/></div></Link>
-          </div>
-          <div className='col-3 medium footerTextSize p-0'>
-            <div className='d-flex flex-column align-items-center'>
-              <div>
-                <p className='bold footerTitle'>개인정보처리방침</p>
-                <p>이용약관</p>
-              </div>
-            </div>
           </div>
           <div className="col-4 footerConWrap p-0">
             <div className='d-flex flex-column align-items-end'>
