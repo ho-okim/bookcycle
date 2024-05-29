@@ -27,7 +27,7 @@ function ProductDetail() {
 
   const [product, setProduct] = useState({}); // 상품 정보
   const [category, setCategory] = useState([]); // 카테고리
-  const [likehit, setLikehit] = useState(0);
+  const [likehit, setLikehit] = useState(0); // 찜한 수
   const [files, setFiles] = useState([]); // 상품 이미지
   const [notFound, setNotFound] = useState(false);
 
@@ -61,10 +61,6 @@ function ProductDetail() {
     navigate('/chat', {state: {chatroomId: result}})
   }
 
-  const [like, setLike] = useState(0, 0, 0) //좋아요 셋팅
-
-  let [detail, setDetail] = useState([])
-
   useEffect(()=>{
     async function productcate() { //카테고리 데이터 가져오기
       const data = await getCategory();
@@ -75,7 +71,6 @@ function ProductDetail() {
 
   useEffect(()=>{
     async function getDetail() { // 상품 정보 가져오기
-
       try {
         const data = await productDetail(id);
         const res = await filesList(id);
@@ -94,8 +89,6 @@ function ProductDetail() {
         console.error(error);
         setNotFound(true);
       }
-      
-      
     } 
 
     async function getReported() { // 신고 여부 확인
@@ -116,7 +109,9 @@ function ProductDetail() {
 
   function renderReportBtn() { // 신고 버튼 렌더링 처리
     if (user) {
-      if (user.id != product.seller_id && !isReported) { // user.id == 상품소유자id
+      // 렌더 조건 : 본인 상품 아님, 신고한 적 없음, 본인이 차단된 사용자가 아님, 미판매 제품임
+      let renderCondition = (user.id != product.seller_id && !isReported && user.blocked === 0 && (!product.soldDate || product.seller_id === product.buyer_id));
+      if (renderCondition) { // user.id == 상품소유자id
         // ownerId = 상품소유자id
         return (
           <>
@@ -138,7 +133,7 @@ function ProductDetail() {
   }
 
   return(
-    <ProductDetailContext.Provider value={{id, likehit}}>
+    <ProductDetailContext.Provider value={{id, product}}>
       <Container>
         <div className='inner'>
           {/* Product Header */}
@@ -147,11 +142,16 @@ function ProductDetail() {
               <h2>{product.product_name}</h2>
               {(product.seller_id == user?.id) ? 
               (<div className={`${styles.btnWrap} d-flex`}>
-                <Button 
-                  variant="outline-secondary" className={styles.updateBtn} onClick={()=>{navigate(`/product/edit/${product.product_id}`,
-                  {state: {product: product, files}})}}>
+                {
+                  (!product.soldDate || product.seller_id === product.buyer_id) ?
+                  <Button 
+                    variant="outline-secondary" className={styles.updateBtn} 
+                    onClick={()=>{navigate(`/product/edit/${product.product_id}`,
+                    {state: {product: product, files}})}}>
                     <Pencil/>
-                </Button>
+                  </Button>
+                  : null
+                }
                 <Button 
                   variant="outline-secondary" className={styles.deleteBtn} onClick={handleDeleteOpen}>
                     <Trash3/>
@@ -199,7 +199,11 @@ function ProductDetail() {
               <h3>{product.nickname} &nbsp; </h3>
               </div>
               <div className={`${styles.user_chat}`}>
-              <Link to={'/chat'} ><ChatDotsFill size="40" className={styles.namechat}/></Link>
+                {
+                  (user && user.blocked === 0 && user.id !== product.seller_id) ?
+                  <div className={styles.chat_btn} onClick={handleCreateChatroom}><ChatDotsFill size="40" className={styles.namechat}/></div>
+                  : null
+                }
               </div>  
             </div>
           </div> 

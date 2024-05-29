@@ -99,6 +99,13 @@ function BoardWrite() {
   };
 
   const handleLength = () => {
+    if (isbn10Ref.current) { // 숫자 외 다른 문자, 공백은 제거
+      isbn10Ref.current.value = isbn10Ref.current.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    }
+    if (isbn13Ref.current) { // 숫자 외 다른 문자, 공백은 제거
+      isbn13Ref.current.value = isbn13Ref.current.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    }
+
     setTitleLen(titleRef.current?.value.length);
     setWriterLen(writerRef.current?.value.length);
     setPublisherLen(publisherRef.current?.value.length);

@@ -6,7 +6,7 @@ import { Container, Button } from "react-bootstrap";
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
-import Error from '../Error.js'
+import Error from '../../components/Error.js'
 
 // 버려진 기존 파일 이름 담을 배열
 var delFiles = []

@@ -440,7 +440,7 @@ function Chat() {
                             </Link>
                           </Dropdown.Item>
                             {
-                              activeChatroom.blocked ? null :
+                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
                               !isUserReported ?
                               <Dropdown.Item className={styles.dropdownItem}>
                                 <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onUserSpam}>
@@ -452,7 +452,7 @@ function Chat() {
                                 <CheckCircle className={styles.reportComplete}/>사용자 신고 완료</div>
                             }
                             {
-                              activeChatroom.blocked ? null :
+                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
                               !isReported ? 
                                 <Dropdown.Item className={styles.dropdownItem}>
                                   <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onSpam}>
@@ -501,7 +501,7 @@ function Chat() {
                         </Link>
                         <div className={`d-flex align-items-center ${styles.btnWrap}`}>
                           {
-                            !activeChatroom.blocked ?
+                            (activeChatroom.blocked === 0 && user.blocked === 0) ?
                             activeChatroom.soldDate ?
                             <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}>후기 작성</Button>
                             : user?.id == activeChatroom.seller_id ?
@@ -543,7 +543,7 @@ function Chat() {
                   </div>
                 </div>
                 {
-                  user.blocked || activeChatroom.blocked || user.id == activeChatroom.user_id || activeChatroom.exit_user_id?
+                  user.blocked === 1 || activeChatroom.blocked || user.id == activeChatroom.user_id || activeChatroom.exit_user_id?
                   <div className={`${styles.chatForm} d-flex`}>
                     <textarea className={`${styles.chatText} regular`} placeholder='메시지를 보낼 수 없습니다' disabled></textarea>
                     <span className={`${styles.chatBtn} ${styles.chatBanBtn} d-flex align-items-center`} disabled><SendFill/></span>

@@ -24,7 +24,7 @@
   color: #8d8d8d!important; 
 }
 .sorting button, .sorting button:hover, .sorting button:active, .sorting button:focus { 
-  background-color: #4D91B6; border: none; 
+  background-color: #4D91B6 !important; border: none; 
 }
 .sortingItem:active, .sortingItem.focus { background-color: #ddd; color: black; }
 

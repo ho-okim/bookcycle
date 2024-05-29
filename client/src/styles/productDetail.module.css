@@ -162,6 +162,10 @@
 
 }
 
+.chat_btn{
+    cursor: pointer;
+}
+
 .namechat{
     color: rgb(77, 145, 182);
 }
