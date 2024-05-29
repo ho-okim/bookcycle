@@ -186,7 +186,7 @@ function MyInfoEdit({ password }) {
             <div className={`${styles.imageUploadBtn}`}>
               {/* 이미지 업로드 버튼 */}
               <label htmlFor="file" className={`${styles.fileBtn}`}>
-                <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                <div className={`${styles.profileImgWrap} d-flex justify-content-center align-items-center`}>
                   {
                     profile ?
                     <img className={`${styles.profileImg}`} alt='preview' src={profile}/>

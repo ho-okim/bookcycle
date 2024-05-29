@@ -54,7 +54,7 @@ function MyProductPostList() {
         <Sorting optionName={optionName} handleChange={handleChange} options={productSortOptions} />
       </div>
         {productPostItems.length === 0 ? (
-          <div className={`pb-5 ${styles.empty}`}>판매중인 상품이 없습니다.</div>
+          <div className={`${styles.empty} pb-5`}>판매중인 상품이 없습니다.</div>
         ) : (
           <div className={styles.productList}>
             <div className={styles.productGrid}>

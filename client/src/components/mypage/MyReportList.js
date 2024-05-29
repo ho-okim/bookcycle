@@ -68,8 +68,8 @@ function MyReportList() {
                       <td>{setCategoryName(el.category)}</td>
                       <td>{el.target_id}</td>
                       <td>{el.content}</td>
-                      <td>{dateProcessingDash(el.createdAt)}</td>
-                      <td>{el.read_or_not}</td>
+                      <td className={styles.date}>{dateProcessingDash(el.createdAt)}</td>
+                      <td>{(el.read_or_not === 1) ? <p>처리 중</p> : <p>처리 완료</p>}</td>
                     </tr>
                   );
                 })}
