@@ -54,12 +54,18 @@ function Notification({showToast, setShowToast, toggleToast}) {
         // 키워드별 라우트 설정
         if (keyword_id === 2 || keyword_id === 3 || keyword_id === 6 || keyword_id === 8) {
             url = `/product/detail/${target_id}`;
-        } else if (keyword_id === 5 || keyword_id === 10) {
+        } else if (keyword_id === 10) {
             url = `/user/${target_id}`;
         } else if (keyword_id === 4 || keyword_id === 7 || keyword_id === 9 || keyword_id === 11) {
             url = `/board/${target_id}`;
         } else if (keyword_id === 1) {
             url = '/chat';
+        } else if (keyword_id === 5) {
+            if (alert.seller_id !== alert.writer_id) {
+                url = '/mypage/sellGetReviewList';
+            } else if (alert.buyer_id !== alert.writer_id) {
+                url = '/mypage/buyGetReviewList';
+            }
         }
 
         let icon; // 아이콘

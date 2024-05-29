@@ -11,13 +11,13 @@ export async function getNotification() {
         }
 
         const body = res.data;
-        console.log(body)
+
         const unread = body.filter((el)=>(el.read_or_not === 0));
         return {result : body, unread : unread.length };
     }  catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -38,9 +38,9 @@ export async function getShortNotification() {
         const body = res.data;
         return body;
     }  catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -60,9 +60,9 @@ export async function readNotification(id) {
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             throw Error(error)

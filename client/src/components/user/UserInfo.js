@@ -2,7 +2,7 @@ import styles from '../../styles/user.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DashCircle, MegaphoneFill, PersonCircle, StarFill } from 'react-bootstrap-icons';
+import { Ban, CheckCircle, PersonCircle, StarFill } from 'react-bootstrap-icons';
 import Button from 'react-bootstrap/esm/Button';
 import Report from '../../components/Report.js';
 import { useTargetUser } from '../../contexts/TargetUserContext.js';
@@ -43,7 +43,7 @@ function UserInfo() {
             if (userInfo.blocked === 1) {
                 return(
                 <div className={styles.blocked_box}>
-                    <span className={styles.blocked}>신고로 인해 사이트에서 정지된 사용자입니다</span>
+                    <span className={styles.blocked}><Ban className='me-2 fs-4'/>차단된 사용자</span>
                 </div>)
             }
     
@@ -62,7 +62,7 @@ function UserInfo() {
                     return(
                         <div className={styles.report_box}>
                             <div className={`${styles.already_reported} d-flex align-items-center`}>
-                                <DashCircle className='me-1'/>신고완료
+                                <CheckCircle className='me-1'/>신고완료
                             </div>
                         </div>
                     )

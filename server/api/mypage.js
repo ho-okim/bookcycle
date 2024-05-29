@@ -213,7 +213,7 @@ router.get("/mypage/edit", isLoggedIn, async (req, res) => {
 });
 
 // 회원정보 수정
-router.put("/mypage/edit", isLoggedIn, async(req, res) => { 
+router.put("/mypage/edit", isLoggedInAndBlocked, async(req, res) => { 
   const { id } = req.user;
   let { formData } = req.body;
 
@@ -462,7 +462,7 @@ const upload = multer({
 });
 
 // 프로필 파일 업로드
-router.post('/profileupload', isLoggedIn, upload.array('files', 1), async(req, res)=>{
+router.post('/profileupload', isLoggedInAndBlocked, upload.array('files', 1), async(req, res)=>{
   let sql = 'UPDATE users SET profile_image = ? WHERE id = ?';
   let result
   const files = req.files[0]

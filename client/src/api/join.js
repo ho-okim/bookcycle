@@ -15,7 +15,7 @@ export async function email_check(email) {
         const body = res.data[0].size;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/error/403';
         } else {
             window.location.href = '/error/500';
@@ -50,7 +50,7 @@ export async function join(formData) {
             const body = res.data;
             return body;
         } catch (error) {
-            if (error.response.status == 403) {
+            if (error.response.status === 403) {
                 window.location.href = '/error/403';
             } else {
                 window.location.href = '/error/500';

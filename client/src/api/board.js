@@ -37,9 +37,9 @@ export async function boardWrite(title, content) {
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -64,7 +64,7 @@ export async function fileupload(formData) {
     
     return res.statusText;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -89,7 +89,7 @@ export async function fileupdate(formData) {
     
     return res.statusText;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -126,7 +126,7 @@ export async function boardDelete(id){
     const body = res.data;
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
     } else {
       window.location.href = '/error/500';
@@ -149,9 +149,9 @@ export async function boardEdit(id, title, content){
     body.message = 'success'
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -174,9 +174,9 @@ export async function replyWrite(id, reply){
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -255,9 +255,9 @@ export async function hitLike(id){
     
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       throw new Error("login needed"); // 여기서 alert되면 띄우고 또는 error 메시지 throw 하고 나서 client pages에서 그 메시지 받으면 alert 띄울 수 있게
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
@@ -280,9 +280,9 @@ export async function unLike(id){
   
     return body;
   } catch (error) {
-    if (error.response.status == 403) {
+    if (error.response.status === 403) {
       window.location.href = '/login';
-    } else if (error.response.status == 401) {
+    } else if (error.response.status === 401) {
       window.location.href = '/error/401';
     }
     window.location.href = '/error/500';

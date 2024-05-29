@@ -61,16 +61,8 @@ function Board() {
     
   }, [searchParams]);
 
-  function onPost(){
-    if(user) {
-      if (user.blocked === 1) {
-        alert('차단된 사용자는 글을 작성하실 수 없습니다!');
-      } else {
-        navigate('/board/write');
-      }
-    } else {
-      alert('로그인 후 작성할  수 있습니다.');
-    }
+  function onPost() {
+    navigate('/board/write');
   }
 
   return (
@@ -79,7 +71,8 @@ function Board() {
         <div className="inner">
           <div className={`col ${styles.boardHeader} d-flex justify-content-between align-items-center`}>
             <h2 className={`${styles.title} m-0`}>게시판</h2>
-            <Button onClick={onPost} className={styles.onPost}>글쓰기</Button>
+            {(user || user?.blocked === 0) ?
+              <Button onClick={onPost} className={styles.onPost}>글쓰기</Button>:null}
           </div>
           <div className={`col ${styles.listHeader} d-flex justify-content-between`}>
             <p>총 {contents.length}건</p>

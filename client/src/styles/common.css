@@ -39,7 +39,7 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 .header{
   position: sticky; top: 0px;
   padding: 4px 0;
-  background-color: white; z-index: 100;
+  background-color: white; z-index: 1000;
 }
 .onScroll::after{
   content: ''; display: block; position: absolute;
@@ -98,7 +98,7 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 .react-datepicker__portal {
   z-index: 10; /* 원하는 z-index 값으로 설정 */
 }
-.chatBtnWrap{position: fixed; bottom: 30px; right: 80px;}
+.chatBtnWrap{position: fixed; bottom: 30px; right: 80px; z-index: 100;}
 .chatBtn{
   width: 40px; height: 40px; border-radius: 50%;
   background-color: white; border: none; box-shadow: 0 0 3px #6b6b6b;
@@ -108,7 +108,7 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 
 /* notificationBtn */
 .notify_btn_wrap{
-  position: fixed; bottom: 30px; right: 30px;
+  position: fixed; bottom: 30px; right: 30px; z-index: 100;
 }
 .notification_btn{
   width: 40px; height: 40px; border-radius: 50%;

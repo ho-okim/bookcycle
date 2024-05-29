@@ -4,7 +4,7 @@ export async function mainBook() {
   try {
     const res = await axios.get('/mainBook');
   
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("메인 페이지 product 데이터 로딩 실패");
       window.location.href = '/error/500';
     }
@@ -21,7 +21,7 @@ export async function mainBoard() {
   try {
     const res = await axios.get('/mainBoard');
   
-    if (res.statusText != "OK") {
+    if (res.statusText !== "OK") {
       //console.error("메인 페이지 board 데이터 로딩 실패");
       window.location.href = '/error/500';
     }

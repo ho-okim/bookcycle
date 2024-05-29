@@ -11,9 +11,9 @@ export async function getReport() {
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -33,9 +33,9 @@ export async function getReportedOrNot(category, target_id) {
         const body = res.data[0].size;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -59,9 +59,9 @@ export async function addReport(reportForm) {
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
@@ -82,9 +82,9 @@ export async function editReport(id) {
         const body = res.data;
         return body;
     } catch (error) {
-        if (error.response.status == 403) {
+        if (error.response.status === 403) {
             window.location.href = '/login';
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             window.location.href = '/error/401';
         } else {
             window.location.href = '/error/500';
