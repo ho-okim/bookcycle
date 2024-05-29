@@ -80,7 +80,7 @@ function Notification({showToast, setShowToast, toggleToast}) {
         return(<div className={(read_or_not === 1) ? `${styles.notification_read}` : null}
                 onClick={()=>changeNotifyRead(id, read_or_not, url)}>
                 <p>{icon} {keyword}</p>
-                <p>{alertDate}</p>
+                <p className={styles.date}>{alertDate}</p>
                 </div>
         );
     }

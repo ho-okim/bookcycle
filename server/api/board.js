@@ -2,7 +2,7 @@ const router = require('express').Router();
 const pool = require("../db.js"); // db connection pool
 const mysql = require('mysql2');
 const { CHAR_REG } = require('../lib/regex_server.js');
-const { isLoggedIn } = require("../lib/auth.js");
+const { isLoggedIn, isLoggedInAndBlocked } = require("../lib/auth.js");
 // 파일 시스템 함수 require
 const fs = require('fs');
 
@@ -30,8 +30,8 @@ router.get('/board', async (req, res) => {
 });
 
 
-// 게시글 작성(추가)
-router.post('/boardwrite', isLoggedIn, async(req, res) => {
+// 게시글 작성(추가) - 차단된 사용자는 이용 불가
+router.post('/boardwrite', isLoggedInAndBlocked, async(req, res) => {
 
   // client에서 보낸 request body
   const {title, content} = req.body;
@@ -103,8 +103,8 @@ router.post('/delete/:id', isLoggedIn, async (req, res) => {
 });
 
 
-// 게시글 수정
-router.post('/edit/:id', isLoggedIn, async(req, res) => {
+// 게시글 수정 - 차단된 사용자는 사용 불가
+router.post('/edit/:id', isLoggedInAndBlocked, async(req, res) => {
   let { id } = req.params;
 
   let title = req.body.title;
@@ -128,7 +128,7 @@ router.post('/edit/:id', isLoggedIn, async(req, res) => {
 
 
 // 댓글 작성 
-router.post('/replyWrite/:id', isLoggedIn, async(req, res)=>{
+router.post('/replyWrite/:id', isLoggedInAndBlocked, async(req, res)=>{
   const { reply } = req.body;
   let { id } = req.params;
 
@@ -178,7 +178,6 @@ router.post('/replyDelete/:id', async(req, res)=>{
     let sql_result = await pool.query(query);
 
     res.send(sql_result);
-
   } catch(error){
     console.error(error);
     res.send('error');
@@ -186,7 +185,7 @@ router.post('/replyDelete/:id', async(req, res)=>{
 })
 
 // 좋아요 등록 - 🤍 unliked 상태일 때, 하트 누를 경우 -> 좋아요 등록
-router.post('/hitLike/:id', isLoggedIn, async(req, res)=>{
+router.post('/hitLike/:id', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
 
   let sql = 'INSERT INTO board_liked (user_id, board_id) VALUES (?, ?)';
@@ -203,7 +202,7 @@ router.post('/hitLike/:id', isLoggedIn, async(req, res)=>{
 })
 
 // 좋아요 삭제(취소) - 💛 liked 상태일 때, 하트 누를 경우 -> 좋아요 삭제
-router.post('/unLike/:id', isLoggedIn, async(req, res)=>{
+router.post('/unLike/:id', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
 
   let sql = 'DELETE FROM board_liked WHERE user_id = ? AND board_id = ?';
@@ -283,7 +282,7 @@ const upload = multer({
 });
 
 // 파일 업로드
-router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+router.post('/fileupload', isLoggedInAndBlocked, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
   const files = req.files
   let result
@@ -301,7 +300,7 @@ router.post('/fileupload', isLoggedIn, upload.array('files', 5), async(req, res)
 })
 
 // 파일 수정
-router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+router.post('/fileupdate', isLoggedInAndBlocked, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO board_image (board_id, boardNo, filename) VALUES (?, ?, ?)';
   let sql2 = 'DELETE FROM board_image WHERE id = ?'
   let sql3 = 'DELETE FROM board_image WHERE board_id = ?'
@@ -364,5 +363,45 @@ router.post('/fileupdate', isLoggedIn, upload.array('files', 5), async(req, res)
     console.log('fileupload UPDATE 과정에서 오류 발생 : ', error)
   }
 })
+
+
+// 게시판 작성자 검색
+router.get('/search/board/writer', async (req, res) => {
+  // 프로시저에 정렬 방향은 추가 안 함
+  const { keyword, sortBy, updown } = req.query;
+
+  // query문
+  let sql = 'CALL board_writer_search(?, ?)';
+
+  try {
+      const query = mysql.format(sql, [keyword, sortBy]);
+      const [result] = await pool.query(query);
+
+      res.send(result);
+  } catch (error) {
+      console.error(error);
+      res.send('error');
+  }
+});
+
+
+// 게시판 제목 + 내용 검색
+router.get('/search/board/titleContent', async (req, res) => {
+  // 프로시저에 정렬 방향은 추가 안 함
+  const { keyword, sortBy, updown } = req.query;
+
+  // query문
+  let sql = 'CALL board_title_content_search(?, ?)';
+
+  try {
+      const query = mysql.format(sql, [keyword, sortBy]);
+      const [result] = await pool.query(query);
+
+      res.send(result);
+  } catch (error) {
+      console.error(error);
+      res.send('error');
+  }
+});
 
 module.exports = router;

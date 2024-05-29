@@ -343,9 +343,8 @@ ul, ol, li { list-style: none; }
   display: flex; width: calc(50% - 10px); 
   padding: 5px 0; border: 0; border-radius: 10px; 
 }
+.selectTag .tagWrap input[type='checkbox'] { margin-left:15px; scale: 1.8;}
 .selectTag .tagWrap .tagBtn p { margin-left: 20px; }
-
-.reviewWrite {  }
 
 .review p { margin: 15px 0; }
 .review p span { 
@@ -354,10 +353,27 @@ ul, ol, li { list-style: none; }
   border-radius: 7px; 
   font-size: 12px; color: white; 
 }
+.review textarea{
+  height: 150px;
+  border-radius: 5px;
+  transition: 0.2s ease;
+  overflow-y: auto;
+}
+.review textarea:focus{
+  border: 1px solid rgb(77, 145, 182);
+}
 
 .btnWrap { text-align: end; }
+.submitBtn{
+  margin-right: 10px;
+  background-color: rgb(77, 145, 182);
+  border: 1px solid rgb(77, 145, 182);
+}
 
-
+.submitBtn:hover, .submitBtn:active{
+  background-color: #427D9D !important;
+  border: 1px solid #427D9D !important;
+}
 /* notifications */
 .notification_info{
   width: 100%;

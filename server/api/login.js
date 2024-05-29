@@ -118,7 +118,7 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
   
   // 사용자 정보 쿼리
   let user_sql = 'SELECT id, verification, blocked FROM users WHERE email = ?';
-// verification -> is_verified
+
   try { // 사용자 정보 조회 - 접근 차단용
     const user_query = mysql.format(user_sql, [decodedEmail]);
     const [userRes] = await pool.query(user_query);
@@ -170,7 +170,7 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
     let dateNow = new Date();
 
     if (!result) {
-      res.status(400).redirect("http://localhost:3000/verify/notfound");
+      res.status(400).redirect("http://localhost:3000/verify/notfound?v=1");
     } else if(dateNow <= new Date(result.date_expired)) {
       // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
 
@@ -188,14 +188,14 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
         }
       } catch (error) {
         console.error(error);
-        res.status(500).redirect("http://localhost:3000/verify/error");
+        res.status(500).redirect("http://localhost:3000/verify/error?v=1");
       }
     } else {
-      res.status(401).redirect("http://localhost:3000/verify/expired");
+      res.status(401).redirect("http://localhost:3000/verify/expired?v=1");
     }
   } catch (error) {
     console.error(error);
-    res.status(500).redirect("http://localhost:3000/verify/error");
+    res.status(500).redirect("http://localhost:3000/verify/error?v=1");
   }
 });
 

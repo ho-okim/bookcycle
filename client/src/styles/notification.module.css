@@ -25,7 +25,7 @@
 }
 
 .notify_more_btn:hover {
-    background-color: rgb(22, 72, 99);
+    background-color: #427D9D;
 }
 
 .notification_box{
@@ -41,6 +41,11 @@
     transition: 0.2s ease;
 }
 
+.date{
+    color: #6A6A6A;
+    font-size: 14px;
+}
+
 .notification_content:hover{
     background-color: #f5f5f5;
     border-radius: 10px;
@@ -54,6 +59,7 @@
     text-align: right;
 }
 
-.notification_read{
+.notification_read, .notification_read .date{
     color:#979797 !important;
 }
+

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
-const { isLoggedIn } = require("../lib/auth.js");
+const { isLoggedIn, isLoggedInAndBlocked } = require("../lib/auth.js");
 const bcrypt = require("bcrypt");
 
 // 구매내역 페이지
@@ -239,7 +239,7 @@ router.get("/user/:id/sellerReviewWrite", isLoggedIn, async(req, res) => {
 })
 
 // 리뷰 작성 - 내가 구매자일 때 
-router.post("/user/:id/sellerReviewWrite", isLoggedIn, async (req, res) => {
+router.post("/user/:id/sellerReviewWrite", isLoggedInAndBlocked, async (req, res) => {
   try {
     // 리뷰작성자 = 나 = req.user(구매자)
 
@@ -286,7 +286,7 @@ router.get("/user/:id/buyerReviewWrite", isLoggedIn, async(req, res) => {
 })
 
 // 리뷰 작성 - 내가 판매자일 때 
-router.post("/user/:id/buyerReviewWrite", isLoggedIn, async (req, res) => {
+router.post("/user/:id/buyerReviewWrite", isLoggedInAndBlocked, async (req, res) => {
   try {
     
     // 내가 후기 남기는 사람(구매자)
@@ -322,7 +322,7 @@ router.post("/user/:id/buyerReviewWrite", isLoggedIn, async (req, res) => {
 });
 
 // 리뷰 수정 페이지 - 내가 구매자일 때
-router.get("/user/:id/sellerReviewEdit", isLoggedIn, async(req, res) => {
+router.get("/user/:id/sellerReviewEdit", isLoggedInAndBlocked, async(req, res) => {
   const { productId } = req.query;
 
   let sql = "SELECT R.score, R.content, R.buyer_id, R.writer_id, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ? AND R.buyer_id = R.writer_id";
@@ -335,7 +335,7 @@ router.get("/user/:id/sellerReviewEdit", isLoggedIn, async(req, res) => {
 
 
 // 리뷰 수정 - 내가 구매자일 때
-router.put("/user/:id/sellerReviewEdit", isLoggedIn, async (req, res) => {
+router.put("/user/:id/sellerReviewEdit", isLoggedInAndBlocked, async (req, res) => {
 
   // seller_id
   const { id } = req.params;

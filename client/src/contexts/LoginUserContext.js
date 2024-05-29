@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, useEffect } from "react";
 import { getLoginUser, login, logout } from "../api/login";
 import { getShortNotification } from "../api/alert";
+import { useLocation } from "react-router-dom";
 
 const LoginUserContext = createContext();
 
@@ -8,6 +9,7 @@ function AuthProvider({children}) {
     
     const [user, setUser] = useState(null); // 로그인 한 사용자
     const [notification, setNotification] = useState([]); // 현재 사용자의 알림 목록 최신순 10개
+    const location = useLocation(); // location 객체
 
     async function getUser() { // 현재 로그인 한 사용자 가져오기(req.user)
         const res = await getLoginUser();
@@ -19,9 +21,9 @@ function AuthProvider({children}) {
         setNotification(res);
     }
 
-    useEffect(()=>{
+    useEffect(()=>{ // 요청이 바뀔때마다 사용자 가져오기
         getUser();
-    }, []);
+    }, [location]);
 
     useEffect(()=>{
         if (user) { // 로그인 해야만 알림 가져옴

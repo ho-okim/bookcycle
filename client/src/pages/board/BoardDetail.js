@@ -7,9 +7,9 @@ import Error from '../Error.js';
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
-import { DashCircle, Ban, Trash3, Pencil, ExclamationTriangle } from 'react-bootstrap-icons';
+import { DashCircle, Ban, Trash3, Pencil, ExclamationTriangle, PersonFillSlash } from 'react-bootstrap-icons';
 import { useParams } from 'react-router-dom';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/LoginUserContext.js';
 import { getReportedOrNot } from '../../api/report.js';
 import DefaultModal from '../../components/DefaultModal.js';
@@ -48,23 +48,36 @@ function BoardDetail(){
       try {
         const data = await boardDetail(id)
       
-          if (!data) {
+          console.log("user id: ", user?.id);
+          console.log("block: ", data.blocked)
+          console.log("blocked state: ", isBlocked)
+          console.log("myblocked state: ", myBlockedPost)
+
+          setIsBlocked(false);
+          setMyBlockedPost(false);
+
+          if (!data) { // 존재하지 않는 게시글로 url 접근 시
             setNotFound(true)
           }
 
-          // 차단이 안된 경우나 내 게시글인 경우에만 렌더링(차단되도 내 게시물이면 렌더링)
+          // 차단이 안된 경우나 내 게시글인 경우 -> 렌더링 O
+          // 차단되도 내 게시물이면 렌더링 됨
           if(data.blocked === 0 || data.user_id === user?.id) {
             const res = await filesList(id)
             setContent(data)
             setFiles(res)
-          } else { // 차단된 게시글 렌더링 X
-            setIsBlocked(true)
-          }
-
-          // 내 게시물인데 차단됐다면 그대로 내용 렌더링하고 '차단됐다'는 메시지 추가
+          } 
+          
+          // 내 차단된 게시물 -> 렌더링 O + 차단 메시지 띄우기
           if(data.blocked === 1 && data.user_id === user?.id){
             setMyBlockedPost(true)
           } 
+          
+          // 차단된 게시글 -> 렌더링 X
+          if (data.blocked === 1 && data.user_id !== user?.id) { 
+            setIsBlocked(true)
+          }
+
         }  catch (error) {
           console.error(error);
           setNotFound(true);
@@ -127,27 +140,27 @@ function BoardDetail(){
           <div className={`${styles.titleWrap} d-flex justify-content-between align-items-center`}>
             <h2 className={styles.title}>게시글</h2>
           </div>
-          <div className={`col ${styles.detailWrapper}`}>
+          <div className={`col col-lg ${styles.detailWrapper}`}>
             {(isBlocked) ? (
               <div className={`${styles.blockedPost} d-flex flex-column align-items-center`}>
                 <img style={{width: '80px'}} className='mb-2' src={process.env.PUBLIC_URL + `/report2.png`}/>
-                <div className='mb-3'>차단된 게시글입니다</div>
+                <div>차단된 게시글입니다</div>
+                <p><Link to="/">홈으로 돌아가기</Link></p>
               </div>
             ) : (
               <div className={styles.detailMain}>
                 {(myBlockedPost) && 
-                <div className='d-flex flex-column mb-3'>
-                  <img style={{width: '30px'}} className='me-2' src={process.env.PUBLIC_URL + `/report2.png`}/>
-                  <div className='' style={{color : 'rgb(223, 0, 0)'}}>차단된 게시글입니다</div>
+                <div className='d-flex mb-3'>
+                  <div className={styles.myBlockedMessage}>차단된 게시글입니다</div>
                 </div>
                 }
                 <div className={`${styles.detailHeader} d-flex justify-content-between align-items-center`}>
-                  <h2 className={styles.detailTitle}>{content.title}</h2>
+                  <h2 className={(myBlockedPost)? (styles.myblockTitle) : (styles.detailTitle)}>{content.title}</h2>
                   {user?.nickname == content.nickname ? (
                     <div className={`${styles.btnWrap} d-flex`}>
                       <Button 
                         variant="outline-secondary" 
-                        className={styles.updateBtn} 
+                        className={(myBlockedPost)? (styles.noUpdateBtn) : (styles.updateBtn)} 
                         onClick={()=>{navigate(`/board/edit/${content.id}`, {state:{title: content.title, content: content.content, files}})}}>
                         <Pencil className='me-1'/>글 수정
                       </Button>
@@ -164,11 +177,15 @@ function BoardDetail(){
                 <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} boardId={id}/>
                 <div className={`d-flex justify-content-between ${styles.detailInfo} regular`}>
                   <div className='info'>
-                    <span className={`${styles.userid} medium`}>{content.nickname}</span>
+                    <span className={`${styles.userid} medium`}>
+                      {(content.user_blocked === 1) ? 
+                      <PersonFillSlash className='fs-6 me-1'/> : null}
+                      {content.nickname}
+                    </span>
                     <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                   </div>
                   {
-                      (user && user?.id != content.user_id) ?
+                      (user && user?.id != content.user_id && user.blocked === 0) ?
                       (!isReported ) ?
                       <>
                           <Button variant="outline-secondary" 

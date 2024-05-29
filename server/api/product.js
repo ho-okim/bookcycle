@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mysql = require('mysql2');
 const pool = require("../db.js"); // db connection pool
-const { isLoggedIn } = require("../lib/auth.js");
+const { isLoggedIn, isLoggedInAndBlocked } = require("../lib/auth.js");
 const { CHAR_REG } = require('../lib/regex_server.js');
 // 파일 시스템 함수 require
 const fs = require('fs');
@@ -77,6 +77,7 @@ router.get('/productList/product', async (req, res) => {
     try {
         // 상품 목록 조회
         const query = mysql.format(sql+order_sql, variables);
+        console.log(query)
         const body = await pool.query(query);
 
         res.send(body);
@@ -103,7 +104,7 @@ router.get('/productDetail/:id', async (req, res) => {
 });
 
 // 좋아요 등록
-router.post('/product/like/:id', isLoggedIn, async(req, res)=>{
+router.post('/product/like/:id', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
 
   let sql = 'INSERT INTO liked (user_id, product_id) VALUES (?, ?)';
@@ -120,7 +121,7 @@ router.post('/product/like/:id', isLoggedIn, async(req, res)=>{
 })
 
 // 좋아요 삭제(취소)
-router.post('/product/unLike/:id', isLoggedIn, async(req, res)=>{
+router.post('/product/unLike/:id', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
 
   let sql = 'DELETE FROM liked WHERE user_id = ? AND product_id = ?';
@@ -210,7 +211,7 @@ router.post('/product/delete/:id', isLoggedIn, async (req, res) => {
 });
 
 // 상품 게시글 생성
-router.post('/productWrite', isLoggedIn, async(req, res)=>{
+router.post('/productWrite', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
   const {seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13} = req.body.data;
 
@@ -230,7 +231,7 @@ router.post('/productWrite', isLoggedIn, async(req, res)=>{
 
 
 // 상품 게시글 수정
-router.post('/product/edit/:id', isLoggedIn, async(req, res) => {
+router.post('/product/edit/:id', isLoggedInAndBlocked, async(req, res) => {
   let { id } = req.params;
   const {category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13} = req.body.data;
 
@@ -273,7 +274,7 @@ const upload = multer({
 });
 
 // 파일 업로드
-router.post('/product/file/upload', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+router.post('/product/file/upload', isLoggedInAndBlocked, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO product_image (product_id, boardNo, filename) VALUES (?, ?, ?)';
   const files = req.files
   let result
@@ -291,7 +292,7 @@ router.post('/product/file/upload', isLoggedIn, upload.array('files', 5), async(
 })
 
 // 파일 수정
-router.post('/product/file/update', isLoggedIn, upload.array('files', 5), async(req, res)=>{
+router.post('/product/file/update', isLoggedInAndBlocked, upload.array('files', 5), async(req, res)=>{
   let sql = 'INSERT INTO product_image (product_id, boardNo, filename) VALUES (?, ?, ?)';
   let sql2 = 'DELETE FROM product_image WHERE id = ?'
   let sql3 = 'DELETE FROM product_image WHERE product_id = ?'

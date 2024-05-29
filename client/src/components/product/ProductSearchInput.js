@@ -1,4 +1,5 @@
 import styles from "../../styles/productList.module.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Dropdown, Form, InputGroup } from "react-bootstrap";
 import { useProductOption } from "../../contexts/ProductOptionContext";
 import { useState } from "react";
@@ -43,7 +44,7 @@ function ProductSearchInput() {
     }
 
     return(
-        <InputGroup>
+        <InputGroup className={styles.input_group}>
             <Dropdown onSelect={handleSelect}>
                 <Dropdown.Toggle
                 className={styles.search_option_btn}

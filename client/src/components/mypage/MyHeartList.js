@@ -21,7 +21,8 @@ function MyHeartList() {
 
   const [hearts, setHearts] = useState([]);
   const [sortOption, setSortOption] = useState("liked_date.DESC")
-  
+  const [optionName, setOptionName] = useState('정렬기준'); // 버튼 이름
+
   let total = hearts.length; // 전체 게시물 수
   let limit = 5; // 페이지 당 게시물 수
   let [page, setPage] = useState(1); // 현재 페이지 번호
@@ -40,15 +41,17 @@ function MyHeartList() {
     getHeart();
   }, [sortOption]);
 
-  const handleChange = (e) => {
-    setSortOption(e.target.value);
-  }
+  const handleChange = (eventKey, event) => {
+    event.persist();
+    setSortOption(eventKey);
+    setOptionName(event.currentTarget.id);
+  };
 
   return (
     <div className={styles.content}>
       <div className={`${styles.contentHeader} ${styles.heartHeader}`}>
         <p> &gt; 찜한책 목록</p>
-        <Sorting sortOption={sortOption} handleChange={handleChange} options={heartSortOptions} />
+        <Sorting optionName={optionName} handleChange={handleChange} options={heartSortOptions} />
       </div>
       <div className={styles.heartList}>
         {hearts.length === 0 ? (

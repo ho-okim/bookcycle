@@ -4,6 +4,7 @@
   border: 1px solid #ccc;
   border: none;
 }
+.noUpdateBtn {display: none;} 
 .goBoard {
   background-color: #4D91B6;
   border: none;
@@ -22,6 +23,9 @@
 }
 .onPost:hover, .goBoard:hover{
   background-color: #427D9D;
+}
+.onPost:active, .onPost:focus, .goBoard:active, .goBoard:focus{
+  background-color: #427D9D !important;
 }
 .listInfo, .detailInfo, .replyInfo {
   font-size: 14px; color: #6A6A6A;
@@ -47,10 +51,35 @@
   content:'|';
   margin: 5px;
 }
+/* .board .list:hover {background-color: #f1f1f1;} */
+.boardSort button{
+  width: 100px; height: 100%;
+  margin-right: 10px; padding: 5px 10px;
+  background-color: rgb(77, 145, 182) !important;
+  border:1px solid rgb(77, 145, 182) !important;
+}
 
-.boardSort {
-  width: 28%;
-  margin-right: 5px;
+.boardSort a:active{
+  background-color: rgb(77, 145, 182) !important;
+}
+
+@media screen and (max-width: 992px) {
+  .board .listHeader {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .listHeader {
+    display: flex;
+    flex-direction: column;
+  }
+  .searchOrderWrap {
+    margin-top:10px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
 }
 
 
@@ -66,20 +95,25 @@
   margin-bottom: 50px;
 }
 .detailMain .heartBtn{cursor: pointer; margin: 0 10px 10px 0}
-.detailMain .detailTitle { width: 70%;}
-.detailMain .deatilContent {white-space: pre-wrap;}
+.detailMain .detailTitle { width: 70%; word-break: break-all;}
+.detailMain .deatilContent {white-space: pre-wrap; word-break: break-all;}
 .detailMain .detailInfo{
   padding: 0 0 20px;
   margin: 0 0 20px;
   border-bottom: 1px solid #e8e8e8
 }
+
+/* filter: grayscale(100); */
+
+.detailMain .myBlockedMessage {font-size: 19px; color : rgb(223, 0, 0);}
+.detailMain .myblockTitle {color: #8a8a8a;}
+
 .detailMain .detailInfo .userid {color: #4D91B6;}
 .detailMain .detailInfo .userid:after{
   content:'|';
   margin: 5px;
   color: #6A6A6A;
 }
-.detailMain .detailInfo .spamBtn{cursor: pointer;}
 .detailMain .detailContentWrap {
   padding: 0 0 170px;
 }
@@ -88,13 +122,24 @@
   margin-bottom: 10px; display: block;
   width: 100%; height: auto;
 }
+.detailMain .btnWrap .updateBtn {margin-right: 5px;}
+
 @media screen and (min-width: 992px){
   .detailContentWrap .detailImage .boardImg{width: 60%;}
 }
 @media screen and (min-width: 1200px){
   .detailContentWrap .detailImage .boardImg{width: 40%;}
 }
-.detailMain .btnWrap .updateBtn {margin-right: 5px;}
+
+@media screen and (max-width: 768px) {
+  .btnWrap {
+    display: flex;
+    flex-direction: column;
+  }
+  .detailMain .btnWrap .updateBtn {margin: 0px;}
+}
+
+
 
 
 /* ReplyForm (댓글 폼) */
@@ -126,7 +171,7 @@
   border: none;
   margin: 0 0 0 10px;
 }
-.replySubmit:hover {background-color: #427D9D;}
+.replySubmit:hover, .replySubmit:active, .replySubmit:focus {background-color: #427D9D !important;}
 
 .loginNeeded {margin: 100px 0 40px 0; text-align: center;}
 .login {color: #427D9D;}
@@ -134,28 +179,61 @@
 
 /* Pagination */
 .pageNav {margin: 30px 0 80px;}
-.pageNav .prevBtn, .pageNav .nextBtn {
+.prevBtn, .nextBtn, .firstBtn, .lastBtn {
   background-color: transparent; 
   border: none; 
   color: #494949;
   cursor: pointer;
 }
-.pageNav .prevBtn {margin-right: 7px;}
-.pageNav .nextBtn {margin-left: 7px;}
+
 .pageNav .currentPageBtn {background-color: transparent; color: #4D91B6;}
-.noCurrentPageBtn {background-color: transparent;}
-.currentPageBtn, .noCurrentPageBtn {
+.pageNav .noCurrentPageBtn {background-color: transparent;}
+.currentPageBtn, .noCurrentPageBtn{
   margin: 0 7px;
   border: none; 
   color: #494949;
 }
 
-.pageNav .prevBtn:hover, .pageNav .nextBtn:hover, .pageNav .currentPageBtn:hover, .pageNav .noCurrentPageBtn:hover {
-  background-color: transparent; color: #4D91B6;
+.firstBtn, .lastBtn {padding: 6px 5px;}
+
+.prevBtn:hover, .nextBtn:hover, .currentPageBtn:hover, .noCurrentPageBtn:hover, .firstBtn:hover, .lastBtn:hover {
+  background-color: transparent; color: #4D91B6; text-decoration: underline;
 }
 
-.pageNav .prevBtn:active, .pageNav .nextBtn:active, .pageNav .currentPageBtn:active, .pageNav .noCurrentPageBtn:active {background-color: transparent;}
+.pageNav .prevBtn:active, .pageNav .nextBtn:active, .pageNav .currentPageBtn:active, .pageNav .noCurrentPageBtn:active, .pageNav .firstBtn:active, .pageNav .lastBtn:active { background-color: transparent; }
 
 
+/* BoardSearchInput */
+/* 상품 검색 */
+.input_group a:active{
+  background-color: rgb(77, 145, 182) !important;
+}
 
+.search_option_btn {
+  color:#fff;
+  background-color: rgb(77, 145, 182) !important;
+  border:1px solid rgb(77, 145, 182) !important;
+}
 
+.search_option_btn:hover{
+  background-color: rgb(77, 145, 182) !important;
+  border:1px solid rgb(77, 145, 182) !important;
+}
+
+.search_confirm_btn{
+  color:#fff;
+  background-color: rgb(77, 145, 182) !important;
+  border:1px solid rgb(77, 145, 182) !important;
+  border-top-right-radius: var(--bs-border-radius) !important;
+  border-bottom-right-radius: var(--bs-border-radius) !important;
+}
+
+.search_confirm_btn:hover{
+  background-color: #427D9D !important;
+  border:1px solid #427D9D !important;
+}
+
+.searchKeyword:focus{
+  border-color:none !important;
+  box-shadow: none !important;
+}

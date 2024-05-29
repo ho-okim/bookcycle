@@ -1,18 +1,20 @@
 import styles from '../../styles/boardWrite.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {boardWrite, fileupload} from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function BoardWrite() {
+  const { user } = useAuth(); // 로그인 한 사용자
 
   const [form, setForm] = useState({title : '', content : ''});
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
-  
+
   function handleTitle(value){
     setForm({...form, title : value});
   }
@@ -93,6 +95,12 @@ function BoardWrite() {
     }
   }
 
+  if (!user) { // 로그인 안 한 사용자의 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
+  }
+
   return (
     <>
       <Container className={`board-write ${styles.sec} ${styles.container}`}>
@@ -127,11 +135,12 @@ function BoardWrite() {
             </div>
             <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
               <label htmlFor="content">내용</label>
-              <textarea className={`${styles.contentInput}`} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+              <textarea className={`${styles.contentInput}`} maxLength={3000} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
+
             </div>
             <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
-              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+              <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
             </div>
           </div>
         </form>

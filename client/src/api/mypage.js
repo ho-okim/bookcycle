@@ -284,7 +284,13 @@ export async function sellerReviewWritePost(id, score, tagIndex, reviewContent, 
     return body;
     
   } catch (error) {
-    console.log(error)
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
   }
 }
 
@@ -321,7 +327,13 @@ export async function buyerReviewWritePost(id, score, tagIndex, reviewContent, p
     return body;
     
   } catch (error) {
-    console.log(error)
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
   }
 }
 
@@ -348,14 +360,24 @@ export async function sellerReviewEditData(id, productId) {
 
 // 리뷰 수정 - PUT (내가 구매자일 때)
 export async function sellerReviewEdit(id, score, tagIndex, reviewContent, productId) {
-  const res = await axios.put(`/user/${id}/sellerReviewEdit`, {score, tagIndex, reviewContent, productId});
+  try {
+    const res = await axios.put(`/user/${id}/sellerReviewEdit`, {score, tagIndex, reviewContent, productId});
 
-  if (res.statusText !== "OK") {
-    //console.error("mypage 로딩 실패");
-    window.location.href = '/error/500';
-  }
-  const body = res.data;
+    if (res.statusText !== "OK") {
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
+    }
+    const body = res.data;
   return body;
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
 }
 
 // 리뷰수정 - 원래 데이터 가져오기 (내가 판매자일 때)
@@ -374,7 +396,8 @@ export async function buyerReviewEditData(id, productId) {
     } else if (error.response.status == 401) {
       window.location.href = '/error/401';
     } else if (error.response.status == 400) {
-      throw new Error("required data missing");
+      //throw new Error("required data missing");
+      window.location.href = '/error/400';
     } else {
       window.location.href = '/error/500';
     } 
@@ -383,14 +406,25 @@ export async function buyerReviewEditData(id, productId) {
 
 // 리뷰 수정 - PUT (내가 판매자일 때)
 export async function buyerReviewEdit(id, score, tagIndex, reviewContent, productId) {
-  const res = await axios.put(`/user/${id}/buyerReviewEdit`, {score, tagIndex, reviewContent, productId});
+  try {
+    const res = await axios.put(`/user/${id}/buyerReviewEdit`, {score, tagIndex, reviewContent, productId});
 
-  if (res.statusText !== "OK") {
-    //console.error("mypage 로딩 실패");
-    window.location.href = '/error/500';
+    if (res.statusText !== "OK") {
+      //console.error("mypage 로딩 실패");
+      window.location.href = '/error/500';
+    }
+    const body = res.data;
+    return body;  
+  } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
   }
-  const body = res.data;
-  return body;
+  
 }
 
 // 리뷰 삭제

@@ -2,7 +2,7 @@ import styles from '../../styles/board.module.css'
 import { useState, useEffect } from 'react';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
-import {Ban, ChatLeftQuote} from 'react-bootstrap-icons';
+import {Ban, ChatLeftQuote, PersonFillSlash} from 'react-bootstrap-icons';
 import { Heart } from 'react-bootstrap-icons';
 import { HeartFill } from 'react-bootstrap-icons';
 import { BalloonHeart } from 'react-bootstrap-icons';
@@ -37,6 +37,10 @@ function ReplyForm(){
 
   // 댓글 등록 버튼 누르면 실행
   const submitReply = async()=>{
+    if (user.blocked === 1) {
+      alert('차단된 사용자는 댓글 작성을 이용할 수 없습니다!');
+    }
+
     if(!reply || reply === ''){
       alert("댓글을 입력해주세요")
       return;
@@ -57,15 +61,31 @@ function ReplyForm(){
   return(
     <>
       <ReplyList/>
-      {user ? (
+      {user ? 
+      (user.blocked === 0) ?
+      (
         <form className={styles.replyForm} onSubmit={(e)=>{e.preventDefault();}}>
           <div className={styles.replyId}>{user?.nickname}</div>
           <div className='d-flex justify-content-between'>
-            <input name='comment' id='commentInput' className={styles.replyInput} onChange={(e)=>{handleReply(e.target.value)}}></input>
-            <Button className={styles.replySubmit} as="input" type="submit" value="등록" onClick={()=>{submitReply()}}/>
+            <input 
+              name='comment' 
+              id='commentInput' 
+              className={styles.replyInput} 
+              maxLength={3000} 
+              onChange={(e)=>{handleReply(e.target.value)}}/>
+            <Button 
+              className={styles.replySubmit} 
+              as="input" 
+              type="submit" 
+              value="등록" 
+              onClick={()=>{submitReply()}}/>
           </div>
         </form>
-      ) : (
+      ) 
+      : (
+        <div className={`${styles.loginNeeded}`}>차단된 회원은 이용하실 수 없습니다</div>
+      ) 
+      : (
         <div className={`${styles.loginNeeded}`}>개인회원 <Link to='/login' className={styles.login}><span> 로그인</span></Link> 후에 댓글 작성이 가능합니다</div>
       ) 
       }
@@ -144,9 +164,10 @@ function ReplyList(){
   // 빈 하트 클릭 : '좋아요'로 바꾸기 🤍 -> 💛
   const changeToLike = async() => {
 
-    if (!user){
+    if (!user) {
       alert("로그인 후 이용하실 수 있습니다.")
-    } else{
+    } else {
+      if (user.blocked === 0) {
       hitLike(id)
 
       // 기존 prevlikeStates에 새로운 state 추가
@@ -154,6 +175,9 @@ function ReplyList(){
 
       // 기존 prevLikeCounts에 + 1
       setLikeCounts(prevLikeCounts => (prevLikeCounts + 1))
+      } else {
+        alert('차단된 사용자는 이용하실 수 없습니다');
+      }
     }
   }
 
@@ -163,13 +187,17 @@ function ReplyList(){
     if (!user){
       alert("로그인 후 이용하실 수 있습니다.")
     } else {
-      unLike(id)
+      if (user.blocked === 0) {
+        unLike(id)
 
-      // 기존에 존재하던 prevlikeStates에 해당 state 제거
-      setLikeStates(prevLikeStates => prevLikeStates.filter(likeState => likeState.board_id !== Number(id)));
-  
-      // 기존 prevLikeCounts에 - 1
-      setLikeCounts(prevLikeCounts => (prevLikeCounts - 1))
+        // 기존에 존재하던 prevlikeStates에 해당 state 제거
+        setLikeStates(prevLikeStates => prevLikeStates.filter(likeState => likeState.board_id !== Number(id)));
+    
+        // 기존 prevLikeCounts에 - 1
+        setLikeCounts(prevLikeCounts => (prevLikeCounts - 1))
+      } else {
+        alert('차단된 사용자는 이용하실 수 없습니다');
+      }
     }
   }
 
@@ -200,11 +228,13 @@ function ReplyList(){
 
   // 신고하기 기능
   function onSpam(reply_id) {
-    if(!user){
+    if(!user) {
       alert("로그인 후 이용하실 수 있습니다.")
     } else {
-      setReportReplyId(reply_id);
-      handleOpen();
+      if (user.blocked === 0) {
+        setReportReplyId(reply_id);
+        handleOpen();
+      }
     }
   }
 
@@ -261,15 +291,22 @@ function ReplyList(){
               <div className={`${styles.replyInfo} d-flex justify-content-between regular`}>
                 <div className='info'>
                   {reply.nickname == user?.nickname ? 
-                  (<span className={`${styles.userId} medium`}>{reply.nickname}</span>) 
-                  : (<span className={styles.writerId}>{reply.nickname}</span>)}
+                  (<span className={`${styles.userId} medium`}>
+                      {(reply.user_blocked === 1) ? 
+                      <PersonFillSlash className='fs-6 me-1'/> : null}
+                    {reply.nickname}</span>) 
+                  : (<span className={styles.writerId}>
+                      {(reply.user_blocked === 1) ? 
+                      <PersonFillSlash className='fs-6 me-1'/> : null}
+                    {reply.nickname}
+                    </span>)}
                   <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
                 </div>
                 {user?.nickname == reply.nickname ? (
                   <Button variant="outline-secondary" className={styles.replyDeleteBtn} onClick={()=>onDelete(reply.id)}><Trash3 size='17' className='me-1'/></Button>
                 ) : null}
                 {
-                (user && user?.nickname !== reply.nickname) ? 
+                (user && user?.nickname !== reply.nickname && user.blocked === 0) ? 
                   (!is_reported) ? (
                     <Button variant="outline-secondary" className={styles.alertBtn} 
                     onClick={()=>{onSpam(reply.id)}}><img style={{width: '23px'}} src={process.env.PUBLIC_URL + `/report.png`}/></Button>

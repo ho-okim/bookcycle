@@ -92,9 +92,11 @@ function UserReview({tradeType}) {
     }
 
     // 로딩 및 데이터가 없을 때 박스 css
-    const databox_css = reviewList.length == 0 ?
-    `${styles.box} d-flex justify-content-center`
-    : `${styles.box}`;
+    const databox_css = (reviewList.length === 0) ?
+    `d-flex justify-content-center`
+    : (isReviewUrl) ? 
+    'd-flex justify-content-between flex-wrap'
+    : '';
     
     return(
         <section className={styles.section_box}>
@@ -143,15 +145,15 @@ function UserReview({tradeType}) {
                         (reviewList && reviewList.length != 0) ? 
                         reviewList.map((el, i)=>{
                             return(
-                                <UserReviewBox key={i} review={el} isReviewUrl={isReviewUrl}/>
+                                <UserReviewBox key={i} review={el} isReviewUrl={isReviewUrl} tradeType={tradeType}/>
                             )
                         })
                         : tradeType === 'buy' ?
-                        <div className='blank_box p-0 m-0'>
+                        <div className='blank_box p-0 m-0 col-12'>
                             <p className='blank_message'>아직 구매한 제품에 작성된 후기가 없어요!</p>
                         </div>
                         : tradeType === 'sell' ?
-                        <div className='blank_box p-0 m-0'>
+                        <div className='blank_box p-0 m-0 col-12'>
                             <p className='blank_message'>아직 판매한 제품에 작성된 후기가 없어요!</p>
                         </div>
                         :null
@@ -165,6 +167,8 @@ function UserReview({tradeType}) {
                             totalData={totalData} 
                             limit={limit} blockPerPage={3}
                             handlePagination={handlePagination}/>
+                        </div>
+                        <div className={styles.back_wrap}>
                             <Button variant='outline-secondary'
                             className={`${styles.back_btn}`}
                             onClick={handleMoveBack}

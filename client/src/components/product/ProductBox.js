@@ -16,7 +16,7 @@ function ProductBox({product}){
             <img className={styles.bookpic} src={process.env.PUBLIC_URL + '/img/default/no_book_image.png'} alt='책사진'/>
         }
         </div>
-        <div className={`${styles.info_box} px-2 my-3 my-sm-0 col-8 col-sm-8  text-sm-start`}>
+        <div className={`${styles.info_box} px-2 my-3 my-sm-0 col-8 col-sm-8 text-sm-start`}>
           <div>
             <Badge className={styles.category_badge}>{product.category_name}</Badge>
             <p className={`${styles.book_title} ${styles.text_hidden}`}>{product.product_name}</p>
@@ -25,7 +25,7 @@ function ProductBox({product}){
               {(product.publisher && <span>{product.publisher}</span>)}
               {(product.publish_date && <span>{dateProcessingDash(product.publish_date)}</span>)}
             </div>
-            <p>&#8361; {product.price.toLocaleString()}</p>
+            <p className={styles.price}>{product.price.toLocaleString()} 원</p>
           </div>
           <div className={styles.seller_info}>
             <div className={`${styles.book_title} d-flex align-items-center`}>

@@ -12,16 +12,22 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from 'react-router-dom';
 import EmptyError from '../../components/EmptyError.js';
 import { NumericFormat } from 'react-number-format';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 // 버려진 기존 파일 이름 담을 배열
 var delFiles = []
 
 function ProductEdit() {
+  const { user } = useAuth(); // 로그인 한 사용자
+
   const {id} = useParams();
   const navigate = useNavigate();
 
   // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
   let location = useLocation()
+  if (!location.state) { // 버튼 등이 아닌 직접 url을 입력하면 접근 차단
+    navigate('/error/400');
+  }
   const {product, files} = location.state
   const {category_id, product_name, writer, publisher, isbn10, isbn13, publish_date, condition, description} = product
   const prevPrice = product.price;
@@ -218,6 +224,12 @@ function ProductEdit() {
       setTriggerVibration(true);
       setTimeout(() => setTriggerVibration(false), 2000);
     }
+  }
+
+  if (!user) { // 로그인 안 한 사용자의 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
   }
 
   return (

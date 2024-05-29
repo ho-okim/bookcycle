@@ -7,10 +7,10 @@ import { dateProcessingDash } from '../../lib/dateProcessing.js';
 import starRating from '../../lib/starRating.js';
 import Pagination from './Pagination.js';
 import ReviewContent from './ReviewContent.js';
-
-
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function MySellGiveReviewList() {
+  const {user} = useAuth(); // 로그인 한 사용자
 
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
@@ -51,6 +51,7 @@ function MySellGiveReviewList() {
         <div className={styles.empty}>구매자에게 남긴 후기가 없습니다.</div>
       ) : (
         <>
+<<<<<<< HEAD
           <div className={styles.reviewList}>
             {reviews.slice(offset, offset + limit).map((review, index) => (
               <div key={index} className={styles.reviewWrap}>
@@ -74,6 +75,39 @@ function MySellGiveReviewList() {
               </div>
             ))}
           </div>
+=======
+          <Table responsive>
+            <tbody>
+              {reviews.slice(offset, offset + limit).map((review, index) => (
+                <tr key={index} className={styles.revWrap}>
+                  <td className={styles.star}>{starRating(review.score)}</td>
+                  <td>{review.content}</td>
+                  <td>
+                    <Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link>
+                  </td>
+                  <td className={`col-2 ${styles.date}`}>{dateProcessingDash(review.createdAt)}</td>
+                  <td className="col-1">
+                    <Dropdown>
+                      <Dropdown.Toggle variant="success" id="dropdown-basic" className={styles.toggleBtn}>
+                        ⁝
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {
+                          (user.blocked === 0) ?
+                          <Dropdown.Item href={`/user/${review.buyer_id}/buyerReviewEdit?productId=${review.product_id}`}>
+                          수정</Dropdown.Item>
+                          : <Dropdown.Item className='text-decoration-line-through'>
+                          수정</Dropdown.Item>
+                        }
+                        <Dropdown.Item onClick={() => onDelete(review.id)}>삭제</Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+>>>>>>> feat
           <Pagination offset={offset} limit={limit} page={page} total={total} setPage={setPage}/>
         </>
       )}

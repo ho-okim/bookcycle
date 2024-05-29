@@ -1,7 +1,7 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import styles from '../../styles/search.module.css';
 import { Link } from "react-router-dom";
-import styles from "../../styles/search.module.css";
 import { PersonCircle, StarFill } from "react-bootstrap-icons";
-import { getUserInfo } from "../../api/user";
 
 function UserDataBox({user}) {
 
@@ -15,27 +15,29 @@ function UserDataBox({user}) {
     }
 
     return(
-        <Link to={`/user/${user.id}`} className='m-sm-2 col-4 col-sm-3 col-lg-2'>
-            <div className={`${styles.info_box} p-3 d-flex flex-column justify-content-center align-items-center`}>
+        <Link to={`/user/${user.id}`} className='p-3 col-10 col-md-6 col-lg-4'>
+            <div className={`${styles.info_box} p-3`}>
                 <div className={styles.image_box}>
                     {
                         profileImageBox()
                     }
                 </div>
-                <div className={styles.score_box}>
-                    <p className={styles.manner_score}>
-                    {
-                        (user.manner_score) ?
-                        (user.manner_score).toFixed(1)
-                        : '-'
-                    }
-                    </p>
-                    <StarFill className={styles.manner_score_star}/>
-                </div>
-                <p className={styles.user_info}>{user.nickname}</p>
-                <div className='text-center'>
-                    <p className={styles.sell_count}>판매 : {(user.sell_count)} 권</p>
-                    <p>구매 : {(user.buy_count)} 권</p>
+                <div className={styles.info_list_box}>
+                    <div className='d-flex justify-content-start align-items-center text-center'>
+                        <StarFill className={styles.manner_score_star}/>
+                        <span className={styles.manner_score}>
+                        {
+                            (user.manner_score) ?
+                            (user.manner_score).toFixed(1)
+                            : '-'
+                        }
+                        </span>
+                    </div>
+                    <p className={styles.user_info}>{user.nickname}</p>
+                    <div className={styles.trade_info}>
+                        <span>판매 : {(user.sell_count)} 권</span>
+                        <span>구매 : {(user.buy_count)} 권</span>
+                    </div>
                 </div>
             </div>
         </Link>

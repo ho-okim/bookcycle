@@ -6,8 +6,10 @@ import Pagination from './Pagination.js';
 
 import Table from 'react-bootstrap/Table';
 import styles from '../../styles/mypage.module.css';
+import { useAuth } from '../../contexts/LoginUserContext.js';
 
 function MySellList() {
+  const {user} = useAuth(); // 로그인 한 사용자
 
   const [sellItems, setSellItems] = useState([]);
 
@@ -56,7 +58,8 @@ function MySellList() {
                     <td>
                       {(item.seller_id === item.writer_id) ? (
                           <div className={`${styles.reviewBtn} ${styles.complete}`}>작성완료</div>
-                        ) : (
+                        ) : (user.blocked=== 0) ?
+                        (
                           <Link
                           to={{
                             pathname: `/user/${item.buyer_id}/buyerReviewWrite`,
@@ -66,7 +69,7 @@ function MySellList() {
                         >
                           작성하기
                         </Link>
-                      )}
+                      ) : <div className={`${styles.reviewBtn} ${styles.complete}`}>작성불가</div>}
                     </td>
                   </tr>
                 ))}

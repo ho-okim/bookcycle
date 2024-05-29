@@ -39,6 +39,8 @@ export async function boardWrite(title, content) {
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -103,7 +105,6 @@ export async function boardDetail(id){
     const res = await axios.get(`/board/${id}`)
 
     if (res.statusText != "OK") {
-      //console.error("getDetail fails");
       window.location.href = '/error/500';
     } 
     const body = res.data[0];
@@ -120,7 +121,6 @@ export async function boardDelete(id){
   try {
     const res = await axios.post(`/delete/${id}`)
     if (res.statusText != "OK") {
-      //console.error("boardDelete fails");
       window.location.href = '/error/500';
     } 
     const body = res.data;
@@ -151,6 +151,8 @@ export async function boardEdit(id, title, content){
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -174,6 +176,8 @@ export async function replyWrite(id, reply){
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -253,6 +257,8 @@ export async function hitLike(id){
   } catch (error) {
     if (error.response.status == 403) {
       throw new Error("login needed"); // 여기서 alert되면 띄우고 또는 error 메시지 throw 하고 나서 client pages에서 그 메시지 받으면 alert 띄울 수 있게
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -274,6 +280,11 @@ export async function unLike(id){
   
     return body;
   } catch (error) {
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    }
     window.location.href = '/error/500';
   }
 }
@@ -290,6 +301,37 @@ export async function likeState(id){
     } 
     const body = res.data;
   
+    return body;
+  } catch (error) {
+    window.location.href = '/error/500';
+  }
+}
+
+
+// 게시판 검색
+export async function searchBoard(searchKeyword, order) {
+  const {keyword, type} = searchKeyword;
+  const { sortBy, updown } = order; // order 초기값 없음 -> 아래 조건에 따라 sortBy는 'createdAt' 으로 지정됨
+  let newKeyword = (!keyword) ? '' : keyword;
+
+  let newSortBy = REGEX.CHAR_REG.test(sortBy) ? sortBy.trim() : 'createdAt';
+  let url;
+
+  try {
+    let res;
+    if (type === 'writer') { // 작성자 검색
+      url = `/search/board/writer?keyword=${newKeyword}&sortBy=${newSortBy}&updown=${updown}`;
+      res = await axios.get(url);
+    } else { // 그 외 경우
+      url = `/search/board/titleContent?keyword=${newKeyword}&sortBy=${newSortBy}&updown=${updown}`;
+      res = await axios.get(url);
+    }
+
+    if (res.statusText !== 'OK') {
+        window.location.href = '/error/500';
+    }
+    
+    const body = res.data;
     return body;
   } catch (error) {
     window.location.href = '/error/500';

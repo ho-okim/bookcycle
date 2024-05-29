@@ -84,6 +84,8 @@ export async function productLike(id){
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -104,7 +106,13 @@ export async function productUnLike(id){
   
     return body;
   } catch (error) {
-    window.location.href = '/error/500';
+    if (error.response.status == 403) {
+      window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
+    } else {
+      window.location.href = '/error/500';
+    }
   }
 }
 
@@ -161,6 +169,8 @@ export async function productWrite(data) {
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -184,6 +194,8 @@ export async function productEdit(id, data){
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -208,6 +220,8 @@ export async function productFileupload(formData) {
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }
@@ -233,6 +247,8 @@ export async function productFileupdate(formData) {
   } catch (error) {
     if (error.response.status == 403) {
       window.location.href = '/login';
+    } else if (error.response.status == 401) {
+      window.location.href = '/error/401';
     } else {
       window.location.href = '/error/500';
     }

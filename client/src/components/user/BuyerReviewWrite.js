@@ -5,9 +5,11 @@ import { StarFill } from "react-bootstrap-icons";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
+import { useAuth } from '../../contexts/LoginUserContext';
 
 function BuyerReviewWrite() {
 
+  const { user } = useAuth(); // 로그인 한 사용자
   // 상대방(=구매자) id
   const { id } = useParams();
 
@@ -78,6 +80,11 @@ function BuyerReviewWrite() {
     />
   ));
 
+  if (!user) { // 로그인 안 한 사용자 접근 차단
+    navigate("/login");
+  } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단
+    navigate("/error/401");
+  }
 
   return (
     <>
@@ -105,11 +112,11 @@ function BuyerReviewWrite() {
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
             <p>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContent}></textarea>
+            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000}/>
           </div>
           <div className={styles.btnWrap}>
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
           </div>
         </div>
       </Container>
