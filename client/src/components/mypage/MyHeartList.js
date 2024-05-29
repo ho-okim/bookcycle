@@ -74,13 +74,13 @@ function MyHeartList() {
                     <span>출판사 {heart.publisher}</span>
                     <span>출간일 {dateProcessingDash(heart.publish_date)}</span>
                   </div>
-                  <div className={`d-flex ${styles.heartFooter}`}>
-                    <p className={`${styles.heartPrice} medium`}>{parseInt(heart.price).toLocaleString()}원</p>
-                    <div className={`ms-2 ${styles.heartSeller}`}>
+                  <div className={`${styles.heartFooter} d-flex`}>
+                    <p className={`${styles.heartPrice} regular`}>{parseInt(heart.price).toLocaleString()}원</p>
+                    <div className={`${styles.heartSeller} ms-2 regular`}>
                       <PersonFill className={styles.person} />
                       <p>{heart.seller_nickname}</p>
                     </div>
-                    <div className={`ms-auto ${styles.reaction}`}>
+                    <div className={`${styles.reaction} ms-auto regular`}>
                       <p><Eye className='me-1'/><span>{heart.view_count}</span></p>
                       <p><Heart className='me-1'/><span>{heart.liked}</span></p>
                     </div>

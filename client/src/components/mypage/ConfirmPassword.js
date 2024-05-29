@@ -37,15 +37,36 @@ function ConfirmPassword({ onConfirm }) {
     }
   };
 
+  const activeEnter = (e) => {
+    if(e.key === "Enter") {
+      handleConfirmPassword();
+    }
+  }
+
+
   return (
-    <div className={`${styles.content} ${styles.confirm}`}>
-      <div>본인확인이 필요한 서비스입니다. <br/>비밀번호를 입력해주세요.</div>
-      <div>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button onClick={handleConfirmPassword}>확인</button>
-        {errorMessage && <p style={{color:'red'}}>{errorMessage}</p>}
+    user.blocked === 1 ? (
+      <div className={`${styles.content} ${styles.confirm}`}>차단된 사용자는 이용할 수 없는 서비스입니다</div>
+    ) : (
+      <div className={`${styles.content} ${styles.confirm}`}>
+        <div>본인확인이 필요한 서비스입니다. <br/>비밀번호를 입력해주세요</div>
+        <div className={styles.inputBox}>
+          <input 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            onKeyDown={(e) => activeEnter(e)}
+          />
+          <button 
+            className={`${styles.submitBtn} btn`} 
+            onClick={handleConfirmPassword}
+          >
+            확인
+          </button>
+          {errorMessage && <p style={{color:'red'}}>{errorMessage}</p>}
+        </div>
       </div>
-    </div>
+    )
   )
 
 }

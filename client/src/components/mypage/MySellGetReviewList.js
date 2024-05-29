@@ -41,9 +41,9 @@ function MySellGetReviewList() {
             {reviews.slice(offset, offset + limit).map((review, index) => (
               <div key={index} className={styles.reviewWrap}>
                 <div className='d-flex pb-2'>
-                  <div className={`col-2 ${styles.star}`}>{starRating(review.score)}</div>
+                  <div className={`${styles.star} col-2`}>{starRating(review.score)}</div>
                   <div className='col-7'><Link to={`/user/${review.buyer_id}`}>{review.buyer_nickname}</Link></div>
-                  <div className={`col-2 ms-auto text-end ${styles.date} regular`}>{dateProcessingDash(review.createdAt)}</div>
+                  <div className={`${styles.date} col-2 ms-auto text-end regular`}>{dateProcessingDash(review.createdAt)}</div>
                 </div>
                 <ReviewContent review={review.content}/>
               </div>
