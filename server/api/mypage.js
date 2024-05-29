@@ -58,7 +58,7 @@ router.get("/mypage/heartList", isLoggedIn, async (req, res) => {
   const { id } = req.user;
   const { sortOption } = req.query;
 
-  let sql = "SELECT H.*, P.soldDate, P.seller_id, U.nickname as seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? AND (image_no = 0 OR image_no IS NULL)"
+  let sql = "SELECT H.*, P.soldDate, P.seller_id, P.liked, P.view_count, U.nickname AS seller_nickname FROM user_liked_product H JOIN product P ON P.id = H.product_id JOIN users U ON P.seller_id = U.id WHERE H.user_id = ? AND (image_no = 0 OR image_no IS NULL)"
   const orderBy = sortOption.split('.');
   sql += ` ORDER BY H.${orderBy[0]} ${orderBy[1]}`;
   
@@ -325,7 +325,7 @@ router.post("/user/:id/buyerReviewWrite", isLoggedIn, async (req, res) => {
 router.get("/user/:id/sellerReviewEdit", isLoggedIn, async(req, res) => {
   const { productId } = req.query;
 
-  let sql = "SELECT R.score, R.content, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ?";
+  let sql = "SELECT R.score, R.content, R.buyer_id, R.writer_id, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ? AND R.buyer_id = R.writer_id";
   const query = mysql.format(sql, [productId]);
   const result = await pool.query(query);
   
@@ -371,7 +371,7 @@ router.put("/user/:id/sellerReviewEdit", isLoggedIn, async (req, res) => {
 router.get("/user/:id/buyerReviewEdit", isLoggedIn, async(req, res) => {
   const { productId } = req.query;
 
-  let sql = "SELECT R.score, R.content, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ?";
+  let sql = "SELECT R.score, R.content, R.buyer_id, R.writer_id, RT.tag_id FROM review R JOIN review_tag RT ON R.id = RT.review_id WHERE R.product_id = ? AND R.buyer_id != R.writer_id";
 
   const query = mysql.format(sql, [productId]);
   const result = await pool.query(query);

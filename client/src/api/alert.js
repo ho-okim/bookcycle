@@ -11,7 +11,9 @@ export async function getNotification() {
         }
 
         const body = res.data;
-        return body;
+        console.log(body)
+        const unread = body.filter((el)=>(el.read_or_not === 0));
+        return {result : body, unread : unread.length };
     }  catch (error) {
         if (error.response.status == 403) {
             window.location.href = '/login';
