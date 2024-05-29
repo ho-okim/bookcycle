@@ -1,17 +1,22 @@
 import styles from '../../styles/boardWrite.module.css';
-import { useEffect, useState } from 'react';
-import {boardWrite, fileupload} from '../../api/board.js';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { boardWrite, fileupload } from '../../api/board.js';
 import { useNavigate } from 'react-router-dom';
 import Container from "react-bootstrap/Container";
 import Button from 'react-bootstrap/Button';
 import { Camera, XCircleFill } from 'react-bootstrap-icons'
 import { useAuth } from '../../contexts/LoginUserContext.js';
+import EmptyError from '../../components/EmptyError.js';
 
 function BoardWrite() {
   const { user } = useAuth(); // 로그인 한 사용자
 
   const [form, setForm] = useState({title : '', content : ''});
   const [errorMessage, setErrorMessage] = useState('');
+  const [isNotFirstCheck, setIsNotFirstCheck] = useState(false);
+  const [triggerVibration, setTriggerVibration] = useState(true);
+  const scrollTopRef = useRef();
+  const contentRef = useRef();
 
   const navigate = useNavigate();
 
@@ -22,6 +27,12 @@ function BoardWrite() {
   function handleContent(value){
     setForm({...form, content : value});
   }
+  
+  // textarea 높이 자동 조절 함수
+  const handleResizeHeight = useCallback(() => {
+    contentRef.current.style.height = "1rem";
+    contentRef.current.style.height = contentRef.current.scrollHeight + "px";
+  }, []);
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
@@ -64,16 +75,18 @@ function BoardWrite() {
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
+    setIsNotFirstCheck(true)
     const title = form.title;
     const content = form.content;
 
     // 제목이나 내용 비어있으면 alert
-    if(!title || title === ''){
-      alert("제목을 입력해주세요");
-      return;
-    }
-    if(!content || content === ''){
-      alert('내용을 입력해주세요');
+    if(!title || title === '' || !content || content === ''){
+      scrollTopRef.current?.scrollIntoView({behavior: 'smooth'})
+
+      // EmptyError 컴포넌트 애니메이션 관리
+      setTriggerVibration(true);
+      setTimeout(() => setTriggerVibration(false), 2000);
+
       return;
     }
 
@@ -103,7 +116,7 @@ function BoardWrite() {
 
   return (
     <>
-      <Container className={`board-write ${styles.sec} ${styles.container}`}>
+      <Container className={`board-write ${styles.sec} ${styles.container}`} ref={scrollTopRef}>
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
           <div className={`inner ${styles.boardForm}`}>
             <h3 className="title">게시글 작성</h3>
@@ -129,14 +142,32 @@ function BoardWrite() {
                 })
               }
             </div>
-            <div className={`col ${styles.col} ${styles.titleBox} d-flex justify-content-between`}>
-              <label htmlFor="title">제목</label>
-              <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" maxLength={40} value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}></input>
+            <div className={`${styles.col}`}>
+              <div className={`${styles.titleBox} d-flex justify-content-between`}>
+                <label htmlFor="title">제목</label>
+                <input className={`${styles.titleInput}`} id="title" placeholder="제목을 입력하세요" maxLength={40} value={form.title} onChange={(e)=>{handleTitle(e.target.value)}}/>
+              </div>
+              {
+                isNotFirstCheck && !form.title ?
+                <div className={`${styles.boardError} d-flex justify-content-end`}>
+                  <EmptyError triggerVibration={triggerVibration}/>
+                </div> : null
+              }
             </div>
-            <div className={`col ${styles.col} ${styles.contentBox} d-flex justify-content-between`}>
-              <label htmlFor="content">내용</label>
-              <textarea className={`${styles.contentInput}`} maxLength={3000} id="content" placeholder="내용을 입력하세요" value={form.content} onChange={(e)=>{handleContent(e.target.value)}}></textarea>
-
+            <div className={`${styles.col}`}>
+              <div className={`${styles.contentBox} d-flex justify-content-between`}>
+                <label htmlFor="content">내용</label>
+                <textarea className={`${styles.contentInput}`} maxLength={3000} id="content" placeholder="내용을 입력하세요"
+                value={form.content} onChange={(e)=>{handleContent(e.target.value)}}
+                ref={contentRef} onInput={handleResizeHeight}
+                ></textarea>
+              </div>
+              {
+                isNotFirstCheck && !form.content ?
+                <div className={`${styles.boardError} d-flex justify-content-end`}>
+                  <EmptyError triggerVibration={triggerVibration}/>
+                </div> : null
+              }
             </div>
             <div className={`col ${styles.col} ${styles.btnWrap} d-flex justify-content-end`}>
               <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>

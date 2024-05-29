@@ -3,16 +3,16 @@ import Container from 'react-bootstrap/Container';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css'
 import ChatUser from '../components/chat/ChatUser';
-import { useAuth  } from '../contexts/LoginUserContext';
-import { chatList, newChatroom, getChatMsg, exitChatroom } from '../api/chat';
-import { Ban, BoxArrowInRight, CheckCircle, DoorOpen, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
-import { Button, Dropdown } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DefaultModal from '../components/DefaultModal';
+import Report from '../components/Report';
+import { useAuth } from '../contexts/LoginUserContext';
+import { chatList, newChatroom, getChatMsg, exitChatroom, readOrNot, chatReadOrNot } from '../api/chat';
+import { Ban, BoxArrowInRight, CheckCircle, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
+import { Button, Dropdown } from 'react-bootstrap';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { isSameDate } from '../lib/timeCalculator';
 import { dateProcessingYear } from '../lib/dateProcessing';
-import Report from '../components/Report';
 import { getReportedOrNot } from '../api/report';
 
 var currentIdx = null
@@ -199,6 +199,7 @@ function Chat() {
     const loginUserId = user?.id
     if(chatRoom){
       socket.emit('refreshRON', {loginUserId, chatroomIdx: currentIdx})
+      setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
     }
     return()=>{
       
@@ -226,6 +227,11 @@ function Chat() {
   // api > chat.js에서 GET 요청한 채팅 목록
   async function getChatList(){
     const data = await chatList()
+    return data;
+  }
+  async function getChatReadOrNot(){
+    const data = await chatReadOrNot()
+    console.log("readornot aPIL" , data)
     return data;
   }
   // 화면 최초로 rendering 될 때만 데이터 GET 요청
@@ -280,13 +286,12 @@ function Chat() {
 
   if (user) { // 로그인을 했을 때만 호출
     getReported();
-  }
-}, [activeChatroom]);
+  }}, [activeChatroom]);
 
   // 소켓 통신
-  if(user){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함
+  if(user && chatRoom){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함
     // 채팅 메시지 전송 성공 시 서버에서 보낸 정보 받기
-    socket.on('success', (data) => {
+    socket.on('success', async (data) => {
       const {id, user_id, room_id, message, date} = data
       let tempReadOrNot;
       let previousCreatedAt;
@@ -311,22 +316,20 @@ function Chat() {
           // chatroomIdx는 소켓 내부에서 부르면 처음에 null로 떠서 전역변수를 이용함
           console.log('same')
           socket.emit('sameChatroomIdx', data)
-          tempReadOrNot = [...readOrNot];
+          // tempReadOrNot = readOrNot.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item);
           setActive(0);
         } else { // 받은 메시지의 채팅방 != 현재 위치한 채팅방
           console.log('dif')
           socket.emit('difChatroomIdx', data)
 
           let cnt = readOrNot.find((item) => item.room_id == room_id).read_count + 1
-          tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
-          console.log("받은 메시지 : ", chatRoom[active]?.createdAt, "위치한 채팅방 : ", date)
+          // tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
           if(chatRoom[active]?.createdAt > previousCreatedAt || !previousCreatedAt){
             setActive(prev => prev + 1);
           }
         }
       } else { // 채팅 발신자 진입
         setActive(0);
-          console.log(date)
         tempReadOrNot = [...readOrNot];
       }
 
@@ -338,15 +341,18 @@ function Chat() {
           let dateB = new Date(b.createdAt);
           return dateB - dateA; // 최신 날짜가 앞에 오도록 정렬
         });
-        tempReadOrNot.sort((a, b)=>{
-          let dateA = new Date(a.createdAt);
-          let dateB = new Date(b.createdAt);
-          return dateB - dateA;
-        });
+        // tempReadOrNot.sort((a, b)=>{
+        //   let dateA = new Date(a.createdAt);
+        //   let dateB = new Date(b.createdAt);
+        //   return dateB - dateA;
+        // });
       }
 
       setChatRoom(tempChatRoom);
-      setReadOrNot(tempReadOrNot);
+      // setReadOrNot(tempReadOrNot);
+      let ron = await getChatReadOrNot()
+      setReadOrNot(ron)
+      
     })
   }
 
@@ -355,7 +361,7 @@ function Chat() {
 
     setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
     // readOrNot 배열 중 현재 채팅방에 해당하는 배열의 read_count를 0으로 갱신
-    setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+    // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
   })
 
   if(user){
@@ -365,10 +371,10 @@ function Chat() {
       // 메시지를 확인한 사람이 내가 아니고, 현재 위치한 채팅방과 동일하다면 진행
       if(loginUserId != user.id && room_id == currentIdx) {
         setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+        // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
       if(loginUserId == user.id && room_id == currentIdx){
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+        // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
     })
   }
@@ -522,15 +528,15 @@ function Chat() {
                       msgs?.length === 0 ? null :
                       msgs && msgs.map((el, i)=>{
                         return(
-                          <>
+                          <div key={el.id}>
                             {
                               !isSameDate(el.createdAt, msgs[i-1]?.createdAt) &&
-                                <div className={`d-flex justify-content-center align-items-center`} key={el + i}>
+                                <div className={`d-flex justify-content-center align-items-center`}>
                                   <p className={`${styles.chatDifDate} regular`}>{dateProcessingYear(el.createdAt)}</p>
                                 </div>
                             }
-                            <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/>
-                          </> 
+                            <ChatMessage el={el} nickname={activeChatroom.nickname}/>
+                          </div> 
                         )
                       })
                     }

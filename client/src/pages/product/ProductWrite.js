@@ -18,7 +18,7 @@ function BoardWrite() {
   const {user} = useAuth();
   const [errorMessage, setErrorMessage] = useState();
   const navigate = useNavigate();
-  let isNotFirstCheck = useRef(false);
+  const [isNotFirstCheck, setIsNotFirstCheck] = useState(false);
 
   // 카테고리 배열
   const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
@@ -112,10 +112,14 @@ function BoardWrite() {
     titleRef.current.style.height = "1rem";
     titleRef.current.style.height = titleRef.current.scrollHeight + "px";
   }, []);
+  const handleResizeContentHeight = useCallback(() => {
+    contentRef.current.style.height = "1rem";
+    contentRef.current.style.height = contentRef.current.scrollHeight + "px";
+  }, []);
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
-    isNotFirstCheck.current = true;
+    setIsNotFirstCheck(true)
     const category_id = cate + 1;
     const title = titleRef.current.value;
     const description = contentRef.current.value;
@@ -177,7 +181,7 @@ function BoardWrite() {
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
           <div className={`inner ${styles.boardForm}`}>
             <h3 className={styles.title}>상품 등록</h3>
-            <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
+            <div className={`${styles.imgBox} row p-0 g-3 gy-3`}>
               <div className='d-flex'>
               <p className={``}>상품 사진</p>
               <div className='d-flex align-items-end'>
@@ -206,28 +210,30 @@ function BoardWrite() {
                 })
               }
             </div>
-            <div className={``}>
-              <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                <div className={`${styles.inputTitle} d-flex`}>    
-                  <p className={`${styles.essentialInput}`}>카테고리</p>
-                  {
-                    isNotFirstCheck.current && isNaN(cate) ?
-                    <EmptyError triggerVibration={triggerVibration}/> : null
-                  }
-                </div>
-                <div className={styles.radioWrap}>
-                  <div>
-                    <div key={`inline-radio`} className="d-flex flex-wrap">
-                      {category.map((category, i)=>{
-                        return(
-                          <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
-                        )
-                      })}
+            <div className='row'>
+              <div className='col-12'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>카테고리</p>
+                    {
+                      isNotFirstCheck && isNaN(cate) ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <div className={styles.radioWrap}>
+                    <div>
+                      <div key={`inline-radio`} className="d-flex flex-wrap">
+                        {category.map((category, i)=>{
+                          return(
+                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
+                          )
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='d-flex justify-content-between'>
+              <div className='col-12 col-sm-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>    
                     <p className={`${styles.essentialInput}`}>제목</p>
@@ -235,26 +241,14 @@ function BoardWrite() {
                       <span className={`${styles.count}`}>({titleLen}/80)</span>
                     </div>
                     {
-                      isNotFirstCheck.current && titleLen === 0 ?
+                      isNotFirstCheck && titleLen === 0 ?
                       <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                   </div>
                   <textarea className={`${styles.input} ${styles.titleTextarea}`} placeholder="제목을 입력하세요" maxLength={80} ref={titleRef} onInput={handleResizeHeight} onChange={handleLength}/>
                 </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>
-                    <p className={`${styles.essentialInput}`}>가격</p>
-                    {
-                      isNotFirstCheck.current && (!price || price === 0) ?
-                      <EmptyError triggerVibration={triggerVibration}/> : null
-                    }
-                  </div>
-                  <div className='d-flex'>
-                    <NumericFormat thousandSeparator="," className={`${styles.input}`} placeholder="판매 가격을 입력하세요" onValueChange={(values)=>handlePrice(values)} suffix=' 원'  maxLength={10}/>
-                  </div>
-                </div>
               </div>
-              <div className='d-flex justify-content-between'>
+              <div className='col-12 col-sm-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                    
                     <p className={``}>저자</p>
@@ -264,6 +258,8 @@ function BoardWrite() {
                   </div>
                   <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef} onChange={handleLength}></input>
                 </div>
+              </div>
+              <div className='col-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>                    
                     <p className={``}>출판사</p>
@@ -274,18 +270,64 @@ function BoardWrite() {
                   <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef} onChange={handleLength}></input>
                 </div>
               </div>
-              <div className='d-flex justify-content-between'>
+              <div className='col-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={``}>출간일</p>
                   </div>
                   <DatePicker className={`${styles.input} regular`} selected={pubDate} locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date} onChange={handleDateChange}/>
                 </div>
+              </div>
+              <div className='col-6 col-lg-3'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn10</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn10Len}/10)</span>
+                    </div>
+                    {
+                      isNotFirstCheck && (isbn10Len !== 0 && isbn10Len !== 10) ?
+                      <EmptyError emptyErrorMsg={isbn10Msg} triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-6 col-lg-3'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn13</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn13Len}/13)</span>
+                    </div>
+                    {
+                      isNotFirstCheck && (isbn13Len !== 0 && isbn13Len !== 13) ?
+                      <EmptyError emptyErrorMsg={isbn13Msg} triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-6 col-lg-3'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>가격</p>
+                    {
+                      isNotFirstCheck && (!price || price === 0) ?
+                      <EmptyError triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <div className='d-flex'>
+                    <NumericFormat thousandSeparator="," className={`${styles.input}`} placeholder="판매 가격을 입력하세요" onValueChange={(values)=>handlePrice(values)} suffix=' 원'  maxLength={10}/>
+                  </div>
+                </div>
+              </div>
+              <div className='col-6 col-lg-3'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>상태</p>
                     {
-                      isNotFirstCheck.current && !con ?
+                      isNotFirstCheck && !con ?
                       <EmptyError triggerVibration={triggerVibration}/> : null
                     }
                   </div>
@@ -303,52 +345,26 @@ function BoardWrite() {
                   </div>
                 </div>
               </div>
-              <div className='d-flex justify-content-between'>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn10</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({isbn10Len}/10)</span>
-                    </div>
-                    {
-                      isNotFirstCheck.current && (isbn10Len !== 0 && isbn10Len !== 10) ?
-                      <EmptyError emptyErrorMsg={isbn10Msg} triggerVibration={triggerVibration}/> : null
-                    }
+              <div className='col-12'>
+                <div className={`${styles.col} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>내용</p>
+                      <div className='d-flex align-items-end'>
+                        <span className={`${styles.count}`}>({contentLen}/3000)</span>
+                      </div>
+                      {
+                        isNotFirstCheck && contentLen === 0 ?
+                        <EmptyError triggerVibration={triggerVibration}/> : null
+                      }
                   </div>
-                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref} onChange={handleLength}></input>
-                </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn13</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({isbn13Len}/13)</span>
-                    </div>
-                    {
-                      isNotFirstCheck.current && (isbn13Len !== 0 && isbn13Len !== 13) ?
-                      <EmptyError emptyErrorMsg={isbn13Msg} triggerVibration={triggerVibration}/> : null
-                    }
+                    <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요"
+                      ref={contentRef} maxLength={3000} onInput={handleResizeContentHeight} onChange={handleLength}></textarea>
                   </div>
-                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
+                  <div className={`${styles.col} d-flex justify-content-end`}>
+                    <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                    <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
+                  </div>
                 </div>
-              </div>
-              <div className={`col-12 ${styles.col} d-flex flex-column`}>
-                <div className={`${styles.inputTitle} d-flex`}>
-                  <p className={`${styles.essentialInput}`}>내용</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({contentLen}/3000)</span>
-                    </div>
-                    {
-                      isNotFirstCheck.current && contentLen === 0 ?
-                      <EmptyError triggerVibration={triggerVibration}/> : null
-                    }
-                </div>
-                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요"
-                  ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
-              </div>
-              <div className={`col ${styles.col} d-flex justify-content-end`}>
-                <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
-                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
-              </div>
             </div>
           </div>
         </form>
