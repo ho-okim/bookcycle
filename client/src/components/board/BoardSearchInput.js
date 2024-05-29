@@ -50,7 +50,8 @@ function BoardSearchInput({searchKeyword, setSearchKeyword}) {
                 className={styles.searchKeyword}
                 maxLength={50} onChange={(e)=>{handleKeyword(e)}} 
                 onKeyDown={(e)=>{handleEnter(e)}}
-                autoFocus/>
+                autoFocus
+                value={searchKeyword.keyword}/>
             <Button onClick={handleSubmit} className={styles.search_confirm_btn}><Search/></Button>
         </InputGroup>
     )

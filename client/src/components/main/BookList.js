@@ -30,13 +30,13 @@ function BookList(){
     let result = [];
 
     for(let i = 0; i < 3; i++) {
-      result.push(<Carousel.Item>
+      result.push(<Carousel.Item key={`item_${i}`}>
       <div className="d-flex justify-content-around row">
       {
-        books.slice(i*6, i*6+6).map((el)=>{
+        books.slice(i*6, i*6+6).map((el, idx)=>{
           return(
             <Link to={`/product/detail/${el.id}`} style={{ textDecoration: "none", color: "black"}} className="col-6 col-sm-4 col-lg-2 d-flex justify-content-center" key={el.id}>
-              <MiniBook key={el.id} el={el}/>
+              <MiniBook key={idx} el={el}/>
             </Link>
           )
         })

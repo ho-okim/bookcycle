@@ -35,7 +35,7 @@ export async function getShortNotification() {
             window.location.href = '/error/500';
         }
 
-        const body = res.data;        console.log(body)
+        const body = res.data;
         return body;
     }  catch (error) {
         if (error.response.status === 403) {

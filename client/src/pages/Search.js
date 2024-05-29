@@ -32,7 +32,7 @@ function Search() {
         if (category === 'product') {
             navigate(`/product?search=${keyword}`);
         } else if (category === 'board') {
-            navigate(`/board?search=${keyword}`);
+            navigate(`/board?search=${keyword}&stype=writer`);
         }
     }
 
