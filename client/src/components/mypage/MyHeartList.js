@@ -75,7 +75,7 @@ function MyHeartList() {
                     <span>출간일 {dateProcessingDash(heart.publish_date)}</span>
                   </div>
                   <div className={`${styles.heartFooter} d-flex`}>
-                    <p className={`${styles.heartPrice} regular`}>{parseInt(heart.price).toLocaleString()}원</p>
+                    <p className={`${styles.heartPrice} regular`}>{parseInt(heart.price).toLocaleString()} 원</p>
                     <div className={`${styles.heartSeller} ms-2 regular`}>
                       <PersonFill className={styles.person} />
                       <p>{heart.seller_nickname}</p>

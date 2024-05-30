@@ -9,14 +9,16 @@ function ReviewContent({ review }) {
   };
 
   return (
-    <div className={`${styles.reviewContent} regular`}>
-      {isExpanded ? review : `${review.substring(0, 200)}`}
+    <div className={`${styles.reviewContent} regular`} 
+      style={isExpanded ? { whiteSpace: 'pre-wrap', wordBreak: 'break-all' } : null}
+    >
+      {isExpanded ? review : `${review.substring(0, 130)}`}
       {review.length > 200 && (
         <span
           className={styles.readMore}
           onClick={handleExpandReview}
         >
-          {isExpanded ? ' 접기' : ' ...더보기'}
+          {isExpanded ? ' __접기' : ' ...더보기'}
         </span>
       )}
     </div>
