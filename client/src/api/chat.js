@@ -52,7 +52,7 @@ export async function newChatroom(id, seller_id) {
     
     if(res.data.length){
       // data.length가 존재한다는 것은 기존 채팅방이 있다는 뜻
-      const body = res.data[0].id;
+      const body = res.data[0].room_id;
       return body;
     } else {
       // 새로운 채팅방 개설됨

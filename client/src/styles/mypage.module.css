@@ -26,7 +26,7 @@
 .sorting button, .sorting button:hover, .sorting button:active, .sorting button:focus { 
   background-color: #4D91B6 !important; border: none; 
 }
-.sortingItem:active, .sortingItem.focus { background-color: #ddd; color: black; }
+.sortingItem:active, .sortingItem.focus { background-color: #4D91B6; color: #fff; }
 
 .reaction { display: flex; }
 .reaction p { padding-right: 10px; color: #6A6A6A }
@@ -375,10 +375,8 @@
   font-size: 12px; color: white; 
 }
 .review textarea{
-  height: 150px;
+  min-height: 150px;
   border-radius: 5px;
-  transition: 0.2s ease;
-  overflow-y: auto;
 }
 .review textarea:focus{
   border: 1px solid rgb(77, 145, 182);

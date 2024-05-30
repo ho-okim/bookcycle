@@ -225,24 +225,22 @@ function Chat() {
   
   // API
   // api > chat.js에서 GET 요청한 채팅 목록
-  async function getChatList(){
-    const data = await chatList()
-    return data;
-  }
-  async function getChatReadOrNot(){
+  const getChatReadOrNot = useCallback(async () => {
     const data = await chatReadOrNot()
-    console.log("readornot aPIL" , data)
     return data;
-  }
+  }, [chatReadOrNot]);
   // 화면 최초로 rendering 될 때만 데이터 GET 요청
   useEffect(()=>{
-    const test = async () => {
-      let {res, ron} = await getChatList()
+    const getChatList = async () => {
+      const {res, ron} = await chatList()
       setChatRoom(res)
       setReadOrNot(ron)
     }
-    test()
-  }, [])
+
+    if (user) { // 로그인 했을 때만 가져오기
+      getChatList()
+    }
+  }, [user])
 
   // api > chat.js에서 POST 요청한 채팅룸 아이디 받아오기
   async function getNewChatroomId(){
@@ -254,26 +252,24 @@ function Chat() {
     return chatroomId
   }
 
-  // api > chat.js에서 GET 요청한 채팅방 메세지 받아오기
-  async function chatMsgList(){
-    if(currentIdx){
-      const data = await getChatMsg(currentIdx)
-      return data;
-    }
-  }
-  // currentIdx 변경 될 때만 데이터 GET 요청
-  useEffect(()=>{
-    if(textRef.current){
+  if(textRef.current){
     textRef.current.focus() // 채팅방 진입 시 textarea에 focus
     }
-    const test = async () => {
+
+  // currentIdx 변경 될 때만 데이터 GET 요청
+  useEffect(()=>{
+    // api > chat.js에서 GET 요청한 채팅방 메세지 받아오기
+    const getChatMsgList = async () => {
       if(currentIdx){
-        let res = await chatMsgList()
+        const res = await getChatMsg(currentIdx)
         setMsgs(res)
       }
     }
-    test()
-  }, [currentIdx]);
+
+    if (user) { // 사용자 로그인때만 가져오기
+      getChatMsgList()
+    }
+  }, [user, currentIdx]);
 
   // 신고 여부 확인
   useEffect(()=>{
@@ -286,7 +282,7 @@ function Chat() {
 
   if (user) { // 로그인을 했을 때만 호출
     getReported();
-  }}, [activeChatroom]);
+  }}, [user, activeChatroom]);
 
   // 소켓 통신
   if(user && chatRoom){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함

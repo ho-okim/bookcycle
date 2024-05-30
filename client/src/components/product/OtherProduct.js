@@ -99,7 +99,7 @@ function SoldBook({ product }) {
             <span className={styles.text_hidden}>{product.product_name}</span>
           </div>
           <p className={`${styles.price}`}>
-            &#8361; {product.price.toLocaleString()}
+            {product.price.toLocaleString()} 원
           </p>
         </div>
       </Link>

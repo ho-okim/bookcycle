@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { sellerReviewWrite, sellerReviewWritePost } from '../../api/mypage';
 import { StarFill } from "react-bootstrap-icons";
@@ -14,7 +14,7 @@ function SellerReviewWrite() {
   const { id } = useParams();
 
   const [reviewTags, setReviewTags] = useState([]);
-  
+  const contentRef = useRef()
   const [tagIndex, setTagIndex] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
 
@@ -44,6 +44,11 @@ function SellerReviewWrite() {
   const handleReviewContent = (e) => {
     setReviewContent(e.target.value);
   }
+
+  const handleResizeContentHeight = useCallback(() => {
+    contentRef.current.style.height = "1rem";
+    contentRef.current.style.height = contentRef.current.scrollHeight + "px";
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -113,7 +118,7 @@ function SellerReviewWrite() {
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
             <p className='fs-5'>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000}/>
+            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000} onInput={handleResizeContentHeight} ref={contentRef}/>
           </div>
           <div className={styles.btnWrap}>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()}/>

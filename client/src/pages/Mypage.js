@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHref, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import LeftNav from '../components/mypage/LeftNav';

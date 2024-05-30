@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/LoginUserContext.js';
 import { dateProcessingDash } from '../../lib/dateProcessing.js';
 import Pagination from './Pagination.js';
 import ClampText from './ClampText.js';
-import { PersonFill } from 'react-bootstrap-icons';
+import { Person } from 'react-bootstrap-icons';
 
 function MySellList() {
   const {user} = useAuth(); // 로그인 한 사용자
@@ -54,7 +54,7 @@ function MySellList() {
                 </div>
                 <div className={styles.dealmaker}>
                   <div className={styles.tradeNickname}>
-                    <PersonFill className={styles.person} />
+                    <Person className={styles.person} />
                     <p><ClampText text={item.buyer_nickname} maxCharacters={5}/></p>
                   </div>
                   <div className={`ms-auto`}>
