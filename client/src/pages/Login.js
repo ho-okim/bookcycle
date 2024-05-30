@@ -18,6 +18,10 @@ function Login() {
 
   const navigate = useNavigate();
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "로그인";
+  }, []);
+
   useEffect(()=>{ // 로그인 한 유저가 접근 시도 시 메인으로 보냄
     if (user) {
       navigate("/");

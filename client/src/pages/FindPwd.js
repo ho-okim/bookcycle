@@ -17,6 +17,10 @@ function FindPwd() {
 
   const navigate = useNavigate();
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "비밀번호 초기화";
+  }, []);
+
   useEffect(()=>{ // 로그인 한 유저가 접근 시도 시 메인으로 보냄
     if (user) {
       navigate("/");
@@ -56,7 +60,7 @@ function FindPwd() {
     <Container>
       <div className='inner text-center d-flex justify-content-center'>
         <div className={styles.box}>
-          <h2 className={styles.title}>비밀번호 찾기</h2>
+          <h2 className={styles.title}>비밀번호 초기화</h2>
           <form className={styles.form_box} onSubmit={(e)=>{e.preventDefault()}}>
             <input name="email" placeholder="email / 이메일"
             className={styles.email_input}

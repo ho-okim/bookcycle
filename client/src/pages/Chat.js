@@ -164,6 +164,9 @@ function Chat() {
 
   // 언마운트될 때 현재 채팅방 번호를 저장하는 전역변수 초기화
   useEffect(()=>{
+    // 타이틀 설정
+    document.title = "채팅";
+    
     // 마운트될 때 만약에 active가 살아있으면 해당 active 채팅방을 보여줌
     if(!isNaN(active)){
       currentIdx = chatRoom[active]?.room_id

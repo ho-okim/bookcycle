@@ -21,6 +21,10 @@ function User() {
 
     const navigate = useNavigate();
 
+    useEffect(()=>{ // 타이틀 설정
+        document.title = "회원";
+    }, []);
+
     useEffect(()=>{ // 요청 id가 바뀔때마다 사용자 정보 새로 가져옴
         async function getTargetUser() { // 대상 사용자 정보 가져오기
             const res = await getUserInfo(targetUserId);

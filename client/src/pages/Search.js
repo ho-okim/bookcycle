@@ -36,6 +36,10 @@ function Search() {
         }
     }
 
+    useEffect(()=>{ // 타이틀 설정
+        document.title = "검색";
+    }, []);
+
     useEffect(()=>{
         setLoading(true);
 

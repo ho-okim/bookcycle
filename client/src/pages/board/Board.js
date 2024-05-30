@@ -40,6 +40,10 @@ function Board() {
     keyword : searchParams.get("search") ?? ''
   });
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "게시판";
+  }, []);
+
   useEffect(()=>{
     // client > api 에서 받아온 상위 10개 게시글 리스트
     async function getBoard() {

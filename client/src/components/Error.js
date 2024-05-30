@@ -11,6 +11,10 @@ function Error() {
 
   const [errorInfo, setErrorInfo] = useState(errorType[0]);
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "에러";
+  }, []);
+
   useEffect(() => {
     for (let i = 0; i < errorType.length; i++) {
       if (!errorCode) {

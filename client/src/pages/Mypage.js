@@ -34,6 +34,10 @@ function MyPage() {
     setPassword(inputPwd);
   };
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "회원 정보";
+  }, []);
+
   if (!user) {
     navigate('/login')
     return null; // navigate 후에는 컴포넌트를 렌더링하지 않음  

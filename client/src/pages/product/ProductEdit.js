@@ -72,6 +72,9 @@ function ProductEdit() {
   // 최초 렌더링 때 초기값 useState에 담아주기
   useEffect(()=>{
 
+    // 타이틀 설정
+    document.title = "상품 정보 수정";
+
     setUploadImg(files);
     setUploadImgUrl(files);
     setCate(category_id - 1);

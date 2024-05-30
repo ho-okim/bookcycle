@@ -26,6 +26,10 @@ function Reset() {
 
     const navigate = useNavigate();
 
+    useEffect(()=>{ // 타이틀 설정
+        document.title = "비밀번호 초기화";
+    }, []);
+
     useEffect(()=>{ // 로그인 한 유저가 접근 시도 시 메인으로 보냄
     if (user) {
         alert("비밀번호 초기화를 요청하지 않았거나 이미 로그인 중입니다!");
@@ -119,40 +123,42 @@ function Reset() {
 
     return(
         <Container>
-            <div className='inner text-center'>
-                <h2 className={styles.title}>비밀번호 초기화</h2>
-                <div className={styles.form_box}>
-                    <div className={styles.input_box}>
-                        <label htmlFor='new-password'>새 비밀번호 : </label>
-                        <div className={styles.password_box}>
-                            <input type={(pwdVisible) ? "text" : "password"} 
-                            id="new-password"
+            <div className='inner text-center d-flex justify-content-center'>
+                <div className={styles.reset_box}>
+                    <h2 className={styles.title}>비밀번호 초기화</h2>
+                    <div className={styles.form_box}>
+                        <div className={styles.input_box}>
+                            <label htmlFor='new-password'>새 비밀번호</label>
+                            <div className={styles.password_box}>
+                                <input type={(pwdVisible) ? "text" : "password"} 
+                                id="new-password"
+                                className={styles.input_form}
+                                onChange={(e)=>{handleInputChange(e)}} 
+                                maxLength={50}
+                                autoFocus/>
+                                <span className={styles.password_eye} 
+                                onClick={handlePasswordVisible}>
+                                {
+                                    (pwdVisible) ? 
+                                    <EyeSlash/>:<Eye/>
+                                }
+                                </span>
+                            </div>
+                            <label htmlFor='confirm-password'>비밀번호 확인</label>
+                            <input type="password" id="confirm-password"
                             className={styles.input_form}
                             onChange={(e)=>{handleInputChange(e)}} 
-                            maxLength={50}
-                            autoFocus/>
-                            <span className={styles.password_eye} 
-                            onClick={handlePasswordVisible}>
-                            {
-                                (pwdVisible) ? 
-                                <EyeSlash/>:<Eye/>
-                            }
-                            </span>
+                            maxLength={50}/>
                         </div>
-                        <label htmlFor='confirm-password'>비밀번호 확인 : </label>
-                        <input type="password" id="confirm-password"
-                        className={styles.input_form}
-                        onChange={(e)=>{handleInputChange(e)}} 
-                        maxLength={50}/>
-                    </div>
-                    {
-                        errorMessage ?
-                        <div className={styles.error_box}>{errorMessage}</div>
-                        : null
-                    }
-                    <div>
-                        <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
-                        <Button className={styles.back_btn} variant='secondary' type="button" onClick={()=>{navigate("/login")}}>취소</Button>
+                        {
+                            errorMessage ?
+                            <div className={styles.error_box}>{errorMessage}</div>
+                            : null
+                        }
+                        <div>
+                            <Button className={`${styles.login_btn} confirm`} type="submit" onClick={()=>{check()}}>확인</Button>
+                            <Button className={styles.back_btn} variant='outline-secondary' type="button" onClick={()=>{navigate("/login")}}>취소</Button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,10 @@ function Verify() {
     const [searchParams, setSearchParams] = useSearchParams(); // 쿼리스트링
     const navigate = useNavigate();
 
+    useEffect(()=>{ // 타이틀 설정
+        document.title = "인증";
+    }, []);
+
     useEffect(()=>{
         if (parseInt(searchParams.get('v')) !== 1) { // 인증 메일이 아닌 일반 라우트 접근 차단
             navigate('/error/401');
