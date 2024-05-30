@@ -4,6 +4,31 @@ h4, p{margin: 0;}
 .sec{padding: 60px 0 30px;}
 .btn{font-size: 14px; padding: 6px 10px;}
 
+/* carousel - 슬라이드 */
+.carousel{
+  min-height: 260px;
+}
+
+.carousel-control-prev, .carousel-control-next{
+  display: none;
+}
+
+.carousel-indicators{
+  margin-bottom: 0;
+  transform: translate(0, 30px);
+}
+
+.carousel-indicators [data-bs-target]{
+  height: 5px !important;
+  border-radius: 5px !important;
+  background-clip: border-box !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+[data-bs-theme=dark] .carousel .carousel-indicators [data-bs-target], [data-bs-theme=dark].carousel .carousel-indicators [data-bs-target] {
+  background-color: rgb(77, 145, 182) !important;
+}
 
 /* MiniBook.js */
 .productTop{margin-bottom: 20px;}
@@ -32,6 +57,13 @@ h4, p{margin: 0;}
 }
 .productPrice{font-size: 14px; color: #979797;}
 
+.textWrap .productTitle{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  flex-shrink: 0;
+}
 
 /* BoardList.js */
 

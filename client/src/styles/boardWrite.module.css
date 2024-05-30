@@ -16,10 +16,12 @@
 }
 .boardForm .contentInput {height: 240px; min-height: 240px;}
 
-.titleBox{display: flex; align-items: center;}
+.titleBox{display: flex; margin-bottom: 5px; align-items: center;}
+.contentBox{margin-bottom: 5px;}
 .titleBox, .contentBox, .btnWrap{padding: 0 10px;}
 .titleBox label{text-align: center;}
 .contentBox label{padding-top: 5px; text-align: center;}
+.boardError{padding: 0 10px;}
 
 .boardForm .onPost{margin-right: 10px;}
 

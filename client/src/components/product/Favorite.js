@@ -1,4 +1,5 @@
 import styles from "../../styles/productDetail.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import {useState, useEffect} from 'react';
 import Button from "react-bootstrap/Button";
 import { Heart } from "react-bootstrap-icons";
@@ -12,39 +13,36 @@ import { useProductDetail } from "../../contexts/ProductDetailContext";
 
 
 function Favorite (){
-    const {id, likehit} = useProductDetail();
+    const {id, product} = useProductDetail();
     const { user } = useAuth();
-
-    async function getproductLikeState() {
-        const data = await productLikeState(id);
-        return data;
-      }
 
     let [productlikeCounts, setproductLikeCounts] = useState(0);
     let [productLikeStates, setproductLikeStates] = useState([]);
 
     useEffect(()=>{
+      const getLikeState = async () => { // 현재 내가 찜한 목록 가져오기
+          const result = await productLikeState(id);
+          setproductLikeStates(result);
+      };
 
-        let productLikeState;
-        const getLikeState = async () => { // 현재 내가 찜한 목록 가져오기
-            productLikeState = await getproductLikeState();
-            setproductLikeStates(productLikeState);
-        };
+      if (user) { // 사용자가 로그인한 상태일때만 호출
+        getLikeState();  
+      }
+      setproductLikeCounts(product.liked);
+    }, [id, product]);
 
-        if (user) { // 사용자가 로그인한 상태일때만 호출
-          getLikeState();  
-        }
-        setproductLikeCounts(likehit);
-    }, [id, likehit]);
-
-    console.log("좋아요 개수: ", productlikeCounts);
-    console.log("로그인 회원이 좋아요한 게시글(likeStates): ", productLikeStates);
-    console.log("id: ", id);
+    // console.log("좋아요 개수: ", productlikeCounts);
+    // console.log("로그인 회원이 좋아요한 게시글(likeStates): ", productLikeStates);
+    // console.log("id: ", id);
 
     const changeToproductLike = async () => {
-        if (!user) {
-          alert("로그인 후 이용하실 수 있습니다.");
-        } else {
+      if (!user) {
+        alert("로그인 후 이용하실 수 있습니다.");
+      } else {
+        // 차단 안된 사용자이고, 판매된 상품이 아니고, 내 상품이 아닐때만 동작
+        let actCondition = (user.blocked === 0 && user.id !== product.seller_id 
+          && (!product.soldDate || product.seller_id == product.buyer_id));
+        if (actCondition) {
           productLike(id);
 
           setproductLikeStates((prevproductLikeStates) => [
@@ -54,6 +52,7 @@ function Favorite (){
 
           setproductLikeCounts((prevproductLikeCounts) => (productlikeCounts + 1));
         }
+      }
     };
 
     // 채워진 하트 클릭 : '좋아요 취소' 하기 💛 ->  🤍
@@ -61,33 +60,36 @@ function Favorite (){
     if (!user) {
       alert("로그인 후 이용하실 수 있습니다.");
     } else {
+      // 차단 안된 사용자이고, 판매된 상품이 아니고, 내 상품이 아닐때만 동작
+      let actCondition = (user.blocked === 0 && user.id !== product.seller_id 
+        && (!product.soldDate || product.seller_id == product.buyer_id));
+      if (actCondition) {
         productUnLike(id);
 
-      // 기존에 존재하던 prevlikeStates에 해당 state 제거
-      setproductLikeStates((prevproductLikeStates) =>
-      prevproductLikeStates.filter(
-          (productLikeState) => productLikeState.product_id !== Number(id)
-        )
-      );
-
-      // 기존 prevLikeCounts에 - 1
-      setproductLikeCounts((prevproductLikeCounts) => (productlikeCounts - 1));
+        // 기존에 존재하던 prevlikeStates에 해당 state 제거
+        setproductLikeStates((prevproductLikeStates) =>
+        prevproductLikeStates.filter(
+            (productLikeState) => productLikeState.product_id !== Number(id)
+          )
+        );
+  
+        // 기존 prevLikeCounts에 - 1
+        setproductLikeCounts((prevproductLikeCounts) => (productlikeCounts - 1));
+      }
     }
   };
 
   return(
     
     <>
-    <div className='heartproduct'>
+    <div className='heartproduct d-flex justify-content-center'>
     {!user ? (
         <div className={styles.heartCount}>
           <Heart
             size="20"
             className={styles.heartIcon}
-            onClick={() => productUnLike()}
+            // onClick={() => productUnLike()} // 로그인 안 한 사용자가 호출하면 로그인 페이지로 이동해 일단 호출을 막았습니다
           />
-          <span>좋아요 </span>
-        
         </div>
       ) : (
         <div className={styles.heartCount}>
@@ -104,10 +106,9 @@ function Favorite (){
               onClick={() => changeToproductLike()}
             />
           )}
-          <span>좋아요 </span>
-          <span className={styles.likeCounts}>{productlikeCounts}</span>개
         </div>
       )}
+      <span>찜 {productlikeCounts}</span>
       </div>
   </>
   );

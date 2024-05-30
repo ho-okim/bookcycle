@@ -35,7 +35,7 @@ function ProductList() {
     keyword : searchParams.get("search") ?? ''
   });
 
-  const limit = 15;
+  const limit = 14;
 
   useEffect(()=>{
     // 전체 상품 수 조회 - 페이징 처리 위함

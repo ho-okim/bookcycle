@@ -10,12 +10,19 @@ router.get('/alert', isLoggedIn, async (req, res) => {
     // query문 설정
     let sql = 'SELECT * FROM user_alerts WHERE user_id = ? ORDER BY createdAt DESC';
 
+    let review_sql = 'SELECT * FROM user_review_alerts WHERE user_id = ? ORDER BY createdAt DESC';
+
     try {
         // db connection pool을 가져오고, query문 수행
         const query = mysql.format(sql, [id]);
-        const result = await pool.query(query);
+        const reivew_query = mysql.format(review_sql, [id]);
 
-        res.send(result);
+        const result = await pool.query(query);
+        const review_result = await pool.query(reivew_query);
+
+        let total = [...result, ...review_result].sort((a, b)=>{return new Date(b.createdAt - new Date(a.createdAt))});
+
+        res.send(total);
     } catch (error) {
         console.error(error);
         res.send('error');
@@ -27,14 +34,20 @@ router.get('/alert/short', isLoggedIn, async (req, res) => {
     const {id} = req.user;
 
     // query문 설정
-    let sql = 'SELECT * FROM user_alerts WHERE user_id = ? ORDER BY createdAt DESC LIMIT 10 OFFSET 0';
+    let sql = 'SELECT * FROM user_alerts WHERE user_id = ? ORDER BY createdAt DESC';
 
+    let review_sql = 'SELECT * FROM user_review_alerts WHERE user_id = ? ORDER BY createdAt DESC';
     try {
         // db connection pool을 가져오고, query문 수행
         const query = mysql.format(sql, [id]);
-        const result = await pool.query(query);
+        const reivew_query = mysql.format(review_sql, [id]);
 
-        res.send(result);
+        const result = await pool.query(query);
+        const review_result = await pool.query(reivew_query);
+
+        let total = [...result, ...review_result].sort((a, b)=>{return new Date(b.createdAt - new Date(a.createdAt))}).splice(0, 10);
+        
+        res.send(total);
     } catch (error) {
         console.error(error);
         res.send('error');

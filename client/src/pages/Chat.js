@@ -3,16 +3,16 @@ import Container from 'react-bootstrap/Container';
 import io from 'socket.io-client';
 import styles from '../styles/chat.module.css'
 import ChatUser from '../components/chat/ChatUser';
-import { useAuth  } from '../contexts/LoginUserContext';
-import { chatList, newChatroom, getChatMsg } from '../api/chat';
-import { BoxArrowInRight, CheckCircle, DoorOpen, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
-import { Button, Dropdown } from 'react-bootstrap';
 import ChatMessage from '../components/chat/ChatMessage';
-import { Link, useNavigate } from 'react-router-dom';
 import DefaultModal from '../components/DefaultModal';
+import Report from '../components/Report';
+import { useAuth } from '../contexts/LoginUserContext';
+import { chatList, newChatroom, getChatMsg, exitChatroom, readOrNot, chatReadOrNot } from '../api/chat';
+import { Ban, BoxArrowInRight, CheckCircle, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
+import { Button, Dropdown } from 'react-bootstrap';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { isSameDate } from '../lib/timeCalculator';
 import { dateProcessingYear } from '../lib/dateProcessing';
-import Report from '../components/Report';
 import { getReportedOrNot } from '../api/report';
 
 var currentIdx = null
@@ -21,6 +21,8 @@ function Chat() {
   const navigate = useNavigate();
   
   const {user} = useAuth();
+  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
+  let location = useLocation()
 
   // socket 연결
   const socket = io('http://localhost:10000')
@@ -85,7 +87,7 @@ function Chat() {
   // 리뷰 작성 페이지로 redirect 핸들러
   const reviewWriteHandler = (sellerId, buyer_id, productId) => {
     if(user.id == sellerId){
-      navigate(`/user/${buyer_id}/sellerReviewWrite?productId=${productId}`)
+      navigate(`/user/${activeChatroom.user_id}/sellerReviewWrite?productId=${activeChatroom.product_id}`)
     } else navigate(`/user/${sellerId}/buyerReviewWrite?productId=${productId}`)
   }
 
@@ -124,6 +126,23 @@ function Chat() {
   const handleReportUserOpen = () => {
     if (!modalReportUserShow) setModalReportUserShow(true);
   };
+
+  // 채팅방 나가기
+  const handleExitChatroom = async () => {
+    try {
+      const productId = activeChatroom.product_id
+      const findCRUserId = user.id == activeChatroom.seller_id ? activeChatroom.user_id : user.id
+      await exitChatroom(productId, findCRUserId);
+      setChatRoom((prev)=>prev.filter((item)=>item.user_id != activeChatroom.user_id || item.product_id != productId))
+      setActive(null)
+      setActiveChatroom({})
+      if(location.state){
+        location.state = null;
+      }
+    } catch (error) {
+      
+    }
+  }
 
   // 신고하기 기능
   function onSpam() {
@@ -180,16 +199,39 @@ function Chat() {
     const loginUserId = user?.id
     if(chatRoom){
       socket.emit('refreshRON', {loginUserId, chatroomIdx: currentIdx})
+      setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
     }
     return()=>{
       
     }
   }, [currentIdx])
+
+  useEffect(()=>{
+    if(location.state && chatRoom){
+      // productDetail에서 넘어온 페이지일 때 해당 채팅방을 띄워주기 위한 코드
+      const {chatroomId} = location.state
+      currentIdx = chatroomId;
+      setActiveChatroom(chatRoom.find((item, i) => {
+        if(item.room_id == chatroomId){
+          setActive(i);
+          return item;
+        }
+      }))
+
+      // location.state = null;
+    }
+
+  }, [location.state, chatRoom])
   
   // API
   // api > chat.js에서 GET 요청한 채팅 목록
   async function getChatList(){
     const data = await chatList()
+    return data;
+  }
+  async function getChatReadOrNot(){
+    const data = await chatReadOrNot()
+    console.log("readornot aPIL" , data)
     return data;
   }
   // 화면 최초로 rendering 될 때만 데이터 GET 요청
@@ -219,7 +261,7 @@ function Chat() {
       return data;
     }
   }
-  // chatroomIdx 변경 될 때만 데이터 GET 요청
+  // currentIdx 변경 될 때만 데이터 GET 요청
   useEffect(()=>{
     if(textRef.current){
     textRef.current.focus() // 채팅방 진입 시 textarea에 focus
@@ -244,14 +286,12 @@ function Chat() {
 
   if (user) { // 로그인을 했을 때만 호출
     getReported();
-  }
-}, [activeChatroom]);
-  
+  }}, [activeChatroom]);
 
   // 소켓 통신
-  if(user){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함
+  if(user && chatRoom){ // user가 null인채로 socket 코드가 실행되는 것을 막기 위함
     // 채팅 메시지 전송 성공 시 서버에서 보낸 정보 받기
-    socket.on('success', (data) => {
+    socket.on('success', async (data) => {
       const {id, user_id, room_id, message, date} = data
       let tempReadOrNot;
       let previousCreatedAt;
@@ -260,7 +300,6 @@ function Chat() {
       let tempChatRoom = chatRoom.map(item => {
         if (item.room_id === room_id) {
             previousCreatedAt = item.createdAt; // 기존 createdAt 값을 저장
-            console.log(previousCreatedAt)
             return { ...item, message, createdAt: date }; // 새로운 createdAt 값으로 객체 업데이트
         } else {
             return item;
@@ -277,16 +316,15 @@ function Chat() {
           // chatroomIdx는 소켓 내부에서 부르면 처음에 null로 떠서 전역변수를 이용함
           console.log('same')
           socket.emit('sameChatroomIdx', data)
-          tempReadOrNot = [...readOrNot];
+          // tempReadOrNot = readOrNot.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item);
           setActive(0);
         } else { // 받은 메시지의 채팅방 != 현재 위치한 채팅방
           console.log('dif')
           socket.emit('difChatroomIdx', data)
 
           let cnt = readOrNot.find((item) => item.room_id == room_id).read_count + 1
-          tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
-          console.log("받은 메시지 : ", chatRoom[active]?.createdAt, "위치한 채팅방 : ", date)
-          if(chatRoom[active]?.createdAt > previousCreatedAt){
+          // tempReadOrNot = readOrNot.map((item) => item.room_id == room_id ? { ...item, read_count: cnt, createdAt: date} : item)
+          if(chatRoom[active]?.createdAt > previousCreatedAt || !previousCreatedAt){
             setActive(prev => prev + 1);
           }
         }
@@ -303,15 +341,18 @@ function Chat() {
           let dateB = new Date(b.createdAt);
           return dateB - dateA; // 최신 날짜가 앞에 오도록 정렬
         });
-        tempReadOrNot.sort((a, b)=>{
-          let dateA = new Date(a.createdAt);
-          let dateB = new Date(b.createdAt);
-          return dateB - dateA;
-        });
+        // tempReadOrNot.sort((a, b)=>{
+        //   let dateA = new Date(a.createdAt);
+        //   let dateB = new Date(b.createdAt);
+        //   return dateB - dateA;
+        // });
       }
 
       setChatRoom(tempChatRoom);
-      setReadOrNot(tempReadOrNot);
+      // setReadOrNot(tempReadOrNot);
+      let ron = await getChatReadOrNot()
+      setReadOrNot(ron)
+      
     })
   }
 
@@ -320,7 +361,7 @@ function Chat() {
 
     setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
     // readOrNot 배열 중 현재 채팅방에 해당하는 배열의 read_count를 0으로 갱신
-    setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+    // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
   })
 
   if(user){
@@ -330,10 +371,10 @@ function Chat() {
       // 메시지를 확인한 사람이 내가 아니고, 현재 위치한 채팅방과 동일하다면 진행
       if(loginUserId != user.id && room_id == currentIdx) {
         setMsgs(prevMsgs => prevMsgs.map((item) => item.read_or_not == 1 ? { ...item, read_or_not: 0} : item))
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+        // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
       if(loginUserId == user.id && room_id == currentIdx){
-        setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
+        // setReadOrNot(prevItem => prevItem.map((item) => item.room_id == currentIdx ? { ...item, read_count: 0} : item))
       }
     })
   }
@@ -380,7 +421,14 @@ function Chat() {
                         }
                       </div>
                       <div className={`${styles.nickname} d-flex align-items-center`}>
-                        <p>{activeChatroom.user_nickname}</p>
+                        {
+                          activeChatroom.blocked ?
+                          <div className='d-flex align-items-center'>
+                            <Ban className={styles.banUser}/>
+                            <p className={styles.banUser}>{activeChatroom.user_nickname}</p>
+                          </div> :
+                          <p>{activeChatroom.user_nickname}</p>
+                        }
                       </div>
                     </div>
                   </Link>
@@ -392,30 +440,34 @@ function Chat() {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                           <Dropdown.Item className={styles.dropdownItem}>
-                            <Link className={`${styles.report} medium d-flex align-items-center`}>
+                            <Link className={`${styles.report} medium d-flex align-items-center`} onClick={handleExitChatroom}>
                               <BoxArrowInRight className={styles.chatOut}/>
                               <span>채팅방 나가기</span>
                             </Link>
                           </Dropdown.Item>
-                            {!isUserReported ?
-                            <Dropdown.Item className={styles.dropdownItem}>
-                              <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onUserSpam}>
-                                <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
-                                <span>사용자 신고하기</span>
-                              </Link>
-                            </Dropdown.Item> :
-                            <div className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
-                              <CheckCircle className={styles.reportComplete}/>사용자 신고 완료</div>
+                            {
+                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
+                              !isUserReported ?
+                              <Dropdown.Item className={styles.dropdownItem}>
+                                <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onUserSpam}>
+                                  <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                                  <span>사용자 신고하기</span>
+                                </Link>
+                              </Dropdown.Item> :
+                              <div className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
+                                <CheckCircle className={styles.reportComplete}/>사용자 신고 완료</div>
                             }
-                            {!isReported ? 
-                            <Dropdown.Item className={styles.dropdownItem}>
-                              <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onSpam}>
-                                <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
-                                <span>상품 신고하기</span>
-                              </Link>
-                            </Dropdown.Item> :
-                            <span className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
-                              <CheckCircle className={styles.reportComplete}/>상품 신고 완료</span>
+                            {
+                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
+                              !isReported ? 
+                                <Dropdown.Item className={styles.dropdownItem}>
+                                  <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onSpam}>
+                                    <img style={{width: '20px', height: '16px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>
+                                    <span>상품 신고하기</span>
+                                  </Link>
+                                </Dropdown.Item> :
+                                <span className={`${styles.report} ${styles.reported} medium d-flex align-items-center`}>
+                                  <CheckCircle className={styles.reportComplete}/>상품 신고 완료</span>
                             }
                         </Dropdown.Menu>
                       </Dropdown>
@@ -455,11 +507,12 @@ function Chat() {
                         </Link>
                         <div className={`d-flex align-items-center ${styles.btnWrap}`}>
                           {
+                            (activeChatroom.blocked === 0 && user.blocked === 0) ?
                             activeChatroom.soldDate ?
                             <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}>후기 작성</Button>
                             : user?.id == activeChatroom.seller_id ?
                               <Button variant="outline-danger" className={`${styles.btn}`} onClick={handleOpen}>거래 완료</Button>
-                              : null
+                              : null : null
                           }
                           <DefaultModal show={modalShow} handleClose={handleClose}
                           targetId={activeChatroom.user_id} getSoldOut={getSoldOut}
@@ -472,24 +525,40 @@ function Chat() {
                 <div className={`${styles.chatting}`} ref={chatRef}>
                   <div>
                     {
+                      msgs?.length === 0 ? null :
                       msgs && msgs.map((el, i)=>{
                         return(
-                          isSameDate(el.createdAt, msgs[i-1]?.createdAt) ?
-                            <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/> :
-                            <>
-                              <div className={`d-flex justify-content-center align-items-center`}>
-                                <p className={`${styles.chatDifDate} regular`}>{dateProcessingYear(el.createdAt)}</p></div>
-                              <ChatMessage key={el.id} el={el} nickname={activeChatroom.nickname}/>
-                            </> 
+                          <div key={el.id}>
+                            {
+                              !isSameDate(el.createdAt, msgs[i-1]?.createdAt) &&
+                                <div className={`d-flex justify-content-center align-items-center`}>
+                                  <p className={`${styles.chatDifDate} regular`}>{dateProcessingYear(el.createdAt)}</p>
+                                </div>
+                            }
+                            <ChatMessage el={el} nickname={activeChatroom.nickname}/>
+                          </div> 
                         )
                       })
                     }
+                    {
+                      activeChatroom.exit_user_id &&
+                      <div className={`d-flex justify-content-center align-items-center`}>
+                        <p className={`${styles.chatDifDate} regular`}>상대방이 채팅방을 나갔습니다</p>
+                      </div>
+                    }
                   </div>
                 </div>
-                <div className={`${styles.chatForm} d-flex`}>
-                  <textarea className={`${styles.chatText} regular`} ref={textRef} onInput={handleResizeHeight} placeholder='메시지를 입력하세요'></textarea>
-                  <span className={`${styles.chatBtn} d-flex align-items-center`} onClick={handleMsgClick}><SendFill/></span>
-                </div>
+                {
+                  user.blocked === 1 || activeChatroom.blocked || user.id == activeChatroom.user_id || activeChatroom.exit_user_id?
+                  <div className={`${styles.chatForm} d-flex`}>
+                    <textarea className={`${styles.chatText} regular`} placeholder='메시지를 보낼 수 없습니다' disabled></textarea>
+                    <span className={`${styles.chatBtn} ${styles.chatBanBtn} d-flex align-items-center`} disabled><SendFill/></span>
+                  </div> :
+                  <div className={`${styles.chatForm} d-flex`}>
+                    <textarea className={`${styles.chatText} regular`} ref={textRef} onInput={handleResizeHeight} placeholder='메시지를 입력하세요'></textarea>
+                    <span className={`${styles.chatBtn} d-flex align-items-center`} onClick={handleMsgClick}><SendFill/></span>
+                  </div>
+                }
               </div>
             }
           </div>

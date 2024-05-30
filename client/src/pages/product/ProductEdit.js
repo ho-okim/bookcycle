@@ -159,6 +159,10 @@ function ProductEdit() {
     titleRef.current.style.height = "1rem";
     titleRef.current.style.height = titleRef.current.scrollHeight + "px";
   }, []);
+  const handleResizeContentHeight = useCallback(() => {
+    contentRef.current.style.height = "1rem";
+    contentRef.current.style.height = contentRef.current.scrollHeight + "px";
+  }, []);
 
   // 등록 버튼 누르면 실행되는 함수
   const check = async() => {
@@ -241,7 +245,7 @@ function ProductEdit() {
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
               <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
               <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
-              <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`}>
+              <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
                   <Camera className={`${styles.previewDefaultImg}`}/>
@@ -266,26 +270,28 @@ function ProductEdit() {
                 })
               }
             </div>
-            <div className={``}>
-              <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                <div>
-                  <p className={`${styles.essentialInput}`}>카테고리</p>
-                </div>
-                <div className={styles.radioWrap}>
-                    <div>
-                      <div key={`inline-radio`} className="d-flex flex-wrap">
-                        {category.map((category, i)=>{
-                          return(
-                            i == cate ?
-                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i} checked="checked"/> :
-                            <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
-                          )
-                        })}
+            <div className='row'>
+              <div className='col-12'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div>
+                    <p className={`${styles.essentialInput}`}>카테고리</p>
+                  </div>
+                  <div className={styles.radioWrap}>
+                      <div>
+                        <div key={`inline-radio`} className="d-flex flex-wrap">
+                          {category.map((category, i)=>{
+                            return(
+                              i == cate ?
+                              <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i} checked="checked"/> :
+                              <Form.Check className={styles.category} label={category} name="category" type="radio" id={`category${i}`} onChange={(e)=>cateHandler(e, i)} key={i}/>
+                            )
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                </div>
               </div>
-              <div className='d-flex justify-content-between'>
+              <div className='col-12 col-sm-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>    
                     <p className={`${styles.essentialInput}`}>제목</p>
@@ -299,6 +305,72 @@ function ProductEdit() {
                   </div>
                   <textarea className={`${styles.input} ${styles.titleTextarea}`} placeholder="제목을 입력하세요" maxLength={80} ref={titleRef} onInput={handleResizeHeight} onChange={handleLength}/>
                 </div>
+              </div>
+              <div className='col-12 col-sm-6'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>저자</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({writerLen}/50)</span>
+                    </div>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-6'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                    
+                    <p className={``}>출판사</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({publisherLen}/50)</span>
+                    </div>
+                  </div>
+                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-6'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={``}>출간일</p>
+                  </div>
+                  <DatePicker className={`${styles.input} regular`} selected={pubDate}
+                    locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date}
+                    onChange={handleDateChange}
+                    dayClassName={(d) => (d.getDate() == pubDate ? styles.selectedDay : styles.unselectedDay)}
+                    />
+                </div>
+              </div>
+              <div className='col-6 col-lg-3'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn10</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn10Len}/10)</span>
+                    </div>
+                    {
+                      (isbn10Len !== 0 && isbn10Len !== 10) ?
+                      <EmptyError emptyErrorMsg={isbn10Msg} triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-6 col-lg-3'>
+                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>                   
+                    <p className={``}>isbn13</p>
+                    <div className='d-flex align-items-end'>
+                      <span className={`${styles.count}`}>({isbn13Len}/13)</span>
+                    </div>
+                    {
+                      (isbn13Len !== 0 && isbn13Len !== 13) ?
+                      <EmptyError emptyErrorMsg={isbn13Msg} triggerVibration={triggerVibration}/> : null
+                    }
+                  </div>
+                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
+                </div>
+              </div>
+              <div className='col-12 col-lg-6'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>가격</p>
@@ -312,37 +384,7 @@ function ProductEdit() {
                   </div>
                 </div>
               </div>
-              <div className='d-flex justify-content-between'>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                    
-                    <p className={``}>저자</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({writerLen}/50)</span>
-                    </div>
-                  </div>
-                  <input className={`${styles.input}`} placeholder="도서의 저자를 입력하세요" maxLength={50} ref={writerRef} onChange={handleLength}></input>
-                </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                    
-                    <p className={``}>출판사</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({publisherLen}/50)</span>
-                    </div>
-                  </div>
-                  <input className={`${styles.input}`} placeholder="도서의 출판사를 입력하세요" maxLength={50} ref={publisherRef} onChange={handleLength}></input>
-                </div>
-              </div>
-              <div className='d-flex justify-content-between'>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>
-                    <p className={``}>출간일</p>
-                  </div>
-                  <DatePicker className={`${styles.input} regular`} selected={pubDate}
-                    locale={ko} dateFormat={"yyyy/MM/dd"} showYearDropdown scrollableYearDropdown yearDropdownItemNumber={100} placeholderText='출간일을 선택하세요' maxDate={date}
-                    onChange={handleDateChange}
-                    dayClassName={(d) => (d.getDate() == pubDate ? styles.selectedDay : styles.unselectedDay)}
-                    />
-                </div>
+              <div className='col-6 col-lg-3'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <p className={`${styles.essentialInput}`}>상태</p>
                   <div className={styles.radioWrap}>
@@ -362,51 +404,25 @@ function ProductEdit() {
                   </div>
                 </div>
               </div>
-              <div className='d-flex justify-content-between'>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn10</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({isbn10Len}/10)</span>
-                    </div>
-                    {
-                      (isbn10Len !== 0 && isbn10Len !== 10) ?
-                      <EmptyError emptyErrorMsg={isbn10Msg} triggerVibration={triggerVibration}/> : null
-                    }
+              <div className='col-12'>
+                <div className={`${styles.col} d-flex flex-column`}>
+                  <div className={`${styles.inputTitle} d-flex`}>
+                    <p className={`${styles.essentialInput}`}>내용</p>
+                      <div className='d-flex align-items-end'>
+                        <span className={`${styles.count}`}>({contentLen}/3000)</span>
+                      </div>
+                      {
+                        contentLen === 0 ?
+                        <EmptyError triggerVibration={triggerVibration}/> : null
+                      }
                   </div>
-                  <input className={`${styles.input}`} placeholder="isbn 10자리를 입력하세요" maxLength={10} ref={isbn10Ref} onChange={handleLength}></input>
+                  <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요"
+                    ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
                 </div>
-                <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
-                  <div className={`${styles.inputTitle} d-flex`}>                   
-                    <p className={``}>isbn13</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({isbn13Len}/13)</span>
-                    </div>
-                    {
-                      (isbn13Len !== 0 && isbn13Len !== 13) ?
-                      <EmptyError emptyErrorMsg={isbn13Msg} triggerVibration={triggerVibration}/> : null
-                    }
-                  </div>
-                  <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
+                <div className={`col ${styles.col} d-flex justify-content-end`}>
+                  <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
+                  <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
                 </div>
-              </div>
-              <div className={`col-12 ${styles.col} d-flex flex-column`}>
-                <div className={`${styles.inputTitle} d-flex`}>
-                  <p className={`${styles.essentialInput}`}>내용</p>
-                    <div className='d-flex align-items-end'>
-                      <span className={`${styles.count}`}>({contentLen}/3000)</span>
-                    </div>
-                    {
-                      contentLen === 0 ?
-                      <EmptyError triggerVibration={triggerVibration}/> : null
-                    }
-                </div>
-                <textarea className={`${styles.input} ${styles.content}`} id="content" placeholder="내용을 입력하세요"
-                  ref={contentRef} maxLength={3000} onChange={handleLength}></textarea>
-              </div>
-              <div className={`col ${styles.col} d-flex justify-content-end`}>
-                <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
-                <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
               </div>
             </div>
           </div>
