@@ -45,6 +45,9 @@ function BoardEdit() {
 
   // 최초 렌더링 때 이미지 초기값 useState에 담아주기
   useEffect(()=>{
+    // 타이틀 설정
+    document.title = "게시글 수정";
+
     if(files){
       setUploadImg(files)
       setUploadImgUrl(files)

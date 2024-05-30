@@ -62,6 +62,9 @@ function ProductDetail() {
   }
 
   useEffect(()=>{
+    // 타이틀 설정
+    document.title = "상품 상세보기";
+
     async function productcate() { //카테고리 데이터 가져오기
       const data = await getCategory();
       setCategory(data);

@@ -15,7 +15,7 @@ function Main(){
   const navigateToProduct = () => {
     navigate('/product')
   }
-  
+
   return(
     <>
       <Container className="productSec sec">

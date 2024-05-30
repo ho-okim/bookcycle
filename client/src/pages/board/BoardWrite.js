@@ -108,6 +108,10 @@ function BoardWrite() {
     }
   }
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "게시글 작성";
+  }, []);
+
   if (!user) { // 로그인 안 한 사용자의 접근 차단
     navigate("/login");
   } else if (user && user.blocked === 1) { // 차단된 사용자 접근 차단

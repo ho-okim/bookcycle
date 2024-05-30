@@ -1,5 +1,5 @@
 import styles from '../../styles/product.module.css';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Button, Form } from "react-bootstrap";
 import { Camera, ExclamationCircleFill, XCircleFill } from 'react-bootstrap-icons'
@@ -175,6 +175,10 @@ function BoardWrite() {
       setTimeout(() => setTriggerVibration(false), 2000);
     }
   }
+
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "상품 작성";
+  }, []);
 
   if (!user) { // 로그인 안 한 사용자의 접근 차단
     navigate("/login");

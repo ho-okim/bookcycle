@@ -14,8 +14,6 @@ import { useAuth } from '../../contexts/LoginUserContext.js';
 import { getReportedOrNot } from '../../api/report.js';
 import DefaultModal from '../../components/DefaultModal.js';
 
-
-
 function BoardDetail(){
 
   const {id} = useParams();
@@ -39,6 +37,10 @@ function BoardDetail(){
   const handleDeleteOpen = () => { // modal 열기 처리
     if (!modalDeleteShow) setModalDeleteShow(true);
   };
+
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "게시글 상세보기";
+  }, []);
 
   useEffect(()=>{
     // 데이터 조회

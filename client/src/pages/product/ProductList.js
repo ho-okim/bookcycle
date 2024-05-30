@@ -37,6 +37,10 @@ function ProductList() {
 
   const limit = 14;
 
+  useEffect(()=>{ // 타이틀 설정
+    document.title = "상품 목록";
+  }, []);
+
   useEffect(()=>{
     // 전체 상품 수 조회 - 페이징 처리 위함
     async function getTotal() { 
