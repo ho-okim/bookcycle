@@ -24,7 +24,7 @@ function ChatMessage(props){
           <span className={`${styles.date} regular`}>{time}</span>
         </div>
         <div className={`${styles.chatBoxMine} d-flex align-items-end regular`}>
-          <span>{el.message}</span>
+          <span className={styles.chatMsg}>{el.message}</span>
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@ function ChatMessage(props){
       </div>
       <div className={`d-flex`}>
         <div className={`${styles.chatBox} d-flex justify-content-end align-items-end regular`}>
-          <span>{el.message}</span>
+          <span className={styles.chatMsg}>{el.message}</span>
         </div>
         <div className={`d-flex flex-column justify-content-end align-items-start`}>
           <span className={`${styles.date} ${styles.ron} regular`}></span>

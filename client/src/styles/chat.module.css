@@ -111,6 +111,8 @@
   background-color: #c9c9c9; border-radius: 20px;
 }
 
+.chatMsg{white-space: pre-wrap; word-break: break-all;}
+
 /* chatMsg mine */
 .chatWrapMine{padding: 10px 0;}
 .chatBoxMine span{padding: 7px 10px; border: 1px solid #ddd; border-radius: 5px;}

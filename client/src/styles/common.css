@@ -98,11 +98,14 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
 }
 
 @media screen and (max-width: 992px){
-  .footerBorder{border-right: none;}
-  .footercontributors{display: flex;}
-  .footerWrap{padding-bottom: 15px;}
-  .footerConWrap .footerWrap{padding: 15px 0; border-top: 1px solid #c0c0c0;}
-  .footerImgWrap{width: 300px;}
+  .footerWrap{padding: 0 15px;}
+  .footerLogoImg{width: 200px;}
+}
+@media screen and (max-width: 768px){
+  .footerBorder{border: none;}
+  .footerConWrap{margin-top: 15px;}
+  .footerConWrap:nth-of-type(3){border-left: 1px solid #c0c0c0;}
+  .footerWrap{padding: 0 10px;}
 }
 @media screen and (max-width: 576px){
   .footerWrap{padding-left: 10px;}

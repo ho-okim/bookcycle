@@ -8,10 +8,10 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
     <div className="">
       <Container className='p-0'>
         <div className='inner row footer'>
-          <div className="col-6 col-lg-4 p-0 footerImgWrap">
+          <div className="col-12 col-md-4 p-0 footerImgWrap">
             <img src={process.env.PUBLIC_URL + '/img/footer-logo.png'} className='footerLogoImg' alt='logo'/>
           </div>
-          <div className='col-6 col-lg-4 medium footerTextSize p-0'>
+          <div className='col-6 col-md-4 medium footerTextSize footerConWrap p-0'>
             <div className='footerBorder footerWrap'>
               <p className='bold footerTitle'>북사이클</p>
               <p>이메일: resellboook@gmail.com</p>
@@ -22,7 +22,7 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
               </div>
             </div>
           </div>
-          <div className="col-12 col-lg-4 footerConWrap p-0">
+          <div className="col-6 col-md-4 footerConWrap p-0">
             <div className='d-flex flex-column footerWrap'>
               <div>
                 <p className="text-uppercase bold footerTitle">Contributors</p>
@@ -74,7 +74,7 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
       </Container>
     </div>
 
-    <div className="footer-copyright medium text-center py-3">
+    <div className="footer-copyright medium text-center py-4">
       <p className='footerTextSize'>© 2024 Copyright: Bookcycle All rights reserved.</p>
     </div>
 

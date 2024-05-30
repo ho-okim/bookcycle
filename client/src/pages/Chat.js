@@ -81,6 +81,7 @@ function Chat() {
       socket.emit('send-message', {loginUserId, socketMsg, chatroomIdx: currentIdx})
       textRef.current.value = ""
       textRef.current.focus() // 채팅방 진입 시 textarea에 focus
+      handleResizeHeight();
     }
   }
 
