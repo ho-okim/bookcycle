@@ -43,6 +43,24 @@ router.get('/chat/readOrNot', isLoggedIn, async (req, res) => {
   }
 });
 
+// 리뷰 작성 여부 판단
+router.get('/chat/review/:productId', isLoggedIn, async (req, res) => {
+  const {productId} = req.params;
+  // 해당 쿼리문이 결과가 존재하면 후기 작성 완료로 변경
+  let sql = 'SELECT * FROM review WHERE product_id = ? AND writer_id = ?';
+
+  try {
+    // db connection pool을 가져오고, query문 수행
+    const query = mysql.format(sql, [productId, req.user.id]);
+    let result = await pool.query(query);
+
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
+
 // 새로운 채팅방 생성하는 쿼리문(기존에 존재하는지 검사 거칠 필요 있음)
 router.post('/newChatroom/:id', isLoggedInAndBlocked, async (req, res) => {
   // id는 product_id

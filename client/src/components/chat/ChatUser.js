@@ -18,12 +18,23 @@ function ChatUser(props){
     <>
       <div className={`d-flex justify-content-between`}>
         <div className={`d-flex`}>
-          <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
-            {
-              el.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
-              : el.profile_image == 'quit' ? <PersonExclamation className={`${styles.profileIcon}`}/>
-              : <img src={process.env.PUBLIC_URL + `/img/profile/${el.profile_image}`} className={`${styles.profileImg}`}/>
-            }
+          <div className={styles.profileWrap}>
+            <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+              <div className={styles.profileShadow}></div>
+              {
+                !el.profile_image || el.profile_image == '' ? <Person className={`${styles.profileIcon}`}/>
+                : el.profile_image == 'quit' ? <PersonExclamation className={`${styles.profileIcon}`}/>
+                : <img src={process.env.PUBLIC_URL + `/img/profile/${el.profile_image}`} className={`${styles.profileImg}`}/>
+              }
+            </div>
+            <div className={styles.profileProductShadow}></div>
+            <div className={`d-flex justify-content-center align-items-center ${styles.profileProductImgWrap}`}>
+              {
+                el.filename  ?
+                <img src={process.env.PUBLIC_URL + `/img/product/${el.filename}`} className={`${styles.profileImg}`}/> :
+                <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} className={`${styles.profileImg}`}/>
+              }
+            </div>
           </div>
         </div>
         <div className={`${styles.chatInfo}`}>

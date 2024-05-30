@@ -7,7 +7,7 @@ import ChatMessage from '../components/chat/ChatMessage';
 import DefaultModal from '../components/DefaultModal';
 import Report from '../components/Report';
 import { useAuth } from '../contexts/LoginUserContext';
-import { chatList, newChatroom, getChatMsg, exitChatroom, readOrNot, chatReadOrNot } from '../api/chat';
+import { chatList, newChatroom, getChatMsg, exitChatroom, readOrNot, chatReadOrNot, isChatReviewed } from '../api/chat';
 import { Ban, BoxArrowInRight, CheckCircle, EmojiTear, ExclamationCircleFill, Person, PersonExclamation, SendFill } from 'react-bootstrap-icons';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -21,8 +21,6 @@ function Chat() {
   const navigate = useNavigate();
   
   const {user} = useAuth();
-  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
-  let location = useLocation()
 
   // socket 연결
   const socket = io('http://localhost:10000')
@@ -41,8 +39,12 @@ function Chat() {
   // 신고 여부
   const [isReported, setIsReported] = useState(true);
   const [isUserReported, setIsUserReported] = useState(true);
-  
-  let activeRef = useRef(null)
+  // 리뷰 작성 여부
+  const [isReviewed, setIsReviewed] = useState(false);
+
+  // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
+  let location = useLocation()
+  const [state, setState] = useState(location.state);
 
   const chatRef = useRef()
 
@@ -54,7 +56,8 @@ function Chat() {
   }, []);
 
   // 채팅방 요소 클릭 시 수행되는 핸들러
-  const handleChatroomClick = (e, room_id, i) => {
+  const handleChatroomClick = async (e, room_id, i) => {
+    setState(null);
     setActiveChatroom(chatRoom.find((item) => item.room_id == room_id))
     currentIdx = room_id
     if(readOrNot.length){
@@ -62,7 +65,6 @@ function Chat() {
       setReadOrNot(temp)
     }
     setActive(i)
-    activeRef = i
   }
 
   // 채팅방 스크롤 제어 핸들러
@@ -82,14 +84,15 @@ function Chat() {
       textRef.current.value = ""
       textRef.current.focus() // 채팅방 진입 시 textarea에 focus
       handleResizeHeight();
+      //location.state = null;
     }
   }
 
   // 리뷰 작성 페이지로 redirect 핸들러
   const reviewWriteHandler = (sellerId, buyer_id, productId) => {
     if(user.id == sellerId){
-      navigate(`/user/${activeChatroom.user_id}/sellerReviewWrite?productId=${activeChatroom.product_id}`)
-    } else navigate(`/user/${sellerId}/buyerReviewWrite?productId=${productId}`)
+      navigate(`/user/${sellerId}/buyerReviewWrite?productId=${productId}`)
+    } else navigate(`/user/${activeChatroom.user_id}/sellerReviewWrite?productId=${activeChatroom.product_id}`)
   }
 
   // 거래 완료 버튼 누른 후 product 업데이트
@@ -97,7 +100,6 @@ function Chat() {
     // 거래 완료 버튼으로 만들기 위해 임시값인 1 저장
     setActiveChatroom((prevRoom)=>{prevRoom.soldDate = 1})
   }
-
   
   // 상품 모달
   const [modalShow, setModalShow] = useState(false); // modal 표시 여부
@@ -137,9 +139,6 @@ function Chat() {
       setChatRoom((prev)=>prev.filter((item)=>item.user_id != activeChatroom.user_id || item.product_id != productId))
       setActive(null)
       setActiveChatroom({})
-      if(location.state){
-        location.state = null;
-      }
     } catch (error) {
       
     }
@@ -178,8 +177,15 @@ function Chat() {
     })
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     setActiveChatroom(chatRoom.find((item) => item.room_id == currentIdx))
+    if(activeChatroom){
+      async function getData() { // 리뷰 작성 데이터 가져오기
+        const isProductReviewed = await isChatReviewed(activeChatroom.product_id);
+        setIsReviewed(isProductReviewed);
+      }
+    getData();
+    }
     handleScroll(chatRef)
   }, [activeChatroom])
 
@@ -211,9 +217,9 @@ function Chat() {
   }, [currentIdx])
 
   useEffect(()=>{
-    if(location.state && chatRoom){
+    if(state && chatRoom){
       // productDetail에서 넘어온 페이지일 때 해당 채팅방을 띄워주기 위한 코드
-      const {chatroomId} = location.state
+      const {chatroomId} = state
       currentIdx = chatroomId;
       setActiveChatroom(chatRoom.find((item, i) => {
         if(item.room_id == chatroomId){
@@ -221,11 +227,8 @@ function Chat() {
           return item;
         }
       }))
-
-      // location.state = null;
     }
-
-  }, [location.state, chatRoom])
+  }, [state, chatRoom])
   
   // API
   // api > chat.js에서 GET 요청한 채팅 목록
@@ -237,6 +240,7 @@ function Chat() {
   useEffect(()=>{
     const getChatList = async () => {
       const {res, ron} = await chatList()
+      console.log(res)
       setChatRoom(res)
       setReadOrNot(ron)
     }
@@ -265,7 +269,7 @@ function Chat() {
     // api > chat.js에서 GET 요청한 채팅방 메세지 받아오기
     const getChatMsgList = async () => {
       if(currentIdx){
-        const res = await getChatMsg(currentIdx)
+        const res = await getChatMsg(currentIdx);
         setMsgs(res)
       }
     }
@@ -408,14 +412,14 @@ function Chat() {
               </div>
               :
               <div className={`${styles.chattingRoom}`}>
-                <div className={`${styles.profileWrap} d-flex justify-content-between`}>
+                <div className={`${styles.msgProfileWrap} d-flex justify-content-between`}>
                   <Link style={{ textDecoration: 'none' }} to={`/user/${activeChatroom.user_id}`}>
                     <div className='d-flex'>
-                      <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                      <div className={`d-flex justify-content-center align-items-center ${styles.msgProfileImgWrap}`}>
                         {
                           user?.id == activeChatroom.user_id ?
                           <PersonExclamation className={`${styles.profileIcon}`}/> :
-                          activeChatroom.profile_image == '' ?
+                          !activeChatroom.profile_image || activeChatroom.profile_image == '' ?
                           <Person className={`${styles.profileIcon}`}/> :
                           <img src={process.env.PUBLIC_URL + `/img/profile/${activeChatroom.profile_image}`} className={`${styles.profileImg}`}/>
                         }
@@ -490,7 +494,11 @@ function Chat() {
                           <div className={`d-flex align-items-center`}>
                             <div className='d-flex justify-content-center align-items-center'>
                               <div className={`${styles.productImgWrap} d-flex justify-content-center align-items-center`}>
-                                <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom?.filename}`} alt='' className={`${styles.profileImg} ${activeChatroom.soldDate && styles.soldOut}`}/>
+                                {
+                                  activeChatroom?.filename ?
+                                  <img src={process.env.PUBLIC_URL + `/img/product/${activeChatroom.filename}`} alt='' className={`${styles.profileImg} ${activeChatroom.soldDate && styles.soldOut}`}/> :
+                                  <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} className={`${styles.profileImg}`}/>
+                                }
                               </div>
                             </div>
                             <div>
@@ -506,17 +514,17 @@ function Chat() {
                           </div>
                         </Link>
                         <div className={`d-flex align-items-center ${styles.btnWrap}`}>
-                          {
-                            (activeChatroom.blocked === 0 && user.blocked === 0) ?
-                            activeChatroom.soldDate ?
-                            <Button variant="outline-danger" className={`${styles.btn}`} onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}>후기 작성</Button>
-                            : user?.id == activeChatroom.seller_id ?
-                              <Button variant="outline-danger" className={`${styles.btn}`} onClick={handleOpen}>거래 완료</Button>
-                              : null : null
-                          }
+                          <ReviewBtn
+                          activeChatroom={activeChatroom}
+                          user={user}
+                          isReviewed={isReviewed}
+                          reviewWriteHandler={reviewWriteHandler}
+                          handleOpen={handleOpen}
+                          />
                           <DefaultModal show={modalShow} handleClose={handleClose}
                           targetId={activeChatroom.user_id} getSoldOut={getSoldOut}
-                          productId={activeChatroom.product_id}/>
+                          productId={activeChatroom.product_id}
+                          />
                         </div>
                       </div>
                     }
@@ -575,6 +583,30 @@ function Chat() {
       </div>
     </Container>
   );
+}
+
+function ReviewBtn({activeChatroom, user, isReviewed, reviewWriteHandler, handleOpen}){
+
+  if(activeChatroom.blocked === 0 && user.blocked === 0){
+    if(isReviewed){
+    return( // 리뷰 작성 완료면
+      <div className={`${styles.reviewed}`}>리뷰 작성 완료</div>
+    )
+    } else if(activeChatroom.soldDate){
+      return( // 리뷰 작성 안 됐지만 soldDate가 있으면
+        <Button variant="outline-danger"
+          className={`${styles.btn}`}
+          onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}
+          >후기 작성</Button>
+      )
+    } else if(user?.id == activeChatroom.seller_id){
+      return( // 리뷰 작성 안 됐고 soldDate 없지만 내가 판매자라면
+        <Button variant="outline-danger"
+        className={`${styles.btn}`}
+        onClick={handleOpen}>거래 완료</Button>
+      )
+    }
+  } else return null; // 모든 경우가 아니면
 }
 
 export default Chat;

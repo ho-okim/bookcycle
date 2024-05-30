@@ -40,6 +40,25 @@ export async function chatReadOrNot(){
   }
 }
 
+export async function isChatReviewed(productId){
+  try {
+    const result = await axios.get(`/chat/review/${productId}`)
+    const res = result.data[0] ? true : false
+  
+    if (result.statusText !== "OK") {
+      window.location.href = '/error/500';
+    } 
+    const body = res;
+    return body;
+  } catch (error) {
+    if (error.response.status === 403) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/error/500';
+    }
+  }
+}
+
 export async function newChatroom(id, seller_id) {
   try {
     // id는 product_id

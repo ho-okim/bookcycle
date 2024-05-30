@@ -4,10 +4,40 @@
 .chatting{height: 400px; overflow-y: auto;}
 
 /* chatList(chatUser) */
-.active{background-color: #ddd!important;}
-.profileImgWrap{margin-right: 10px; width: 50px; height: 50px; border-radius: 25px; background-color: rgb(221, 242, 252); overflow: hidden;}
+.active{background-color: #f1f1f1!important;}
+.profileWrap{
+  position: relative;
+  width: 75px; height: 55px;
+}
+.profileImgWrap{
+  position: absolute; top: 0; left: 0;
+  width: 50px; height: 50px;
+  border-radius: 25px; background-color: rgb(221, 242, 252);
+  overflow: hidden;
+}
+.profileShadow{
+  position: absolute; top: 0; left: 0;
+  width: 50px; height: 50px;
+  border-radius: 25px; box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+.profileProductImgWrap{
+  position: absolute; top: 13px; left: 30px;
+  width: 100%; height: 100%; object-fit: cover;
+  width: 35px; height: 45px; background-color: white;
+  border-radius: 3px; border: 3px solid white;
+  overflow: hidden;
+}
+.profileProductShadow{
+  position: absolute; top: 16px; left: 33px; z-index: 10;
+  width: 29px; height: 39px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
 .profileIcon{font-size: 40px;}
-.profileImg{width: 100%; height: 100%; object-fit: cover;}
+.profileImg{
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 2px;
+}
 .nickname{padding-right: 30px;}
 .chatUser{
   width: 100%; padding: 15px;
@@ -46,6 +76,15 @@
 
 
 /* chatting */
+.msgProfileWrap{padding: 15px;}
+.msgProfileImgWrap{
+  margin-right: 10px; width: 55.9px; height: 55.9px;
+  border-radius: 50%; background-color: rgb(221, 242, 252); overflow: hidden;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+.msgProfileImgWrap .profileIcon{font-size: 40px;}
+.msgProfileImgWrap .profileImg{width: 100%; height: 100%; object-fit: cover;}
+
 .toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus, 
 .toggleBtn:first-child:active, 
 .toggleBtn.show ~ .toggleBtn:active
@@ -70,12 +109,16 @@
 .chattingRoom{border-radius: 2px; border: 1px solid #ddd;}
 .profileWrap{padding: 15px;}
 .productWrap{padding: 15px; border-top: 1px solid #ddd;}
-.productImgWrap{width: 50px; height: 50px; margin-right: 8px; overflow: hidden; background-color: #949494;}
+.productImgWrap{
+  width: 45px; height: 55px; margin-right: 8px; overflow: hidden;
+  background-color: white; border-radius: 3px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
 
 .banUser{margin-right: 3px; color: rgb(220, 53, 69);}
 
 .deletedWrap{background-color: #f1f1f1;}
-.deletedText{width: 100%; height: 50px; color: rgb(220, 53, 69);}
+.deletedText{width: 100%; height: 55px; color: rgb(220, 53, 69);}
 .deletedIcon{margin: 0px 5px; font-size: 50px;}
 
 .report{color: #575757; font-size: 14px;}
@@ -97,6 +140,12 @@
 .btn{width: 75px; border: 1px solid rgb(77, 145, 182); color: rgb(77, 145, 182);}
 .btn:hover{background-color: rgb(77, 145, 182); border: 1px solid rgb(77, 145, 182)}
 .btn:active{background-color: rgb(77, 145, 182)!important; border: 1px solid rgb(77, 145, 182)!important;}
+
+.reviewed{
+  padding: 1.5px 5px;
+  border: none; background-color: #BBBBBB; color: white;
+  border-radius: 10px;
+}
 
 .chatting{padding: 15px 20px 0; border-top: 1px solid #ddd;}
 

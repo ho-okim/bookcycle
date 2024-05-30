@@ -33,9 +33,11 @@ h4, p{margin: 0;}
 /* MiniBook.js */
 .productTop{margin-bottom: 20px;}
 .productWrap{text-align: center; padding-bottom: 15px;}
-.productImgWrap{max-width: 130px; height: 200px; margin-bottom: 10px; overflow: hidden;
+.productImgWrap{
+  max-width: 130px; height: 200px; margin-bottom: 10px; overflow: hidden;
   border-radius: 5px;
-  box-shadow: 0 0 4px #cecece;}
+  box-shadow: 0 0 4px #cecece;
+}
 .productImg{
   width: auto; height: 100%; object-fit: cover;
 }
