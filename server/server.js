@@ -185,7 +185,9 @@ io.on('connection', (socket)=>{
 
     if(socketMsg){
       try {
-        let result = await pool.query(sql, [loginUserId, chatroomIdx, socketMsg, date]);
+        // let result = await pool.query(sql, [loginUserId, chatroomIdx, socketMsg, date]);
+        const query = mysql.format(sql, [loginUserId, chatroomIdx, socketMsg, date]);
+        let result = await pool.query(query);
         io.to(chatroomIdx).emit('success', {id : result.insertId, user_id : loginUserId, room_id: chatroomIdx, message: socketMsg, date})
       } catch (error) {
         console.error(error, 'chat message INSERT error');
@@ -199,18 +201,31 @@ io.on('connection', (socket)=>{
     let sql = `UPDATE chat_message SET read_or_not = 0 WHERE user_id != ? AND room_id = ? AND read_or_not = 1;`
     
     try {
-      let result = await pool.query(sql, [loginUserId, chatroomIdx]);
+      // let result = await pool.query(sql, [loginUserId, chatroomIdx]);
+      const query = mysql.format(sql, [loginUserId, chatroomIdx]);
+      let result = await pool.query(query);
       io.to(chatroomIdx).emit('refreshSuccess', {loginUserId, room_id : chatroomIdx})
     } catch (error) {
       console.error(error, 'read or not UPDATE error');
     }
   })
 
-  socket.on('sameChatroomIdx', (data)=>{
-    io.to(data.room_id).emit('msgCnt0', {chatroomIdx: data.room_id})
+  socket.on('sameChatroomIdx', async (data)=>{
+    const {room_id} = data;
+    // 서로 같은 채팅방에 있을 때는 모든 메시지가 읽음 처리되어야 하므로 room_id로만 update 기준 삼음
+    let sql = 'UPDATE chat_message SET read_or_not = 0 WHERE room_id = ? AND read_or_not = 1;'
+    const query = mysql.format(sql, [room_id]);
+
+    try {
+      let result = await pool.query(query);
+      io.to(room_id).emit('msgCnt0', {chatroomIdx: room_id})
+    } catch (error) {
+      console.error(error, 'read or not UPDATE error');
+    }
   })
 
   socket.on('difChatroomIdx', (data)=>{
+    // 서로 다른 채팅방일 때는 데이터베이스에서는 다른 처리가 필요하지 않음
     io.to(data.room_id).emit('msgCnt1', {chatroomIdx: data.room_id})
   })
   

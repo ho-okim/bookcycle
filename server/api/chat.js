@@ -14,11 +14,29 @@ router.get('/chatlist', isLoggedIn, async (req, res) => {
   try {
     // db connection pool을 가져오고, query문 수행
     const query = mysql.format(sql, [req.user.id]);
+    const query2 = mysql.format(sql2, [req.user.id]);
 
     let result = await pool.query(query);
-    let readOrNot = await pool.query(sql2, [req.user.id])
+    let readOrNot = await pool.query(query2);
 
     res.send({result, readOrNot});
+  } catch (error) {
+    console.error(error);
+    res.send('error');
+  }
+});
+
+router.get('/chat/readOrNot', isLoggedIn, async (req, res) => {
+
+  // 읽지 않은 메세지 개수를 가져오기 위한 쿼리문
+  let sql = 'CALL chat_read_or_not(?)';
+
+  try {
+    // db connection pool을 가져오고, query문 수행
+    const query = mysql.format(sql, [req.user.id]);
+    let result = await pool.query(query);
+
+    res.send(result);
   } catch (error) {
     console.error(error);
     res.send('error');
