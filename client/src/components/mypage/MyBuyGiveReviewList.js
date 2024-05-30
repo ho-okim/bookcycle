@@ -58,7 +58,7 @@ function MyBuyGiveReviewList() {
               <div key={index} className={styles.reviewWrap}>
                 <div className='d-flex align-items-center pb-2'>
                   <div className={`${styles.star} col-2`}>{starRating(review.score)}</div>
-                  <div className='col-7'><Link to={`/user/${review.seller_id}`}>{review.seller_nickname}</Link></div>
+                  <div className={`${styles.reviewNickname} col-7`}><Link to={`/user/${review.seller_id}`}>{review.seller_nickname}</Link></div>
                   <div className={`${styles.date} col-2 ms-auto text-end regular`}>{dateProcessingDash(review.createdAt)}</div>
                   <Dropdown className='d-flex text-end'>
                     <Dropdown.Toggle id="dropdown-basic" className={styles.toggleBtn}>

@@ -1,8 +1,8 @@
+import styles from '../../styles/mypage.module.css';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/LoginUserContext.js';
-
 import { confirmPassword } from '../../api/mypage';
-import styles from '../../styles/mypage.module.css';
+import { Ban } from 'react-bootstrap-icons';
 
 
 function ConfirmPassword({ onConfirm }) {
@@ -46,7 +46,10 @@ function ConfirmPassword({ onConfirm }) {
 
   return (
     user.blocked === 1 ? (
-      <div className={`${styles.content} ${styles.confirm}`}>차단된 사용자는 이용할 수 없는 서비스입니다</div>
+      <div className={`${styles.content} ${styles.confirm}`}>
+        <Ban size="50" className={styles.ban}/>
+        <div className={styles.ban}>차단된 사용자는 이용할 수 없는 서비스입니다</div>
+      </div>
     ) : (
       <div className={`${styles.content} ${styles.confirm}`}>
         <div>본인확인이 필요한 서비스입니다. <br/>비밀번호를 입력해주세요</div>
@@ -63,7 +66,7 @@ function ConfirmPassword({ onConfirm }) {
           >
             확인
           </button>
-          {errorMessage && <p style={{color:'red'}}>{errorMessage}</p>}
+          {errorMessage && <p style={{color:'#DC3545'}}>{errorMessage}</p>}
         </div>
       </div>
     )

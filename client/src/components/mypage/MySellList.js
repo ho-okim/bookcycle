@@ -14,7 +14,7 @@ function MySellList() {
   const [sellItems, setSellItems] = useState([]);
 
   let total = sellItems.length; // 전체 게시물 수
-  let limit = 10; // 페이지 당 게시물 수
+  let limit = 5; // 페이지 당 게시물 수
   let [page, setPage] = useState(1); // 현재 페이지 번호
   let offset = (page - 1) * limit; // 페이지당 첫 게시물 위치
 
@@ -49,7 +49,7 @@ function MySellList() {
                 </div>
                 <div className={styles.tradeInfo}>
                   <p className={styles.tradeTitle}>{item.product_name}</p>
-                  <p className={`${styles.tradePrice} regular`}>{parseInt(item.price).toLocaleString()}원</p>
+                  <p className={`${styles.tradePrice} regular`}>{parseInt(item.price).toLocaleString()} 원</p>
                   <p className={`${styles.date} regular`}>{dateProcessingDash(item.soldDate)}</p>
                 </div>
                 <div className={styles.dealmaker}>
@@ -60,8 +60,9 @@ function MySellList() {
                   <div className={`ms-auto`}>
                     {(item.seller_id === item.writer_id) ? (
                       <div className={`${styles.reviewBtn} ${styles.complete} medium`}>작성완료</div>
-                    ) : (user.blocked === 0) ?
-                    (
+                    ) : (user.blocked === 1 || item.buyer_blocked === 1) ? (
+                      <div className={`${styles.reviewBtn} ${styles.block}`}>작성불가</div>
+                    ) : (
                       <Link
                         to={{ pathname: `/user/${item.buyer_id}/buyerReviewWrite`,
                               search: `?productId=${item.product_id}` }}
@@ -69,7 +70,7 @@ function MySellList() {
                       >
                         작성하기
                       </Link>
-                    ) : <div className={`${styles.reviewBtn} ${styles.block}`}>작성불가</div>}
+                    )}
                   </div>
                 </div>
               </Link>

@@ -50,7 +50,7 @@ function MyBuyList() {
                 </div>
                 <div className={styles.tradeInfo}>
                   <p className={styles.tradeTitle}>{item.product_name}</p>
-                  <p className={`${styles.tradePrice} regular`}>{parseInt(item.price).toLocaleString()}원</p>
+                  <p className={`${styles.tradePrice} regular`}>{parseInt(item.price).toLocaleString()} 원</p>
                   <p className={`${styles.date} regular`}>{dateProcessingDash(item.soldDate)}</p>
                 </div>
                 <div className={styles.dealmaker}>
@@ -61,8 +61,9 @@ function MyBuyList() {
                   <div className={`ms-auto ${styles}`}>
                     {(item.buyer_id === item.writer_id) ? (
                       <div className={`${styles.reviewBtn} ${styles.complete} medium`}>작성완료</div>
-                    ) : (user.blocked === 0 || item.seller_id) ?
-                    (
+                    ) : (user.blocked === 1 || item.seller_blocked === 1) ? (
+                      <div className={`${styles.reviewBtn} ${styles.block}`}>작성불가</div>
+                    ) : (
                       <Link
                         to={{ pathname: `/user/${item.seller_id}/sellerReviewWrite`,
                               search: `?productId=${item.product_id}` }}
@@ -70,7 +71,7 @@ function MyBuyList() {
                       >
                         작성하기
                       </Link>
-                    ) : <div className={`${styles.reviewBtn} ${styles.block}`}>작성불가</div>}
+                    )}
                   </div>
                 </div>
               </Link>

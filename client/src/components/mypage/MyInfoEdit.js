@@ -199,7 +199,7 @@ function MyInfoEdit({ password }) {
               <input type="file" multiple name='profileImg' id='file' accept="image/*" onChange={onchangeImageUpload}/>
             </div>
           </div>
-          <div className="medium">
+          <div className={`medium ${styles.inputWrap}`}>
             <div className={styles.input_box}>
               <div className={styles.value}>email</div>
               <p className={styles.email}>{user.email}</p>

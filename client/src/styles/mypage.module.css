@@ -1,5 +1,5 @@
 /* COMMON */
-.heartContent p, .buy_seller, .boardContent {
+.heartContent, .buy_seller, .boardContent {
   display: -webkit-box;
   -webkit-box-orient: vertical; 
   -webkit-line-clamp: 1;
@@ -13,6 +13,8 @@
 }
 .content { width: 80%; }
 .contentHeader { 
+  height: 49px;
+  padding: 10px 0 5px;
   display: flex; 
   align-items: center; 
   justify-content: space-between; 
@@ -21,11 +23,13 @@
 .empty { margin-top: 30px; text-align: center; }
 .date { 
   font-size: 14px; 
-  color: #8d8d8d!important; 
+  color: #6A6A6A!important; 
+  white-space: nowrap;
 }
 .sorting button, .sorting button:hover, .sorting button:active, .sorting button:focus { 
   background-color: #4D91B6 !important; border: none; 
 }
+/* .sorting button { margin-bottom: 5px; } */
 .sortingItem:active, .sortingItem.focus { background-color: #4D91B6; color: #fff; }
 
 .reaction { display: flex; }
@@ -122,6 +126,7 @@
   padding: 10px;
   background-color: #fff;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 100;
 }
 .accordion_body a { padding-top: 10px; }
 .accordion_body a:first-of-type { padding-top: 0; }
@@ -150,7 +155,7 @@
 
 /* TRADE LIST */
 .tradeWrap { 
-  padding: 10px 0; display: flex; 
+  padding: 10px 0 10px 10px; display: flex; 
   border-bottom: 1px solid #ddd; 
 }
 .tradeImgWrap { width: 80px; height: 117.44px; }
@@ -176,13 +181,22 @@
   padding: 1.5px 5px;
   background-color: #bbb; 
 } 
-.reviewBtn.block { background-color: transparent; border: 1px solid #bbb; color: #bbb; }
+.reviewBtn.block {
+  width: 75.34px;
+  padding: 1.5px 5px; 
+  background-color: transparent; 
+  border: 1px solid #bbb; color: #bbb; 
+}
 
 /* REVIEW LIST*/
 .reviewList { min-height: 100px; }
 .reviewWrap { padding: 10px; vertical-align: middle; border-bottom: 1px solid #ddd }
 .star { white-space: nowrap; }
-.readMore { margin-left: 5px; color: #6A6A6A; cursor: pointer; }
+@media screen and (max-width: 768px) {
+  .reviewNickname { padding-left: 20px; }
+}
+
+.readMore { margin-left: 5px; color: #aaaaaa; cursor: pointer; }
 .readMore:hover { text-decoration: underline; }
 
 .toggleBtn, .toggleBtn:hover, .toggleBtn:active, .toggleBtn:focus, 
@@ -225,8 +239,8 @@
   flex-grow: 1; 
 }
 .heartTitle { font-size: 16px; }
-.heartContent { display: block; }
-.heartContent span { color: #777; font-size: 13px; }
+.heartContent { display: flex; }
+.heartContent span { color: #6A6A6A; font-size: 13px; }
 .heartContent span::after { content: '|'; padding: 0 5px; }
 .heartContent span:last-of-type::after { content: ''; }
 .heartPrice { font-size: 16px; }
@@ -238,15 +252,6 @@
   display: flex; 
   align-items: center; 
   margin-bottom: auto;
-}
-
-
-@media screen and (max-width: 992px) {
-  .heartContent { display: block; margin: 2px 0; }
-  .heartContent p::after { content: ''; }
-  .heartGrid { display: block; }
-  .heartWrap { width: 100%; }
-  .heartInfo { width: 100%;}
 }
 
 
@@ -319,8 +324,10 @@
   justify-content: center; 
 }
 .inputBox { padding-top: 20px; }
+.ban { margin: 0 auto 20px; color: #DC3545; }
 
 .editPage { padding: 40px; display: flex; justify-content: center; align-items: center; }
+.form_box { width: 500px }
 .profileImgWrap {
   margin-right: 30px; 
   width: 120px; height: 120px; 
@@ -332,12 +339,13 @@
 .profileImg { width: 100%; height: 100%; object-fit: cover; }
 .fileBtn { cursor: pointer; }
 .email { padding: 2px 5px; }
+.inputWrap { width: 350px; }
 .input_form { padding: 2px 5px; border: 1px solid #ddd; border-radius: 2px; }
 .input_box { display: flex; margin-top: 10px; }
 .input_box .value { width: 30%; }
 .input_box input { width: 70%; }
 
-.error_box { margin-left: 30%; width: 70%; color: red; }
+.error_box { margin-left: 30%; width: 70%; color: #DC3545; font-size: 14px; }
 
 .btnWrap { margin-top: 20px; }
 .btnWrap .cancel { margin-left: 10px; }
@@ -351,6 +359,7 @@
   .infoWrap { flex-direction: column; }
   .profileImgWrap { margin: 30px 0; width: 150px; height: 150px; }
   .profileIcon { font-size: 80px; }
+  .inputWrap { width: auto; }
   .btnWrap { margin-top: 40px; }
   .form_box { width: 100%; }
 }
@@ -364,7 +373,7 @@
   display: flex; width: calc(50% - 10px); 
   padding: 5px 0; border: 0; border-radius: 10px; 
 }
-.selectTag .tagWrap input[type='checkbox'] { margin-left:15px; scale: 1.8;}
+.selectTag .tagWrap input[type='checkbox'] { margin-left:15px; scale: 1.8; }
 .selectTag .tagWrap .tagBtn p { margin-left: 20px; }
 
 .review p { margin: 15px 0; }
@@ -374,12 +383,12 @@
   border-radius: 7px; 
   font-size: 12px; color: white; 
 }
-.review textarea{
+.review textarea {
   min-height: 150px;
   border-radius: 5px;
 }
 .review textarea:focus{
-  border: 1px solid rgb(77, 145, 182);
+  border: 1px solid #4D91B6;
 }
 
 .btnWrap { text-align: end; }
