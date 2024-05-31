@@ -1,13 +1,8 @@
 import styles from "../../styles/productDetail.module.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {useState, useEffect} from 'react';
-import Button from "react-bootstrap/Button";
 import { Heart } from "react-bootstrap-icons";
 import { HeartFill } from "react-bootstrap-icons";
-import { 
-    productLike, 
-    productUnLike, 
-    productLikeState } from '../../api/product';
+import { productLike, productUnLike, productLikeState } from '../../api/product';
 import { useAuth } from "../../contexts/LoginUserContext";
 import { useProductDetail } from "../../contexts/ProductDetailContext";
 
@@ -82,7 +77,7 @@ function Favorite (){
   return(
     
     <>
-    <div className='heartproduct d-flex justify-content-center'>
+    <div className={`${styles.favoriteWrap} heartproduct d-flex justify-content-center`}>
     {!user ? (
         <div className={styles.heartCount}>
           <Heart
@@ -92,23 +87,23 @@ function Favorite (){
           />
         </div>
       ) : (
-        <div className={styles.heartCount}>
+        <div className={`${styles.heartCount}`}>
           {productLikeStates.find((el) => el.product_id === Number(id)) ? (
             <HeartFill
-              size="20"
+              size="18"
               className={styles.heartIcon}
               onClick={() => changeToproductUnLike()}
             />
           ) : (
             <Heart
-              size="20"
+              size="18"
               className={styles.heartIcon}
               onClick={() => changeToproductLike()}
             />
           )}
         </div>
       )}
-      <span className="me-2" style={{color: "#6A6A6A"}}>찜하기 {productlikeCounts}</span>
+      <span className="" style={{color: "#6A6A6A"}}>찜하기 {productlikeCounts}</span>
       </div>
   </>
   );

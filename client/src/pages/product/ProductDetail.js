@@ -1,22 +1,21 @@
 import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Button, Container, Badge, Stack } from "react-bootstrap";
-import { useEffect, useState, react } from 'react';
-import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star, Ban, DashCircle, SlashCircle } from "react-bootstrap-icons";
+import { Button, Container, Badge } from "react-bootstrap";
+import { StarFill, Pencil, Trash3, ChatDots, Person, Ban, SlashCircle } from "react-bootstrap-icons";
+import { useEffect, useState } from 'react';
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
-import {filesList, productDelete, productDetail} from "../../api/product";
+import { filesList, productDetail } from "../../api/product";
+import { getReportedOrNot } from "../../api/report.js";
 import { getCategory } from '../../api/product.js';
+import { newChatroom } from "../../api/chat.js";
 import OtherProduct from "../../components/product/OtherProduct.js";
 import Favorite from "../../components/product/Favorite.js";
-import { getReportedOrNot } from "../../api/report.js";
 import ProductDetailContext from "../../contexts/ProductDetailContext.js";
 import ProductCaution from "../../components/product/ProductCaution.js";
 import PicCarousel from '../../components/product/PicCarousel.js';
-import Error from "../../components/Error.js"
-import { dateTimeProcessing } from "../../lib/dateProcessing.js";
 import DefaultModal from "../../components/DefaultModal.js";
-import { newChatroom } from "../../api/chat.js";
+import Error from "../../components/Error.js"
 
 
 function ProductDetail() {
@@ -82,14 +81,13 @@ function ProductDetail() {
         const res = await filesList(id);
 
         setIsBlocked(false);
-        setMyBlockedPost(false);
         
         if (!data) { // 존재하지 않는 게시글로 url 접근 시
           setNotFound(true);
         }
 
         // 내 차단된 게시글 -> 렌더링 O + 차단된 상품입니다
-        if(data.blocked === 1 || data.seller_id === user?.id){
+        if(data.blocked === 1 && data.seller_id === user?.id){
           setMyBlockedPost(true);
         }
 
@@ -132,9 +130,9 @@ function ProductDetail() {
           <>
             <Button 
               variant="outline-secondary" 
-              className={styles.reportBtn} 
-              onClick={handleOpen}> 
-              <img style={{width: '23px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
+              className={`${styles.reportBtn} d-flex align-items-center`}
+              onClick={handleOpen}>
+              <img style={{width: '23px', height: '18px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
             <Report show={modalShow} handleClose={handleClose} targetId={product.product_id} category={'product'}/>
           </>
         )
@@ -159,12 +157,12 @@ function ProductDetail() {
             </div>
           ): (
             <>
-            {(myBlockedPost) && 
-              <span className={styles.blockedBadge}>
-                <SlashCircle className='me-1'/>차단된 상품입니다
-              </span>
-            }
               <div className={`${styles.productHeader}`}>
+                {(myBlockedPost) && 
+                  <span className={styles.blockedBadge}>
+                    <SlashCircle className='me-1'/>차단된 상품입니다
+                  </span>
+                }
                 <div className={`${styles.productTitle} d-flex justify-content-between align-items-center`}>
                   <div className='d-flex align-items-center'>
                     <h2 className={`${(product.soldDate || product.seller_id !== product.buyer_id) ? styles.soldProductName : null} m-0`}>{product.product_name}</h2>
@@ -229,23 +227,20 @@ function ProductDetail() {
                       </div>
                     </div>
                   </div>
-                  <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
-                    <Favorite/>
-                    { renderReportBtn() }
-                    <div className={`${styles.user_chat}`}>
-                      {
-                        (user && user.blocked === 0 && user.id !== product.seller_id) ?
-                        // <div className={styles.chat_btn} onClick={handleCreateChatroom}>
-                        //   <ChatDots size="30" className={styles.chatIcon}/></div>
-                        <Button 
-                          variant="outline-secondary" 
-                          className={`${styles.chatBtn} regular`} 
-                          onClick={handleCreateChatroom}> 
-                          <ChatDots className='me-1'/>채팅하기</Button>
-                        : null
-                      }
-                    </div>
-                  </div>
+                  {
+                    (user && user.blocked === 0 && user.id !== product.seller_id && !product.soldDate) ?
+                    <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
+                      <Favorite/>
+                      { renderReportBtn() }
+                      <div className={`${styles.user_chat}`}>
+                          <Button 
+                            variant="outline-secondary" 
+                            className={`${styles.chatBtn} regular d-flex align-items-center`} 
+                            onClick={handleCreateChatroom}> 
+                            <ChatDots className='me-1'/>채팅하기</Button>
+                      </div>
+                    </div> : null
+                  }
                 </div>
               </div>
               <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} productId={id}/>
@@ -254,8 +249,10 @@ function ProductDetail() {
             {/* Product Detail */}
             <div className={`${styles.productDetail}`}>
               <div className={`${styles.productMainDetail} d-flex justify-content-between mb-4`}>
-                <PicCarousel product={product} files={files}/>
-                <div className={`${styles.productInfo}`}>                     
+                <div className={styles.productImgWrap}>
+                  <PicCarousel product={product} files={files} className={styles.productCarousel}/>
+                </div>
+                <div className={`${styles.productInfo}`}>
                   <div className={`${styles.productGroup} d-flex align-items-center`}>
                       <p className={`${styles.detailTitle} bold`}>카테고리</p>
                       <Badge className={styles.category_badge}>{product.category_name}</Badge>
