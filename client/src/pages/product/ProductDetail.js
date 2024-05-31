@@ -2,7 +2,7 @@ import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge, Stack } from "react-bootstrap";
 import { useEffect, useState, react } from 'react';
-import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots } from "react-bootstrap-icons";
+import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star, Ban } from "react-bootstrap-icons";
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
@@ -160,10 +160,36 @@ function ProductDetail() {
             </div>
             <div className={`${styles.productHeaderInfo} d-flex justify-content-between align-items-center regular`}>
               <div className={`${styles.headerInfo} d-flex`}>
-                <p className={styles.info}>저자<span className='ms-2' style={{color:"#4D91B6"}}>{product.writer}</span></p>
-                <p className={styles.info}>출판사<span className='ms-2' style={{color:"#4D91B6"}}>{product.publisher}</span></p> 
-                <p className={styles.info}>출간일<span className='ms-2' style={{color:"#4D91B6"}}>{new Date(product.publish_date).toLocaleDateString()}</span></p>
-                <p className={styles.info}>게시일<span className='ms-2' style={{color:"#4D91B6"}}>{new Date(product.createdAt).toLocaleDateString()}</span></p>
+                <div className={`${styles.headerInfoText} d-flex flex-wrap`}>
+                  <div className={`${styles.infoFirst} d-flex flex-wrap`}>
+                    <p className={`${styles.info} medium`}>저자
+                      {
+                        product.writer ? 
+                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.writer}</span> :
+                        <span className={`ms-2 regular ${styles.emptyData}`}>미기입</span>
+                      }
+                    </p>
+                    <p className={`${styles.info} medium`}>출판사
+                      {
+                        product.publisher ?
+                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.publisher}</span> :
+                        <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
+                      }
+                    </p>
+                  </div>
+                  <div className='d-flex flex-wrap'>
+                    <p className={`${styles.info} medium`}>출간일
+                      {
+                        product.publish_date ?
+                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{new Date(product.publish_date).toLocaleDateString()}</span> :
+                        <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
+                      }
+                    </p>
+                    <p className={`${styles.info} medium`}>게시일
+                      <span className={`ms-2 regular ${styles.uploadDate}`} style={{color:"#4D91B6"}}>{new Date(product.createdAt).toLocaleDateString()}</span>
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
                 <Favorite/>
@@ -193,43 +219,63 @@ function ProductDetail() {
             <PicCarousel product={product} files={files}/>
             <div className={`${styles.productInfo}`}>                     
               <div className={`${styles.productGroup} d-flex align-items-center`}>
+                  <p className={`${styles.detailTitle} bold`}>카테고리</p>
+                  <Badge className={styles.category_badge}>{product.category_name}</Badge>
+              </div>
+              <Link to={`/user/${product.seller_id}`} className={`${styles.productGroup} d-flex align-items-center bold`}>
                 <p className={styles.detailTitle}>판매자</p>
                 <div className={`${styles.sellerInfo} d-flex align-items-center`}>
+                  <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                    {
+                      product.profile_image == '' || !product.profile_image ?
+                      <Person className={`${styles.profileIcon}`}/> :
+                      <img src={process.env.PUBLIC_URL + `/img/profile/${product.profile_image}`} className={`${styles.profileImg}`}/>
+                    }
+                  </div>
                   <div className={`${styles.scoreBox}`}>
-                    <div className={`${styles.mannerScore}`}>
+                    <div className={`${styles.mannerScore} bold`}>
                       {
                         (product.manner_score) ?
                         (product.manner_score).toFixed(1)
                         : '-'
                       }
                     </div>
-                    <StarFill size={45} className={`${styles.starIcon}`}/>
+                    <StarFill size={35} className={`${styles.starIcon}`}/>
                   </div>
-                  <div className={`${styles.sellerNickname}`}>
-                    <p>{product.nickname}</p>
-                  </div>
+                  {
+                    product.user_blocked ?
+                    <div className={`${styles.sellerNickname} ${styles.blockedUser} medium d-flex align-items-center`}>
+                      <Ban className={styles.banIcon}/>
+                      <p>{product.nickname}</p>
+                    </div> :
+                    <div className={`${styles.sellerNickname} medium`}>
+                      <p>{product.nickname}</p>
+                    </div>
+                  }
                 </div>
-              </div> 
+              </Link> 
               <div className={`${styles.productGroup}`}>
-                <div className={`${styles.cateinfo2} d-flex align-items-center`}>
+                <div className={`${styles.cateinfo2} d-flex align-items-center bold`}>
                   <p className={styles.detailTitle}>가격</p>    
-                  <p className={styles.productPrice}>{product.price?.toLocaleString()}원</p>
+                  <p className={`${styles.productPrice} medium`}>{product.price?.toLocaleString()}원</p>
                 </div> 
               </div>
-              <div className={`${styles.productGroup} d-flex align-items-center`}>
+              <div className={`${styles.productGroup} d-flex align-items-center bold`}>
                   <p className={styles.detailTitle}>ISBN</p>
-                  <div>
-                    <p>ISBN 10: {product.isbn10}<br/></p>    
-                    <p>ISBN 13: {product.isbn13}</p>
+                  <div className='medium'>
+                    {
+                      !product.isbn10 && !product.isbn13 ?
+                        <p className={styles.emptyData}>미기입</p> :
+                        <>
+                          <p>{product.isbn10}</p>    
+                          <p>{product.isbn13}</p>
+                        </>
+                    }
                   </div> 
               </div>
-              <div className={`${styles.productGroup} d-flex align-items-center`}>
-                  <p className={styles.detailTitle}>카테고리</p>
-                  <p>{product.category_name}</p>
-              </div>
-              <div className={`${styles.productGroup} d-flex`}>
+              <div className={`${styles.productGroup} d-flex bold`}>
                   <p className={styles.detailTitle}>책 소개</p>  
-                  <p className={styles.bookDescription}>{product.description}</p>
+                  <p className={`${styles.bookDescription} medium`}>{product.description}</p>
               </div>
             </div>
           </div>
