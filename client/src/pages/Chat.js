@@ -91,7 +91,7 @@ function Chat() {
   // 리뷰 작성 페이지로 redirect 핸들러
   const reviewWriteHandler = (sellerId, buyer_id, productId) => {
     if(user.id == sellerId){
-      navigate(`/user/${sellerId}/buyerReviewWrite?productId=${productId}`)
+      navigate(`/user/${buyer_id}/buyerReviewWrite?productId=${productId}`)
     } else navigate(`/user/${activeChatroom.user_id}/sellerReviewWrite?productId=${activeChatroom.product_id}`)
   }
 

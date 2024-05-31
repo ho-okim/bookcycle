@@ -1,7 +1,7 @@
 .col{margin: 0;}
 .box{width: 49%; height: 623px;}
 .chatListBox{overflow-y: auto; background-color: #f1f1f1; border-radius: 2px;}
-.chatting{height: 400px; overflow-y: auto;}
+.chatting{height: 388px; overflow-y: auto;}
 
 /* chatList(chatUser) */
 .active{background-color: #f1f1f1!important;}
