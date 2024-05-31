@@ -373,7 +373,7 @@ function BoardWrite() {
                   </div>
                   <div className={`${styles.col} d-flex justify-content-end`}>
                     <Button className={`${styles.onPost} submit`} as="input" type="submit" value="등록" onClick={()=>{check()}}/>
-                    <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/board')}}/>
+                    <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate('/product')}}/>
                   </div>
                 </div>
             </div>
