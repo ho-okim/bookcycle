@@ -1,0 +1,50 @@
+.productPic{
+    width: 40%;
+    /* margin-left: 20px; */
+    display: flex;
+    justify-content: center;
+    border: none;
+}
+
+.bookImage{
+    object-fit: cover;
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ddd;
+}
+
+.productPic .carousel-control-prev, .productPic .carousel-control-next{
+  display: inline;
+  display: flex;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #6a6a6a !important;
+}
+
+
+.productPic .carousel-control-prev {
+  margin-left: 8px;
+}
+
+.productPic .carousel-control-next {
+  margin-right: 8px;
+}
+
+.productPic .carousel-control-prev span {
+  margin-right: 5px;
+}
+
+.productPic .carousel-control-next span {
+  margin-left: 5px;
+}
+
+.productPic .carousel-control-prev:hover, .productPic .carousel-control-next:hover {
+  opacity: 0.6;
+}
+
+.productPic .carousel-control-prev:active, .productPic .carousel-control-next:active {
+  background-color: #6a6a6a !important;
+}
+

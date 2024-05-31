@@ -41,27 +41,27 @@ function Login() {
     const email = form.email;
     const password = form.password;
 
-    if (!email) { // 빈 값 확인
+    if (!email) { // 이메일 빈 값 확인
       setErrorMessage('이메일을 입력해주세요');
       return;
     }
 
-    // 잘못 넘어온 값 처리
-    // if (!REGEX.EMAIL_REG.test(email)) { // 유효성 검사
-    //   setErrorMessage('이메일 형식이 맞지 않습니다');
-    //   return;
-    // }
+    // 이메일 잘못 넘어온 값 처리
+    if (!REGEX.EMAIL_REG.test(email)) { // 유효성 검사
+      setErrorMessage('이메일 형식이 맞지 않습니다');
+      return;
+    }
 
-    if (!password) { // 빈 값 확인
+    if (!password) { // 비밀번호 빈 값 확인
       setErrorMessage('비밀번호를 입력해주세요');
       return;
     }
 
-    // 잘못 넘어온 값 처리
-    // if (REGEX.PASSWORD_REG.test(password)) { // 유효성 검사
-    //   setErrorMessage('비밀번호 형식이 맞지 않습니다');
-    //   return;
-    // }
+    // 비밀번호 잘못 넘어온 값 처리
+    if (!REGEX.PASSWORD_REG.test(password)) { // 유효성 검사
+      setErrorMessage('비밀번호 형식이 맞지 않습니다');
+      return;
+    }
 
     // 로그인 진행
     const res = await handleLogin(email, password);

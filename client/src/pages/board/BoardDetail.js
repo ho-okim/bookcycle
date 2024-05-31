@@ -157,14 +157,14 @@ function BoardDetail(){
                         variant="outline-secondary" 
                         className={(myBlockedPost)? (styles.noUpdateBtn) : (styles.updateBtn)} 
                         onClick={()=>{navigate(`/board/edit/${content.id}`, {state:{title: content.title, content: content.content, files}})}}>
-                        <Pencil className='me-1'/>글 수정
+                        <Pencil className='me-1'/>수정
                       </Button>
                       <Button 
                         variant="outline-secondary" 
                         className={styles.deleteBtn} 
                         id={content.id} 
                         onClick={handleDeleteOpen}>
-                        <Trash3 className='me-1'/>글 삭제
+                        <Trash3 className='me-1'/>삭제
                       </Button>
                       </div>
                   ): null}
@@ -184,7 +184,7 @@ function BoardDetail(){
                       (!isReported ) ?
                       <>
                           <Button variant="outline-secondary" 
-                            className={`${styles.alertBtn} d-flex`} 
+                            className={`${styles.reportBtn} d-flex`} 
                             onClick={onSpam}>
                             <img style={{width: '23px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
                           <Report show={modalShow} handleClose={handleClose} targetId={id} category={'board'}/>

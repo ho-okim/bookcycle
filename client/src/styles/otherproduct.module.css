@@ -24,40 +24,44 @@
     line-height: 2;
 }
 
-.more_btn{
-    color: rgb(77, 145, 182);
-    border: 1px solid rgb(77, 145, 182);
+.moreBtn{
+    background-color: #4D91B6;
+    color: #fff;
+    border: none;
 }
 
-.more_btn:hover{
-    background-color: rgb(77, 145, 182);
+.moreBtn:hover {
+    background-color: #427D9D;
 }
 
-.book_card{
-    padding: 10px 0;
+.bookCard {
+    padding: 5px;
     text-decoration: none; color:black;
 }
 
-.book_image_box{
-    display: flex; justify-content: center;
-    align-items: center;
-    border: 1px solid #dddddd;
-    box-shadow: 0 0 4px #cecece;
-    border-radius: 5px;
+.bookImageBox{
+    width: 100%;
+    display: flex; 
+    justify-content: center;
+    margin-bottom: 15px;
 }
 
-.book_image{
-    width: 80%; 
+.bookImage{
+    width: 100%; 
     aspect-ratio: 1/1.25;
-    display:block;
 }
 
-.no_book_image{
-    width: 80%; 
+.noBookImage{
+    width: 100%; 
     aspect-ratio: 1/1.25;
-    display:block;
+    /* display:block; */
 
 }
+
+.productName {
+    text-align: center;
+}
+
 
 .book_info{
     margin-top: 10px;

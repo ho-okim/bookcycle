@@ -60,7 +60,7 @@ function DefaultModal({show, handleClose, ownerId, targetId, productId, boardId,
     </Modal.Header>
     <Modal.Footer className='d-flex justify-content-center align-items-center' style={{border:"none", paddingBottom:"40px"}}>
       <Button className={`${styles.modalBtn} ${styles.yesBtn}`} onClick={handleClick}>예</Button>
-      <Button variant='outline-secondary' className={`${styles.modalBtn}`}
+      <Button variant='outline-secondary' className={`${styles.noBtn}`}
         onClick={handleHide}
       >아니요</Button>
     </Modal.Footer>
