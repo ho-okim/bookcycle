@@ -38,6 +38,24 @@
     background-color: transparent !important;
 }
 
+.soldOutBadge{
+    background-color: #4d91b6 ;
+    border-radius: 8px;
+    font-size: 20px;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 15px;
+}
+
+.blockedBadge {
+    margin-left: 15px;
+    font-size: 20px;
+    color: rgb(220, 53, 69);;
+}
+
+/* Blocked Post */
+.blockedPost{margin: 100px 0;}
 
 /* Product Caution */
 .productCaution{
@@ -56,9 +74,15 @@
 /* Product Header */
 .productHeader {
     border-bottom: 1px solid #e8e8e8;
-    padding: 30px 0 10px 0;
+    padding: 30px 0 5px 0;
 }
-.productTitle {margin-bottom: 10px;}
+.productTitle {margin-bottom: 20px;}
+.soldProductName {
+    color: #949494;
+    text-decoration: line-through;
+    filter: grayscale(100);
+}
+
 .productHeaderInfo {
     display: flex;
     justify-content: space-between;
@@ -140,7 +164,7 @@
 }
 
 .category_badge{
-  font-size: 14px;
+  font-size: 15px;
   background-color: #4d91b6 !important;
   border: none !important;
 }

@@ -6,7 +6,7 @@ const { isLoggedIn, isLoggedInAndBlocked } = require("../lib/auth.js");
 // 파일 시스템 함수 require
 const fs = require('fs');
 
-// 상위 10개 게시글 조회
+// 게시글 조회
 router.get('/board', async (req, res) => {
   const { sortBy, updown } = req.query; // 초기 query 없음 -> 아래와 같이 초기 값 설정 됨 {'createdAt' : 'DESC'}
 
@@ -14,13 +14,14 @@ router.get('/board', async (req, res) => {
   let newSortBy = CHAR_REG.test(sortBy) ? sortBy.trim() : 'createdAt';
   
   // query문 설정
-  let sql = "SELECT * FROM board_user ";
+  let sql = "SELECT * FROM board_user WHERE blocked = 0";
 
-  let order_sql = `ORDER BY ${newSortBy} ${updown}`;
+  let order_sql = ` ORDER BY ${newSortBy} ${updown}`;
 
   try {
     // db connection pool을 가져오고, query문 수행
-    let result = await pool.query(sql+order_sql);
+    const query = mysql.format(sql+order_sql);
+    let result = await pool.query(query);
     res.send(result);
 
   } catch (error) {
@@ -232,7 +233,8 @@ router.get('/likeState/:id', async(req, res)=>{
       } 
       if (req.user) {
         let sql2 = 'SELECT user_id, board_id FROM board_liked WHERE user_id = ?';
-        let result2 = await pool.query(sql2, [req.user.id]);
+        const query = mysql.format(sql2, [req.user.id])
+        let result2 = await pool.query(query);
 
         res.send(result2);
       }

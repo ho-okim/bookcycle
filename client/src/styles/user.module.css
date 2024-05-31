@@ -143,10 +143,9 @@
 .blocked{
     width: 50%;
     margin: 10px 0; padding: 10px;
-    background-color: rgb(220, 53, 69);
+    color: rgb(220, 53, 69);
     border: none;
     border-radius: 7px;
-    color: white;
     font-size: 18px;
     text-align: center;
 }

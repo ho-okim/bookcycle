@@ -2,7 +2,7 @@ import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge, Stack } from "react-bootstrap";
 import { useEffect, useState, react } from 'react';
-import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star, Ban } from "react-bootstrap-icons";
+import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star, Ban, DashCircle, SlashCircle } from "react-bootstrap-icons";
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
@@ -30,6 +30,9 @@ function ProductDetail() {
   const [likehit, setLikehit] = useState(0); // 찜한 수
   const [files, setFiles] = useState([]); // 상품 이미지
   const [notFound, setNotFound] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false); // 차단 여부
+  const [myBlockedPost, setMyBlockedPost] = useState(false); // 내 글 차단 여부
+  // const [soldProduct, setSoldProduct] = useState(false)
 
   
   // 삭제 버튼 모달
@@ -77,17 +80,26 @@ function ProductDetail() {
       try {
         const data = await productDetail(id);
         const res = await filesList(id);
+
+        setIsBlocked(false);
+        setMyBlockedPost(false);
         
         if (!data) { // 존재하지 않는 게시글로 url 접근 시
-          setNotFound(true)
+          setNotFound(true);
         }
 
-        // 차단되지 않는 상품이거나 내 상품일 경우에만 data 가져오기
-        if (data.blocked === 0 || data.seller_id === parseInt(user.id)) {
-          setProduct(data);
-          // setLikehit(data.liked);
-          setFiles(res);
+        // 내 차단된 게시글 -> 렌더링 O + 차단된 상품입니다
+        if(data.blocked === 1 || data.seller_id === user?.id){
+          setMyBlockedPost(true);
         }
+
+        // 차단된 게시글 -> 렌더링 X
+        if(data.blocked === 1 && data.seller_id !== user?.id ){
+          setIsBlocked(true);
+        }
+
+        setProduct(data);
+        setFiles(res);
       } catch (error){
         console.error(error);
         setNotFound(true);
@@ -139,195 +151,179 @@ function ProductDetail() {
     <ProductDetailContext.Provider value={{id, product}}>
       <Container>
         <div className='inner'>
-          {/* Product Header */}
-          <div className={`${styles.productHeader}`}>
-            <div className={`${styles.productTitle} d-flex justify-content-between align-items-center`}>
-              <h2>{product.product_name}</h2>
-              {(product.seller_id == user?.id) ? 
-              (<div className={`${styles.btnWrap} d-flex`}>
-                {
-                  (!product.soldDate || product.seller_id === product.buyer_id) ?
-                  <Button 
-                    variant="outline-secondary" className={styles.updateBtn} 
-                    onClick={()=>{navigate(`/product/edit/${product.product_id}`,
-                    {state: {product: product, files}})}}>
-                    <Pencil className='me-1'/>수정
-                  </Button>
-                  : null
-                }
-                <Button 
-                  variant="outline-secondary" className={styles.deleteBtn} onClick={handleDeleteOpen}>
-                    <Trash3 className='me-1'/>삭제
-                </Button>
-              </div>)  : null }
+          {(isBlocked) ? (
+            <div className={`${styles.blockedPost} d-flex flex-column align-items-center`}>
+              <img style={{width: '80px'}} className='mb-2' src={process.env.PUBLIC_URL + `/report2.png`}/>
+              <div>차단된 상품입니다</div>
+              <p><Link to="/">홈으로 돌아가기</Link></p>
             </div>
-            <div className={`${styles.productHeaderInfo} d-flex justify-content-between align-items-center regular`}>
-              <div className={`${styles.headerInfo} d-flex`}>
-                <div className={`${styles.headerInfoText} d-flex flex-wrap`}>
-                  <div className={`${styles.infoFirst} d-flex flex-wrap`}>
-                    <p className={`${styles.info} medium`}>저자
-                      {
-                        product.writer ? 
-                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.writer}</span> :
-                        <span className={`ms-2 regular ${styles.emptyData}`}>미기입</span>
-                      }
-                    </p>
-                    <p className={`${styles.info} medium`}>출판사
-                      {
-                        product.publisher ?
-                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.publisher}</span> :
-                        <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
-                      }
-                    </p>
-                  </div>
-                  <div className='d-flex flex-wrap'>
-                    <p className={`${styles.info} medium`}>출간일
-                      {
-                        product.publish_date ?
-                        <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{new Date(product.publish_date).toLocaleDateString()}</span> :
-                        <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
-                      }
-                    </p>
-                    <p className={`${styles.info} medium`}>게시일
-                      <span className={`ms-2 regular ${styles.uploadDate}`} style={{color:"#4D91B6"}}>{new Date(product.createdAt).toLocaleDateString()}</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
-                <Favorite/>
-                { renderReportBtn() }
-                <div className={`${styles.user_chat}`}>
-                  {
-                    (user && user.blocked === 0 && user.id !== product.seller_id) ?
-                    // <div className={styles.chat_btn} onClick={handleCreateChatroom}>
-                    //   <ChatDots size="30" className={styles.chatIcon}/></div>
-                    <Button 
-                      variant="outline-secondary" 
-                      className={`${styles.chatBtn} regular`} 
-                      onClick={handleCreateChatroom}> 
-                      <ChatDots className='me-1'/>채팅하기</Button>
-                    : null
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-          <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} productId={id}/>
-        
-
-        {/* Product Detail */}
-        <div className={`${styles.productDetail}`}>
-          <div className={`${styles.productMainDetail} d-flex justify-content-between mb-4`}>
-            <PicCarousel product={product} files={files}/>
-            <div className={`${styles.productInfo}`}>                     
-              <div className={`${styles.productGroup} d-flex align-items-center`}>
-                  <p className={`${styles.detailTitle} bold`}>카테고리</p>
-                  <Badge className={styles.category_badge}>{product.category_name}</Badge>
-              </div>
-              <Link to={`/user/${product.seller_id}`} className={`${styles.productGroup} d-flex align-items-center bold`}>
-                <p className={styles.detailTitle}>판매자</p>
-                <div className={`${styles.sellerInfo} d-flex align-items-center`}>
-                  <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
-                    {
-                      product.profile_image == '' || !product.profile_image ?
-                      <Person className={`${styles.profileIcon}`}/> :
-                      <img src={process.env.PUBLIC_URL + `/img/profile/${product.profile_image}`} className={`${styles.profileImg}`}/>
-                    }
-                  </div>
-                  <div className={`${styles.scoreBox}`}>
-                    <div className={`${styles.mannerScore} bold`}>
-                      {
-                        (product.manner_score) ?
-                        (product.manner_score).toFixed(1)
-                        : '-'
-                      }
-                    </div>
-                    <StarFill size={35} className={`${styles.starIcon}`}/>
-                  </div>
-                  {
-                    product.user_blocked ?
-                    <div className={`${styles.sellerNickname} ${styles.blockedUser} medium d-flex align-items-center`}>
-                      <Ban className={styles.banIcon}/>
-                      <p>{product.nickname}</p>
-                    </div> :
-                    <div className={`${styles.sellerNickname} medium`}>
-                      <p>{product.nickname}</p>
-                    </div>
-                  }
-                </div>
-              </Link> 
-              <div className={`${styles.productGroup}`}>
-                <div className={`${styles.cateinfo2} d-flex align-items-center bold`}>
-                  <p className={styles.detailTitle}>가격</p>    
-                  <p className={`${styles.productPrice} medium`}>{product.price?.toLocaleString()}원</p>
-                </div> 
-              </div>
-              <div className={`${styles.productGroup} d-flex align-items-center bold`}>
-                  <p className={styles.detailTitle}>ISBN</p>
-                  <div className='medium'>
-                    {
-                      !product.isbn10 && !product.isbn13 ?
-                        <p className={styles.emptyData}>미기입</p> :
-                        <>
-                          <p>{product.isbn10}</p>    
-                          <p>{product.isbn13}</p>
-                        </>
-                    }
-                  </div> 
-              </div>
-              <div className={`${styles.productGroup} d-flex bold`}>
-                  <p className={styles.detailTitle}>책 소개</p>  
-                  <p className={`${styles.bookDescription} medium`}>{product.description}</p>
-              </div>
-            </div>
-          </div>
-          <div>
-            <ProductCaution/>
-          </div>  
-
-        </div>
-            {/* <div className='inner'>
-      <div className={`${styles.boxinfo}`}>
-      {
-            (product) ?
-                  <>
-                  <div className={`${styles.info0102}`}>
-                    <div className={`${styles.info01}`}>
-                      <span>책 제목</span>
-                    </div>
-                    <div className ={`${styles.info02}`}>
-                      <span>{product.product_name}</span>
-                    </div>
-                  </div>
-                  <div className={`${styles.info0102}`}>
-                    <div className={`${styles.info01}`}>
-                      <span>책 상태</span>
-                    </div>
-                    <div className ={`${styles.info022}`}>
-                      <span>판매자 코멘트 : {product.description}. <br/> 상태 : {product.condition}</span>
-                    </div>
-                  </div>                
-                  <div className={`${styles.info0102}`}>
-                    <div className={`${styles.info01}`}>
-                      판매자
-                    </div>
-                    <div className ={`${styles.info0405}`}>
-                      <div className ='info4'>
-                        <span><Link to={`/user/${product.seller_id}`}>{product.nickname}</Link></span>
-                      </div>
-                    <div className= 'info05'>
-                      <Link to={'/chat'} styles={{ textDecoration: "none", color: "black"}}>판매자와 채팅하기</Link>
-                    </div>          
-                    </div>
-                  </div>
-                  <ProductCaution/>
-                  </>
-            : <p>아직 등록한 상품이 없어요!</p>
+          ): (
+            <>
+            {(myBlockedPost) && 
+              <span className={styles.blockedBadge}>
+                <SlashCircle className='me-1'/>차단된 상품입니다
+              </span>
             }
-        </div> 
-        </div> */}
-        <OtherProduct id={product.seller_id}/>
+              <div className={`${styles.productHeader}`}>
+                <div className={`${styles.productTitle} d-flex justify-content-between align-items-center`}>
+                  <div className='d-flex align-items-center'>
+                    <h2 className={`${(product.soldDate || product.seller_id !== product.buyer_id) ? styles.soldProductName : null} m-0`}>{product.product_name}</h2>
+                    <div className={styles.soldBlockedBadge}>
+                      {
+                        (product.soldDate || product.seller_id !== product.buyer_id) ?
+                        <span className={styles.soldOutBadge}>
+                          거래완료
+                        </span>
+                        : null
+                      }
+                    </div>
+                  </div>
+                  {(product.seller_id == user?.id) ? 
+                  (<div className={`${styles.btnWrap} d-flex`}>
+                    {
+                      (!product.soldDate || product.seller_id === product.buyer_id) ?
+                      <Button 
+                        variant="outline-secondary" className={styles.updateBtn} 
+                        onClick={()=>{navigate(`/product/edit/${product.product_id}`,
+                        {state: {product: product, files}})}}>
+                        <Pencil className='me-1'/>수정
+                      </Button>
+                      : null
+                    }
+                    <Button 
+                      variant="outline-secondary" className={styles.deleteBtn} onClick={handleDeleteOpen}>
+                        <Trash3 className='me-1'/>삭제
+                    </Button>
+                  </div>)  : null }
+                </div>
+                <div className={`${styles.productHeaderInfo} d-flex justify-content-between align-items-center regular`}>
+                  <div className={`${styles.headerInfo} d-flex`}>
+                    <div className={`${styles.headerInfoText} d-flex flex-wrap`}>
+                      <div className={`${styles.infoFirst} d-flex flex-wrap`}>
+                        <p className={`${styles.info} medium`}>저자
+                          {
+                            product.writer ? 
+                            <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.writer}</span> :
+                            <span className={`ms-2 regular ${styles.emptyData}`}>미기입</span>
+                          }
+                        </p>
+                        <p className={`${styles.info} medium`}>출판사
+                          {
+                            product.publisher ?
+                            <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{product.publisher}</span> :
+                            <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
+                          }
+                        </p>
+                      </div>
+                      <div className='d-flex flex-wrap'>
+                        <p className={`${styles.info} medium`}>출간일
+                          {
+                            product.publish_date ?
+                            <span className={`ms-2 regular`} style={{color:"#4D91B6"}}>{new Date(product.publish_date).toLocaleDateString()}</span> :
+                            <span className={`ms-2 ${styles.emptyData}`}>미기입</span>
+                          }
+                        </p>
+                        <p className={`${styles.info} medium`}>게시일
+                          <span className={`ms-2 regular ${styles.uploadDate}`} style={{color:"#4D91B6"}}>{new Date(product.createdAt).toLocaleDateString()}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
+                    <Favorite/>
+                    { renderReportBtn() }
+                    <div className={`${styles.user_chat}`}>
+                      {
+                        (user && user.blocked === 0 && user.id !== product.seller_id) ?
+                        // <div className={styles.chat_btn} onClick={handleCreateChatroom}>
+                        //   <ChatDots size="30" className={styles.chatIcon}/></div>
+                        <Button 
+                          variant="outline-secondary" 
+                          className={`${styles.chatBtn} regular`} 
+                          onClick={handleCreateChatroom}> 
+                          <ChatDots className='me-1'/>채팅하기</Button>
+                        : null
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} productId={id}/>
+            
+
+            {/* Product Detail */}
+            <div className={`${styles.productDetail}`}>
+              <div className={`${styles.productMainDetail} d-flex justify-content-between mb-4`}>
+                <PicCarousel product={product} files={files}/>
+                <div className={`${styles.productInfo}`}>                     
+                  <div className={`${styles.productGroup} d-flex align-items-center`}>
+                      <p className={`${styles.detailTitle} bold`}>카테고리</p>
+                      <Badge className={styles.category_badge}>{product.category_name}</Badge>
+                  </div>
+                  <Link to={`/user/${product.seller_id}`} className={`${styles.productGroup} d-flex align-items-center bold`}>
+                    <p className={styles.detailTitle}>판매자</p>
+                    <div className={`${styles.sellerInfo} d-flex align-items-center`}>
+                      <div className={`d-flex justify-content-center align-items-center ${styles.profileImgWrap}`}>
+                        {
+                          product.profile_image == '' || !product.profile_image ?
+                          <Person className={`${styles.profileIcon}`}/> :
+                          <img src={process.env.PUBLIC_URL + `/img/profile/${product.profile_image}`} className={`${styles.profileImg}`}/>
+                        }
+                      </div>
+                      <div className={`${styles.scoreBox}`}>
+                        <div className={`${styles.mannerScore} bold`}>
+                          {
+                            (product.manner_score) ?
+                            (product.manner_score).toFixed(1)
+                            : '-'
+                          }
+                        </div>
+                        <StarFill size={35} className={`${styles.starIcon}`}/>
+                      </div>
+                      {
+                        product.user_blocked ?
+                        <div className={`${styles.sellerNickname} ${styles.blockedUser} medium d-flex align-items-center`}>
+                          <Ban className={styles.banIcon}/>
+                          <p>{product.nickname}</p>
+                        </div> :
+                        <div className={`${styles.sellerNickname} medium`}>
+                          <p>{product.nickname}</p>
+                        </div>
+                      }
+                    </div>
+                  </Link> 
+                  <div className={`${styles.productGroup}`}>
+                    <div className={`${styles.cateinfo2} d-flex align-items-center bold`}>
+                      <p className={styles.detailTitle}>가격</p>    
+                      <p className={`${styles.productPrice} medium`}>{product.price?.toLocaleString()}원</p>
+                    </div> 
+                  </div>
+                  <div className={`${styles.productGroup} d-flex align-items-center bold`}>
+                      <p className={styles.detailTitle}>ISBN</p>
+                      <div className='medium'>
+                        {
+                          !product.isbn10 && !product.isbn13 ?
+                            <p className={styles.emptyData}>미기입</p> :
+                            <>
+                              <p>{product.isbn10}</p>    
+                              <p>{product.isbn13}</p>
+                            </>
+                        }
+                      </div> 
+                  </div>
+                  <div className={`${styles.productGroup} d-flex bold`}>
+                      <p className={styles.detailTitle}>책 소개</p>  
+                      <p className={`${styles.bookDescription} medium`}>{product.description}</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <ProductCaution/>
+              </div>  
+            </div>
+            <OtherProduct id={product.seller_id}/>
+            </>
+          )}
         </div>
       </Container>
     </ProductDetailContext.Provider>

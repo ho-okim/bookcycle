@@ -54,25 +54,25 @@ function BoardDetail(){
           setMyBlockedPost(false);
 
           if (!data) { // 존재하지 않는 게시글로 url 접근 시
-            setNotFound(true)
+            setNotFound(true);
           }
 
           // 차단이 안된 경우나 내 게시글인 경우 -> 렌더링 O
           // 차단되도 내 게시물이면 렌더링 됨
           if(data.blocked === 0 || data.user_id === user?.id) {
             const res = await filesList(id)
-            setContent(data)
-            setFiles(res)
+            setContent(data);
+            setFiles(res);
           } 
           
           // 내 차단된 게시물 -> 렌더링 O + 차단 메시지 띄우기
           if(data.blocked === 1 && data.user_id === user?.id){
-            setMyBlockedPost(true)
+            setMyBlockedPost(true);
           } 
           
           // 차단된 게시글 -> 렌더링 X
           if (data.blocked === 1 && data.user_id !== user?.id) { 
-            setIsBlocked(true)
+            setIsBlocked(true);
           }
 
         }  catch (error) {
