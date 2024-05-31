@@ -590,7 +590,7 @@ function ReviewBtn({activeChatroom, user, isReviewed, reviewWriteHandler, handle
   if(activeChatroom.blocked === 0 && user.blocked === 0){
     if(isReviewed){
     return( // 리뷰 작성 완료면
-      <div className={`${styles.reviewed}`}>리뷰 작성 완료</div>
+    <Button variant="outline-secondary" disabled>작성 완료</Button>
     )
     } else if(activeChatroom.soldDate){
       return( // 리뷰 작성 안 됐지만 soldDate가 있으면
@@ -605,8 +605,12 @@ function ReviewBtn({activeChatroom, user, isReviewed, reviewWriteHandler, handle
         className={`${styles.btn}`}
         onClick={handleOpen}>거래 완료</Button>
       )
-    }
-  } else return null; // 모든 경우가 아니면
+    } else return null;
+  } else { // 모든 경우가 아니면
+    return(
+      <Button variant="outline-secondary" disabled>작성 불가</Button>
+    )
+  }
 }
 
 export default Chat;

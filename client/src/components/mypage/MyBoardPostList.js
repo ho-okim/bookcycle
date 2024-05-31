@@ -59,10 +59,12 @@ function MyBoardPostList() {
       ) : (
         boardPostItems.slice(offset, offset + limit).map((item, index) => (
           <Link to={`/board/${item.id}`} key={index} className={styles.boardWrap}>
-            {
-              item.filename ?
-              <img key={item.id} src={process.env.PUBLIC_URL + `/img/board/${item.filename}`} alt='board image' className={`${styles.boardImg}`}/> : ''
-            }
+              {
+                item.filename ?
+                <div className={styles.boardImgWrap}>
+                  <img key={item.id} src={process.env.PUBLIC_URL + `/img/board/${item.filename}`} alt='board image' className={`${styles.boardImg}`}/>
+                </div> : ''
+              }
             <div className={`${styles.boardInfo} ${item.filename ? styles.withImage : styles.noImage}`} >
               <div className={styles.boardHeader}>
                 <p className={styles.boardTitle}>{item.title}</p>
