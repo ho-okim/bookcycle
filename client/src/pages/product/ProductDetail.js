@@ -1,7 +1,7 @@
 import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge } from "react-bootstrap";
-import { StarFill, Pencil, Trash3, ChatDots, Person, Ban, SlashCircle } from "react-bootstrap-icons";
+import { StarFill, Pencil, Trash3, ChatDots, Person, Ban } from "react-bootstrap-icons";
 import { useEffect, useState } from 'react';
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
@@ -160,7 +160,7 @@ function ProductDetail() {
               <div className={`${styles.productHeader}`}>
                 {(myBlockedPost) && 
                   <span className={styles.blockedBadge}>
-                    <SlashCircle className='me-1'/>차단된 상품입니다
+                    <Ban className='me-1'/>차단된 상품입니다
                   </span>
                 }
                 <div className={`${styles.productTitle} d-flex justify-content-between align-items-center`}>
