@@ -21,7 +21,6 @@ setupTests.js
 
 #client/public
 /client/public/favicon.*
-/client/public/index.html
 /client/public/logo*
 /client/public/manifest.*
 /client/public/robots.txt
