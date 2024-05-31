@@ -2,7 +2,7 @@ import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge, Stack } from "react-bootstrap";
 import { useEffect, useState, react } from 'react';
-import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star } from "react-bootstrap-icons";
+import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots, Person, Star, Ban } from "react-bootstrap-icons";
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
@@ -244,9 +244,16 @@ function ProductDetail() {
                     </div>
                     <StarFill size={35} className={`${styles.starIcon}`}/>
                   </div>
-                  <div className={`${styles.sellerNickname} medium`}>
-                    <p>{product.nickname}</p>
-                  </div>
+                  {
+                    product.user_blocked ?
+                    <div className={`${styles.sellerNickname} ${styles.blockedUser} medium d-flex align-items-center`}>
+                      <Ban className={styles.banIcon}/>
+                      <p>{product.nickname}</p>
+                    </div> :
+                    <div className={`${styles.sellerNickname} medium`}>
+                      <p>{product.nickname}</p>
+                    </div>
+                  }
                 </div>
               </Link> 
               <div className={`${styles.productGroup}`}>
