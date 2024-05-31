@@ -46,12 +46,12 @@ function OtherProduct({ id }) {
   return (
     <Container>
       <div className="inner">
-        <div  className={styles.salesList}>
-          <div className={`${styles.salesHeader} d-flex justify-content-between`}>
+        <div className={styles.salesList}>
+          <div className={`${styles.salesHeader} d-flex justify-content-between align-items-center mb-2`}>
             <h4 className={styles.title}>판매목록</h4>
             <Button
               variant="outline-primary"
-              className={styles.more_btn}
+              className={styles.moreBtn}
               onClick={handleClick}
             >
               더보기
@@ -74,33 +74,28 @@ function OtherProduct({ id }) {
 
 // 판매 상품 목록
 function SoldBook({ product }) {
+
   return (
-    <div className={`${styles.book_card} d-flex flex-column`}>
+    <div className={`${styles.bookCard} d-flex flex-column`}>
       <Link to={`/product/detail/${product.id}`}>
-        <div className={styles.book_image_box}>
+        <div className={styles.bookImageBox}>
           {product.filename ? (
             <img
-              className={styles.book_image}
+              className={styles.bookImage}
               src={process.env.PUBLIC_URL + "/img/product/" + product.filename}
               alt="책사진"
             />
           ) : (
             <img
-              className={styles.no_book_image}
+              className={styles.noBookImage}
               src={process.env.PUBLIC_URL + "/img/default/no_book_image.png"}
               alt="책사진"
             />
           )}
         </div>
-        <div className={styles.book_info}>
-          <div
-            className={`${styles.book_title} d-flex justify-content-center align-items-center`}
-          >
-            <span className={styles.text_hidden}>{product.product_name}</span>
-          </div>
-          <p className={`${styles.price}`}>
-            {product.price.toLocaleString()} 원
-          </p>
+        <div className={`${styles.bookInfo} d-flex flex-column align-items-center`}>
+          <div className={styles.productName}>{product.product_name}</div>
+          <div className={`${styles.productPrice}`}>{product.price.toLocaleString()} 원</div>
         </div>
       </Link>
     </div>

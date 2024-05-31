@@ -2,7 +2,7 @@ import styles from '../../styles/productDetail.module.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Badge, Stack } from "react-bootstrap";
 import { useEffect, useState, react } from 'react';
-import { ChatDotsFill, StarFill, Pencil, Trash3 } from "react-bootstrap-icons";
+import { ChatDotsFill, StarFill, Pencil, Trash3, ChatDots } from "react-bootstrap-icons";
 import { useAuth } from "../../contexts/LoginUserContext";
 import Report from "../../components/Report";
 import {filesList, productDelete, productDetail} from "../../api/product";
@@ -117,7 +117,7 @@ function ProductDetail() {
           <>
             <Button 
               variant="outline-secondary" 
-              className={styles.secondary} 
+              className={styles.reportBtn} 
               onClick={handleOpen}> 
               <img style={{width: '23px'}} className='me-1' src={process.env.PUBLIC_URL + `/report.png`}/>신고하기</Button>
             <Report show={modalShow} handleClose={handleClose} targetId={product.product_id} category={'product'}/>
@@ -148,100 +148,97 @@ function ProductDetail() {
                     variant="outline-secondary" className={styles.updateBtn} 
                     onClick={()=>{navigate(`/product/edit/${product.product_id}`,
                     {state: {product: product, files}})}}>
-                    <Pencil/>
+                    <Pencil className='me-1'/>수정
                   </Button>
                   : null
                 }
                 <Button 
                   variant="outline-secondary" className={styles.deleteBtn} onClick={handleDeleteOpen}>
-                    <Trash3/>
+                    <Trash3 className='me-1'/>삭제
                 </Button>
               </div>)  : null }
             </div>
-            <div className={`${styles.productInfo} d-flex justify-content-between regular`}>
-              <div className='productInfo d-flex'>
-                <p className={styles.info}>저자 {product.writer}</p>
-                <p className={styles.info}>출판사 {product.publisher}</p> 
-                <p className={styles.info}>출간일 {new Date(product.publish_date).toLocaleDateString()}</p>
-                <p className={styles.info}>게시일 {new Date(product.createdAt).toLocaleDateString()}</p>
+            <div className={`${styles.productHeaderInfo} d-flex justify-content-between align-items-center regular`}>
+              <div className={`${styles.headerInfo} d-flex`}>
+                <p className={styles.info}>저자<span className='ms-2' style={{color:"#4D91B6"}}>{product.writer}</span></p>
+                <p className={styles.info}>출판사<span className='ms-2' style={{color:"#4D91B6"}}>{product.publisher}</span></p> 
+                <p className={styles.info}>출간일<span className='ms-2' style={{color:"#4D91B6"}}>{new Date(product.publish_date).toLocaleDateString()}</span></p>
+                <p className={styles.info}>게시일<span className='ms-2' style={{color:"#4D91B6"}}>{new Date(product.createdAt).toLocaleDateString()}</span></p>
               </div>
-              <div className={`${styles.wishReportWrap} d-flex align-items-center`}>
+              <div className={`${styles.headerBtnWrap} d-flex align-items-center`}>
                 <Favorite/>
                 { renderReportBtn() }
+                <div className={`${styles.user_chat}`}>
+                  {
+                    (user && user.blocked === 0 && user.id !== product.seller_id) ?
+                    // <div className={styles.chat_btn} onClick={handleCreateChatroom}>
+                    //   <ChatDots size="30" className={styles.chatIcon}/></div>
+                    <Button 
+                      variant="outline-secondary" 
+                      className={`${styles.chatBtn} regular`} 
+                      onClick={handleCreateChatroom}> 
+                      <ChatDots className='me-1'/>채팅하기</Button>
+                    : null
+                  }
+                </div>
               </div>
             </div>
           </div>
           <DefaultModal show={modalDeleteShow} handleClose={handleDeleteClose} productId={id}/>
-        </div>
+        
 
         {/* Product Detail */}
-        <div className={`${styles.productDetail} d-flex`}>  
-          <div className={`${styles.infopic}`}>
-            <PicCarousel product={product} files={files}/>
-          </div>
-        <div className={`${styles.infocate}`}>                     
-          <div className={`${styles.cateinfo1}`}>
-            <div className={`${styles.cateinfo2}`}>
-              <span>판매자</span>
+        <div className={`${styles.productDetail}`}>
+          <div className={`${styles.productMainDetail} d-flex justify-content-between mb-4`}>
+            <div className={`${styles.productPic}`}>
+              <PicCarousel product={product} files={files}/>
             </div>
-            <div className={`${styles.cateinfo3_name}`}>
-              <div className={`${styles.scorebox}`}>
-                <div className={`${styles.mannerbox}`}>
-                  {
-                    (product.manner_score) ?
-                    (product.manner_score).toFixed(1)
-                    : '-'
-                  }
+            <div className={`${styles.productInfo}`}>                     
+              <div className={`${styles.productGroup} d-flex align-items-center`}>
+                <p className={styles.detailTitle}>판매자</p>
+                <div className={`${styles.sellerInfo} d-flex align-items-center`}>
+                  <div className={`${styles.scoreBox}`}>
+                    <div className={`${styles.mannerScore}`}>
+                      {
+                        (product.manner_score) ?
+                        (product.manner_score).toFixed(1)
+                        : '-'
+                      }
+                    </div>
+                    <StarFill size={45} className={`${styles.starIcon}`}/>
+                  </div>
+                  <div className={`${styles.sellerNickname}`}>
+                    <p>{product.nickname}</p>
+                  </div>
                 </div>
-                <StarFill className={`${styles.score_star}`}/>
+              </div> 
+              <div className={`${styles.productGroup}`}>
+                <div className={`${styles.cateinfo2} d-flex align-items-center`}>
+                  <p className={styles.detailTitle}>가격</p>    
+                  <p className={styles.productPrice}>{product.price?.toLocaleString()}원</p>
+                </div> 
               </div>
-              <div className={`${styles.nickname}`}>
-              <h3>{product.nickname} &nbsp; </h3>
+              <div className={`${styles.productGroup} d-flex align-items-center`}>
+                  <p className={styles.detailTitle}>ISBN</p>
+                  <div>
+                    <p>ISBN 10: {product.isbn10}<br/></p>    
+                    <p>ISBN 13: {product.isbn13}</p>
+                  </div> 
               </div>
-              <div className={`${styles.user_chat}`}>
-                {
-                  (user && user.blocked === 0 && user.id !== product.seller_id) ?
-                  <div className={styles.chat_btn} onClick={handleCreateChatroom}><ChatDotsFill size="40" className={styles.namechat}/></div>
-                  : null
-                }
-              </div>  
+              <div className={`${styles.productGroup} d-flex align-items-center`}>
+                  <p className={styles.detailTitle}>카테고리</p>
+                  <p>{product.category_name}</p>
+              </div>
+              <div className={`${styles.productGroup} d-flex`}>
+                  <p className={styles.detailTitle}>책 소개</p>  
+                  <p className={styles.bookDescription}>{product.description}</p>
+              </div>
             </div>
-          </div> 
-          <div className={`${styles.cateinfo1}`}>
-            <div className={`${styles.cateinfo2}`}>
-              <span>가격</span>
-            </div>
-            <div className={`${styles.cateinfo3}`}>    
-              <h3>{product.price?.toLocaleString()}원</h3>
-            </div> 
           </div>
-          <div className={`${styles.cateinfo1}`}>
-            <div className={`${styles.cateinfo2}`}>
-              <span>ISBN</span>
-            </div>
-            <div className={`${styles.cateinfo3}`}>
-              <span>ISBN 10: {product.isbn10}<br/></span>    
-              <span>ISBN 13: {product.isbn13}</span>
-            </div> 
-          </div>
-          <div className={`${styles.cateinfo1}`}>
-            <div className={`${styles.cateinfo2}`}>
-              <span>카테고리</span>
-            </div>
-            <div className={`${styles.cateinfo3}`}>    
-              <span>{product.category_name}</span>
-            </div> 
-          </div>
-          <div className={`${styles.cateinfo1}`}>
-            <div className={`${styles.cateinfo2}`}>
-              <span>책 소개 내용</span>
-            </div>
-            <div className={`${styles.cateinfo3}`}>    
-              <span>{product.description}</span>
-            </div> 
-          </div>
-          <ProductCaution/>
-        </div>
+          <div>
+            <ProductCaution/>
+          </div>  
+
         </div>
             {/* <div className='inner'>
       <div className={`${styles.boxinfo}`}>
@@ -284,6 +281,7 @@ function ProductDetail() {
         </div> 
         </div> */}
         <OtherProduct id={product.seller_id}/>
+        </div>
       </Container>
     </ProductDetailContext.Provider>
   );

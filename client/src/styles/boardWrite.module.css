@@ -12,7 +12,7 @@
 .boardForm .titleInput, .contentInput {
   width: 90%; 
   padding: 5px 10px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 .boardForm .contentInput {height: 240px; min-height: 240px;}
 

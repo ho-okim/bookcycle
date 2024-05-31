@@ -108,7 +108,7 @@ function Favorite (){
           )}
         </div>
       )}
-      <span>찜 {productlikeCounts}</span>
+      <span className="me-2" style={{color: "#6A6A6A"}}>찜하기 {productlikeCounts}</span>
       </div>
   </>
   );
