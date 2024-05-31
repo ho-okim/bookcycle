@@ -83,15 +83,15 @@ function UserProductFiltering({category}) {
                         }
                     </div>
                     <div className='d-flex justify-content-end'>
+                        <Button className={styles.filter_apply} id='apply_filter' 
+                        onClick={(e)=>{handleFilterBtn(e.currentTarget.id)}}>적용</Button>
                         {
                             !(filter.sold === null && parseInt(filter.category_id) === 0) ?
-                            <Button variant='success' id='reset_filter' 
+                            <Button variant='outline-secondary' id='reset_filter'
+                            className='ms-2'
                             onClick={(e)=>{handleFilterBtn(e.currentTarget.id)}}>초기화</Button>
                             : null
                         }
-                        
-                        <Button className={styles.filter_apply} id='apply_filter' 
-                        onClick={(e)=>{handleFilterBtn(e.currentTarget.id)}}>적용</Button>
                     </div>
                 </Popover>
             }>
