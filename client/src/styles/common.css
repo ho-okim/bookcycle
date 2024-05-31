@@ -62,8 +62,8 @@ body{font-family: 'Pretendard-SemiBold'; height:100%;}
   border: 1px solid #427D9D !important;
 }
 
-.navbar .form-control:focus{
-  border-color:none !important;
+.form-control:focus{
+  border-color:#ddd !important;
   box-shadow: none !important;
 }
 

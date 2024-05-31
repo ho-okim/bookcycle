@@ -37,8 +37,8 @@
 }
 
 .more_btn:hover, .more_btn:active{
-    background-color: rgb(77, 145, 182);
-    border: 1px solid rgb(77, 145, 182);
+    background-color: rgb(77, 145, 182) !important;
+    border: 1px solid rgb(77, 145, 182) !important;
 }
 
 /* 다른 사용자 정보 */
@@ -407,18 +407,18 @@
 }
 
 .pagination a:hover{
-    color : rgb(77, 145, 182) !important;
+    color : #4D91B6 !important;
     text-decoration: underline !important;
 }
 
 .pagination{
     --bs-pagination-color: #ddd !important;
     --bs-pagination-bg: transparent !important;
-    --bs-pagination-active-color: rgb(0, 166, 255) !important;
+    --bs-pagination-active-color: #4D91B6 !important;
     --bs-pagination-active-border-color: none !important;
     --bs-pagination-active-bg: none !important;
     --bs-pagination-hover-bg: none !important;
-    --bs-pagination-focus-color: rgb(77, 145, 182) !important;
+    --bs-pagination-focus-color: #4D91B6 !important;
     --bs-pagination-focus-box-shadow: none !important;
 }
 

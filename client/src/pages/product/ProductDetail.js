@@ -190,9 +190,7 @@ function ProductDetail() {
         {/* Product Detail */}
         <div className={`${styles.productDetail}`}>
           <div className={`${styles.productMainDetail} d-flex justify-content-between mb-4`}>
-            <div className={`${styles.productPic}`}>
-              <PicCarousel product={product} files={files}/>
-            </div>
+            <PicCarousel product={product} files={files}/>
             <div className={`${styles.productInfo}`}>                     
               <div className={`${styles.productGroup} d-flex align-items-center`}>
                 <p className={styles.detailTitle}>판매자</p>
