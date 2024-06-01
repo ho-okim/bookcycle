@@ -35,8 +35,8 @@ function Error() {
             <h2 className={styles.title}>{errorInfo.type}</h2>
           </div>
           <div className={styles.content_box}>
-            {errorInfo.message.split("\n").map((message) => (
-              <p className={styles.error_message}>{message}</p>
+            {errorInfo.message.split("\n").map((message, index) => (
+              <p key={index} className={styles.error_message}>{message}</p>
             ))}
             <Button className={`${styles.error_goHome} regular`}>
               <Link to="/" className={styles.goHome}>

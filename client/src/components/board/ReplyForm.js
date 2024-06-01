@@ -298,7 +298,7 @@ function ReplyList(){
                   : (<span className={styles.writerId}>
                       {(reply.user_blocked === 1) ? 
                       <PersonFillSlash className='fs-6 me-1'/> : null}
-                    {reply.nickname}
+                      <Link to={`/user/${reply.user_id}`}>{reply.nickname}</Link>
                     </span>)}
                   <span className={styles.date}>{DateProcessing(reply.createdAt)}</span>
                 </div>

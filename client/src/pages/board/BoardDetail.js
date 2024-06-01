@@ -175,7 +175,7 @@ function BoardDetail(){
                     <span className={(content.user_blocked === 1 ? styles.bannedUserId : styles.userid)}>
                       {(content.user_blocked === 1) ? 
                       <Ban className='fs-6 me-1'/> : null}
-                      {content.nickname}
+                      <Link to={`/user/${content.user_id}`}>{content.nickname}</Link>
                     </span>
                     <span className={styles.date}>{DateProcessing(content.createdAt)}</span>
                   </div>
