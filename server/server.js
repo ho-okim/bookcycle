@@ -3,13 +3,14 @@
 require("dotenv").config();
 
 const PORT = process.env.PORT || 10000;
+const HOSTNAME = process.env.HOSTNAME || 'localhost';
 
 // express 설정
 const express = require("express");
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const whiteList = [`http://localhost:${PORT}`, `http://localhost:3000`]
+const whiteList = [`http://${HOSTNAME}:${PORT}`, `http://${HOSTNAME}:3000`]
 
 // http와 socket.io 설정
 const { createServer } = require("http");
@@ -40,7 +41,7 @@ const sessionOption = {
     resave : false,
     saveUninitialized : false,
     cookie : {
-        maxAge : 60 * 60 * 10000, // 10시간, 테스트 편의를 위해 수정함(추후 1시간으로 변경 예정)
+        maxAge : 60 * 60 * 1000, // 1시간
         httpOnly : true,
         secure : false
     }, 
@@ -142,9 +143,9 @@ passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id
 
 // DB 연결 시 서버 열림-------------------------------------------
 if (pool) {
-    server.listen(PORT, () => {
-        console.log(`server on : http://localhost:${PORT}/`);
-    });
+  server.listen(PORT, HOSTNAME, () => {
+    console.log(`server on : http://${HOSTNAME}:${PORT}/`);
+  });
 }
 
 // router --------------------------------------------------------
