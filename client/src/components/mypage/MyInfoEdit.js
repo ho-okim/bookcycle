@@ -167,6 +167,7 @@ function MyInfoEdit({ password }) {
         <input
           name={value}
           defaultValue={defaultValue}
+          placeholder={defaultValue}
           className={styles.input_form}
           type={
             value === "phone_number" ? "tel" : "text"
