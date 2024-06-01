@@ -381,12 +381,18 @@
 .selectTag .tagWrap .tagBtn p { margin-left: 20px; }
 
 .review p { margin: 15px 0; }
-.review p span { 
+.category_badge{
+  margin: 0 7px; display: flex; align-items: center;
+  font-size: 13px;
+  background-color: #4d91b6 !important;
+  border: none !important;
+}
+/* .review  p > span { 
   margin: 0 5px; padding: 3px 8px; 
   background-color: #427D9D; 
   border-radius: 7px; 
   font-size: 12px; color: white; 
-}
+} */
 .review textarea {
   min-height: 150px;
   border-radius: 5px;

@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import styles from "../../styles/mypage.module.css";
 import { useAuth } from '../../contexts/LoginUserContext';
+import EmptyError from '../EmptyError';
+import { Badge } from 'react-bootstrap';
 
 function BuyerReviewWrite() {
 
@@ -17,6 +19,9 @@ function BuyerReviewWrite() {
   const contentRef = useRef()
   const [tagIndex, setTagIndex] = useState(0);
   const [reviewContent, setReviewContent] = useState('');
+  const [isNotFirstCheck, setIsNotFirstCheck] = useState(false);
+  const [triggerVibration, setTriggerVibration] = useState(true);
+  const scrollTopRef = useRef()
 
   const navigate = useNavigate();
   
@@ -50,11 +55,20 @@ function BuyerReviewWrite() {
   }, []);
 
   const handleSubmit = async () => {
+    setIsNotFirstCheck(true)
     try {
-      console.log("handleSubmit 호출");
-      await buyerReviewWritePost(id, score, tagIndex, reviewContent, productId);
-      console.log("리뷰 등록 완료")
-      navigate(`/user/${id}`);
+      if(score || tagIndex || reviewContent){
+        console.log("handleSubmit 호출");
+        await buyerReviewWritePost(id, score, tagIndex, reviewContent, productId);
+        console.log("리뷰 등록 완료")
+        navigate(`/user/${id}`);
+      } else {
+        scrollTopRef.current?.scrollIntoView({behavior: 'smooth'})
+  
+        // EmptyError 컴포넌트 애니메이션 관리
+        setTriggerVibration(true);
+        setTimeout(() => setTriggerVibration(false), 2000);
+      }
     } catch(error) {
       console.error('리뷰 등록 실패: ', error.message)
     }
@@ -93,13 +107,26 @@ function BuyerReviewWrite() {
 
   return (
     <>
-      <Container>
+      <Container ref={scrollTopRef}>
         <div className="inner">
-          <div className={styles.rating}>
+          <div className={`d-flex flex-column justify-content-center ${styles.rating}`}>
+            <div className='d-flex justify-content-center mb-2'>
+              {
+                isNotFirstCheck && !score ?
+                <EmptyError triggerVibration={triggerVibration}/> : null
+              }
+            </div>
             <div>{star}</div>
           </div>
           <div className={`${styles.review} ${styles.selectTag}`}>
-            <p>어떤 점이 좋았나요? <span>택 1</span></p>
+            <div className='d-flex align-items-center'>
+              <p className='fs-5'>어떤 점이 좋았나요?</p>
+              <Badge className={styles.category_badge}>택 1</Badge>
+              {
+                isNotFirstCheck && !tagIndex ?
+                <EmptyError triggerVibration={triggerVibration}/> : null
+              }
+            </div>
             <div className={styles.tagWrap}>
               {reviewTags.map((tag, index) => {
                 return (
@@ -116,12 +143,19 @@ function BuyerReviewWrite() {
             </div>
           </div>
           <div className={`${styles.review} ${styles.reviewWrite}`}>
-            <p>리뷰작성 <span>필수</span></p>
-            <textarea value={reviewContent} onChange={handleReviewContent} maxLength={3000} onInput={handleResizeContentHeight} ref={contentRef}/>
+            <div className='d-flex align-items-center'>
+              <p className='fs-5'>리뷰작성</p>
+              <Badge className={styles.category_badge}>필수</Badge>
+              {
+                isNotFirstCheck && !reviewContent ?
+                <EmptyError triggerVibration={triggerVibration}/> : null
+              }
+            </div>
+            <textarea value={reviewContent} placeholder='리뷰를 작성해주세요' onChange={handleReviewContent} maxLength={3000} onInput={handleResizeContentHeight} ref={contentRef}/>
           </div>
           <div className={styles.btnWrap}>
             <Button className={`submit ${styles.submitBtn}`} as="input" type="submit" value="등록" onClick={() => handleSubmit()} />
-            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/buyList`)}}/>
+            <Button variant="outline-secondary" className={`${styles.reset}`} as="input" type="reset" value="취소" onClick={()=>{navigate(`/mypage/sellList`)}}/>
           </div>
         </div>
       </Container>
