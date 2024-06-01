@@ -91,7 +91,7 @@ function Chat() {
   // 리뷰 작성 페이지로 redirect 핸들러
   const reviewWriteHandler = (sellerId, buyer_id, productId) => {
     if(user.id == sellerId){
-      navigate(`/user/${buyer_id}/buyerReviewWrite?productId=${productId}`)
+      navigate(`/user/${activeChatroom.user_id}/buyerReviewWrite?productId=${productId}`)
     } else navigate(`/user/${activeChatroom.user_id}/sellerReviewWrite?productId=${activeChatroom.product_id}`)
   }
 
@@ -428,8 +428,8 @@ function Chat() {
                         {
                           activeChatroom.blocked ?
                           <div className='d-flex align-items-center'>
-                            <Ban className={styles.banUser}/>
-                            <p className={styles.banUser}>{activeChatroom.user_nickname}</p>
+                            <Ban className={styles.banned}/>
+                            <p className={styles.banned}>{activeChatroom.user_nickname}</p>
                           </div> :
                           <p>{activeChatroom.user_nickname}</p>
                         }
@@ -450,7 +450,7 @@ function Chat() {
                             </Link>
                           </Dropdown.Item>
                             {
-                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
+                              (activeChatroom.blocked === 1 || user.blocked === 1 || user?.id == activeChatroom.user_id) ? null :
                               !isUserReported ?
                               <Dropdown.Item className={styles.dropdownItem}>
                                 <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onUserSpam}>
@@ -462,7 +462,7 @@ function Chat() {
                                 <CheckCircle className={styles.reportComplete}/>사용자 신고 완료</div>
                             }
                             {
-                              (activeChatroom.blocked === 1 || user.blocked === 1) ? null :
+                              (activeChatroom.blocked === 1 || !activeChatroom.product_id || user.blocked === 1 || user?.id == activeChatroom.user_id) ? null :
                               !isReported ? 
                                 <Dropdown.Item className={styles.dropdownItem}>
                                   <Link className={`${styles.report} medium d-flex align-items-center`} onClick={onSpam}>
@@ -507,7 +507,11 @@ function Chat() {
                                 <div className={`${styles.soldOutText}`}>(판매완료)</div>
                               }
                               <div className={`${styles.productContent} ${activeChatroom.soldDate && styles.soldOut} d-flex justify-content-center flex-column`}>
-                                <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
+                                {
+                                  activeChatroom.product_blocked ?
+                                  <div className={`${styles.productName} ${styles.banned} d-flex align-items-center`}><Ban className={styles.banned}/>{activeChatroom?.product_name}</div> :
+                                  <div className={`${styles.productName}`}>{activeChatroom?.product_name}</div>
+                                }
                                 <div className={`${styles.price} regular`}>{activeChatroom?.price.toLocaleString()}원</div>
                               </div>
                             </div>
@@ -554,10 +558,16 @@ function Chat() {
                         <p className={`${styles.chatDifDate} regular`}>상대방이 채팅방을 나갔습니다</p>
                       </div>
                     }
+                    {
+                      (activeChatroom.blocked || activeChatroom.product_blocked) && user?.id != activeChatroom.seller_id ?
+                      <div className={`d-flex justify-content-center align-items-center`}>
+                        <p className={`${styles.chatDifDate} regular d-flex align-items-center`}><ExclamationCircleFill className='me-1'/>차단된 유저 혹은 상품입니다. 거래 시 주의하세요!</p>
+                      </div> : null
+                    }
                   </div>
                 </div>
                 {
-                  user.blocked === 1 || activeChatroom.blocked || user.id == activeChatroom.user_id || activeChatroom.exit_user_id?
+                  user.blocked === 1 || activeChatroom.blocked || user.id == activeChatroom.user_id || activeChatroom.exit_user_id || !activeChatroom.product_id ?
                   <div className={`${styles.chatForm} d-flex`}>
                     <textarea className={`${styles.chatText} regular`} placeholder='메시지를 보낼 수 없습니다' disabled></textarea>
                     <span className={`${styles.chatBtn} ${styles.chatBanBtn} d-flex align-items-center`} disabled><SendFill/></span>
@@ -587,30 +597,31 @@ function Chat() {
 
 function ReviewBtn({activeChatroom, user, isReviewed, reviewWriteHandler, handleOpen}){
 
-  if(activeChatroom.blocked === 0 && user.blocked === 0){
-    if(isReviewed){
-    return( // 리뷰 작성 완료면
-    <Button variant="outline-secondary" disabled>작성 완료</Button>
-    )
-    } else if(activeChatroom.soldDate){
-      return( // 리뷰 작성 안 됐지만 soldDate가 있으면
+  if(isReviewed){
+  return( // 리뷰 작성 완료면
+  <Button variant="outline-secondary" disabled>작성 완료</Button>
+  )
+  } else if(activeChatroom.soldDate && (user?.id == activeChatroom.seller_id || user?.id == activeChatroom.buyer_id)){
+    // 리뷰 되지 않았고 판매된 상품이고 내가 구매자거나 판매자라면
+    if(activeChatroom.blocked === 0 && user.blocked === 0 && activeChatroom.product_blocked === 0){
+      return(
         <Button variant="outline-danger"
           className={`${styles.btn}`}
           onClick={()=>reviewWriteHandler(activeChatroom.seller_id, activeChatroom.buyer_id, activeChatroom.product_id)}
           >후기 작성</Button>
       )
-    } else if(user?.id == activeChatroom.seller_id){
-      return( // 리뷰 작성 안 됐고 soldDate 없지만 내가 판매자라면
+    } else return(<Button variant="outline-secondary" disabled>작성 불가</Button>)
+  } else if(user?.id == activeChatroom.seller_id){
+    // 리뷰 작성 안 됐고 soldDate 없지만 내가 판매자라면
+    if(activeChatroom.product_blocked === 0 && user.blocked === 0){
+      return( // 내가 올린 상품과 나 모두 차단되지 않은 상태라면
         <Button variant="outline-danger"
         className={`${styles.btn}`}
         onClick={handleOpen}>거래 완료</Button>
       )
-    } else return null;
-  } else { // 모든 경우가 아니면
-    return(
-      <Button variant="outline-secondary" disabled>작성 불가</Button>
-    )
-  }
+    } else return(<Button variant="outline-secondary" disabled>거래 불가</Button>)
+  } else return null; // 리뷰 작성 안 됨, 팔리지 않음, 내가 구매자임
+
 }
 
 export default Chat;
