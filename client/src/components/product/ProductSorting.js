@@ -23,7 +23,7 @@ function ProductSorting() {
 
   function handleFilter(eventKey, event) { // 필터 처리
     event.persist();
-    let condition = eventKey ?? 'all';
+    let condition = eventKey ?? '전체';
 
     setFilter((filter)=>({...filter, condition : condition }));
     setFilterName(eventKey);
@@ -49,25 +49,26 @@ function ProductSorting() {
         <Dropdown onSelect={handleFilter} className={styles.option_dropdown}>
           <Dropdown.Toggle
           id="filter">
-              {filterName}
+            {filterName}
           </Dropdown.Toggle>
           <Dropdown.Menu className={styles.drop_menu}>
-              <Dropdown.Item eventKey='상'>상</Dropdown.Item>
-              <Dropdown.Item eventKey='중'>중</Dropdown.Item>
-              <Dropdown.Item eventKey='하'>하</Dropdown.Item>
+            <Dropdown.Item eventKey='전체'>전체</Dropdown.Item>
+            <Dropdown.Item eventKey='상'>상</Dropdown.Item>
+            <Dropdown.Item eventKey='중'>중</Dropdown.Item>
+            <Dropdown.Item eventKey='하'>하</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         <Dropdown onSelect={handleSort} className={styles.option_dropdown}>
           <Dropdown.Toggle
           id="order">
-              {optionName}
+            {optionName}
           </Dropdown.Toggle>
           <Dropdown.Menu className={styles.drop_menu}>
-              <Dropdown.Item id='createdAt' eventKey='최신등록순'>최신등록순</Dropdown.Item>
-              <Dropdown.Item id='price.DESC' eventKey='높은가격순'>높은가격순</Dropdown.Item>
-              <Dropdown.Item id='price.ASC' eventKey='낮은가격순'>낮은가격순</Dropdown.Item>
-              <Dropdown.Item id='liked' eventKey='좋아요순'>좋아요순</Dropdown.Item>
-              <Dropdown.Item id='view_count' eventKey='조회순'>조회순</Dropdown.Item>
+            <Dropdown.Item id='createdAt' eventKey='최신등록순'>최신등록순</Dropdown.Item>
+            <Dropdown.Item id='price.DESC' eventKey='높은가격순'>높은가격순</Dropdown.Item>
+            <Dropdown.Item id='price.ASC' eventKey='낮은가격순'>낮은가격순</Dropdown.Item>
+            <Dropdown.Item id='liked' eventKey='좋아요순'>좋아요순</Dropdown.Item>
+            <Dropdown.Item id='view_count' eventKey='조회순'>조회순</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div> 
