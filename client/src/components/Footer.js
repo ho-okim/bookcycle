@@ -17,7 +17,7 @@ const Footer = () => <footer className="page-footer font-small blue pt-4 footerT
               <p>이메일: resellboook@gmail.com</p>
               <p>주소: 인천 부평구 시장로 7 부평MH타워 5층</p>
               <div className='d-flex'>
-                <Link><div className='footerYoutube d-flex justify-content-center align-items-center'><Youtube/></div></Link>
+                <Link to="https://youtu.be/_zbC9J_l5DU"><div className='footerYoutube d-flex justify-content-center align-items-center'><Youtube/></div></Link>
                 <Link to="https://github.com/ho-okim/bookcycle"><div className='footerYoutube d-flex justify-content-center align-items-center'><Github/></div></Link>
               </div>
             </div>
