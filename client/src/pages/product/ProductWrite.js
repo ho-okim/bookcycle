@@ -194,10 +194,10 @@ function BoardWrite() {
             <h3 className={styles.title}>상품 등록</h3>
             <div className={`${styles.imgBox} row p-0 g-3 gy-3`}>
               <div className='d-flex'>
-              <p className={``}>상품 사진</p>
-              <div className='d-flex align-items-end'>
-                <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
-              </div>
+                <p className={``}>상품 사진</p>
+                <div className='d-flex align-items-end'>
+                  <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
+                </div>
               </div>
               {/* <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p> */}
               <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>

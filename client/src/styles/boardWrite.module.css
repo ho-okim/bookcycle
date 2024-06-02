@@ -24,6 +24,7 @@
 .boardError{padding: 0 10px;}
 
 .boardForm .onPost{margin-right: 10px;}
+.count{color: #979797; font-size: 13px; font-family: 'Pretendard-Regular';}
 
 .imgBox{
   display: flex;

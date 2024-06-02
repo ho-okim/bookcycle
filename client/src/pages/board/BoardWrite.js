@@ -125,7 +125,13 @@ function BoardWrite() {
           <div className={`inner ${styles.boardForm}`}>
             <h3 className="title">게시글 작성</h3>
             <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
-              <div className={`col-6 col-sm-4 col-lg-2`}>
+              <div className='d-flex'>
+                <p className={``}>게시글 사진</p>
+                <div className='d-flex align-items-end'>
+                  <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
+                </div>
+              </div>
+              <div className={`col-6 col-sm-4 col-lg-2 m-0`}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
                   <Camera className={`${styles.previewDefaultImg}`}/>

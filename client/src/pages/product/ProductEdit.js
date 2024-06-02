@@ -245,9 +245,13 @@ function ProductEdit() {
         <form method="post" id="post-form" encType="multipart/form-data" onSubmit={(e)=>{e.preventDefault()}}> 
           <div className={`inner ${styles.boardForm}`}>
             <h3 className={styles.title}>상품 수정</h3>
-            <div className={`${styles.imgBox} ${styles.row} row p-0 g-3 gy-3`}>
-              <p className={``}>상품 사진 ({uploadImg.length}/5)</p>
-              <p className={`${styles.imgComment} regular`}>사진은 최대 5장까지 업로드 가능합니다</p>
+            <div className={`${styles.imgBox} row p-0 g-3 gy-3`}>
+              <div className='d-flex'>
+                <p className={``}>상품 사진</p>
+                <div className='d-flex align-items-end'>
+                  <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
+                </div>
+              </div>
               <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>
                 <div className={`${styles.imageUploadBtn}`}>
                   {/* 이미지 업로드 버튼 */}
@@ -373,7 +377,7 @@ function ProductEdit() {
                   <input className={`${styles.input}`} placeholder="isbn 13자리를 입력하세요" maxLength={13} ref={isbn13Ref} onChange={handleLength}></input>
                 </div>
               </div>
-              <div className='col-12 col-lg-6'>
+              <div className='col-12 col-lg-3'>
                 <div className={`${styles.col} ${styles.inputBox} d-flex flex-column`}>
                   <div className={`${styles.inputTitle} d-flex`}>
                     <p className={`${styles.essentialInput}`}>가격</p>
