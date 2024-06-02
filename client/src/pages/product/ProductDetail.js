@@ -295,6 +295,12 @@ function ProductDetail() {
                       <p className={`${styles.productPrice} medium`}>{product.price?.toLocaleString()}원</p>
                     </div> 
                   </div>
+                  <div className={`${styles.productGroup}`}>
+                    <div className={`${styles.cateinfo2} d-flex align-items-center bold`}>
+                      <p className={styles.detailTitle}>상태</p>    
+                      <p className={`${styles.productPrice} medium`}>{product.condition}</p>
+                    </div> 
+                  </div>
                   <div className={`${styles.productGroup} d-flex align-items-center bold`}>
                       <p className={styles.detailTitle}>ISBN</p>
                       <div className='medium'>
