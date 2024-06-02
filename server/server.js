@@ -77,7 +77,7 @@ passport.use(new LocalStrategy( // 로그인 방법
     async (email, password, done) => { // 로그인 처리
         try {
             // db에서 email 조회
-            let sql = 'SELECT id, email, password, username, nickname FROM users WHERE email = ?';
+            let sql = 'SELECT id, email, password, username, nickname, verification FROM users WHERE email = ?';
             const query = mysql.format(sql, [email]);
             let [data] = await pool.query(query);
 

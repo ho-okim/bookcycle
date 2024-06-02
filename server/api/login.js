@@ -18,7 +18,7 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
         // 로그인 실패 처리
         if (!user) return res.json({ message : info.message });
         // verification 검증
-        if (user.verification == 0) {
+        if (user.verification === 0) {
           return res.json({ message : "not verified" });
         }
         // 에러 발생 시 next 미들웨어로 오류 처리 넘김
@@ -160,7 +160,6 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
   const { securedKey } = req.params;
 
   const decodedKey = decodeURIComponent(securedKey);
-
   let sql = 'SELECT * FROM user_verification WHERE secured_key = ?';
   
   try {
