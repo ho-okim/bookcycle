@@ -125,7 +125,7 @@ function Login() {
               </div>
               <div>
                 <span className={`${styles.join_info} regular`}>비밀번호를 잊어버리셨나요?</span>
-                <Link to="/password/find" className={styles.join_link}>비밀번호 찾기</Link>
+                <Link to="/password/find" className={styles.join_link}>비밀번호 초기화</Link>
               </div>
             </div>
           </form>

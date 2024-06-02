@@ -1,5 +1,5 @@
 import styles from "../../styles/chat.module.css"
-import { Person, PersonExclamation } from 'react-bootstrap-icons';
+import { ExclamationCircleFill, Person, PersonExclamation } from 'react-bootstrap-icons';
 import { chatTimeCalculator } from "../../lib/timeCalculator";
 import { useAuth } from "../../contexts/LoginUserContext";
 
@@ -32,7 +32,9 @@ function ChatUser(props){
               {
                 el.filename  ?
                 <img src={process.env.PUBLIC_URL + `/img/product/${el.filename}`} className={`${styles.profileImg}`}/> :
-                <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} className={`${styles.profileImg}`}/>
+                el.product_id ?
+                <img src={process.env.PUBLIC_URL + `/img/default/no_book_image.png`} className={`${styles.profileImg}`}/> :
+                <ExclamationCircleFill className={`${styles.deletedIcon} ${styles.deletedText}`}/>
               }
             </div>
           </div>
