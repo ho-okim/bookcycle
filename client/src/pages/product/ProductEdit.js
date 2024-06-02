@@ -25,12 +25,25 @@ function ProductEdit() {
 
   // useNavigate와 useLocation을 이용하여 페이지 간 데이터 넘기기
   let location = useLocation()
-  if (!location.state) { // 버튼 등이 아닌 직접 url을 입력하면 접근 차단
+  const product = location.state?.product
+  
+  if(!product){ // 버튼 등이 아닌 직접 url을 입력하면 접근 차단
     navigate('/error/400');
   }
-  const {product, files} = location.state
-  const {category_id, product_name, writer, publisher, isbn10, isbn13, publish_date, condition, description} = product
-  const prevPrice = product.price;
+  const files = location.state?.files
+  let category_id, product_name, writer, publisher, isbn10, isbn13, publish_date, condition, description;
+  if(product){
+    category_id = product.category_id
+    product_name = product.product_name
+    writer = product.writer
+    publisher = product.publisher
+    isbn10 = product.isbn10
+    isbn13 = product.isbn13
+    publish_date = product.publish_date
+    condition = product.condition
+    description = product.description
+  }
+  const prevPrice = product?.price;
 
   // 카테고리 배열
   const category = ["문학", "철학", "종교", "사회과학", "자연과학", "기술과학", "예술", "언어", "역사", "인문/교양", "컴퓨터/모바일", "기타"]
@@ -47,19 +60,19 @@ function ProductEdit() {
   const isbn10Ref = useRef();
   const isbn13Ref = useRef();
   const priceRef = useRef();
-  const [price, setPrice] = useState()
+  const [price, setPrice] = useState(1)
   const [con, setCon] = useState();
   const contentRef = useRef()
   const [pubDate, setPubDate] = useState(null);
   // 빈 값 입력 후 버튼 클릭 시 스크롤 이벤트를 위한 useRef
   const scrollTopRef = useRef()
 
-  const [titleLen, setTitleLen] = useState(product_name.length)
+  const [titleLen, setTitleLen] = useState(product_name?.length)
   const [writerLen, setWriterLen] = useState(writer ? writer.length : 0)
   const [publisherLen, setPublisherLen] = useState(publisher? publisher.length : 0)
   const [isbn10Len, setiIsbn10Len] = useState(isbn10 ? isbn10.toString().length : 0)
   const [isbn13Len, setIsbn13Len] = useState(isbn13 ? isbn13.toString().length : 0)
-  const [contentLen, setContentLen] = useState(description.length)
+  const [contentLen, setContentLen] = useState(description?.length)
 
   // 파일의 실제 정보 담는 useState
   const [uploadImg, setUploadImg] = useState("")
@@ -118,7 +131,7 @@ function ProductEdit() {
     // setUploadImg를 위한 카피본 작성
     let uploadImgLists = [...uploadImg]
 
-    for (let i = 0; i < imageLists.length; i++) {
+    for (let i = 0; i < imageLists?.length; i++) {
       // URL로 변경한 이미지를 imageUrlLists에 삽입
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       imageUrlLists.push(currentImageUrl);
@@ -128,7 +141,7 @@ function ProductEdit() {
     }
 
     // 사진 개수 5개 넘으면 이전에 업로드된 파일들까지만 slice
-    if (imageUrlLists.length > 5) {
+    if (imageUrlLists?.length > 5) {
       imageUrlLists = imageUrlLists.slice(0, 5);
       uploadImgLists = uploadImgLists.slice(0, 5);
     }
@@ -249,7 +262,7 @@ function ProductEdit() {
               <div className='d-flex'>
                 <p className={``}>상품 사진</p>
                 <div className='d-flex align-items-end'>
-                  <span className={`${styles.count}`}>({uploadImg.length}/5)</span>
+                  <span className={`${styles.count}`}>({uploadImg?.length}/5)</span>
                 </div>
               </div>
               <div className={`${styles.imgTop} col-6 col-sm-4 col-lg-2 m-0`} ref={scrollTopRef}>

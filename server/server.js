@@ -41,7 +41,7 @@ const sessionOption = {
     resave : false,
     saveUninitialized : false,
     cookie : {
-        maxAge : 60 * 60 * 1000, // 1시간
+        maxAge : 60 * 60 * 10000, // 1시간
         httpOnly : true,
         secure : false
     }, 
