@@ -308,7 +308,7 @@ function ReplyList(){
                 {
                 (user && user?.nickname !== reply.nickname && user.blocked === 0) ? 
                   (!is_reported) ? (
-                    <Button variant="outline-secondary" className={styles.alertBtn} 
+                    <Button variant="outline-secondary" className={styles.reportBtn} 
                     onClick={()=>{onSpam(reply.id)}}><img style={{width: '23px'}} src={process.env.PUBLIC_URL + `/report.png`}/></Button>
                   ) : <div className='d-flex align-items-center' style={{color: '#6C757D'}}><DashCircle className='me-1'/>신고완료 댓글</div>
                   : null
