@@ -16,7 +16,7 @@ function VerifyConfirmed() {
             <Button className={styles.verify_goHome}>
               <Link
                 className={styles.goHome}
-                to="http://localhost:3000/login"
+                to="/login"
                 >
                 로그인하러 가기
               </Link>

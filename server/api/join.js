@@ -8,6 +8,8 @@ const { isNotLoggedIn } = require('../lib/auth.js');
 const {generateRandomNumber} = require('../lib/generateRandom.js');
 const authHtml = require('../html/authHtml.js');
 
+const hostname = process.env.HOSTNAME || 'localhost';
+
 // 이메일 중복 체크
 router.get('/email', isNotLoggedIn, async (req, res) => {
   // request query string
@@ -62,7 +64,7 @@ router.post('/join', isNotLoggedIn, async (req, res) => {
         html: emailHtml,
         attachments: [{
           filename: 'bookcycle-logo.png',
-          path: 'http://localhost:3000/img/bookcycle-logo.png',
+          path: `http://${hostname}:3000/img/bookcycle-logo.png`,
           cid: 'provide@bookcycle-logo.png'
         }]
       };
@@ -147,7 +149,7 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
     let dateNow = new Date();
 
     if (!result) {
-      res.status(400).redirect("http://localhost:3000/verify/notfound?v=1");
+      res.status(400).redirect(`http://${hostname}:3000/verify/notfound?v=1`);
     } else if(dateNow <= new Date(result.date_expired)) {
       // 쿼리스트링으로 들어온 token이 존재하고, 만료기한 내에 접근했다면 인증 완료 처리
       
@@ -164,18 +166,18 @@ router.get('/email/verify', isNotLoggedIn, async(req, res)=>{
           const verifyRM_result = await pool.query(verifyRM_query);
 
           if (user_result.affectedRows === 1 && verifyRM_result.affectedRows === 1) {
-            res.redirect("http://localhost:3000/verify/confirmed?v=1");
+            res.redirect(`http://${hostname}:3000/verify/confirmed?v=1`);
           }
         } catch (error) {
           console.error(error);
-          res.status(500).redirect("http://localhost:3000/verify/error?v=1");
+          res.status(500).redirect(`http://${hostname}:3000/verify/error?v=1`);
         }
     } else {
-      res.status(401).redirect("http://localhost:3000/verify/expired?v=1");
+      res.status(401).redirect(`http://${hostname}:3000/verify/expired?v=1`);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).redirect("http://localhost:3000/verify/error");
+    res.status(500).redirect(`http://${hostname}:3000/verify/error`);
   }
 });
 

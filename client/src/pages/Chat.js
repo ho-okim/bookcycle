@@ -23,7 +23,9 @@ function Chat() {
   const {user} = useAuth();
 
   // socket 연결
+  // 호스트 이름이 변경되면 같이 변경해야 함
   const socket = io('http://localhost:10000')
+  // const socket = io('http://192.168.5.29:10000')
   socket.connect()
 
   // 우측에 열린 채팅방의 정보
