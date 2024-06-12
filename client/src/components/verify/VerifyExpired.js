@@ -22,7 +22,7 @@ function VerifyExpired() {
           </div>
           <Button className={styles.verify_goHome}>
             <Link className={styles.goHome} to="/">
-              홈으로 이동
+              홈으로 돌아가기
             </Link>
           </Button>
           <p>{count}초 후 자동으로 홈으로 이동합니다.</p>

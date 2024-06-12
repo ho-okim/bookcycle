@@ -9,6 +9,8 @@ const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 const {generateRandomString} = require('../lib/generateRandom.js');
 const findpwdHtml = require('../html/findpwdHtml.js');
 
+const hostname = process.env.HOSTNAME || 'localhost';
+
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
@@ -97,7 +99,7 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
         html: emailHtml,
         attachments: [{
           filename: 'bookcycle-logo.png',
-          path: 'http://localhost:3000/img/bookcycle-logo.png',
+          path: `http://${hostname}:3000/img/bookcycle-logo.png`,
           cid: 'provide@bookcycle-logo.png'
         }]
       };
@@ -169,7 +171,7 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
     let dateNow = new Date();
 
     if (!result) {
-      res.status(400).redirect("http://localhost:3000/verify/notfound?v=1");
+      res.status(400).redirect(`http://${hostname}:3000/verify/notfound?v=1`);
     } else if(dateNow <= new Date(result.date_expired)) {
       // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
 
@@ -183,18 +185,18 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
         const verifyRM_result = await pool.query(query);
 
         if (verifyRM_result.affectedRows === 1) {
-          res.redirect(`http://localhost:3000/password/reset/${encodedEmail}`);
+          res.redirect(`http://${hostname}:3000/password/reset/${encodedEmail}`);
         }
       } catch (error) {
         console.error(error);
-        res.status(500).redirect("http://localhost:3000/verify/error?v=1");
+        res.status(500).redirect(`http://${hostname}:3000/verify/error?v=1`);
       }
     } else {
-      res.status(401).redirect("http://localhost:3000/verify/expired?v=1");
+      res.status(401).redirect(`http://${hostname}:3000/verify/expired?v=1`);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).redirect("http://localhost:3000/verify/error?v=1");
+    res.status(500).redirect(`http://${hostname}:3000/verify/error?v=1`);
   }
 });
 

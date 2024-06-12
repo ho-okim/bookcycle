@@ -161,11 +161,11 @@ router.get('/user/:userId/reviewTagTotal', async (req, res) => {
     const {userId} = req.params;
 
     // query문 설정
-    let sql = 'SELECT COUNT(*) AS total FROM (SELECT COUNT(*) FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id) AS subquery';
+    let sql = 'SELECT COUNT(*) AS total FROM (SELECT COUNT(*) FROM review_tag_list WHERE seller_id = ? OR buyer_id = ? GROUP BY tag_id) AS subquery';
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const query = mysql.format(sql, [userId]);
+        const query = mysql.format(sql, [userId, userId]);
         const [result] = await pool.query(query);
         res.send(result);
     } catch (error) {
@@ -180,11 +180,11 @@ router.get('/user/:userId/reviewtag', async (req, res) => {
     const {limit, offset} = req.query;
 
     // query문 설정
-    let sql = 'SELECT tag_id, tag_name, count(*) AS size FROM review_tag_list WHERE seller_id = ? GROUP BY tag_id ORDER BY size DESC LIMIT ? OFFSET ?';
+    let sql = 'SELECT tag_id, tag_name, count(*) AS size FROM review_tag_list WHERE seller_id = ? OR buyer_id = ? GROUP BY tag_id ORDER BY size DESC LIMIT ? OFFSET ?';
 
     try {
         // db connection pool을 가져오고, query문 수행
-        const query = mysql.format(sql, [userId, parseInt(limit), parseInt(offset)]);
+        const query = mysql.format(sql, [userId, userId, parseInt(limit), parseInt(offset)]);
         const result = await pool.query(query); // query문의 결과는 배열로 들어오기 때문에 주의해야 함
         res.send(result);
     } catch (error) {

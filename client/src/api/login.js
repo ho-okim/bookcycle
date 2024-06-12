@@ -1,11 +1,11 @@
 import axios from '../lib/axios.js';
-import REGEX from '../lib/regex.js';
+// import REGEX from '../lib/regex.js';
 import { email_check } from './join.js';
 
 // 로그인
 export async function login(email, password) {
 
-    // 잘못 넘어온 값 처리
+    // 잘못 넘어온 값 처리 - 현재 작동이 잘 안되서 잠궈둠
     // let newEmail = REGEX.EMAIL_REG.test(email) ? email : null;
     // let newPwd = REGEX.PASSWORD_REG.test(password) ? password : null;
 
@@ -96,7 +96,9 @@ export async function resetpwd(formData) {
     const { email, password } = formData;
     
     let password_length = password.length <= 13 ? true : false;
-    
+    // 시간 이유로 적용 x
+    // let newPwd = REGEX.PASSWORD_REG.test(password) ? password : null;
+
     if (password_length) {
         try {
             const res = await axios.post('/password/reset', { email, password });
