@@ -1,7 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/common.css';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 import Login from './pages/Login.js';
@@ -48,8 +48,22 @@ import UserReviewList from './components/user/UserReviewList.js';
 import Search from './pages/Search.js';
 import SearchUser from './components/search/SearchUser.js';
 import MyNotifications from './components/mypage/MyNotifications.js';
+import { useEffect } from 'react';
+import axios from './lib/axios.js';
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    axios.get('/csrf')
+      .then(res=>{
+        axios.defaults.headers.common['X-CSRF-Token'] = res.data.csrfToken;
+      })
+      .catch(err=>{
+        navigate('/error/400');
+      });
+  }, [navigate]);
+
   return (
     <AuthProvider>
       <div className='app-wrapper'>

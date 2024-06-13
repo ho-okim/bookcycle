@@ -41,9 +41,10 @@ const sessionOption = {
     resave : false,
     saveUninitialized : false,
     cookie : {
-        maxAge : 60 * 60 * 10000, // 1시간
-        httpOnly : true,
-        secure : false
+      maxAge : 60 * 60 * 10000, // 1시간
+      httpOnly : true,
+      secure : false,
+      sameSite: 'Strict'
     }, 
     name : 'bookie',
     store : new MySQLStore( dbConfig )
@@ -66,6 +67,72 @@ app.use(cors({
     credentials: true, // 쿠키 접근 허용
     optionsSuccessStatus: 200
 }));
+
+// 배포용 설정---------------------------------------------------
+// helmet : HTTP response header 설정으로 express를 보완하는 middleware
+// hpp : HTTP parameter pollution 공격을 방지
+const helmet = require('helmet');
+const hpp = require('hpp');
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false
+  }));
+  app.use(hpp());
+}
+
+// sanitize-html : XSS 공격을 막기 위한 패키지
+const sanitizeHtml = require('sanitize-html');
+const html = "<script>location.href = http://localhost:3000/</script>";
+// console.log(sanitizeHtml(html));
+
+// csurf : CSRF 공격을 막기 위한 패키지
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
+app.get('/csrf', csrfProtection, (req, res) => { // token 발행 요청
+  res.json({ csrfToken: req.csrfToken() });
+});
+
+// form 데이터 파싱
+const bodyParser = require('body-parser');
+const parseForm = bodyParser.urlencoded({extended: false});
+
+// POST, PUT, DELETE 요청에 대해 csrfToken 검증
+app.post('*', parseForm, csrfProtection, (req, res, next) => { 
+  next();
+});
+app.put('*', parseForm, csrfProtection, (req, res, next) => {
+  next();
+});
+app.delete('*', parseForm, csrfProtection, (req, res, next) => {
+  next();
+});
+
+// winston - logger : log 저장용
+const logger = require('./lib/logger.js');
+app.use((req, res, next)=>{
+  // 로그 메시지 생성
+  const logMessage = `Request : ${req.method} ${req.url}`;
+
+  // 요청을 로깅
+  logger.log({
+    level: 'info',
+    message: logMessage
+  });
+
+  // 에러가 있으면 에러 로깅
+  if (req.error) {
+    logger.error({
+      level: 'error',
+      message: req.error.message
+    });
+  }
+
+  next();
+});
 
 // passport 설정------------------------------------------------------------
 app.use(passport.initialize()); // 초기화, 사용자 인증 처리

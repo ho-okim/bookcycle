@@ -25,8 +25,6 @@ function ProductDetail() {
   const { user } = useAuth(); // 로그인한 사용자
 
   const [product, setProduct] = useState({}); // 상품 정보
-  const [category, setCategory] = useState([]); // 카테고리
-  const [likehit, setLikehit] = useState(0); // 찜한 수
   const [files, setFiles] = useState([]); // 상품 이미지
   const [notFound, setNotFound] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false); // 차단 여부
@@ -66,12 +64,6 @@ function ProductDetail() {
   useEffect(()=>{
     // 타이틀 설정
     document.title = "상품 상세보기";
-
-    async function productcate() { //카테고리 데이터 가져오기
-      const data = await getCategory();
-      setCategory(data);
-    }
-    productcate(); // 최초 렌더링때만 카테고리 가져옴
   },[]);
 
   useEffect(()=>{

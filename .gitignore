@@ -47,3 +47,7 @@ yarn-debug.log*
 yarn-error.log*
 
 /server/api/test.html
+
+/server/logs
+
+.ssh
