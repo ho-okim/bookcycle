@@ -67,6 +67,17 @@ if (process.env.NODE_ENV !== 'production') { // 파일도 저장하고 콘솔로
             )
         })
     );
+
+    // console 함수 오버라이드 - logger를 호출하도록 변경
+    console.log = function(...args) {
+        return logger.info.call(logger, ...args);
+    }
+    console.error = function(...args) {
+        return logger.error.call(logger, ...args);
+    }
+    console.info = function(...args) {
+        return logger.warn.call(logger, ...args);
+    }
 }
 
 module.exports = logger;

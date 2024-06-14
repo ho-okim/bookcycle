@@ -84,9 +84,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // sanitize-html : XSS 공격을 막기 위한 패키지
-const sanitizeHtml = require('sanitize-html');
-const html = "<script>location.href = http://localhost:3000/</script>";
-// console.log(sanitizeHtml(html));
+// sanitize.js에서 middleware를 가져옴
+const {sanitizeMiddleware} = require('./lib/sanitize.js');
 
 // csurf : CSRF 공격을 막기 위한 패키지
 const csrf = require('csurf');
@@ -100,14 +99,19 @@ app.get('/csrf', csrfProtection, (req, res) => { // token 발행 요청
 const bodyParser = require('body-parser');
 const parseForm = bodyParser.urlencoded({extended: false});
 
+// GET 요청에서 태그와 attribute 제거 소독 진행
+app.get('*', sanitizeMiddleware, (req, res, next) => {
+  next();
+});
+
 // POST, PUT, DELETE 요청에 대해 csrfToken 검증
-app.post('*', parseForm, csrfProtection, (req, res, next) => { 
+app.post('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => { 
   next();
 });
-app.put('*', parseForm, csrfProtection, (req, res, next) => {
+app.put('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
   next();
 });
-app.delete('*', parseForm, csrfProtection, (req, res, next) => {
+app.delete('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
   next();
 });
 
