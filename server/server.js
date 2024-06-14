@@ -75,11 +75,7 @@ const helmet = require('helmet');
 const hpp = require('hpp');
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: false
-  }));
+  app.use(helmet());
   app.use(hpp());
 }
 
