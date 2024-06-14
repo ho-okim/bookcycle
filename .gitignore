@@ -28,6 +28,8 @@ setupTests.js
 # server
 /server/test.js
 /server/socket.js
+/server/api/test.html
+/server/logs
 
 # testing
 /coverage
@@ -46,8 +48,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/server/api/test.html
-
-/server/logs
-
+# .ssh
 .ssh
