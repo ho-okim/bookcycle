@@ -216,17 +216,17 @@ if (pool) {
 }
 
 // router --------------------------------------------------------
-app.use("/", require('./api/main.js'));
-app.use("/", require('./api/login.js'));
-app.use("/", require('./api/join.js'));
-app.use("/", require('./api/mypage.js'));
-app.use("/", require('./api/product.js'));
-app.use("/", require('./api/user.js'));
-app.use("/", require('./api/board.js'));
-app.use("/", require('./api/report.js'));
-app.use("/", require('./api/chat.js'));
-app.use("/", require('./api/search.js'));
-app.use("/", require('./api/alert.js'));
+app.use("/api", require('./api/main.js'));
+app.use("/api", require('./api/login.js'));
+app.use("/api", require('./api/join.js'));
+app.use("/api", require('./api/mypage.js'));
+app.use("/api", require('./api/product.js'));
+app.use("/api", require('./api/user.js'));
+app.use("/api", require('./api/board.js'));
+app.use("/api", require('./api/report.js'));
+app.use("/api", require('./api/chat.js'));
+app.use("/api", require('./api/search.js'));
+app.use("/api", require('./api/alert.js'));
 
 const sessionMiddleware = session(sessionOption)
 
