@@ -16,10 +16,8 @@ db_config.json
 
 
 #client/src
-reportWebVitals.js
 setupTests.js
 /client/src/App.test.js
-/client/src/index.css
 
 #client/public
 /client/public/favicon.*
