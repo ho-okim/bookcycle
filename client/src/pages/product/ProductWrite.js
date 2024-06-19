@@ -133,6 +133,7 @@ function BoardWrite() {
     const isbn10 = isbn10Ref.current.value;
     const isbn13 = isbn13Ref.current.value;
 
+    console.log('사용자 id : ' ,user.id)
     if(user && !isNaN(cate) && title && price && con && description
     && (isbn10Len === 10 || isbn10Len === 0)
     && (isbn13Len === 13 || isbn13Len === 0)){ // 필수 항목들이 전부 값이 있고 선택 항목이 조건에 맞으면 데이터 전송
