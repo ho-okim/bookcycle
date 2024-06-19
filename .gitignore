@@ -10,7 +10,7 @@ bookcyclekey.pem
 /.pnp
 .pnp.js
 *.svg
-.env
+.env*
 db_config.json
 *.txt
 
