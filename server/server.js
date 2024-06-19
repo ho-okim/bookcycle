@@ -2,15 +2,23 @@
 // 환경변수
 require("dotenv").config();
 
-const PORT = process.env.PORT || 10000;
-const HOSTNAME = process.env.HOSTNAME || 'localhost';
+const PORT = process.env.PORT;
+const CLIENT_PORT = process.env.CLIENT_PORT;
+const HOSTNAME = process.env.HOSTNAME;
+const SERVER_DOMAIN = process.env.SERVER_DOMAIN;
+const CLIENT_DOMAIN = process.env.CLIENT_DOMAIN;
 
 // express 설정
 const express = require("express");
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const whiteList = [`http://${HOSTNAME}:${PORT}`, `http://${HOSTNAME}:3000`]
+const whiteList = SERVER_DOMAIN ? [ 
+	`http://${HOSTNAME}:${PORT}`, `https://${HOSTNAME}:${PORT}`,
+	`http://${HOSTNAME}:${CLIENT_PORT}`, `https://${HOSTNAME}:${CLIENT_PORT}`,
+	`https://${SERVER_DOMAIN}`,
+	`https://${CLIENT_DOMAIN}`, `http://${CLIENT_DOMAIN}:${CLIENT_PORT}`
+] : [`http://${HOSTNAME}:${PORT}`, `http://${HOSTNAME}:${CLIENT_PORT}`];
 
 // http와 socket.io 설정
 const { createServer } = require("http");
@@ -43,7 +51,7 @@ const sessionOption = {
     cookie : {
         maxAge : 60 * 60 * 10000, // 1시간
         httpOnly : true,
-        secure : false
+        secure : SERVER_DOMAIN ? true : false
     }, 
     name : 'bookie',
     store : new MySQLStore( dbConfig )
