@@ -11,6 +11,7 @@ bookcyclekey.pem
 .pnp.js
 *.svg
 .env
+.env.development
 db_config.json
 *.txt
 
