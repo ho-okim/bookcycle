@@ -4,20 +4,20 @@
 /node_modules
 /client/node_modules
 
+# key
+bookcyclekey.pem
 
 /.pnp
 .pnp.js
 *.svg
-.env
+.env*
 db_config.json
 *.txt
 
 
 #client/src
-reportWebVitals.js
 setupTests.js
 /client/src/App.test.js
-/client/src/index.css
 
 #client/public
 /client/public/favicon.*

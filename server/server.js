@@ -87,7 +87,7 @@ const {sanitizeMiddleware} = require('./lib/sanitize.js');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 
-app.get('/csrf', csrfProtection, (req, res) => { // token 발행 요청
+app.get('/api/csrf', csrfProtection, (req, res) => { // token 발행 요청
   res.json({ csrfToken: req.csrfToken() });
 });
 
