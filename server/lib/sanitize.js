@@ -28,9 +28,5 @@ exports.sanitizeMiddleware = (req, res, next) => {
         req.params = sanitizeObject(req.params);
     }
 
-    if (req.body) { // req.body sanitize
-        req.body = sanitizeObject(req.body);
-    }
-
     next();
 }
