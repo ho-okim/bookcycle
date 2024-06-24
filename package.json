@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "cross-env NODE_ENV=production pm2 start ./server/server.js",
+    "server": "pm2 start ./ecosystem.config.js --env production",
     "client": "npm start --prefix client",
     "dev": "concurrently \"nodemon ./server/server.js\" \"npm run client\""
   },
