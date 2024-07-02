@@ -52,7 +52,8 @@ const sessionOption = {
         maxAge : 60 * 60 * 10000, // 1시간
         httpOnly : true,
         secure : SERVER_DOMAIN ? true : false,
-        sameSite: 'Strict'
+        // sameSite: 'Strict'
+        sameSite: 'none'
     }, 
     name : 'bookie',
     store : new MySQLStore( dbConfig )
