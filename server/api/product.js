@@ -213,6 +213,7 @@ router.post('/productWrite', isLoggedInAndBlocked, async(req, res)=>{
   let { id } = req.params;
   const {seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13} = req.body.data;
 
+  console.log(req.body.data)
   let sql = 'INSERT INTO product (seller_id, buyer_id, category_id, product_name, `condition`, description, price, writer, publisher, publish_date, isbn10, isbn13) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   const query = mysql.format(sql, [seller_id, seller_id, category_id, product_name, condition, description, price, writer, publisher, publish_date, isbn10, isbn13]);

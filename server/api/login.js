@@ -9,7 +9,10 @@ const { isNotLoggedIn, isLoggedIn } = require('../lib/auth');
 const {generateRandomString} = require('../lib/generateRandom.js');
 const findpwdHtml = require('../html/findpwdHtml.js');
 
-const hostname = process.env.HOSTNAME || 'localhost';
+const CLIENT_PORT = process.env.CLIENT_PORT;
+const SERVER_DOMAIN = process.env.SERVER_DOMAIN;
+const CLIENT_DOMAIN = process.env.CLIENT_DOMAIN;
+const hostname = 'localhost';
 
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
@@ -21,6 +24,7 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
         if (!user) return res.json({ message : info.message });
         // verification 검증
         if (user.verification === 0) {
+          console.log(user)
           return res.json({ message : "not verified" });
         }
         // 에러 발생 시 next 미들웨어로 오류 처리 넘김
@@ -99,7 +103,7 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
         html: emailHtml,
         attachments: [{
           filename: 'bookcycle-logo.png',
-          path: `http://${hostname}:3000/img/bookcycle-logo.png`,
+          path: `https://${CLIENT_DOMAIN}/img/bookcycle-logo.png`,
           cid: 'provide@bookcycle-logo.png'
         }]
       };
@@ -171,7 +175,10 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
     let dateNow = new Date();
 
     if (!result) {
-      res.status(400).redirect(`http://${hostname}:3000/verify/notfound?v=1`);
+      res.status(400).redirect(CLIENT_DOMAIN ? 
+        `https://${CLIENT_DOMAIN}/verify/notfound?v=1` :
+        `http://localhost:${CLIENT_PORT}/verify/notfound?v=1`
+      );
     } else if(dateNow <= new Date(result.date_expired)) {
       // 쿼리스트링으로 들어온 securedKey가 존재하고, 만료기한 내에 접근했다면 비밀번호 초기화 진행
 
@@ -185,18 +192,30 @@ router.get('/password/verify/:securedKey', isNotLoggedIn, async(req, res)=>{
         const verifyRM_result = await pool.query(query);
 
         if (verifyRM_result.affectedRows === 1) {
-          res.redirect(`http://${hostname}:3000/password/reset/${encodedEmail}`);
+          res.redirect(CLIENT_DOMAIN ?
+            `https://${CLIENT_DOMAIN}/password/reset/${encodedEmail}` :
+            `http://localhost:${CLIENT_PORT}/password/reset/${encodedEmail}`
+          );
         }
       } catch (error) {
         console.error(error);
-        res.status(500).redirect(`http://${hostname}:3000/verify/error?v=1`);
+        res.status(500).redirect(CLIENT_DOMAIN ?
+          `https://${CLIENT_DOMAIN}/verify/error?v=1` :
+          `http://localhost:${CLIENT_PORT}/verify/error?v=1`
+        );
       }
     } else {
-      res.status(401).redirect(`http://${hostname}:3000/verify/expired?v=1`);
+      res.status(401).redirect(CLIENT_DOMAIN ?
+        `https://${CLIENT_DOMAIN}/verify/expired?v=1` :
+        `http://localhost:${CLIENT_PORT}/verify/expired?v=1`
+      );
     }
   } catch (error) {
     console.error(error);
-    res.status(500).redirect(`http://${hostname}:3000/verify/error?v=1`);
+    res.status(500).redirect(CLIENT_DOMAIN ?
+      `https://${CLIENT_DOMAIN}/verify/error?v=1` :
+      `http://localhost:${CLIENT_PORT}/verify/error?v=1`
+    );
   }
 });
 
