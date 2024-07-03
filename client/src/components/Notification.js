@@ -119,6 +119,7 @@ function Notification({showToast, setShowToast, toggleToast}) {
                 <Toast.Body>
                     <div className={styles.notification_box}>
                         {
+                            (notification) ? 
                             notification.map((el, i)=>{
                                 return(
                                     <div key={i} className={styles.notification_content}>
@@ -128,6 +129,7 @@ function Notification({showToast, setShowToast, toggleToast}) {
                                     </div>
                                 )
                             })
+                            : null
                         }
                     </div>
                 </Toast.Body>

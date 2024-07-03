@@ -13,7 +13,8 @@ export async function mainBook() {
     return product;
     // 해당 리턴값은 components > BookList.js에서 받아서 사용할 예정임
   } catch (error) {
-    window.location.href = '/error/500';
+    console.error(error);
+    // window.location.href = '/error/500';
   }
 }
 
@@ -30,6 +31,7 @@ export async function mainBoard() {
     return board;
     // 해당 리턴값은 components > BoardList.js에서 받아서 사용할 예정임
   } catch (error) {
-    window.location.href = '/error/500';
+    console.error(error);
+    // window.location.href = '/error/500';
   }
 }

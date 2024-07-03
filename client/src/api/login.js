@@ -11,7 +11,7 @@ export async function login(email, password) {
 
     try {
         const res = await axios.post('/login', { email, password });
-    
+
         if (res.statusText !== "OK") {
             window.location.href = '/error/500';
         }
