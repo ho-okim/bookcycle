@@ -13,12 +13,13 @@ export async function login(email, password) {
         const res = await axios.post('/login', { email, password });
 
         if (res.statusText !== "OK") {
-            window.location.href = '/error/500';
+            //window.location.href = '/error/500';
         }
         const body = res.data;
         return body;
     } catch (error) {
-        window.location.href = '/error/500';
+	 console.error(error);
+        //window.location.href = '/error/500';
     }
 }
 

@@ -54,7 +54,7 @@ const sessionOption = {
     httpOnly : true,
     secure : SERVER_DOMAIN ? true : false,
     // sameSite: 'Strict'
-    sameSite: 'Lax'
+    sameSite: 'None'
   }, 
   name : 'bookie',
   store : new MySQLStore( dbConfig )
