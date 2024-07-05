@@ -27,7 +27,8 @@ const exp = require("constants");
 const server = createServer(app); // express를 사용한 http 서버 생성
 const io = new Server(server, {
   cors: {
-    origin: whiteList
+    origin: whiteList,
+    credentials: true
   }
 }); // socket 서버 생성
 
@@ -45,18 +46,18 @@ const pool = require("./db.js");
 
 // session 설정
 const sessionOption = {
-    secret : process.env.COOKIE_SECRET, // secret 키
-    resave : false,
-    saveUninitialized : false,
-    cookie : {
-        maxAge : 60 * 60 * 10000, // 1시간
-        httpOnly : true,
-        secure : SERVER_DOMAIN ? true : false,
-        // sameSite: 'Strict'
-        sameSite: 'none'
-    }, 
-    name : 'bookie',
-    store : new MySQLStore( dbConfig )
+  secret : process.env.COOKIE_SECRET, // secret 키
+  resave : false,
+  saveUninitialized : false,
+  cookie : {
+    maxAge : 60 * 60 * 10000, // 1시간
+    httpOnly : true,
+    secure : SERVER_DOMAIN ? true : false,
+    // sameSite: 'Strict'
+    sameSite: 'None'
+  }, 
+  name : 'bookie',
+  store : new MySQLStore( dbConfig )
 }
 
 // public 폴더 경로 설정
@@ -93,36 +94,8 @@ if (process.env.NODE_ENV === 'production') {
 const {sanitizeMiddleware} = require('./lib/sanitize.js');
 const reqSanitizer = require('req-sanitizer');
 
-// form 데이터 파싱
-const bodyParser = require('body-parser');
-const parseForm = bodyParser.urlencoded({extended: false});
-
+// req-sanitizer 사용 : req.body sanitize
 app.use(reqSanitizer());
-
-// csurf : CSRF 공격을 막기 위한 패키지
-const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
-
-// GET 요청에서 태그와 attribute 제거 소독 진행
-app.get('*', sanitizeMiddleware, (req, res, next) => {
-  next();
-});
-
-// csrf 토큰 발행
-app.get('/api/csrf', csrfProtection, (req, res) => { // token 발행 요청
-  res.json({ csrfToken: req.csrfToken() });
-});
-
-// POST, PUT, DELETE 요청에 대해 csrfToken 검증
-app.post('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => { 
-  next();
-});
-app.put('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
-  next();
-});
-app.delete('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
-  next();
-});
 
 // winston - logger : log 저장용
 const logger = require('./lib/logger.js');
@@ -147,78 +120,106 @@ app.use((req, res, next)=>{
   next();
 });
 
+app.use(session(sessionOption)); // session 옵션 사용
 // passport 설정------------------------------------------------------------
 app.use(passport.initialize()); // 초기화, 사용자 인증 처리
-app.use(session(sessionOption)); // session 옵션 사용
 app.use(passport.session()); // 세션을 사용하도록 설정
 
 passport.use(new LocalStrategy( // 로그인 방법
-    {usernameField : "email", passwordField : "password"}, // 사용자이메일, 비번
-    async (email, password, done) => { // 로그인 처리
-        try {
-            // db에서 email 조회
-            let sql = 'SELECT id, email, password, username, nickname, verification FROM users WHERE email = ?';
-            const query = mysql.format(sql, [email]);
-            let [data] = await pool.query(query);
+  {usernameField : "email", passwordField : "password"}, // 사용자이메일, 비번
+  async (email, password, done) => { // 로그인 처리
+    try {
+      // db에서 email 조회
+      let sql = 'SELECT id, email, password, username, nickname, verification FROM users WHERE email = ?';
+      const query = mysql.format(sql, [email]);
+      let [data] = await pool.query(query);
 
-            // 아이디 없음 처리
-            if (!data || data.length === 0) {
-                console.log('아이디없음');
-                // 둘 중 뭐가 틀렸는지 모르게 처리
-                return done(null, false, { message : "login fail" });
-            }
+      // 아이디 없음 처리
+      if (!data || data.length === 0) {
+        // 둘 중 뭐가 틀렸는지 모르게 처리
+        return done(null, false, { message : "login fail" });
+      }
 
-            // 비밀번호 비교 처리
-            const res = await bcrypt.compare(password, data.password);
+      // 비밀번호 비교 처리
+      const res = await bcrypt.compare(password, data.password);
 
-            if (res) {
-                return done(null, data);
-            } else {
-                console.log('비번불일치');
-                // 둘 중 뭐가 틀렸는지 모르게 처리
-                return done(null, false, { message : "login fail" });
-            }
-        } catch (error) {
-            console.log(error);
-            return done(error);
-        }
+      if (res) {
+        return done(null, data);
+      } else {
+        // 둘 중 뭐가 틀렸는지 모르게 처리
+        return done(null, false, { message : "login fail" });
+      }
+    } catch (error) {
+      return done(error);
     }
+  }
 ));
 
 passport.serializeUser( (user, done) => { // 로그인 시 실행, req.session에 데이터 저장
-    process.nextTick(() => {
-        done(null, { email : user.email, username : user.username });
-    });
+  process.nextTick(() => {
+    done(null, { email : user.email, username : user.username });
+  });
 });
 
 passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id로 사용자 정보 객체 불러옴
-    // id로 사용자 정보 조회
+
+  // id로 사용자 정보 조회
     // user는 passport.serializeUser에서 저장된 user
     let sql = `SELECT * FROM users WHERE email = ?`;
 
     try {
-        let [data] = await pool.query(sql, [user.email]);
-    
-        const userInfo = {
-            id : data.id,
-            email : data.email,
-            nickname : data.nickname,
-            profile_image : data.profile_image,
-            phone_number : data.phone_number,
-            username : data.username,
-            manner_score : data.manner_score,
-            verification : data.verification,
-            blocked : data.blocked
-        }
+      const query = mysql.format(sql, [user.email]);
+      let [data] = await pool.query(query);
 
-        process.nextTick(() => {
-            return done(null, userInfo); // req.user에 user 저장
-        });
+      const userInfo = {
+        id : data.id,
+        email : data.email,
+        nickname : data.nickname,
+        profile_image : data.profile_image,
+        phone_number : data.phone_number,
+        username : data.username,
+        manner_score : data.manner_score,
+        verification : data.verification,
+        blocked : data.blocked
+      }
+
+      process.nextTick(() => {
+        return done(null, userInfo); // req.user에 user 저장
+      });
     } catch (error) {
-        console.log(error);
-        return done(error);
+      return done(error);
     }
 
+});
+
+// 배포용 설정---------------------------------------------------
+// form 데이터 파싱
+const bodyParser = require('body-parser');
+const parseForm = bodyParser.urlencoded({extended: false});
+
+// csurf : CSRF 공격을 막기 위한 패키지
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
+// GET 요청에서 태그와 attribute 제거 소독 진행
+app.get('*', sanitizeMiddleware, (req, res, next) => {
+  next();
+});
+
+// csrf 토큰 발행
+app.get('/api/csrf', csrfProtection, (req, res) => { // token 발행 요청
+  res.json({ csrfToken: req.csrfToken() });
+});
+
+// POST, PUT, DELETE 요청에 대해 csrfToken 검증
+app.post('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => { 
+  next();
+});
+app.put('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
+  next();
+});
+app.delete('*', parseForm, csrfProtection, sanitizeMiddleware, (req, res, next) => {
+  next();
 });
 
 // DB 연결 시 서버 열림-------------------------------------------

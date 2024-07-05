@@ -17,53 +17,48 @@ const hostname = 'localhost';
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
-    passport.authenticate(("local"), (error, user, info) => {
-        // 인증 오류 처리
-        if (error) return res.json({ message : '500 error' });
-        // 로그인 실패 처리
-        if (!user) return res.json({ message : info.message });
-        // verification 검증
-        if (user.verification === 0) {
-          console.log(user)
-          return res.json({ message : "not verified" });
-        }
-        // 에러 발생 시 next 미들웨어로 오류 처리 넘김
-        if (error) return next(err);
+  passport.authenticate(("local"), (error, user, info) => {
+    // 인증 오류 처리
+    if (error) return res.json({ message : '500 error' });
+    // 로그인 실패 처리
+    if (!user) return res.json({ message : info.message });
+    // verification 검증
+    if (user.verification === 0) {
+      return res.json({ message : "not verified" });
+    }
+    // 에러 발생 시 next 미들웨어로 오류 처리 넘김
+    if (error) return next(err);
 
-        req.logIn(user, (err) => {
-            // 에러 발생 시 next 미들웨어로 오류 처리 넘김
-            if (err) return next(err);
-
-            delete user.password;
-
-            return res.json({user, message : "success" });
-        });
-    })(req, res, next);
+    req.logIn(user, (err) => {
+      // 에러 발생 시 next 미들웨어로 오류 처리 넘김
+      if (err) return next(err);
+      delete user.password;
+      return res.json({user, message : "success" });
+    });
+  })(req, res, next);
 });
 
 // 로그아웃 - DB에 저장된 세션에도 자동 처리됨
 router.get("/logout", isLoggedIn, (req, res) => {
-    req.logOut(() => {
-        // 세션 제거
-        req.session.destroy((error) => {
-          if (error) throw error;
-        });
-        // 쿠키 제거
-        res.clearCookie('bookie', req.signedCookies['bookie'], {
-          httpOnly : true,
-          secure : false
-        });
-        res.send("logged out");
+  req.logOut(() => {
+    // 세션 제거
+    req.session.destroy((error) => {
+      if (error) throw error;
     });
+    // 쿠키 제거
+    res.clearCookie('bookie', req.signedCookies['bookie'], {
+      httpOnly : true,
+      secure : false
+    });
+    res.send("logged out");
+  });
 });
 
 // 로그인 한 사용자 조회
-router.get("/getLoginUser", isLoggedIn, (req, res)=>{
+router.get("/getLoginUser", (req, res)=>{
   try {
     res.send(req.user);
-    // console.log(req.user)
   } catch (error) {
-    console.error(error);
     res.send(null);
   }
 });
@@ -142,7 +137,6 @@ router.get("/password/sendEmail", isNotLoggedIn, async (req, res) => {
     date_expired.setMinutes(date_expired.getMinutes() + 10); // 10분 후 링크 만료
 
     try {
-      console.log('----------send mail-----------');
       // 메일 전송
       sendMail(email);
       
