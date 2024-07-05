@@ -52,10 +52,9 @@ const sessionOption = {
   cookie : {
     maxAge : 60 * 60 * 10000, // 1시간
     httpOnly : true,
-    secure : false,
-    //SERVER_DOMAIN ? true : false,
+    secure : SERVER_DOMAIN ? true : false,
     // sameSite: 'Strict'
-    sameSite: 'none'
+    sameSite: 'Lax'
   }, 
   name : 'bookie',
   store : new MySQLStore( dbConfig )
@@ -146,7 +145,7 @@ passport.use(new LocalStrategy( // 로그인 방법
       const res = await bcrypt.compare(password, data.password);
 
       if (res) {
-        console.log(`${data.email} 로그인`);
+        console.log(`${data.email} 로그인 완료`);
         return done(null, data);
       } else {
         console.log('비번불일치');
@@ -162,6 +161,7 @@ passport.use(new LocalStrategy( // 로그인 방법
 
 passport.serializeUser( (user, done) => { // 로그인 시 실행, req.session에 데이터 저장
   console.log('serialize가 작동 되는지?')
+  console.log('serialize : ',user.email, user.username)
   process.nextTick(() => {
     done(null, { email : user.email, username : user.username });
   });

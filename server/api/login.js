@@ -32,6 +32,9 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
     req.logIn(user, (err) => {
       // 에러 발생 시 next 미들웨어로 오류 처리 넘김
       if (err) return next(err);
+
+      console.log('login api : ', user);
+
       delete user.password;
       return res.json({user, message : "success" });
     });
