@@ -16,7 +16,7 @@ const cookieParser = require('cookie-parser');
 const whiteList = SERVER_DOMAIN ? [ 
 	`http://${HOSTNAME}:${PORT}`, `https://${HOSTNAME}:${PORT}`,
 	`http://${HOSTNAME}:${CLIENT_PORT}`, `https://${HOSTNAME}:${CLIENT_PORT}`,
-	`https://${SERVER_DOMAIN}`,
+	`https://${SERVER_DOMAIN}`, `${SERVER_DOMAIN}`,
 	`https://${CLIENT_DOMAIN}`, `http://${CLIENT_DOMAIN}:${CLIENT_PORT}`
 ] : [`http://${HOSTNAME}:${PORT}`, `http://${HOSTNAME}:${CLIENT_PORT}`];
 
@@ -44,18 +44,21 @@ const dbConfig = require("../db_config.json");
 const mysql = require('mysql2');
 const pool = require("./db.js");
 
+// cookie 설정
+const cookieOption = {
+    maxAge : 60 * 60 * 10000, // 1시간
+    httpOnly : true,
+    secure : SERVER_DOMAIN ? true : false,
+    sameSite: 'None',
+    //domain: `https://${CLIENT_DOMAIN}`
+}
+
 // session 설정
 const sessionOption = {
   secret : process.env.COOKIE_SECRET, // secret 키
   resave : false,
   saveUninitialized : false,
-  cookie : {
-    maxAge : 60 * 60 * 10000, // 1시간
-    httpOnly : true,
-    secure : SERVER_DOMAIN ? true : false,
-    // sameSite: 'Strict'
-    sameSite: 'None'
-  }, 
+  cookie : cookieOption, 
   name : 'bookie',
   store : new MySQLStore( dbConfig )
 }
@@ -156,6 +159,10 @@ passport.use(new LocalStrategy( // 로그인 방법
 ));
 
 passport.serializeUser( (user, done) => { // 로그인 시 실행, req.session에 데이터 저장
+ logger.log({
+	 level: 'info',
+	 message: `serialize ? : ${user.email}`
+ });
   process.nextTick(() => {
     done(null, { email : user.email, username : user.username });
   });
@@ -163,14 +170,18 @@ passport.serializeUser( (user, done) => { // 로그인 시 실행, req.session�
 
 passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id로 사용자 정보 객체 불러옴
 
-  // id로 사용자 정보 조회
+    // id로 사용자 정보 조회
     // user는 passport.serializeUser에서 저장된 user
     let sql = `SELECT * FROM users WHERE email = ?`;
 
     try {
       const query = mysql.format(sql, [user.email]);
-      let [data] = await pool.query(query);
+      let [data] = await pool.query(query);    
 
+  	logger.log({
+		 level: 'info',
+		 message: `deserialize ? : ${data.email}`
+        });
       const userInfo = {
         id : data.id,
         email : data.email,
@@ -199,7 +210,13 @@ const parseForm = bodyParser.urlencoded({extended: false});
 
 // csurf : CSRF 공격을 막기 위한 패키지
 const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({ 
+    cookie: {
+    	httpOnly : true,
+    	secure : true,
+    	sameSite: 'None',
+    }
+});
 
 // GET 요청에서 태그와 attribute 제거 소독 진행
 app.get('*', sanitizeMiddleware, (req, res, next) => {
