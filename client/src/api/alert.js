@@ -15,7 +15,6 @@ export async function getNotification() {
         const unread = body.filter((el)=>(el.read_or_not === 0));
         return {result : body, unread : unread.length };
     }  catch (error) {
-        console.error(error);
         if (error.response.status === 403) {
             window.location.href = '/login';
         }
@@ -35,7 +34,6 @@ export async function getShortNotification() {
         const body = res.data;
         return body;
     }  catch (error) {
-        console.error(error);
         if (error.response.status === 401) {
             window.location.href = '/error/401';
         }
@@ -54,11 +52,8 @@ export async function readNotification(id) {
         const body = res.data;
         return body;
     } catch (error) {
-        console.error(error);
         if (error.response.status === 403) {
             window.location.href = '/login';
-        } else {
-            throw Error(error)
         }
     }
 }

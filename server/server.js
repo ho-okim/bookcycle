@@ -49,7 +49,7 @@ const cookieOption = {
     maxAge : 60 * 60 * 10000, // 1시간
     httpOnly : true,
     secure : SERVER_DOMAIN ? true : false,
-    sameSite: 'None',
+    sameSite: SERVER_DOMAIN ? 'None' : 'Lax',
     //domain: `https://${CLIENT_DOMAIN}`
 }
 
