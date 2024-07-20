@@ -17,7 +17,7 @@ const hostname = 'localhost';
 // 로그인
 router.post('/login', isNotLoggedIn, async (req, res, next) => {
 
-  passport.authenticate(("local"), (error, user, info) => {
+  passport.authenticate("local", (error, user, info) => {
     // 인증 오류 처리
     if (error) return res.json({ message : '500 error' });
     // 로그인 실패 처리

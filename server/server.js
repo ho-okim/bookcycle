@@ -32,11 +32,8 @@ const io = new Server(server, {
   }
 }); // socket 서버 생성
 
-// session 및 로그인 설정
+// session 설정
 const session = require("express-session"); // session
-const passport = require("passport"); // 로그인 
-const LocalStrategy = require("passport-local"); // 로그인방법
-const bcrypt = require("bcrypt"); // 암호화
 const MySQLStore = require("express-mysql-session")(session);
 
 // db
@@ -123,85 +120,14 @@ app.use((req, res, next)=>{
   next();
 });
 
+const passport = require("passport"); // 로그인 
+const passportConfig = require('./passport'); // passport 설정
+passportConfig();
+
 app.use(session(sessionOption)); // session 옵션 사용
 // passport 설정------------------------------------------------------------
 app.use(passport.initialize()); // 초기화, 사용자 인증 처리
 app.use(passport.session()); // 세션을 사용하도록 설정
-
-passport.use(new LocalStrategy( // 로그인 방법
-  {usernameField : "email", passwordField : "password"}, // 사용자이메일, 비번
-  async (email, password, done) => { // 로그인 처리
-    try {
-      // db에서 email 조회
-      let sql = 'SELECT id, email, password, username, nickname, verification FROM users WHERE email = ?';
-      const query = mysql.format(sql, [email]);
-      let [data] = await pool.query(query);
-
-      // 아이디 없음 처리
-      if (!data || data.length === 0) {
-        // 둘 중 뭐가 틀렸는지 모르게 처리
-        return done(null, false, { message : "login fail" });
-      }
-
-      // 비밀번호 비교 처리
-      const res = await bcrypt.compare(password, data.password);
-
-      if (res) {
-        return done(null, data);
-      } else {
-        // 둘 중 뭐가 틀렸는지 모르게 처리
-        return done(null, false, { message : "login fail" });
-      }
-    } catch (error) {
-      return done(error);
-    }
-  }
-));
-
-passport.serializeUser( (user, done) => { // 로그인 시 실행, req.session에 데이터 저장
- logger.log({
-	 level: 'info',
-	 message: `serialize ? : ${user.email}`
- });
-  process.nextTick(() => {
-    done(null, { email : user.email, username : user.username });
-  });
-});
-
-passport.deserializeUser( async (user, done) => { // 매 요청마다 실행, id로 사용자 정보 객체 불러옴
-
-    // id로 사용자 정보 조회
-    // user는 passport.serializeUser에서 저장된 user
-    let sql = `SELECT * FROM users WHERE email = ?`;
-
-    try {
-      const query = mysql.format(sql, [user.email]);
-      let [data] = await pool.query(query);    
-
-  	logger.log({
-		 level: 'info',
-		 message: `deserialize ? : ${data.email}`
-        });
-      const userInfo = {
-        id : data.id,
-        email : data.email,
-        nickname : data.nickname,
-        profile_image : data.profile_image,
-        phone_number : data.phone_number,
-        username : data.username,
-        manner_score : data.manner_score,
-        verification : data.verification,
-        blocked : data.blocked
-      }
-
-      process.nextTick(() => {
-        return done(null, userInfo); // req.user에 user 저장
-      });
-    } catch (error) {
-      return done(error);
-    }
-
-});
 
 // 배포용 설정---------------------------------------------------
 // form 데이터 파싱
@@ -212,9 +138,9 @@ const parseForm = bodyParser.urlencoded({extended: false});
 const csrf = require('csurf');
 const csrfProtection = csrf({ 
     cookie: {
-    	httpOnly : true,
-    	secure : true,
-    	sameSite: 'None',
+      httpOnly : true,
+      secure : true,
+      sameSite: 'None',
     }
 });
 
